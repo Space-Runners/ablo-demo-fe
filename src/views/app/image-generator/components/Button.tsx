@@ -6,6 +6,7 @@ const style = {
   p: '20px',
   display: 'flex',
   flexDirection: 'column',
+  fontSize: '10px',
   textAlign: 'center',
   h: '80px',
   w: '160px',
