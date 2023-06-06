@@ -46,7 +46,7 @@ export function SidebarLinks(props: any) {
             {createLinks(route.items)}
           </>
         );
-      } else if (route.layout === '/admin' || route.layout === '/auth') {
+      } else if (route.layout === '/app' || route.layout === '/auth') {
         return (
           <NavLink key={index} to={route.layout + route.path}>
             {route.icon ? (

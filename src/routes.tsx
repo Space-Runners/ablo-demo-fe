@@ -1,17 +1,17 @@
 import { Icon } from '@chakra-ui/react';
 import { MdVideoLibrary } from 'react-icons/md';
 
-import Videos from '@/views/admin/videos';
+import ImageGenerator from '@/views/app/image-generator';
 
 const routes = [
   {
-    name: 'Videos',
-    layout: '/admin',
+    name: 'Image Generator',
+    layout: '/app',
     icon: (
       <Icon as={MdVideoLibrary} width="20px" height="20px" color="inherit" />
     ),
-    path: '/videos',
-    component: Videos,
+    path: '/image-generator',
+    component: ImageGenerator,
   },
 ];
 

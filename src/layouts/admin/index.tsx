@@ -18,7 +18,7 @@ export default function Dashboard(props: any) {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   // functions for changing the states from components
   const getRoute = () => {
-    return window.location.pathname !== '/admin/full-screen-maps';
+    return window.location.pathname !== '/app/full-screen-maps';
   };
 
   const getActiveRoute = (routes: any): string => {
@@ -94,7 +94,7 @@ export default function Dashboard(props: any) {
   };
   const getRoutes = (routes: any[]): any[] => {
     return routes.map((prop: any, key) => {
-      if (prop.layout === '/admin') {
+      if (prop.layout === '/app') {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -161,7 +161,7 @@ export default function Dashboard(props: any) {
             >
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/" to="/admin/videos" />
+                <Redirect from="/" to="/app/image-generator" />
               </Switch>
             </Box>
           ) : null}

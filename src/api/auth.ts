@@ -4,7 +4,7 @@ import config from '../config';
 
 const { API_URL } = config;
 
-axios.defaults.baseURL = API_URL;
+axios.defaults.baseURL = 'http://localhost:4000' || API_URL;
 
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('access-token');
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
 
 export const login = (email: string, password: string) =>
   axios
-    .post('/login', {
+    .post('/auth/login', {
       email,
       password,
     })

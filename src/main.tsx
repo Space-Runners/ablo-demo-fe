@@ -30,8 +30,8 @@ root.render(
           <BrowserRouter>
             <Switch>
               <Route path={`/auth`} component={SignInPage} />
-              <Route path={`/admin`} component={AdminLayout} />
-              <Redirect from="/" to="/admin" />
+              <Route path={`/app`} component={AdminLayout} />
+              <Redirect from="/" to="/app" />
             </Switch>
           </BrowserRouter>
         </ThemeEditorProvider>
