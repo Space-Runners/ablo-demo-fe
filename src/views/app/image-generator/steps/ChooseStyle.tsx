@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Box, HStack, Image, VStack, Text } from '@chakra-ui/react';
 
 import { capitalize, chunk } from 'lodash';

@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Box, Flex, Image, Skeleton, Stack, VStack } from '@chakra-ui/react';
 
 import { useEngines } from '@/api/image-generator';
@@ -8,8 +6,6 @@ import Button from '../components/Button';
 import Card from '../components/Card';
 
 import Logo from './images/Logo.png';
-import ConceptArt from './images/ConceptArt.jpg';
-import Characters from './images/Characters.png';
 
 const connectorStyle = {
   border: '0.5px solid',

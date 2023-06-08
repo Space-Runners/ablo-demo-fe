@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import { Button, Flex } from '@chakra-ui/react';
 
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 

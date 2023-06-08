@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
 import {
-  Box,
   Button as ChakraButton,
   Flex,
-  HStack,
   Image,
   Input,
-  Skeleton,
-  Stack,
   VStack,
   Wrap,
   WrapItem,
