@@ -8,23 +8,32 @@ import ChooseDirection from './steps/ChooseDirection';
 import ChooseStyle from './steps/ChooseStyle';
 import ChoosePictureProperties from './steps/ChoosePictureProperties';
 import ChooseItemsToRemove from './steps/ChooseItemsToRemove';
+import DescribeAndSubmit from './steps/DescribeAndSubmit';
 
-const getStepComponent = (step) => {
+const getStepComponent = (step, params, onUpdate) => {
+  const { engineId, keys, style_preset: stylePreset } = params;
+
   if (step === 2) {
-    return <ChooseStyle />;
+    return <ChooseStyle stylePreset={stylePreset} onUpdate={onUpdate} />;
   } else if (step === 3) {
-    return <ChoosePictureProperties />;
+    return <ChoosePictureProperties keys={keys} onUpdate={onUpdate} />;
   } else if (step === 4) {
-    return <ChooseItemsToRemove />;
+    return <ChooseItemsToRemove keys={keys} onUpdate={onUpdate} />;
+  } else if (step === 5) {
+    return <DescribeAndSubmit params={params} />;
   }
 
-  return <ChooseDirection />;
+  return <ChooseDirection engineId={engineId} onUpdate={onUpdate} />;
 };
 
 export default function ImageGenerator() {
-  const textColor = useColorModeValue('secondaryGray.900', 'white');
+  const [params, setParams] = useState({});
 
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(1);
+
+  const handleUpdate = (update) => setParams({ ...params, ...update });
+
+  console.log('Params', params);
 
   return (
     <Flex
@@ -33,7 +42,7 @@ export default function ImageGenerator() {
       pt={{ base: '130px', md: '80px', xl: '80px' }}
       w="100%"
     >
-      {activeStep !== 10 ? (
+      {activeStep !== 1 ? (
         <Button
           leftIcon={<AiOutlineArrowLeft />}
           onClick={() => setActiveStep(activeStep - 1)}
@@ -43,15 +52,17 @@ export default function ImageGenerator() {
           Back
         </Button>
       ) : null}
-      {getStepComponent(activeStep)}
-      <Button
-        colorScheme="purple"
-        ml={10}
-        onClick={() => setActiveStep(activeStep + 1)}
-        rightIcon={<AiOutlineArrowRight />}
-      >
-        Next
-      </Button>
+      {getStepComponent(activeStep, params, handleUpdate)}
+      {activeStep !== 5 ? (
+        <Button
+          colorScheme="purple"
+          ml={10}
+          onClick={() => setActiveStep(activeStep + 1)}
+          rightIcon={<AiOutlineArrowRight />}
+        >
+          Next
+        </Button>
+      ) : null}
     </Flex>
   );
 }

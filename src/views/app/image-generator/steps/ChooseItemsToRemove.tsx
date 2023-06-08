@@ -1,48 +1,52 @@
-import { useState } from 'react';
-
-import { Box, Flex, Image, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 
 import Button from '../components/Button';
 import Card from '../components/Card';
 
 const OPTIONS = [
   {
+    key: 'text:-1.5',
     name: 'text',
   },
   {
+    key: 'watermark:-1.5',
     name: 'watermark',
   },
   {
+    key: 'compression:-1.5',
     name: 'compression',
   },
   {
+    key: 'complex:-1.5',
     name: 'complex background',
   },
 ];
 
-const connectorStyle = {
-  border: '0.5px solid',
-  width: '80px',
+type Props = {
+  keys: string[];
+  onUpdate: ({ keys }: { keys: string[] }) => void;
 };
 
-export default function ChooseItemsToRemove() {
-  const [selectedItems, setSelectedItems] = useState([]);
+export default function ChooseItemsToRemove({ keys = [], onUpdate }: Props) {
+  const handleToggleItem = (key: string) => {
+    let newKeys = [];
 
-  const handleToggleItem = (name) => {
-    if (selectedItems.includes(name)) {
-      setSelectedItems(selectedItems.filter((item) => item !== name));
+    if (keys.includes(key)) {
+      newKeys = keys.filter((item) => item !== key);
     } else {
-      setSelectedItems([...selectedItems, name]);
+      newKeys = [...keys, key];
     }
+
+    onUpdate({ keys: newKeys });
   };
 
   return (
     <Card title="What don't you want to see in your art?">
       <VStack spacing={6} mt={10}>
-        {OPTIONS.map(({ name }) => (
+        {OPTIONS.map(({ key, name }) => (
           <Button
-            key={name}
-            isSelected={selectedItems.includes(name)}
+            key={key}
+            isSelected={keys.includes(name)}
             onClick={() => handleToggleItem(name)}
             title={name}
           />

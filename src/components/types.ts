@@ -1,30 +1,24 @@
-export interface ClothingItem {
-  id?: number;
+export interface Engine {
   description: string;
-  modelHeight: number;
-  modelUrl: string;
+  id: string;
   name: string;
-  price: number;
+  type: string;
 }
 
-export interface Video {
-  id?: number;
-  url: string;
-  maskUrl: string;
-  metadata: string;
-  name: string;
-  items?: [];
+export interface TextToImageParams {
+  engineId: string;
+
+  text: 'A lighthouse on a cliff';
 }
 
-export interface CollectionItem {
-  itemId: string;
-}
-
-export interface Collection {
-  id?: number;
-  order?: number;
-  name: string;
-  description: string;
-  collectionItems: CollectionItem[];
-  videoId?: string | null;
+export interface TextToImageRequest {
+  cfg_scale: number;
+  clip_guidance_preset: string;
+  engineId: string;
+  height: number;
+  width: number;
+  sampler: string;
+  samples: number;
+  steps: number;
+  text: 'A lighthouse on a cliff';
 }

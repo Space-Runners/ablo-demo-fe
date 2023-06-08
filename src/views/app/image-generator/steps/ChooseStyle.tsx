@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Box, Flex, HStack, Image, VStack, Text } from '@chakra-ui/react';
+import { Box, HStack, Image, VStack, Text } from '@chakra-ui/react';
 
-import { chunk } from 'lodash';
+import { capitalize, chunk } from 'lodash';
 
 import Card from '../components/Card';
 
@@ -10,52 +10,56 @@ import Bird from './images/Bird.jpg';
 
 const OPTIONS = [
   {
-    name: 'Enhance',
+    id: 'enhance',
   },
   {
-    name: 'Anime',
+    id: 'anime',
   },
   {
-    name: 'Photographic',
+    id: 'photographic',
   },
   {
-    name: 'Digital Art',
+    id: 'digital-art',
   },
   {
-    name: 'Comic book',
+    id: 'comic-book',
   },
   {
-    name: 'Fantasy art',
+    id: 'fantasy-art',
   },
   {
-    name: 'Analog film',
+    id: 'analog-film',
   },
   {
-    name: 'Neon punk',
+    id: 'neon-punk',
   },
   {
-    name: 'Isometric',
+    id: 'isometric',
   },
   {
-    name: 'Low poly',
+    id: 'low-poly',
   },
   {
-    name: 'Origami',
+    id: 'origami',
   },
   {
-    name: 'Line art',
+    id: 'line-art',
   },
   {
-    name: 'Craft poly',
+    id: 'craft poly',
   },
   {
-    name: 'Cinematic',
+    id: 'cinematic',
   },
   {
+    id: '3d-model',
     name: '3D Model',
   },
   {
-    name: 'Pixel art',
+    id: 'pixel-art',
+  },
+  {
+    id: 'tile-texture',
   },
 ];
 
@@ -64,9 +68,12 @@ const selectedImageStyle = {
   border: '3px solid rgb(254, 244, 69)',
 };
 
-export default function ChooseStyle() {
-  const [selectedItem, setSelectedItem] = useState(OPTIONS[0].name);
+type Props = {
+  stylePreset: string;
+  onUpdate: ({ style_preset }: { style_preset: string }) => void;
+};
 
+export default function ChooseStyle({ stylePreset, onUpdate }: Props) {
   const chunks = chunk(OPTIONS, 3);
 
   return (
@@ -81,21 +88,25 @@ export default function ChooseStyle() {
       >
         {chunks.map((chunk, index) => (
           <HStack align="center" key={index} spacing={2}>
-            {chunk.map(({ name }) => (
+            {chunk.map(({ id, name }) => (
               <Box
                 cursor="pointer"
-                key={name}
-                onClick={() => setSelectedItem(name)}
+                key={id}
+                onClick={() => onUpdate({ style_preset: id })}
                 title={name}
               >
                 <Image
                   borderRadius="10px"
                   boxSize="50px"
                   src={Bird}
-                  {...(name === selectedItem ? selectedImageStyle : {})}
+                  {...(id === stylePreset ? selectedImageStyle : {})}
                 />
                 <Text color="rgb(230, 230, 230)" fontSize="8px">
-                  {name}
+                  {name ||
+                    id
+                      .split('-')
+                      .map((part) => capitalize(part))
+                      .join(' ')}
                 </Text>
               </Box>
             ))}
