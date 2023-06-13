@@ -19,10 +19,11 @@ import {
 import { HSeparator } from '@/components/separator/Separator';
 
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
-import { FcGoogle } from 'react-icons/fc';
 import { RiEyeCloseLine } from 'react-icons/ri';
 
-import { login } from '@//api/auth';
+import { GoogleLogin } from '@react-oauth/google';
+
+import { googleLogin, login } from '@/api/auth';
 
 function SignIn() {
   // Chakra color mode
@@ -30,17 +31,6 @@ function SignIn() {
   const textColorSecondary = 'gray.400';
 
   const brandStars = useColorModeValue('brand.500', 'brand.400');
-
-  const googleBg = useColorModeValue('secondaryGray.300', 'whiteAlpha.200');
-  const googleText = useColorModeValue('navy.700', 'white');
-  const googleHover = useColorModeValue(
-    { bg: 'gray.200' },
-    { bg: 'whiteAlpha.300' }
-  );
-  const googleActive = useColorModeValue(
-    { bg: 'secondaryGray.300' },
-    { bg: 'whiteAlpha.200' }
-  );
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -101,7 +91,7 @@ function SignIn() {
         me="auto"
         mb={{ base: '20px', md: 'auto' }}
       >
-        <Button
+        {/*   <Button
           fontSize="sm"
           me="0px"
           mb="26px"
@@ -117,7 +107,20 @@ function SignIn() {
         >
           <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
           Sign in with Google
-        </Button>
+        </Button> */}
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            googleLogin(credentialResponse.credential).then(
+              ({ access_token: accessToken }) => {
+                localStorage.setItem('access-token', accessToken);
+
+                window.location.href = '/';
+              }
+            );
+          }}
+          width="420px"
+          //  onError={() => }
+        />
         <Flex align="center" mb="25px">
           <HSeparator />
           <Text color="gray.400" mx="14px">

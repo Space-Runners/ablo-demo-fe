@@ -16,7 +16,7 @@ export const generateImage = (params: any) => {
     clip_guidance_preset: 'FAST_BLUE',
     height: 512,
     width: 512,
-    sampler: 'K_DPM_2_ANCESTRAL',
+    sampler: 'K_LMS',
     samples: 1,
     steps: 75,
   };

@@ -42,6 +42,15 @@ export const login = (email: string, password: string) =>
       return data;
     });
 
+export const googleLogin = (token: string) =>
+  axios
+    .post('/auth/google/login', {
+      token,
+    })
+    .then(({ data }) => {
+      return data;
+    });
+
 export const getMe = () =>
   axios.get('/profile').then(({ data }) => {
     return data;
