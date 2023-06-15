@@ -4,7 +4,7 @@ import './index.css';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import SignInPage from '@/views/auth/signIn';
-import AdminLayout from '@/layouts/admin';
+import Dashboard from '@/layouts/admin';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
@@ -36,7 +36,7 @@ root.render(
             <BrowserRouter>
               <Switch>
                 <Route path={`/auth`} component={SignInPage} />
-                <Route path={`/app`} component={AdminLayout} />
+                <Route path={`/app`} component={Dashboard} />
                 <Redirect from="/" to="/app" />
               </Switch>
             </BrowserRouter>
