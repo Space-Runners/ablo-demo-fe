@@ -120,7 +120,13 @@ export default function Dashboard(props: any) {
         {...rest}
       />
       {getRoute() ? (
-        <Box backgroundColor="#2b2a2a" h="calc(100% - 67px)" mx="auto" flex={1}>
+        <Box
+          backgroundColor="#2b2a2a"
+          h="calc(100% - 67px)"
+          mx="auto"
+          flex={1}
+          w="100%"
+        >
           <Switch>
             {getRoutes(routes)}
             <Redirect from="/" to="/app/image-generator" />

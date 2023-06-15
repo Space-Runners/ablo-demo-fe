@@ -22,3 +22,8 @@ export interface TextToImageRequest {
   steps: number;
   text: 'A lighthouse on a cliff';
 }
+
+export interface Garment {
+  name: string;
+  image?: any;
+}

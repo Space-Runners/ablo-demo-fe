@@ -1,35 +1,38 @@
 .image-editor {
   background-color: #2b2a2a;
+  --canvas-width: 200px;
+  --canvas-height: 241px;
 }
 
 .image-container {
-  width: 400px;
-  height: 468px;
+  /*   width: 400px;
+  height: 468px; */
   position: relative;
+  top: 20px;
 }
 
 .drawing-area {
   border: 2px dashed #a8a8a8;
   border-radius: 4px;
   position: absolute;
-  top: 160px;
-  left: 100px;
+  top: 120px;
+  left: 75px;
   z-index: 10;
-  width: 200px;
-  height: 241px;
+  /*  width: var(--canvas-width);
+  height: 241px; */
 }
 
 .canvas-container {
-  width: 200px;
-  height: 241px;
+  /*  width: var(--canvas-width);
+  height: var(--canvas-height); */
   position: relative;
   user-select: none;
 }
 
 #canvas {
   position: absolute;
-  width: 200px;
-  height: 241px;
+  /*  width: var(--canvas-width);
+  height: var(--canvas-height); */
   left: 0px;
   top: 0px;
   user-select: none;
