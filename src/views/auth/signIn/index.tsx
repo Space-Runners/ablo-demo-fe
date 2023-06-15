@@ -21,9 +21,9 @@ import { HSeparator } from '@/components/separator/Separator';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
 
-/* import { GoogleLogin } from '@react-oauth/google'; */
+import { GoogleLogin } from '@react-oauth/google';
 
-import { login } from '@/api/auth';
+import { googleLogin, login } from '@/api/auth';
 
 function SignIn() {
   // Chakra color mode
@@ -108,7 +108,7 @@ function SignIn() {
           <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
           Sign in with Google
         </Button> */}
-        {/* <GoogleLogin
+        <GoogleLogin
           onSuccess={(credentialResponse) => {
             googleLogin(credentialResponse.credential).then(
               ({ access_token: accessToken }) => {
@@ -120,7 +120,7 @@ function SignIn() {
           }}
           width="420px"
           //  onError={() => }
-        /> */}
+        />
         <Flex align="center" mb="25px">
           <HSeparator />
           <Text color="gray.400" mx="14px">
