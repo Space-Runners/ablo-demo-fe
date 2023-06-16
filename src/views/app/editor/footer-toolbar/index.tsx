@@ -1,13 +1,16 @@
 import { Box, Button as ChakraButton, Flex, HStack } from '@chakra-ui/react';
 
 import {
-  IconColorPicker,
+  IconAiGenerator,
   IconTextEditor,
   IconImage,
   IconExpand,
   IconShrink,
+  IconColorPicker,
 } from './Icons';
 import { useState } from 'react';
+
+import TextEditor from './text-editor';
 
 type Props = {
   isDrawingAreaVisible;
@@ -43,28 +46,35 @@ export default function FooterToolbar() {
       background="#000000"
       boxShadow="0px -1px 1px #626262"
       bottom={0}
-      height="117px"
-      padding="11px 20px 13px 17px"
-      position="absolute"
+      position="fixed"
       w="100%"
+      zIndex={2}
     >
-      <Flex justify="space-between">
-        <Button opacity={0.7}>Generate your design with AI</Button>
-        <Button onClick={() => setExpanded(!isExpanded)} opacity={0.7}>
-          {isExpanded ? <IconShrink /> : <IconExpand />}
-        </Button>
-      </Flex>
-      <HStack mt="10px" spacing="8px">
-        <Button onClick={() => setColorPickerOpen(!isColorPickerOpen)}>
-          <IconColorPicker />
-        </Button>
-        <Button onClick={() => setTextEditorOpen(!isTextEditorOpen)}>
-          <IconTextEditor />
-        </Button>
-        <Button onClick={() => null}>
-          <IconImage />
-        </Button>
-      </HStack>
+      <Box height="117px" padding="11px 20px 13px 17px">
+        <Flex justify="space-between">
+          <Button opacity={0.7}>Generate your design with AI</Button>
+          <Button onClick={() => setExpanded(!isExpanded)} opacity={0.7}>
+            {isExpanded ? <IconShrink /> : <IconExpand />}
+          </Button>
+        </Flex>
+        <Flex justify="space-between">
+          <HStack mt="10px" spacing="8px">
+            <Button onClick={() => setColorPickerOpen(!isColorPickerOpen)}>
+              <IconAiGenerator />
+            </Button>
+            <Button onClick={() => setTextEditorOpen(!isTextEditorOpen)}>
+              <IconTextEditor />
+            </Button>
+            <Button onClick={() => null}>
+              <IconImage />
+            </Button>
+          </HStack>
+          <Button onClick={() => null}>
+            <IconColorPicker />
+          </Button>
+        </Flex>
+      </Box>
+      <TextEditor />
     </Box>
   );
 }
