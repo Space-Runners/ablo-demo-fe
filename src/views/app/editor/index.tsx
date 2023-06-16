@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, Flex, HStack, Spacer } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Spacer } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
-import GarmentPicker from './components/GarmentPicker';
+import { UndoButton, RedoButton } from './toolbar/UndoRedoButtons';
+import ButtonDelete from './toolbar/ButtonDelete';
+
+import Toolbar from './toolbar/Toolbar';
+import FooterToolbar from './footer-toolbar';
 
 import Hoodie_Back from './Hoodie_Back.png';
 import Hoodie_Front from './Hoodie_Front.png';
@@ -27,27 +31,21 @@ export default function ImageGenerator() {
   const [redoStack, setRedoStack] = useState<string[]>([]);
   const state = useRef<string>('');
 
+  const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
+
   const [garment, setGarment] = useState(GARMENTS[0]);
 
   useEffect(() => {
     canvas.current = initCanvas();
 
-    canvas.current.on('mouse:over', () => {
-      console.log('hello');
+    console.log('Use effect');
+
+    canvas.current.on('object:modified', () => {
+      console.log('Object modified');
+      saveState();
     });
 
-    canvas.current.on(
-      'object:modified',
-      () => {
-        console.log('Object modified');
-        saveState();
-      },
-      'object:added',
-      () => {
-        console.log('Object added');
-        saveState();
-      }
-    );
+    state.current = JSON.stringify(canvas.current);
 
     // destroy fabric on unmount
     return () => {
@@ -60,47 +58,32 @@ export default function ImageGenerator() {
     // Clear redo stack
     setRedoStack([]);
 
+    console.log('Current', state.current);
+
     // initial call won't have a state
     if (state.current) {
       setUndoStack([...undoStack, state.current]);
     }
+
     state.current = JSON.stringify(canvas.current);
   };
 
-  /*  const replay = (playStack, saveStack, buttonsOn, buttonsOff) => {
-    
-    
-    saveStack.push(state);
-    state = playStack.pop();
-    var on = $(buttonsOn);
-    var off = $(buttonsOff);
-    // turn both buttons off for the moment to prevent rapid clicking
-    on.prop('disabled', true);
-    off.prop('disabled', true);
-    canvas.clear();
-    canvas.loadFromJSON(state, function() {
-      canvas.renderAll();
-      // now turn the buttons back on if applicable
-      on.prop('disabled', false);
-      if (playStack.length) {
-        off.prop('disabled', false);
-      }
-    }); */
-
   const handleUndo = () => {
+    setRedoStack([...redoStack, state.current]);
+
     state.current = undoStack.pop();
 
     setUndoStack(undoStack);
-    setRedoStack([...redoStack, state.current]);
 
     reloadCanvasFromState();
   };
 
   const handleRedo = () => {
+    setUndoStack([...undoStack, state.current]);
+
     state.current = redoStack.pop();
 
     setRedoStack(redoStack);
-    setUndoStack([...undoStack, state.current]);
 
     reloadCanvasFromState();
   };
@@ -123,12 +106,14 @@ export default function ImageGenerator() {
       canvas.current.centerObject(img);
       canvas.current.add(img);
       canvas.current.renderAll();
+
+      saveState();
     });
   };
 
   const initCanvas = () =>
     new fabric.Canvas('canvas', {
-      width: 150,
+      width: 120,
       height: 120,
       selection: false,
       renderOnAddRemove: true,
@@ -142,40 +127,53 @@ export default function ImageGenerator() {
 
     // Render the Text on Canvas
     canvas.current.add(text);
+
+    saveState();
   };
 
   return (
     <Flex
       align="center"
-      className="image-editor"
+      bg="#292929"
       flexDirection="column"
-      justify="center"
+      h="100%"
+      position="relative"
       pt="13px"
       w="100%"
     >
-      <GarmentPicker
-        garments={GARMENTS}
-        onSelectedGarment={setGarment}
-        selectedGarment={garment}
+      <Toolbar
+        isDrawingAreaVisible={isDrawingAreaVisible}
+        onSettingsClick={() => null}
+        onToggleDrawingArea={() => setDrawingAreaVisible(!isDrawingAreaVisible)}
       />
-      <div className="image-container">
-        <img id="tshirt-backgroundpicture" src={garment.image} width={300} />
-        <div id="drawingArea" className="drawing-area">
+      <Box position="relative">
+        <img src={garment.image} width={250} />
+        <Box
+          border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
+          id="drawingArea"
+          className="drawing-area"
+        >
           <div className="canvas-container">
             <canvas id="canvas" ref={canvas}></canvas>
           </div>
-        </div>
-      </div>
-      <HStack spacing={2}>
+        </Box>
+      </Box>
+      <HStack mt="20px" spacing="20px">
+        <UndoButton
+          disabled={isEmpty(undoStack)}
+          onClick={() => handleUndo()}
+        />
+        <RedoButton
+          disabled={isEmpty(redoStack)}
+          onClick={() => handleRedo()}
+        ></RedoButton>
+      </HStack>
+      <ButtonDelete bottom="142px" position="absolute" />
+      <FooterToolbar />
+      {/* <HStack spacing={2}>
         <Button onClick={() => updateImage(MOCK_IMAGE)}>Add image</Button>
         <Button onClick={() => handleAddText()}>Add text</Button>
-        <Button disabled={isEmpty(undoStack)} onClick={() => handleUndo()}>
-          Undo
-        </Button>
-        <Button disabled={isEmpty(redoStack)} onClick={() => handleRedo()}>
-          Redo
-        </Button>
-      </HStack>
+      </HStack> */}
     </Flex>
   );
 }

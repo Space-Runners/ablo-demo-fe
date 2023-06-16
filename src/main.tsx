@@ -28,10 +28,10 @@ const queryClient = new QueryClient({
 });
 
 root.render(
-  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
-        <React.StrictMode>
+  <React.StrictMode>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider theme={theme}>
           <ThemeEditorProvider>
             <BrowserRouter>
               <Switch>
@@ -41,8 +41,8 @@ root.render(
               </Switch>
             </BrowserRouter>
           </ThemeEditorProvider>
-        </React.StrictMode>
-      </ChakraProvider>
-    </QueryClientProvider>
-  </GoogleOAuthProvider>
+        </ChakraProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
+  </React.StrictMode>
 );

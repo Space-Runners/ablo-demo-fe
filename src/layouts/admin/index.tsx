@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Portal, Box, useDisclosure } from '@chakra-ui/react';
 
 // Layout components
-import Navbar from '@/components/navbar/NavbarAdmin';
+import Navbar from '@/components/navbar/Navbar';
 // @ts-ignore
 import { SidebarContext } from '@/contexts/SidebarContext';
 
@@ -104,10 +104,11 @@ export default function Dashboard(props: any) {
   };
   document.documentElement.dir = 'ltr';
   const { onOpen } = useDisclosure();
+
+  console.log('Render Dashboard');
   return (
     <Box
-      className="navbar"
-      height="100%"
+      height="100vh"
       display="flex"
       flexDirection="column"
       w={{ base: '100%' }}
@@ -122,7 +123,7 @@ export default function Dashboard(props: any) {
       {getRoute() ? (
         <Box
           backgroundColor="#2b2a2a"
-          h="calc(100% - 67px)"
+          h="calc(100% - 103px)"
           mx="auto"
           flex={1}
           w="100%"
