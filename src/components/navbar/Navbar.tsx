@@ -17,13 +17,12 @@ const IconBack = () => (
 );
 
 export default function Navbar(props) {
-  const { secondary, message } = props;
+  const { action, message, onNext } = props;
 
   return (
     <Box>
       <HStack
         backgroundColor="#ffffff"
-        display={secondary ? 'block' : 'flex'}
         h="62px"
         spacing={0}
         w={{
@@ -61,22 +60,22 @@ export default function Navbar(props) {
         height="41px"
         background="#383838"
         border="1px solid #484848"
-        justify="space-between"
+        justify={onNext ? 'space-between' : 'center'}
         padding="11px 12px"
       >
-        <Text color="white">Select your clothing</Text>
-        <Button color="white" variant="ghost">
-          NEXT
-        </Button>
+        <Text
+          color="white"
+          fontSize={onNext ? 'sm' : 'md'}
+          fontWeight={onNext ? 400 : 600}
+        >
+          {action}
+        </Text>
+        {onNext ? (
+          <Button color="white" variant="ghost">
+            NEXT
+          </Button>
+        ) : null}
       </Flex>
     </Box>
   );
 }
-
-Navbar.propTypes = {
-  brandText: PropTypes.string,
-  variant: PropTypes.string,
-  secondary: PropTypes.bool,
-  fixed: PropTypes.bool,
-  onOpen: PropTypes.func,
-};

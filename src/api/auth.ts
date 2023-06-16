@@ -51,6 +51,22 @@ export const googleLogin = (token: string) =>
       return data;
     });
 
+export const signUp = (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+) =>
+  axios.post('/auth/register', {
+    email,
+    password,
+    firstName,
+    lastName,
+  });
+
+export const verifyEmail = (token: string) =>
+  axios.get(`/users/verify-email/${token}`);
+
 export const getMe = () =>
   axios.get('/profile').then(({ data }) => {
     return data;
