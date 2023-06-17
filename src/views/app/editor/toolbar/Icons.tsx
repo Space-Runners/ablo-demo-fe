@@ -53,29 +53,27 @@ export const IconTextEditor = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g opacity="0.3">
-      <path
-        d="M4.34412 7.70406V4.56006H21.1121V7.70406"
-        stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M9.58411 21.3281H15.8721"
-        stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-      <path
-        d="M12.7281 4.56006V21.3281"
-        stroke="white"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </g>
+    <path
+      d="M4.34473 7.70406V4.56006H21.1127V7.70406"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9.58398 21.3281H15.872"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M12.7285 4.56006V21.3281"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
   </Icon>
 );
 

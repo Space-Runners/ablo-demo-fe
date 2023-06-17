@@ -5,11 +5,11 @@ import { Box, Button, Flex, HStack, Spacer } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
-import { UndoButton, RedoButton } from './toolbar/UndoRedoButtons';
-import ButtonDelete from './toolbar/ButtonDelete';
+import { UndoButton, RedoButton } from './controls/UndoRedoButtons';
+import ButtonDelete from './controls/ButtonDelete';
 
-import Toolbar from './toolbar/Toolbar';
-import FooterToolbar from './footer-toolbar';
+import Toolbar from './controls/Toolbar';
+import FooterToolbar from './toolbar';
 
 import Hoodie_Back from './Hoodie_Back.png';
 import Hoodie_Front from './Hoodie_Front.png';
@@ -35,10 +35,10 @@ export default function ImageGenerator() {
 
   const [garment, setGarment] = useState(GARMENTS[0]);
 
+  const [activeTextObject, setActiveTextObject] = useState(null);
+
   useEffect(() => {
     canvas.current = initCanvas();
-
-    console.log('Use effect');
 
     canvas.current.on('object:modified', () => {
       console.log('Object modified');
@@ -120,13 +120,41 @@ export default function ImageGenerator() {
     });
 
   const handleAddText = () => {
-    const text = new fabric.Text('This is cool', {
+    const textObject = {
+      fontFamily: 'Poppins',
+      text: 'this is\na multiline\ntext\naligned right!',
       fill: 'white',
-      fontSize: 22,
-    });
+      fontSize: 12,
+      textAlign: 'left',
+    };
+
+    const text = new fabric.Text(textObject.text, textObject);
 
     // Render the Text on Canvas
     canvas.current.add(text);
+    canvas.current.setActiveObject(text);
+
+    setActiveTextObject(textObject);
+
+    saveState();
+  };
+
+  const handleRemoveText = () => {
+    canvas.current.remove(canvas.current.getActiveObject());
+
+    setActiveTextObject(null);
+
+    saveState();
+  };
+
+  const handleUpdateTextObject = (updates) => {
+    setActiveTextObject({ ...activeTextObject, ...updates });
+
+    Object.keys(updates).forEach((key) => {
+      canvas.current.getActiveObject().set(key, updates[key]);
+
+      canvas.current.renderAll();
+    });
 
     saveState();
   };
@@ -169,11 +197,12 @@ export default function ImageGenerator() {
         ></RedoButton>
       </HStack>
       <ButtonDelete bottom="142px" position="absolute" />
-      <FooterToolbar />
-      {/* <HStack spacing={2}>
-        <Button onClick={() => updateImage(MOCK_IMAGE)}>Add image</Button>
-        <Button onClick={() => handleAddText()}>Add text</Button>
-      </HStack> */}
+      <FooterToolbar
+        onAddText={handleAddText}
+        onRemoveText={handleRemoveText}
+        onUpdateTextObject={handleUpdateTextObject}
+        activeTextObject={activeTextObject}
+      />
     </Flex>
   );
 }
