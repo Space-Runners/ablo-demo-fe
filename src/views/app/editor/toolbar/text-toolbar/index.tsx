@@ -7,7 +7,6 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -19,6 +18,7 @@ import {
   IconTextRightAlign,
 } from './Icons';
 
+import ColorPicker from './ColorPicker';
 import FontPicker from './FontPicker';
 
 const TEXT_ALIGN_OPTIONS = [
@@ -55,7 +55,7 @@ const Button = (props) => {
 export default function TextToolbar({ onUpdate, textObject }) {
   const [selectedTool, setSelectedTool] = useState(null);
 
-  const { color, fontFamily, fontSize, textAlign } = textObject || {};
+  const { fill, fontFamily, fontSize, textAlign } = textObject || {};
 
   const textAlignOption =
     TEXT_ALIGN_OPTIONS.find((option) => option.name === textAlign) ||
@@ -70,6 +70,11 @@ export default function TextToolbar({ onUpdate, textObject }) {
 
     onUpdate({ textAlign: TEXT_ALIGN_OPTIONS[nextIndex].name });
   };
+
+  const isColorActive = selectedTool === 'color';
+  const isFontFamilyActive = selectedTool === 'fontFamily';
+
+  console.log('Text object', textObject);
 
   return (
     <Flex justify="space-between" padding="12px 16px 12px 12px">
@@ -94,7 +99,13 @@ export default function TextToolbar({ onUpdate, textObject }) {
           <SliderThumb boxSize="20px" />
         </Slider>
       ) : null}
-      {selectedTool === 'fontFamily' ? (
+      {isColorActive ? (
+        <ColorPicker
+          selectedColor={fill}
+          onUpdate={(color) => onUpdate({ fill: color })}
+        />
+      ) : null}
+      {isFontFamilyActive ? (
         <FontPicker
           fontFamily={fontFamily}
           onUpdate={(fontFamily) => onUpdate({ fontFamily })}
@@ -103,14 +114,16 @@ export default function TextToolbar({ onUpdate, textObject }) {
       <HStack spacing="16px">
         <Button
           bg="transparent"
-          border={selectedTool === 'color' ? '1px solid #ffffff' : ''}
-          onClick={() => setSelectedTool('color')}
+          border={isColorActive ? '1px solid #ffffff' : ''}
+          onClick={() => setSelectedTool(isColorActive ? null : 'color')}
         >
           <IconColorPalette />
         </Button>
         <Button
-          isSelected={selectedTool === 'fontFamily'}
-          onClick={() => setSelectedTool('fontFamily')}
+          isSelected={isFontFamilyActive}
+          onClick={() =>
+            setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
+          }
         >
           <IconFontFamily />
         </Button>

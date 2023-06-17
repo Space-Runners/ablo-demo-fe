@@ -25,7 +25,7 @@ const Button = (props) => {
   );
 };
 
-export default function TextToolbar({ fontFamily, onUpdate }) {
+export default function FontPicker({ fontFamily, onUpdate }) {
   return (
     <HStack overflow="auto" spacing="10px" w="220px">
       {Fonts.map((font) => (

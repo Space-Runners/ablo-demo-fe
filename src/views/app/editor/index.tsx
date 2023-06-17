@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Box, Button, Flex, HStack, Spacer } from '@chakra-ui/react';
+import { Box, Flex, VStack } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
@@ -33,7 +33,8 @@ export default function ImageGenerator() {
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
 
-  const [garment, setGarment] = useState(GARMENTS[0]);
+  const [selectedOrientation, setSelectedOrientation] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
@@ -121,9 +122,9 @@ export default function ImageGenerator() {
 
   const handleAddText = () => {
     const textObject = {
+      fill: '#FFFFFF',
       fontFamily: 'Poppins',
       text: 'this is\na multiline\ntext\naligned right!',
-      fill: 'white',
       fontSize: 12,
       textAlign: 'left',
     };
@@ -175,7 +176,7 @@ export default function ImageGenerator() {
         onToggleDrawingArea={() => setDrawingAreaVisible(!isDrawingAreaVisible)}
       />
       <Box position="relative">
-        <img src={garment.image} width={250} />
+        <img src={GARMENTS[0].image} width={250} />
         <Box
           border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
           id="drawingArea"
@@ -186,7 +187,7 @@ export default function ImageGenerator() {
           </div>
         </Box>
       </Box>
-      <HStack mt="20px" spacing="20px">
+      <VStack position="absolute" right="12px" top="25%" spacing="20px">
         <UndoButton
           disabled={isEmpty(undoStack)}
           onClick={() => handleUndo()}
@@ -195,13 +196,15 @@ export default function ImageGenerator() {
           disabled={isEmpty(redoStack)}
           onClick={() => handleRedo()}
         ></RedoButton>
-      </HStack>
-      <ButtonDelete bottom="142px" position="absolute" />
+      </VStack>
+      <ButtonDelete mt="24px" w="122px" />
       <FooterToolbar
         onAddText={handleAddText}
         onRemoveText={handleRemoveText}
         onUpdateTextObject={handleUpdateTextObject}
         activeTextObject={activeTextObject}
+        selectedColor={selectedColor}
+        onSelectedColor={(color) => setSelectedColor(color)}
       />
     </Flex>
   );

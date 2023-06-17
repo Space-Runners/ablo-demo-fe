@@ -4,6 +4,7 @@ import {
   Flex,
   HStack,
   Input,
+  Text,
 } from '@chakra-ui/react';
 
 import IconTrash from '@/components/icons/IconTrash';
@@ -16,11 +17,12 @@ import {
   IconShrink,
   IconColorPicker,
 } from './Icons';
-import { useState } from 'react';
+
+import { useState, Fragment as F } from 'react';
+import { chunk } from 'lodash';
 
 import TextToolbar from './text-toolbar';
-
-import fonts from './text-toolbar/fonts';
+import ProductColors from './ProductColors';
 
 const TOOLS = [
   {
@@ -47,6 +49,7 @@ const Button = (props) => (
   <ChakraButton
     color="#FFFFFF"
     fontSize="sm"
+    minWidth="auto"
     padding="0 8px"
     variant="ghost"
     _hover={{ bg: '' }}
@@ -61,9 +64,80 @@ const Button = (props) => (
   />
 );
 
+const TextControls = ({ onAddText, onRemoveText }) => (
+  <HStack mb="17px" mt="30px" spacing="14px">
+    <Button
+      border="1px solid #FFFFFF"
+      borderRadius="112px"
+      fontWeight={600}
+      fontSize="sm"
+      color="#FFFFFF"
+      height="40px"
+      leftIcon={<IconTrash />}
+      onClick={onRemoveText}
+      padding="8px 32px"
+    >
+      Remove Text
+    </Button>
+    <Button
+      background="#ffffff"
+      color="#212121"
+      onClick={onAddText}
+      padding="8px 32px"
+    >
+      Add New Text
+    </Button>
+  </HStack>
+);
+
+const ColorPicker = ({ selectedColor, onSelectedColor }) => {
+  const chunks = chunk(ProductColors, 5);
+
+  return (
+    <Box padding="10px 24px 45px 27px">
+      <Text color="#ffffff" fontSize="md" textAlign="center">
+        Select the product color
+      </Text>
+      {chunks.map((chunk) => (
+        <Flex align="center" mt="24px">
+          {chunk.map(({ name, value }, index) => {
+            const isSelected = name === selectedColor;
+
+            const size = `${isSelected ? 50 : 35}px`;
+
+            const marginLeft = isSelected ? '22px' : '29px';
+            const marginRight = isSelected ? '-7px' : 0;
+
+            return (
+              <Button
+                bg={value}
+                height={size}
+                padding="0"
+                width={size}
+                borderRadius="50%"
+                marginLeft={
+                  index === 0 ? (isSelected ? '-7px' : 0) : marginLeft
+                }
+                marginRight={marginRight}
+                onClick={() => onSelectedColor(name)}
+              />
+            );
+          })}
+        </Flex>
+      ))}
+    </Box>
+  );
+};
+
 export default function FooterToolbar(props) {
-  const { onAddText, onRemoveText, onUpdateTextObject, activeTextObject } =
-    props;
+  const {
+    onAddText,
+    onRemoveText,
+    onUpdateTextObject,
+    activeTextObject,
+    selectedColor,
+    onSelectedColor,
+  } = props;
 
   const { fontSize, text = '' } = activeTextObject || {};
 
@@ -73,10 +147,11 @@ export default function FooterToolbar(props) {
   console.log('Text object', activeTextObject);
 
   const isTextEditor = selectedTool === 'text';
+  const isProductColorPicker = selectedTool === 'productColor';
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={2}>
-      {isTextEditor || true ? (
+      {isTextEditor ? (
         <TextToolbar
           onUpdate={onUpdateTextObject}
           textObject={activeTextObject}
@@ -117,34 +192,22 @@ export default function FooterToolbar(props) {
               </Button>
             ))}
           </HStack>
-          <Button onClick={() => null}>
-            <IconColorPicker />
+          <Button onClick={() => setSelectedTool('productColor')}>
+            <IconColorPicker isSelected={isProductColorPicker} />
           </Button>
         </Flex>
         {isExpanded ? (
-          <HStack mb="17px" mt="30px" spacing="14px">
-            <Button
-              border="1px solid #FFFFFF"
-              borderRadius="112px"
-              fontWeight={600}
-              fontSize="sm"
-              color="#FFFFFF"
-              height="40px"
-              leftIcon={<IconTrash />}
-              onClick={onRemoveText}
-              padding="8px 32px"
-            >
-              Remove Text
-            </Button>
-            <Button
-              background="#ffffff"
-              color="#212121"
-              onClick={onAddText}
-              padding="8px 32px"
-            >
-              Add New Text
-            </Button>
-          </HStack>
+          <F>
+            {isTextEditor ? (
+              <TextControls onAddText={onAddText} onRemoveText={onRemoveText} />
+            ) : null}
+            {isProductColorPicker ? (
+              <ColorPicker
+                selectedColor={selectedColor}
+                onSelectedColor={onSelectedColor}
+              />
+            ) : null}
+          </F>
         ) : null}
       </Box>
     </Box>
