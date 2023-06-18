@@ -28,7 +28,7 @@ export default function ImageGenerator() {
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
 
-  const [selectedProduct] = useState(PRODUCTS[1]);
+  const [selectedProduct] = useState(PRODUCTS[0]);
   const [selectedVariant, setSelectedVariant] = useState(
     PRODUCTS[0].variants[0].name
   );
@@ -172,6 +172,14 @@ export default function ImageGenerator() {
     reader.readAsDataURL(fileObj);
   };
 
+  const handleImageGenerated = (imageUrl) => {
+    fabric.Image.fromURL(imageUrl, (img) => {
+      img.scaleToWidth(200);
+
+      canvas.current.add(img).setActiveObject(img).renderAll();
+    });
+  };
+
   const handleSelectedVariant = (name) => {
     console.log('Name', name);
     const { variants } = selectedProduct;
@@ -244,6 +252,7 @@ export default function ImageGenerator() {
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
           onImageUploaded={handleImageUpload}
+          onImageGenerated={handleImageGenerated}
         />
       </Flex>
     </Box>

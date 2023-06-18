@@ -23,11 +23,12 @@ import { chunk } from 'lodash';
 
 import TextToolbar from './text-toolbar';
 import ProductColors from './ProductColors';
+import ImageGenerator from './components/ImageGenerator';
 import ImagePicker from './components/ImagePicker';
 
 const TOOLS = [
   {
-    name: 'ai',
+    name: 'imageGenerator',
     icon: <IconAiGenerator />,
   },
   {
@@ -140,12 +141,13 @@ export default function FooterToolbar(props) {
     selectedColor,
     onSelectedColor,
     onImageUploaded,
+    onImageGenerated,
   } = props;
 
   const { text = '' } = activeTextObject || {};
 
   const [isExpanded, setExpanded] = useState(true);
-  const [selectedTool, setSelectedTool] = useState('');
+  const [selectedTool, setSelectedTool] = useState('imageGenerator');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -153,6 +155,7 @@ export default function FooterToolbar(props) {
     setExpanded(true);
   };
 
+  const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
   const isProductVariantPicker = selectedTool === 'productVariant';
   const isImagePicker = selectedTool === 'image';
@@ -218,6 +221,9 @@ export default function FooterToolbar(props) {
             ) : null}
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
+            ) : null}
+            {isImageGenerator ? (
+              <ImageGenerator onImageGenerated={onImageGenerated} />
             ) : null}
           </F>
         ) : null}
