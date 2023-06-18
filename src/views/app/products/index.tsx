@@ -1,13 +1,13 @@
-import { useState, Fragment as F } from 'react';
+import { useState } from 'react';
+
+import { useHistory } from 'react-router-dom';
 
 import {
   Box,
   Button as ChakraButton,
   Flex,
-  Heading,
   HStack,
   Image,
-  VStack,
   Text,
 } from '@chakra-ui/react';
 
@@ -15,7 +15,6 @@ import { chunk } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
 
-import Products from '@/data/products';
 import PRODUCTS from '@/data/products';
 
 import { IconDown, IconUp } from './Icons';
@@ -177,7 +176,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
 };
 
 const ProductsList = ({ onSelectedProduct }: Props) => {
-  const chunks = chunk(Products, 2);
+  const chunks = chunk(PRODUCTS, 2);
 
   return (
     <Box bg="#ffffff" padding="41px 16px 45px 16px" w="100%">
@@ -225,15 +224,17 @@ const ProductsList = ({ onSelectedProduct }: Props) => {
 };
 
 export default function ProductsPage() {
+  const history = useHistory();
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(
-    Products[0]
+    PRODUCTS[0]
   );
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
         action="Select your clothing"
-        onNext={selectedProduct ? () => null : null}
+        onNext={selectedProduct ? () => history.push('/app/editor') : null}
         title="Product Selection"
       />
       <ProductDetails product={selectedProduct || PRODUCTS[0]} />

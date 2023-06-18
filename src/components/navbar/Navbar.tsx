@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Icon, HStack, Text } from '@chakra-ui/react';
-import PropTypes from 'prop-types';
+
+import { useHistory } from 'react-router-dom';
 
 const IconBack = () => (
   <Icon
@@ -24,6 +25,8 @@ type Props = {
 };
 
 export default function Navbar(props: Props) {
+  const history = useHistory();
+
   const { action, message, onNext, title } = props;
 
   return (
@@ -36,7 +39,12 @@ export default function Navbar(props: Props) {
           base: '100vw',
         }}
       >
-        <Button color="#000000" padding="8px" variant="ghost">
+        <Button
+          color="#000000"
+          onClick={() => history.goBack()}
+          padding="8px"
+          variant="ghost"
+        >
           <IconBack />
           <Text marginLeft="6px">Go Back</Text>
         </Button>
@@ -74,7 +82,7 @@ export default function Navbar(props: Props) {
           {action}
         </Text>
         {onNext ? (
-          <Button color="white" variant="ghost">
+          <Button color="white" onClick={onNext} padding={0} variant="ghost">
             NEXT
           </Button>
         ) : null}

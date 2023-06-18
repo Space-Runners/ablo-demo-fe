@@ -2,17 +2,16 @@ import { Button, HStack } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
 
-import IconToggleGarment from './icons/IconToggleGarment';
+import IconToggleOrientation from './icons/IconToggleGarment';
 import {
   IconDrawingArea,
   IconDrawingAreaDisabled,
 } from './icons/IconDrawingArea';
 import IconSettings from './icons/IconSettings';
 
-const { gray } = Colors;
-
 type Props = {
   isDrawingAreaVisible;
+  onToggleOrientation: () => void;
   onToggleDrawingArea: () => void;
   onSettingsClick: () => void;
 };
@@ -42,6 +41,7 @@ const ToolbarButton = ({ icon, onClick }) => (
 export default function Toolbar({
   isDrawingAreaVisible,
   onToggleDrawingArea,
+  onToggleOrientation,
   onSettingsClick,
 }: Props) {
   return (
@@ -53,10 +53,8 @@ export default function Toolbar({
     >
       <HStack spacing="11px">
         <ToolbarButton
-          icon={<IconToggleGarment />}
-          onClick={() => {
-            console.log('To do');
-          }}
+          icon={<IconToggleOrientation />}
+          onClick={onToggleOrientation}
         />
         <ToolbarButton
           icon={

@@ -56,23 +56,23 @@ export const IconTextEditor = () => (
     <path
       d="M4.34473 7.70406V4.56006H21.1127V7.70406"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M9.58398 21.3281H15.872"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M12.7285 4.56006V21.3281"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </Icon>
 );
@@ -88,23 +88,23 @@ export const IconImage = () => (
     <path
       d="M3.54412 20.3762C2.38654 20.3762 1.44812 19.4378 1.44812 18.2802V3.60821C1.44812 2.45063 2.38654 1.51221 3.54412 1.51221H18.2161C19.3737 1.51221 20.3121 2.45063 20.3121 3.60821V18.2802C20.3121 19.4378 19.3737 20.3762 18.2161 20.3762H3.54412Z"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M8.32371 6.16453C8.93761 6.77843 8.93761 7.77376 8.32371 8.38767C7.7098 9.00158 6.71447 9.00158 6.10056 8.38767C5.48666 7.77377 5.48666 6.77844 6.10056 6.16453C6.71447 5.55063 7.7098 5.55063 8.32371 6.16453"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M20.3121 14.0881L15.0721 8.84814L3.54407 20.3761"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </Icon>
 );
@@ -124,8 +124,8 @@ export const IconColorPicker = ({ isSelected }) => (
       fill="white"
     />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M15.9516 2.38281C18.5095 4.94075 18.5095 9.08799 15.9516 11.6459C13.3936 14.2039 9.2464 14.2039 6.68847 11.6459C4.13054 9.08799 4.13054 4.94075 6.68847 2.38281C9.2464 -0.175129 13.3936 -0.175129 15.9516 2.38281"
       fill="white"
     />

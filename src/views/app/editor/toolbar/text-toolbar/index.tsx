@@ -74,8 +74,6 @@ export default function TextToolbar({ onUpdate, textObject }) {
   const isColorActive = selectedTool === 'color';
   const isFontFamilyActive = selectedTool === 'fontFamily';
 
-  console.log('Text object', textObject);
-
   return (
     <Flex justify="space-between" padding="12px 16px 12px 12px">
       {!selectedTool ? (

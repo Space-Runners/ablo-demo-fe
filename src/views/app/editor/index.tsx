@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useHistory } from 'react-router-dom';
+
 import { Box, Flex, VStack } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
+import PRODUCTS from '@/data/products';
 
 import { UndoButton, RedoButton } from './controls/UndoRedoButtons';
 import ButtonDelete from './controls/ButtonDelete';
@@ -13,19 +16,7 @@ import ButtonDelete from './controls/ButtonDelete';
 import Toolbar from './controls/Toolbar';
 import FooterToolbar from './toolbar';
 
-import Hoodie_Back from './Hoodie_Back.png';
-import Hoodie_Front from './Hoodie_Front.png';
-
 import './ImageEditor.css';
-
-const GARMENTS = [
-  { name: 'Front', image: Hoodie_Front },
-  { name: 'Back', image: Hoodie_Back },
-  { name: 'Left' },
-  { name: 'Right' },
-];
-
-const MOCK_IMAGE = 'https://d3bezdph00y8ns.cloudfront.net/1/1686736472517.png';
 
 export default function ImageGenerator() {
   const canvas = useRef(null);
@@ -33,10 +24,16 @@ export default function ImageGenerator() {
   const [redoStack, setRedoStack] = useState<string[]>([]);
   const state = useRef<string>('');
 
+  const history = useHistory();
+
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
 
-  const [selectedOrientation, setSelectedOrientation] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedProduct] = useState(PRODUCTS[1]);
+  const [selectedVariant, setSelectedVariant] = useState(
+    PRODUCTS[0].variants[0].name
+  );
+
+  const [orientation, setOrientation] = useState('FRONT');
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
@@ -52,8 +49,10 @@ export default function ImageGenerator() {
 
     // destroy fabric on unmount
     return () => {
-      canvas.current.dispose();
-      canvas.current = null;
+      if (canvas.current) {
+        canvas.current.dispose();
+        canvas.current = null;
+      }
     };
   }, []);
 
@@ -95,22 +94,6 @@ export default function ImageGenerator() {
     canvas.current.clear();
     canvas.current.loadFromJSON(state.current, function () {
       canvas.current.renderAll();
-    });
-  };
-
-  const updateImage = (imageURL) => {
-    // Create a new image that can be used in Fabric with the URL
-    fabric.Image.fromURL(imageURL, function (img) {
-      console.log(canvas.current);
-
-      img.scaleToHeight(241);
-      img.scaleToWidth(200);
-
-      canvas.current.centerObject(img);
-      canvas.current.add(img);
-      canvas.current.renderAll();
-
-      saveState();
     });
   };
 
@@ -189,9 +172,28 @@ export default function ImageGenerator() {
     reader.readAsDataURL(fileObj);
   };
 
+  const handleSelectedVariant = (name) => {
+    console.log('Name', name);
+    const { variants } = selectedProduct;
+
+    const variant = variants.find((variant) => variant.name === name).name;
+
+    setSelectedVariant(variant);
+  };
+
+  const { urlPrefix } = selectedProduct;
+
+  console.log('Orientation', orientation);
+
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${orientation}.png`;
+
   return (
     <Box h="100%" w="100%">
-      <Navbar />
+      <Navbar
+        action="Create your design"
+        onNext={() => null}
+        title="Design generation"
+      />
       <Flex
         align="center"
         bg="#292929"
@@ -203,13 +205,16 @@ export default function ImageGenerator() {
       >
         <Toolbar
           isDrawingAreaVisible={isDrawingAreaVisible}
-          onSettingsClick={() => null}
+          onSettingsClick={() => history.push('/app/products')}
           onToggleDrawingArea={() =>
             setDrawingAreaVisible(!isDrawingAreaVisible)
           }
+          onToggleOrientation={() =>
+            setOrientation(orientation === 'FRONT' ? 'BACK' : 'FRONT')
+          }
         />
         <Box position="relative">
-          <img src={GARMENTS[0].image} width={250} />
+          <img src={variantImageUrl} width={250} />
           <Box
             border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
             id="drawingArea"
@@ -236,8 +241,8 @@ export default function ImageGenerator() {
           onRemoveText={handleRemoveText}
           onUpdateTextObject={handleUpdateTextObject}
           activeTextObject={activeTextObject}
-          selectedColor={selectedColor}
-          onSelectedColor={(color) => setSelectedColor(color)}
+          selectedColor={selectedVariant}
+          onSelectedColor={handleSelectedVariant}
           onImageUploaded={handleImageUpload}
         />
       </Flex>

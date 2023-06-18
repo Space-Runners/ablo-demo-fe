@@ -99,8 +99,8 @@ const ColorPicker = ({ selectedColor, onSelectedColor }) => {
       <Text color="#ffffff" fontSize="md" textAlign="center">
         Select the product color
       </Text>
-      {chunks.map((chunk) => (
-        <Flex align="center" mt="24px">
+      {chunks.map((chunk, index) => (
+        <Flex align="center" key={index} mt="24px">
           {chunk.map(({ name, value }, index) => {
             const isSelected = name === selectedColor;
 
@@ -113,6 +113,7 @@ const ColorPicker = ({ selectedColor, onSelectedColor }) => {
               <Button
                 bg={value}
                 height={size}
+                key={name}
                 padding="0"
                 width={size}
                 borderRadius="50%"
@@ -141,18 +142,20 @@ export default function FooterToolbar(props) {
     onImageUploaded,
   } = props;
 
-  const { fontSize, text = '' } = activeTextObject || {};
+  const { text = '' } = activeTextObject || {};
 
   const [isExpanded, setExpanded] = useState(true);
   const [selectedTool, setSelectedTool] = useState('');
 
-  console.log('Text object', activeTextObject);
+  const handleToolChange = (name) => {
+    setSelectedTool(name);
+
+    setExpanded(true);
+  };
 
   const isTextEditor = selectedTool === 'text';
-  const isProductColorPicker = selectedTool === 'productColor';
+  const isProductVariantPicker = selectedTool === 'productVariant';
   const isImagePicker = selectedTool === 'image';
-
-  console.log('Is image picker', isImagePicker);
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={2}>
@@ -190,15 +193,16 @@ export default function FooterToolbar(props) {
           <HStack spacing="8px">
             {TOOLS.map(({ name, icon }) => (
               <Button
-                onClick={() => setSelectedTool(name)}
+                key={name}
+                onClick={() => handleToolChange(name)}
                 opacity={name === selectedTool ? 1 : 0.3}
               >
                 {icon}
               </Button>
             ))}
           </HStack>
-          <Button onClick={() => setSelectedTool('productColor')}>
-            <IconColorPicker isSelected={isProductColorPicker} />
+          <Button onClick={() => handleToolChange('productVariant')}>
+            <IconColorPicker isSelected={isProductVariantPicker} />
           </Button>
         </Flex>
         {isExpanded ? (
@@ -206,7 +210,7 @@ export default function FooterToolbar(props) {
             {isTextEditor ? (
               <TextControls onAddText={onAddText} onRemoveText={onRemoveText} />
             ) : null}
-            {isProductColorPicker ? (
+            {isProductVariantPicker ? (
               <ColorPicker
                 selectedColor={selectedColor}
                 onSelectedColor={onSelectedColor}
