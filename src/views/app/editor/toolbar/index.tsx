@@ -23,6 +23,7 @@ import { chunk } from 'lodash';
 
 import TextToolbar from './text-toolbar';
 import ProductColors from './ProductColors';
+import ImagePicker from './components/ImagePicker';
 
 const TOOLS = [
   {
@@ -137,6 +138,7 @@ export default function FooterToolbar(props) {
     activeTextObject,
     selectedColor,
     onSelectedColor,
+    onImageUploaded,
   } = props;
 
   const { fontSize, text = '' } = activeTextObject || {};
@@ -148,6 +150,9 @@ export default function FooterToolbar(props) {
 
   const isTextEditor = selectedTool === 'text';
   const isProductColorPicker = selectedTool === 'productColor';
+  const isImagePicker = selectedTool === 'image';
+
+  console.log('Is image picker', isImagePicker);
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={2}>
@@ -206,6 +211,9 @@ export default function FooterToolbar(props) {
                 selectedColor={selectedColor}
                 onSelectedColor={onSelectedColor}
               />
+            ) : null}
+            {isImagePicker ? (
+              <ImagePicker onImageUploaded={onImageUploaded} />
             ) : null}
           </F>
         ) : null}

@@ -5,6 +5,8 @@ import { Box, Flex, VStack } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
+import Navbar from '@/components/navbar/Navbar';
+
 import { UndoButton, RedoButton } from './controls/UndoRedoButtons';
 import ButtonDelete from './controls/ButtonDelete';
 
@@ -148,6 +150,12 @@ export default function ImageGenerator() {
     saveState();
   };
 
+  const handleRemoveActiveObject = () => {
+    canvas.current.remove(canvas.current.getActiveObject());
+
+    saveState();
+  };
+
   const handleUpdateTextObject = (updates) => {
     setActiveTextObject({ ...activeTextObject, ...updates });
 
@@ -160,52 +168,79 @@ export default function ImageGenerator() {
     saveState();
   };
 
+  const handleImageUpload = (fileObj) => {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const image = new Image();
+
+      image.src = e.target.result as string;
+
+      image.onload = function () {
+        const img = new fabric.Image(image);
+        img.set({
+          left: 100,
+          top: 60,
+        });
+        img.scaleToWidth(200);
+        canvas.current.add(img).setActiveObject(img).renderAll();
+      };
+    };
+    reader.readAsDataURL(fileObj);
+  };
+
   return (
-    <Flex
-      align="center"
-      bg="#292929"
-      flexDirection="column"
-      h="100%"
-      position="relative"
-      pt="13px"
-      w="100%"
-    >
-      <Toolbar
-        isDrawingAreaVisible={isDrawingAreaVisible}
-        onSettingsClick={() => null}
-        onToggleDrawingArea={() => setDrawingAreaVisible(!isDrawingAreaVisible)}
-      />
-      <Box position="relative">
-        <img src={GARMENTS[0].image} width={250} />
-        <Box
-          border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
-          id="drawingArea"
-          className="drawing-area"
-        >
-          <div className="canvas-container">
-            <canvas id="canvas" ref={canvas}></canvas>
-          </div>
-        </Box>
-      </Box>
-      <VStack position="absolute" right="12px" top="25%" spacing="20px">
-        <UndoButton
-          disabled={isEmpty(undoStack)}
-          onClick={() => handleUndo()}
+    <Box h="100%" w="100%">
+      <Navbar />
+      <Flex
+        align="center"
+        bg="#292929"
+        flexDirection="column"
+        h="100%"
+        position="relative"
+        pt="13px"
+        w="100%"
+      >
+        <Toolbar
+          isDrawingAreaVisible={isDrawingAreaVisible}
+          onSettingsClick={() => null}
+          onToggleDrawingArea={() =>
+            setDrawingAreaVisible(!isDrawingAreaVisible)
+          }
         />
-        <RedoButton
-          disabled={isEmpty(redoStack)}
-          onClick={() => handleRedo()}
-        ></RedoButton>
-      </VStack>
-      <ButtonDelete mt="24px" w="122px" />
-      <FooterToolbar
-        onAddText={handleAddText}
-        onRemoveText={handleRemoveText}
-        onUpdateTextObject={handleUpdateTextObject}
-        activeTextObject={activeTextObject}
-        selectedColor={selectedColor}
-        onSelectedColor={(color) => setSelectedColor(color)}
-      />
-    </Flex>
+        <Box position="relative">
+          <img src={GARMENTS[0].image} width={250} />
+          <Box
+            border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
+            id="drawingArea"
+            className="drawing-area"
+          >
+            <div className="canvas-container">
+              <canvas id="canvas" ref={canvas}></canvas>
+            </div>
+          </Box>
+        </Box>
+        <VStack position="absolute" right="12px" top="25%" spacing="20px">
+          <UndoButton
+            disabled={isEmpty(undoStack)}
+            onClick={() => handleUndo()}
+          />
+          <RedoButton
+            disabled={isEmpty(redoStack)}
+            onClick={() => handleRedo()}
+          ></RedoButton>
+        </VStack>
+        <ButtonDelete mt="24px" onClick={handleRemoveActiveObject} w="122px" />
+        <FooterToolbar
+          onAddText={handleAddText}
+          onRemoveText={handleRemoveText}
+          onUpdateTextObject={handleUpdateTextObject}
+          activeTextObject={activeTextObject}
+          selectedColor={selectedColor}
+          onSelectedColor={(color) => setSelectedColor(color)}
+          onImageUploaded={handleImageUpload}
+        />
+      </Flex>
+    </Box>
   );
 }

@@ -3,6 +3,7 @@ import { MdVideoLibrary } from 'react-icons/md';
 
 import ImageGenerator from '@/views/app/image-generator';
 import Editor from '@/views/app/editor';
+import ProductsPage from '@/views/app/products';
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     ),
     path: '/editor',
     component: Editor,
+  },
+  {
+    name: 'Editor',
+    layout: '/app',
+    path: '/products',
+    component: ProductsPage,
   },
 ];
 

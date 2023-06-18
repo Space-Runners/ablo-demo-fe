@@ -16,8 +16,15 @@ const IconBack = () => (
   </Icon>
 );
 
-export default function Navbar(props) {
-  const { action, message, onNext } = props;
+type Props = {
+  action: string;
+  message?: string;
+  onNext: () => void;
+  title: string;
+};
+
+export default function Navbar(props: Props) {
+  const { action, message, onNext, title } = props;
 
   return (
     <Box>
@@ -46,7 +53,7 @@ export default function Navbar(props) {
               w="15px"
             />
             <Text as="b" color="white">
-              Product Selection
+              {title}
             </Text>
           </HStack>
         </Box>
@@ -63,11 +70,7 @@ export default function Navbar(props) {
         justify={onNext ? 'space-between' : 'center'}
         padding="11px 12px"
       >
-        <Text
-          color="white"
-          fontSize={onNext ? 'sm' : 'md'}
-          fontWeight={onNext ? 400 : 600}
-        >
+        <Text color="white" fontSize="md" fontWeight={onNext ? 400 : 600}>
           {action}
         </Text>
         {onNext ? (

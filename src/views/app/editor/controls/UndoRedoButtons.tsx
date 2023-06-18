@@ -41,9 +41,9 @@ const Button = ({ icon, ...rest }) => (
     background="transparent"
     border="1px solid #484848"
     borderRadius="4px"
-    height="36px"
+    height="42px"
     padding="10px 16px"
-    width="53px"
+    width="42px"
     _hover={{ bg: '' }}
     _active={{
       bg: '',

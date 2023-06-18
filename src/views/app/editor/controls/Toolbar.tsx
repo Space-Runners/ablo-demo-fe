@@ -45,7 +45,12 @@ export default function Toolbar({
   onSettingsClick,
 }: Props) {
   return (
-    <HStack justify="space-between" padding="17px 40px" spacing="20px" w="100%">
+    <HStack
+      justify="space-between"
+      padding="17px 12px 40px 17px"
+      spacing="20px"
+      w="100%"
+    >
       <HStack spacing="11px">
         <ToolbarButton
           icon={<IconToggleGarment />}
