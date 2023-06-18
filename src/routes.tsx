@@ -4,6 +4,7 @@ import { MdVideoLibrary } from 'react-icons/md';
 import ImageGenerator from '@/views/app/image-generator';
 import Editor from '@/views/app/editor';
 import ProductsPage from '@/views/app/products';
+import OrderOrSharePage from '@/views/app/order-or-share';
 
 const routes = [
   {
@@ -29,6 +30,12 @@ const routes = [
     layout: '/app',
     path: '/products',
     component: ProductsPage,
+  },
+  {
+    name: 'Order/Share',
+    layout: '/app',
+    path: '/order-or-share',
+    component: OrderOrSharePage,
   },
 ];
 

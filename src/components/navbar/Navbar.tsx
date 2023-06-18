@@ -18,7 +18,7 @@ const IconBack = () => (
 );
 
 type Props = {
-  action: string;
+  action?: string;
   message?: string;
   onNext: () => void;
   title: string;
@@ -31,10 +31,10 @@ export default function Navbar(props: Props) {
 
   return (
     <Box>
-      <HStack
+      <Flex
+        align="center"
         backgroundColor="#ffffff"
         h="62px"
-        spacing={0}
         w={{
           base: '100vw',
         }}
@@ -48,9 +48,12 @@ export default function Navbar(props: Props) {
           <IconBack />
           <Text marginLeft="6px">Go Back</Text>
         </Button>
-        <Box
+        <Flex
+          align="center"
           borderLeft="1px solid #EAEAEA"
           borderRight="1px solid #EAEAEA"
+          flex={1}
+          justify="center"
           padding="0 12px"
         >
           <HStack backgroundColor="#212121" padding="6px 12px">
@@ -64,29 +67,31 @@ export default function Navbar(props: Props) {
               {title}
             </Text>
           </HStack>
-        </Box>
+        </Flex>
         <Text color="white">{message}</Text>
         <Button color="#000000" ml={0} padding="16px" variant="ghost">
           Sign Up
         </Button>
-      </HStack>
-      <Flex
-        align="center"
-        height="41px"
-        background="#383838"
-        border="1px solid #484848"
-        justify={onNext ? 'space-between' : 'center'}
-        padding="11px 12px"
-      >
-        <Text color="white" fontSize="md" fontWeight={onNext ? 400 : 600}>
-          {action}
-        </Text>
-        {onNext ? (
-          <Button color="white" onClick={onNext} padding={0} variant="ghost">
-            NEXT
-          </Button>
-        ) : null}
       </Flex>
+      {action ? (
+        <Flex
+          align="center"
+          height="41px"
+          background="#383838"
+          border="1px solid #484848"
+          justify={onNext ? 'space-between' : 'center'}
+          padding="11px 12px"
+        >
+          <Text color="white" fontSize="md" fontWeight={onNext ? 400 : 600}>
+            {action}
+          </Text>
+          {onNext ? (
+            <Button color="white" onClick={onNext} padding={0} variant="ghost">
+              NEXT
+            </Button>
+          ) : null}
+        </Flex>
+      ) : null}
     </Box>
   );
 }
