@@ -17,7 +17,6 @@ export const generateImage = (params: any) => {
     height: 512,
     width: 512,
     sampler: 'K_LMS',
-    samples: 1,
     steps: 75,
   };
 

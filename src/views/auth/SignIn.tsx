@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Box,
@@ -39,6 +39,10 @@ function SignIn() {
   const [error, setError] = useState(false);
 
   const handleClick = () => setShow(!show);
+
+  useEffect(() => {
+    console.log('SIgn in ');
+  }, []);
 
   const handleSubmit = () => {
     login(email, password)

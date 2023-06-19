@@ -1,97 +1,11 @@
-import { useState } from 'react';
-
-import { Portal, Box, useDisclosure } from '@chakra-ui/react';
-
-// Layout components
-import Navbar from '@/components/navbar/NavbarAdmin';
-import Sidebar from '@/components/sidebar/Sidebar';
-// @ts-ignore
-import { SidebarContext } from '@/contexts/SidebarContext';
+import { Box } from '@chakra-ui/react';
 
 import { Redirect, Route, Switch } from 'react-router-dom';
 import routes from '@/routes';
 
-export default function Dashboard(props: any) {
-  const { ...rest } = props;
-  // states and functions
-  const [fixed] = useState(false);
-  const [toggleSidebar, setToggleSidebar] = useState(false);
-  // functions for changing the states from components
-  const getRoute = () => {
-    return window.location.pathname !== '/app/full-screen-maps';
-  };
+import ProductsPage from '@/views/app/products';
 
-  const getActiveRoute = (routes: any): string => {
-    const activeRoute = 'Default Brand Text';
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        const collapseActiveRoute = getActiveRoute(routes[i].items);
-        if (collapseActiveRoute !== activeRoute) {
-          return collapseActiveRoute;
-        }
-      } else if (routes[i].category) {
-        const categoryActiveRoute = getActiveRoute(routes[i].items);
-        if (categoryActiveRoute !== activeRoute) {
-          return categoryActiveRoute;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].name;
-        }
-      }
-    }
-    return activeRoute;
-  };
-  const getActiveNavbar = (routes: any[]): boolean => {
-    const activeNavbar = false;
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        const collapseActiveNavbar = getActiveNavbar(routes[i].items);
-        if (collapseActiveNavbar !== activeNavbar) {
-          return collapseActiveNavbar;
-        }
-      } else if (routes[i].category) {
-        const categoryActiveNavbar = getActiveNavbar(routes[i].items);
-        if (categoryActiveNavbar !== activeNavbar) {
-          return categoryActiveNavbar;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].secondary;
-        }
-      }
-    }
-    return activeNavbar;
-  };
-  const getActiveNavbarText = (routes: any[]): string | boolean => {
-    const activeNavbar = false;
-    for (let i = 0; i < routes.length; i++) {
-      if (routes[i].collapse) {
-        const collapseActiveNavbar = getActiveNavbarText(routes[i].items);
-        // @ts-ignore
-        if (collapseActiveNavbar !== activeNavbar) {
-          return collapseActiveNavbar;
-        }
-      } else if (routes[i].category) {
-        const categoryActiveNavbar = getActiveNavbarText(routes[i].items);
-        // @ts-ignore
-        if (categoryActiveNavbar !== activeNavbar) {
-          return categoryActiveNavbar;
-        }
-      } else {
-        if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-        ) {
-          return routes[i].messageNavbar;
-        }
-      }
-    }
-    return activeNavbar;
-  };
+export default function Dashboard() {
   const getRoutes = (routes: any[]): any[] => {
     return routes.map((prop: any, key) => {
       if (prop.layout === '/app') {
@@ -103,70 +17,29 @@ export default function Dashboard(props: any) {
           />
         );
       }
-      if (prop.collapse) {
-        return getRoutes(prop.items);
-      }
-      if (prop.category) {
-        return getRoutes(prop.items);
-      } else {
-        return null;
-      }
     });
   };
-  document.documentElement.dir = 'ltr';
-  const { onOpen } = useDisclosure();
-  return (
-    <Box>
-      <SidebarContext.Provider
-        value={{
-          toggleSidebar,
-          setToggleSidebar,
-        }}
-      >
-        <Sidebar routes={routes} display="none" {...rest} />
-        <Box
-          float="right"
-          minHeight="100vh"
-          height="100%"
-          overflow="auto"
-          position="relative"
-          maxHeight="100%"
-          w={{ base: '100%', xl: 'calc( 100% - 290px )' }}
-          maxWidth={{ base: '100%', xl: 'calc( 100% - 290px )' }}
-          transition="all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)"
-          transitionDuration=".2s, .2s, .35s"
-          transitionProperty="top, bottom, width"
-          transitionTimingFunction="linear, linear, ease"
-        >
-          <Portal>
-            <Box>
-              <Navbar
-                onOpen={onOpen}
-                brandText={getActiveRoute(routes)}
-                secondary={getActiveNavbar(routes)}
-                message={getActiveNavbarText(routes)}
-                fixed={fixed}
-                {...rest}
-              />
-            </Box>
-          </Portal>
 
-          {getRoute() ? (
-            <Box
-              mx="auto"
-              p={{ base: '20px', md: '30px' }}
-              pe="20px"
-              minH="100vh"
-              pt="50px"
-            >
-              <Switch>
-                {getRoutes(routes)}
-                <Redirect from="/" to="/app/image-generator" />
-              </Switch>
-            </Box>
-          ) : null}
-        </Box>
-      </SidebarContext.Provider>
+  return (
+    <Box
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      w={{ base: '100%' }}
+    >
+      <Box
+        backgroundColor="#2b2a2a"
+        h="calc(100% - 103px)"
+        mx="auto"
+        flex={1}
+        w="100%"
+      >
+        <Switch>
+          {getRoutes(routes)}
+          <Route path={`/products`} component={ProductsPage} />
+          <Redirect from="/" to="/app/products" />
+        </Switch>
+      </Box>
     </Box>
   );
 }
