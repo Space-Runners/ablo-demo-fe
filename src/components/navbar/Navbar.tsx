@@ -76,7 +76,7 @@ export default function Navbar(props: Props) {
           </HStack>
         </Flex>
         <Text color="white">{message}</Text>
-        {!me ? (
+        {!me || true ? (
           <Button
             color="#000000"
             ml={0}
