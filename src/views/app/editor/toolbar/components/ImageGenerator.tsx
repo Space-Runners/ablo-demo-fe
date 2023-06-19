@@ -8,7 +8,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 
@@ -66,8 +66,6 @@ const ButtonGenerate = (props) => (
 );
 
 export default function ImageGenerator({ onImageGenerated }) {
-  const inputRef = useRef(null);
-
   const [prompt, setPrompt] = useState('');
   const [waiting, setWaiting] = useState(false);
 
@@ -108,6 +106,7 @@ export default function ImageGenerator({ onImageGenerated }) {
           {images.map((imageUrl) => (
             <Image
               h={149}
+              key={imageUrl}
               w={110}
               src={imageUrl}
               alt="Generated image"
@@ -118,7 +117,6 @@ export default function ImageGenerator({ onImageGenerated }) {
       ) : (
         <Input
           onChange={(e) => setPrompt(e.target.value)}
-          ref={inputRef}
           value={prompt}
           w="307px"
         />

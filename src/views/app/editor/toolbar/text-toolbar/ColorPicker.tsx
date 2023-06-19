@@ -1,14 +1,6 @@
 import { Button as ChakraButton, HStack, Text } from '@chakra-ui/react';
 
-const COLORS = [
-  '#B8CCB4',
-  '#B8CCB4',
-  '#CA6751',
-  '#FFFFFF',
-  'red',
-  'blue',
-  'green',
-];
+const COLORS = ['#B8CCB4', '#CA6751', '#FFFFFF', 'red', 'blue', 'green'];
 
 const Button = (props) => {
   const { isSelected, ...rest } = props;

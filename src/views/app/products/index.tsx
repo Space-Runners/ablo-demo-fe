@@ -234,7 +234,12 @@ export default function ProductsPage() {
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
         action="Select your clothing"
-        onNext={selectedProduct ? () => history.push('/app/editor') : null}
+        onNext={
+          selectedProduct
+            ? () =>
+                history.push(`/app/editor?productName=${selectedProduct.name}`)
+            : null
+        }
         title="Product Selection"
       />
       <ProductDetails product={selectedProduct || PRODUCTS[0]} />

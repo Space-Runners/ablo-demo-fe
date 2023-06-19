@@ -26,11 +26,11 @@ export const IconColorPalette = () => (
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(14 14) rotate(90) scale(13)"
       >
-        <stop stop-color="#FF0000" />
-        <stop offset="0.25" stop-color="#FFE927" />
-        <stop offset="0.5" stop-color="#2CCA4F" stop-opacity="0.96" />
-        <stop offset="0.75" stop-color="#1A48EB" />
-        <stop offset="1" stop-color="#B223B5" />
+        <stop stopColor="#FF0000" />
+        <stop offset="0.25" stopColor="#FFE927" />
+        <stop offset="0.5" stopColor="#2CCA4F" stopOpacity="0.96" />
+        <stop offset="0.75" stopColor="#1A48EB" />
+        <stop offset="1" stopColor="#B223B5" />
       </radialGradient>
     </defs>
   </Icon>

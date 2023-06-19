@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { useQuery } from '@tanstack/react-query';
+
 import config from '../config';
 
 const { API_URL } = config;
@@ -15,7 +17,7 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-axios.interceptors.response.use(
+/* axios.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -30,7 +32,7 @@ axios.interceptors.response.use(
 
     return Promise.reject(error);
   }
-);
+); */
 
 export const login = (email: string, password: string) =>
   axios
@@ -67,7 +69,9 @@ export const signUp = (
 export const verifyEmail = (token: string) =>
   axios.get(`/users/verify-email/${token}`);
 
-export const getMe = () =>
-  axios.get('/profile').then(({ data }) => {
-    return data;
-  });
+export const useMe = () =>
+  useQuery(['me'], () =>
+    axios.get('/profile').then(({ data }) => {
+      return data;
+    })
+  );

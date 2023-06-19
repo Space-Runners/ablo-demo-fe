@@ -47,7 +47,7 @@ export default function Toolbar({
   return (
     <HStack
       justify="space-between"
-      padding="17px 12px 40px 17px"
+      padding="17px 12px 12px 17px"
       spacing="20px"
       w="100%"
     >

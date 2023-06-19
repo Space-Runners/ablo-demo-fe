@@ -155,6 +155,16 @@ export default function FooterToolbar(props) {
     setExpanded(true);
   };
 
+  const handleTextUpdate = (text) => {
+    if (!activeTextObject) {
+      onAddText({ text });
+
+      return;
+    }
+
+    onUpdateTextObject({ text });
+  };
+
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
   const isProductVariantPicker = selectedTool === 'productVariant';
@@ -178,7 +188,7 @@ export default function FooterToolbar(props) {
             <Input
               border="none"
               color="#FFFFFF"
-              onChange={(e) => onUpdateTextObject({ text: e.target.value })}
+              onChange={(e) => handleTextUpdate(e.target.value)}
               placeholder="Write your text here"
               value={text}
               _focus={{
@@ -211,7 +221,10 @@ export default function FooterToolbar(props) {
         {isExpanded ? (
           <F>
             {isTextEditor ? (
-              <TextControls onAddText={onAddText} onRemoveText={onRemoveText} />
+              <TextControls
+                onAddText={() => onAddText()}
+                onRemoveText={onRemoveText}
+              />
             ) : null}
             {isProductVariantPicker ? (
               <ColorPicker

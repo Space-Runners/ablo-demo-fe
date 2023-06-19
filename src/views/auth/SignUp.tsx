@@ -14,6 +14,8 @@ import { HSeparator } from '@/components/separator/Separator';
 
 import { GoogleLogin } from '@react-oauth/google';
 
+import { useHistory, useLocation } from 'react-router-dom';
+
 import Navbar from '@/components/navbar/Navbar';
 
 import { googleLogin, signUp } from '@/api/auth';
@@ -36,7 +38,7 @@ const SocialButton = (props) => (
   ></Button>
 );
 
-function SignIn() {
+function SignUp() {
   // Chakra color mode
 
   const [email, setEmail] = useState('');
@@ -48,6 +50,13 @@ function SignIn() {
   const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const history = useHistory();
+  const { search } = useLocation();
+
+  const searchParams = new URLSearchParams(search);
+
+  const returnTo = searchParams.get('returnTo');
 
   const handleSubmit = () => {
     if (password !== confirmPassword) {
@@ -64,6 +73,8 @@ function SignIn() {
       .then(() => {
         setWaiting(false);
         setSuccess(true);
+
+        history.push(returnTo);
       })
       .catch(() => {
         setError('Error signing up');
@@ -75,7 +86,7 @@ function SignIn() {
 
   return (
     <Box w="100%" h="100%">
-      <Navbar action="Sign up to continue" />
+      <Navbar action="Sign up to continue" title="Design generation" />
       <Flex
         alignItems="center"
         justifyContent="center"
@@ -174,4 +185,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;

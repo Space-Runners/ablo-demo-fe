@@ -2,6 +2,8 @@ import { Box, Button, Flex, Icon, HStack, Text } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
 
+import { useMe } from '@/api/auth';
+
 const IconBack = () => (
   <Icon
     width="7px"
@@ -20,14 +22,19 @@ const IconBack = () => (
 type Props = {
   action?: string;
   message?: string;
-  onNext: () => void;
+  onNext?: () => void;
+  onSignUp?: () => void;
   title: string;
 };
 
 export default function Navbar(props: Props) {
   const history = useHistory();
 
-  const { action, message, onNext, title } = props;
+  const { data: me } = useMe();
+
+  const { action, message, onNext, onSignUp, title } = props;
+
+  console.log(window.location);
 
   return (
     <Box>
@@ -69,9 +76,21 @@ export default function Navbar(props: Props) {
           </HStack>
         </Flex>
         <Text color="white">{message}</Text>
-        <Button color="#000000" ml={0} padding="16px" variant="ghost">
-          Sign Up
-        </Button>
+        {!me ? (
+          <Button
+            color="#000000"
+            ml={0}
+            onClick={() =>
+              onSignUp
+                ? onSignUp()
+                : history.push(`/signup?returnTo=${window.location.pathname}`)
+            }
+            padding="16px"
+            variant="ghost"
+          >
+            Sign Up
+          </Button>
+        ) : null}
       </Flex>
       {action ? (
         <Flex

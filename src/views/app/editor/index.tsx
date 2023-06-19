@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex, VStack } from '@chakra-ui/react';
 
@@ -18,7 +18,7 @@ import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
 
-export default function ImageGenerator() {
+export default function ImageEditor() {
   const canvas = useRef(null);
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
@@ -26,9 +26,18 @@ export default function ImageGenerator() {
 
   const history = useHistory();
 
+  const { search } = useLocation();
+
+  const searchParams = new URLSearchParams(search);
+
+  const productName = searchParams.get('productName');
+
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
 
-  const [selectedProduct] = useState(PRODUCTS[0]);
+  const [selectedProduct] = useState(
+    (productName && PRODUCTS.find((product) => product.name === productName)) ||
+      PRODUCTS[0]
+  );
   const [selectedVariant, setSelectedVariant] = useState(
     PRODUCTS[0].variants[0].name
   );
@@ -75,6 +84,8 @@ export default function ImageGenerator() {
 
     state.current = undoStack.pop();
 
+    console.log('STate current', state.current);
+
     setUndoStack(undoStack);
 
     reloadCanvasFromState();
@@ -99,19 +110,20 @@ export default function ImageGenerator() {
 
   const initCanvas = () =>
     new fabric.Canvas('canvas', {
-      width: 120,
-      height: 120,
+      width: 160,
+      height: 160,
       selection: false,
       renderOnAddRemove: true,
     });
 
-  const handleAddText = () => {
+  const handleAddText = (params) => {
     const textObject = {
       fill: '#FFFFFF',
       fontFamily: 'Poppins',
       text: 'this is\na multiline\ntext\naligned right!',
       fontSize: 12,
       textAlign: 'left',
+      ...params,
     };
 
     const text = new fabric.Text(textObject.text, textObject);
@@ -135,6 +147,8 @@ export default function ImageGenerator() {
 
   const handleRemoveActiveObject = () => {
     canvas.current.remove(canvas.current.getActiveObject());
+
+    canvas.current.renderAll();
 
     saveState();
   };
@@ -189,6 +203,10 @@ export default function ImageGenerator() {
     setSelectedVariant(variant);
   };
 
+  const handleSignUp = () => {
+    history.push(`/signup?returnTo=${window.location.pathname}`);
+  };
+
   const { urlPrefix } = selectedProduct;
 
   console.log('Orientation', orientation);
@@ -200,15 +218,14 @@ export default function ImageGenerator() {
       <Navbar
         action="Create your design"
         onNext={() => null}
+        onSignUp={handleSignUp}
         title="Design generation"
       />
       <Flex
         align="center"
         bg="#292929"
         flexDirection="column"
-        h="100%"
         position="relative"
-        pt="13px"
         w="100%"
       >
         <Toolbar
@@ -222,10 +239,15 @@ export default function ImageGenerator() {
           }
         />
         <Box position="relative">
-          <img src={variantImageUrl} width={250} />
+          <img src={variantImageUrl} width={300} />
           <Box
             border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
+            borderRadius="4px"
+            left="67px"
+            position="absolute"
+            top="120px"
             id="drawingArea"
+            zIndex={10}
             className="drawing-area"
           >
             <div className="canvas-container">
@@ -233,17 +255,14 @@ export default function ImageGenerator() {
             </div>
           </Box>
         </Box>
-        <VStack position="absolute" right="12px" top="25%" spacing="20px">
-          <UndoButton
-            disabled={isEmpty(undoStack)}
-            onClick={() => handleUndo()}
-          />
+        <VStack position="absolute" right="12px" top="45%" spacing="20px">
+          <UndoButton disabled={isEmpty(undoStack)} onClick={handleUndo} />
           <RedoButton
             disabled={isEmpty(redoStack)}
-            onClick={() => handleRedo()}
+            onClick={handleRedo}
           ></RedoButton>
         </VStack>
-        <ButtonDelete mt="24px" onClick={handleRemoveActiveObject} w="122px" />
+        <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
