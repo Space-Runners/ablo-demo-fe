@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
-
 import { Box, Button as ChakraButton, Flex, HStack } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
