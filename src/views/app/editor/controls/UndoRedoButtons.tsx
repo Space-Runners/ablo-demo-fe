@@ -30,12 +30,6 @@ const IconRedo = () => (
   </Icon>
 );
 
-type Props = {
-  isDrawingAreaVisible;
-  onToggleDrawingArea: () => void;
-  onSettingsClick: () => void;
-};
-
 const Button = ({ icon, ...rest }) => (
   <ChakraButton
     background="transparent"

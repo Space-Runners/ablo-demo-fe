@@ -45,15 +45,11 @@ const TopButton = (props) => (
 export default function ImageGenerator() {
   const canvas = useRef(null);
 
-  const history = useHistory();
-
   const [activeView, setActiveView] = useState('order');
   const [selectedProduct] = useState(PRODUCTS[0]);
-  const [selectedVariant, setSelectedVariant] = useState(
-    PRODUCTS[0].variants[0].name
-  );
+  const [selectedVariant] = useState(PRODUCTS[0].variants[0].name);
 
-  const [orientation, setOrientation] = useState('FRONT');
+  const [orientation] = useState('FRONT');
 
   useEffect(() => {
     canvas.current = initCanvas();
@@ -66,13 +62,6 @@ export default function ImageGenerator() {
       }
     };
   }, []);
-
-  const reloadCanvasFromState = () => {
-    canvas.current.clear();
-    canvas.current.loadFromJSON('', function () {
-      canvas.current.renderAll();
-    });
-  };
 
   const initCanvas = () =>
     new fabric.Canvas('canvas', {

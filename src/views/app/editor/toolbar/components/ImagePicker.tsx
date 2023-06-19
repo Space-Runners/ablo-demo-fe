@@ -1,6 +1,6 @@
 import { Flex, Button, Icon } from '@chakra-ui/react';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 const IconUpload = () => (
   <Icon
