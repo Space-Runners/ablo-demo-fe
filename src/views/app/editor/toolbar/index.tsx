@@ -41,12 +41,6 @@ const TOOLS = [
   },
 ];
 
-type Props = {
-  isDrawingAreaVisible;
-  onToggleDrawingArea: () => void;
-  onSettingsClick: () => void;
-};
-
 const Button = (props) => (
   <ChakraButton
     color="#FFFFFF"

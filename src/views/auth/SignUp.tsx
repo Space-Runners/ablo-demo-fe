@@ -23,7 +23,7 @@ import { googleLogin, signUp } from '@/api/auth';
 import FormInput from './components/Input';
 import Button from './components/ButtonSubmit';
 
-const SocialButton = (props) => (
+/* const SocialButton = (props) => (
   <Button
     background="#1B1B1B"
     border="1.6px solid #484848"
@@ -36,7 +36,7 @@ const SocialButton = (props) => (
     _hover={{ bg: '#1B1B1B' }}
     {...props}
   ></Button>
-);
+); */
 
 function SignUp() {
   // Chakra color mode

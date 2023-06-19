@@ -16,5 +16,3 @@ export const IconFacebook = () => (
     />
   </Icon>
 );
-
-const IconGoogle = () => null;

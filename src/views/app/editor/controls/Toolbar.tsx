@@ -1,7 +1,5 @@
 import { Button, HStack } from '@chakra-ui/react';
 
-import Colors from '@/theme/colors';
-
 import IconToggleOrientation from './icons/IconToggleGarment';
 import {
   IconDrawingArea,
