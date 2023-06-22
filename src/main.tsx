@@ -14,6 +14,12 @@ import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/600.css';
+
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+
 import config from './config';
 
 const { GOOGLE_CLIENT_ID } = config;

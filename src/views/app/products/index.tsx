@@ -19,7 +19,9 @@ import PRODUCTS from '@/data/products';
 
 import { IconDown, IconUp } from './Icons';
 
-const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+import IconEarth from './images/Earth.png';
+
+const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 type Variant = {
   name: string;
@@ -27,12 +29,14 @@ type Variant = {
 };
 
 type Product = {
+  fabric: string;
   name: string;
   fit: string;
   price: number;
   urlPrefix: string;
   description: string;
   variants: Variant[];
+  tags: string[];
 };
 
 type Props = {
@@ -60,24 +64,12 @@ const Button = (props) => (
 const ProductDetails = ({ product }: { product: Product }) => {
   const [areDetailsOpen, setDetailsOpen] = useState(false);
 
-  const { description, fit, name, price, urlPrefix, variants } = product;
+  const { description, fabric, fit, name, price, urlPrefix, tags, variants } =
+    product;
 
   return (
-    <Box bg="#292929" padding="50px 14px 34px 18px">
-      <Flex
-        align="center"
-        bg="#212121"
-        border="3px solid #ffffff"
-        direction="column"
-        margin="0 auto"
-        h="183px"
-        w="313px"
-      >
-        <Image
-          h={160}
-          src={`${urlPrefix}_${variants[0].name}_FRONT.png`}
-          alt={name}
-        />
+    <Box bg="#292929" padding="51px 18px 28px 18px">
+      {null && (
         <Box bg="#ffffff" h="23px" textAlign="center" w="100%">
           <Text
             color="#212121"
@@ -88,32 +80,42 @@ const ProductDetails = ({ product }: { product: Product }) => {
             Popular
           </Text>
         </Box>
+      )}
+      <Flex
+        align="center"
+        bg="#212121"
+        borderRadius="8px"
+        direction="column"
+        margin="0 auto"
+        h="216px"
+        w="100%"
+      >
+        <Image
+          h={216}
+          src={`${urlPrefix}_${variants[0].name}_FRONT.png`}
+          alt={name}
+        />
       </Flex>
       <Flex justify="space-between" mt="39px">
-        <Text color="#ffffff" fontSize="xl" fontWeight={400}>
-          {name}
-        </Text>
-        <Text color="#ffffff" fontSize="xl" fontWeight={600}>
-          ${price}
-        </Text>
-      </Flex>
-      <Flex justify="space-between" mt="8px">
-        <Text color="#ffffff" fontSize="xl" fontWeight={400} opacity={0.4}>
-          Adult {name}
-        </Text>
-        <Flex
-          align="center"
-          border="1px solid #ffffff"
-          borderRadius="5px"
-          color="#ffffff"
-          h="20px"
-          padding="0px 8px"
-          w="93px"
-        >
+        <Box>
+          <Text color="#ffffff" fontSize="md" textTransform="uppercase">
+            Spaarkd
+          </Text>
+          <Text color="#ffffff" fontSize="xl">
+            {fit} {name}
+          </Text>
+          <Text color="#ffffff" fontSize="md" opacity={0.4}>
+            {fabric}
+          </Text>
+        </Box>
+        <Box>
+          <Text color="#ffffff" fontSize="2xl" fontWeight={600}>
+            ${price}.00
+          </Text>
           <Text fontSize="10px" fontWeight={600}>
             MIN. ORDER #: 1
           </Text>
-        </Flex>
+        </Box>
       </Flex>
       <Flex justify="space-between" mt="8px">
         <HStack spacing={0}>
@@ -133,29 +135,35 @@ const ProductDetails = ({ product }: { product: Product }) => {
             </Flex>
           ))}
         </HStack>
-        <Flex align="center" bg="#ffffff" h="20px" padding="0px 8px">
-          <Text
-            color="#212121"
-            fontSize="10px"
-            fontWeight={600}
-            padding="0 12px"
-            textTransform="uppercase"
-          >
-            {fit} fit
-          </Text>
-        </Flex>
       </Flex>
-      <Flex justify="space-between" mt="35px">
+      <HStack mt="16px" spacing="12px">
+        {tags.map((tag) => (
+          <Flex
+            align="center"
+            bg="#FFFFFF"
+            border="1px solid #CCCCCC"
+            h="25px"
+            key={tag}
+            justify="center"
+            padding="0 12px"
+          >
+            <Text
+              as="b"
+              color="#212121"
+              fontSize="sm"
+              textTransform="uppercase"
+            >
+              {tag}
+            </Text>
+          </Flex>
+        ))}
+      </HStack>
+      <Flex mt="35px">
         <Button bg="#626262" onClick={() => setDetailsOpen(!areDetailsOpen)}>
           <Text color="#FFFFFF" fontSize="md" fontWeight={600} mr="8px">
             More info
           </Text>
           {areDetailsOpen ? <IconUp /> : <IconDown />}
-        </Button>
-        <Button bg="transparent" border="1px solid #626262">
-          <Text color="#FFFFFF" fontSize="md" fontWeight={400}>
-            Reviews
-          </Text>
         </Button>
       </Flex>
       {areDetailsOpen ? (
@@ -181,37 +189,59 @@ const ProductsList = ({ onSelectedProduct }: Props) => {
   return (
     <Box bg="#ffffff" padding="41px 16px 45px 16px" w="100%">
       {chunks.map((chunk, index) => (
-        <Flex key={index} mb="20px">
+        <Flex key={index} mb="8px">
           {chunk.map((product, index) => {
-            const { name, variants, urlPrefix } = product;
+            const { fabric, fit, name, price, variants, urlPrefix } = product;
 
             const [variant] = variants;
 
             return (
               <Box
+                border="1px solid #EAE9E9"
+                borderRadius="5px"
                 flex="1"
-                key={name}
+                key={index}
                 marginLeft={`${index === 0 ? 0 : 8}px`}
                 onClick={() => onSelectedProduct(product)}
+                padding="6px 12px"
+                position="relative"
               >
-                <Flex
-                  align="center"
-                  border="1px solid #CCCCCC"
-                  h="180px"
-                  mb="16px"
-                  justify="center"
-                >
+                <Image
+                  h="20px"
+                  src={IconEarth}
+                  w="20px"
+                  position="absolute"
+                  top="4px"
+                  right="4px"
+                />
+                <Flex align="center" h="180px" mb="16px" justify="center">
                   <Image
                     h={160}
                     src={`${urlPrefix}_${variant.name}_FRONT.png`}
                     alt={name}
                   />
                 </Flex>
-                <Text as="b" fontSize="xl" lineHeight="36px">
-                  {name}
+                <Text
+                  as="b"
+                  display="block"
+                  fontSize="10px"
+                  lineHeight="20px"
+                  textTransform="uppercase"
+                >
+                  Spaarkd
                 </Text>
-                <Text color="#212121" fontSize="sm" fontWeight={400}>
-                  Min. Order#:1
+                <Text as="b" fontSize="sm" lineHeight="20px">
+                  {fit} {name}
+                </Text>
+                <Text
+                  color="rgba(33, 33, 33, 0.5)"
+                  fontSize="10px"
+                  lineHeight="18px"
+                >
+                  {fabric}
+                </Text>
+                <Text color="#212121" fontSize="sm">
+                  <Text as="b">${price}.00</Text> (Base Price)
                 </Text>
               </Box>
             );
@@ -234,15 +264,15 @@ export default function ProductsPage() {
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
         action="Select your clothing"
-        onNext={
-          selectedProduct
-            ? () =>
-                history.push(`/app/editor?productName=${selectedProduct.name}`)
-            : null
+        onNext={() =>
+          history.push(`/app/editor?productName=${selectedProduct.name}`)
         }
+        onNextDisabled={!selectedProduct}
         title="Product Selection"
       />
-      <ProductDetails product={selectedProduct || PRODUCTS[0]} />
+      {selectedProduct ? (
+        <ProductDetails product={selectedProduct || PRODUCTS[0]} />
+      ) : null}
       <ProductsList
         onSelectedProduct={(product) => setSelectedProduct(product)}
       />

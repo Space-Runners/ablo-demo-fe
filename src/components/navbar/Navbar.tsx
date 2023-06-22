@@ -23,6 +23,7 @@ type Props = {
   action?: string;
   message?: string;
   onNext?: () => void;
+  onNextDisabled?: boolean;
   onSignUp?: () => void;
   title: string;
 };
@@ -32,7 +33,7 @@ export default function Navbar(props: Props) {
 
   const { data: me } = useMe();
 
-  const { action, message, onNext, onSignUp, title } = props;
+  const { action, message, onNext, onNextDisabled, onSignUp, title } = props;
 
   console.log(window.location);
 
@@ -48,12 +49,13 @@ export default function Navbar(props: Props) {
       >
         <Button
           color="#000000"
+          fontWeight={400}
           onClick={() => history.goBack()}
           padding="8px"
           variant="ghost"
         >
           <IconBack />
-          <Text marginLeft="6px">Go Back</Text>
+          <Text marginLeft="6px">Back</Text>
         </Button>
         <Flex
           align="center"
@@ -64,13 +66,13 @@ export default function Navbar(props: Props) {
           padding="0 12px"
         >
           <HStack backgroundColor="#212121" padding="6px 12px">
-            <Box
-              backgroundColor="#ffffff"
-              borderRadius="50%"
-              h="15px"
-              w="15px"
-            />
-            <Text as="b" color="white">
+            <Text
+              as="b"
+              color="white"
+              fontFamily="Roboto"
+              fontSize="md"
+              textTransform="uppercase"
+            >
               {title}
             </Text>
           </HStack>
@@ -79,6 +81,7 @@ export default function Navbar(props: Props) {
         {!me || true ? (
           <Button
             color="#000000"
+            fontWeight={400}
             ml={0}
             onClick={() =>
               onSignUp
@@ -95,17 +98,29 @@ export default function Navbar(props: Props) {
       {action ? (
         <Flex
           align="center"
-          height="41px"
-          background="#383838"
-          border="1px solid #484848"
-          justify={onNext ? 'space-between' : 'center'}
-          padding="11px 12px"
+          height="53px"
+          border="1px solid #EAEAEA"
+          justify={onNext ? 'space-between' : 'flex-start'}
+          padding="6px 6px 6px 12px"
         >
-          <Text color="white" fontSize="md" fontWeight={onNext ? 400 : 600}>
+          <Text
+            color="#212121"
+            fontFamily="Roboto"
+            fontSize="md"
+            fontWeight={500}
+          >
             {action}
           </Text>
           {onNext ? (
-            <Button color="white" onClick={onNext} padding={0} variant="ghost">
+            <Button
+              bg="#353535"
+              borderRadius="5px"
+              disabled={onNextDisabled}
+              color="white"
+              onClick={onNext}
+              padding="10px 24px"
+              _disabled={{ background: '#D8D8D8', color: '#A7A7A7' }}
+            >
               NEXT
             </Button>
           ) : null}

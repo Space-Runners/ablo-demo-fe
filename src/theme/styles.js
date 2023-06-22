@@ -85,14 +85,15 @@ export const globalStyles = {
       body: {
         overflowX: 'hidden',
         bg: mode('secondaryGray.300', 'navy.900')(props),
-        fontFamily: 'DM Sans',
+        fontFamily: 'Poppins',
+        fontWeight: 400,
         letterSpacing: '-0.5px',
       },
       input: {
         color: 'gray.700',
       },
       html: {
-        fontFamily: 'DM Sans',
+        fontFamily: 'Poppins',
       },
     }),
   },
