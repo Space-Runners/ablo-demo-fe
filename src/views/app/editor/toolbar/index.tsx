@@ -21,8 +21,9 @@ import {
 import { useState, Fragment as F } from 'react';
 import { chunk } from 'lodash';
 
+import ProductColors from '@/data/product-colors';
+
 import TextToolbar from './text-toolbar';
-import ProductColors from './ProductColors';
 import ImageGenerator from './components/ImageGenerator';
 import ImagePicker from './components/ImagePicker';
 

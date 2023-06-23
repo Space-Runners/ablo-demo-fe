@@ -8,6 +8,7 @@ import {
   Flex,
   HStack,
   Image,
+  Tag,
   Text,
 } from '@chakra-ui/react';
 
@@ -30,6 +31,7 @@ type Variant = {
 
 type Product = {
   fabric: string;
+  madeIn: string;
   name: string;
   fit: string;
   price: number;
@@ -61,11 +63,51 @@ const Button = (props) => (
   ></ChakraButton>
 );
 
+const ColorPicker = ({ selectedVariant, onSelectedVariant, variants }) => (
+  <HStack align="center" mt="37px" overflowX="auto" spacing="20px">
+    {variants.map((variant) => {
+      const { name, color } = variant;
+      const isSelected = name === selectedVariant.name;
+
+      const size = `${isSelected ? 35 : 25}px`;
+
+      console.log('Color', name, selectedVariant);
+
+      return (
+        <Button
+          bg={color}
+          h={size}
+          flexShrink="0"
+          key={name}
+          padding="0"
+          w={size}
+          borderRadius="50%"
+          marginLeft="20px"
+          marginRight="0"
+          minWidth="auto"
+          onClick={() => onSelectedVariant(variant)}
+        />
+      );
+    })}
+  </HStack>
+);
+
 const ProductDetails = ({ product }: { product: Product }) => {
   const [areDetailsOpen, setDetailsOpen] = useState(false);
 
-  const { description, fabric, fit, name, price, urlPrefix, tags, variants } =
-    product;
+  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+
+  const {
+    description,
+    fabric,
+    fit,
+    madeIn,
+    name,
+    price,
+    urlPrefix,
+    tags,
+    variants,
+  } = product;
 
   return (
     <Box bg="#292929" padding="51px 18px 28px 18px">
@@ -96,25 +138,32 @@ const ProductDetails = ({ product }: { product: Product }) => {
           alt={name}
         />
       </Flex>
-      <Flex justify="space-between" mt="39px">
+      <Flex color="#ffffff" justify="space-between" mt="39px">
         <Box>
-          <Text color="#ffffff" fontSize="md" textTransform="uppercase">
+          <Text fontSize="md" textTransform="uppercase">
             Spaarkd
           </Text>
-          <Text color="#ffffff" fontSize="xl">
+          <Text fontSize="xl">
             {fit} {name}
           </Text>
-          <Text color="#ffffff" fontSize="md" opacity={0.4}>
+          <Text fontSize="md" opacity={0.4}>
             {fabric}
           </Text>
         </Box>
         <Box>
-          <Text color="#ffffff" fontSize="2xl" fontWeight={600}>
+          <Text fontSize="2xl" fontWeight={600} textAlign="right">
             ${price}.00
           </Text>
-          <Text fontSize="10px" fontWeight={600}>
-            MIN. ORDER #: 1
-          </Text>
+          <Box
+            border="1px solid #ffffff"
+            borderRadius="5px"
+            mt="8px"
+            padding="0 8px"
+          >
+            <Text fontSize="10px" fontWeight={600} lineHeight="20px">
+              MIN. ORDER #: 1
+            </Text>
+          </Box>
         </Box>
       </Flex>
       <Flex justify="space-between" mt="8px">
@@ -129,22 +178,20 @@ const ProductDetails = ({ product }: { product: Product }) => {
               justify="center"
               w="25px"
             >
-              <Text color="#ffffff" fontSize="sm">
+              <Text color="#ffffff" fontSize="11px">
                 {size}
               </Text>
             </Flex>
           ))}
         </HStack>
       </Flex>
-      <HStack mt="16px" spacing="12px">
+      <HStack mt="16px" overflowX="auto" spacing="12px">
         {tags.map((tag) => (
-          <Flex
-            align="center"
+          <Tag
             bg="#FFFFFF"
             border="1px solid #CCCCCC"
             h="25px"
             key={tag}
-            justify="center"
             padding="0 12px"
           >
             <Text
@@ -155,28 +202,33 @@ const ProductDetails = ({ product }: { product: Product }) => {
             >
               {tag}
             </Text>
-          </Flex>
+          </Tag>
         ))}
       </HStack>
-      <Flex mt="35px">
-        <Button bg="#626262" onClick={() => setDetailsOpen(!areDetailsOpen)}>
-          <Text color="#FFFFFF" fontSize="md" fontWeight={600} mr="8px">
+      <ColorPicker
+        onSelectedVariant={setSelectedVariant}
+        selectedVariant={selectedVariant}
+        variants={product.variants}
+      />
+      <Flex mt="15px">
+        <Button
+          bg="transparent"
+          border="1px solid #D9D9D9"
+          borderRadius="6px"
+          onClick={() => setDetailsOpen(!areDetailsOpen)}
+          padding="8px"
+          w="100%"
+        >
+          <Text color="#FFFFFF" fontSize="md" mr="8px">
             More info
           </Text>
           {areDetailsOpen ? <IconUp /> : <IconDown />}
         </Button>
       </Flex>
       {areDetailsOpen ? (
-        <Box mt="30px">
-          <Text color="#FFFFFF" fontSize="md" fontWeight={600} mb="24px">
-            {name} Softstyle
-          </Text>
-          <Text color="#FFFFFF" fontSize="md" fontWeight={600} mb="24px">
-            100% Ring Spun Cotton
-          </Text>
-          <Text color="#FFFFFF" fontSize="md" fontWeight={400}>
-            {description}
-          </Text>
+        <Box color="#FFFFFF" fontSize="md" mt="30px">
+          <Text as="b">Made in {madeIn}</Text>
+          <Text mt="24px">{description}</Text>
         </Box>
       ) : null}
     </Box>
@@ -276,7 +328,6 @@ export default function ProductsPage() {
       <ProductsList
         onSelectedProduct={(product) => setSelectedProduct(product)}
       />
-      {selectedProduct ? <Text>Selected Product</Text> : null}
     </Box>
   );
 }
