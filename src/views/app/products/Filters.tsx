@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Icon } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
 import Panel from '@/components/Panel';
 
@@ -11,8 +11,12 @@ import {
   SIZES,
 } from '@/data/products';
 
+import Colors from '@/theme/colors';
+
 import ColorPicker from './ColorPicker';
 import PricePicker from './PricePicker';
+
+const { abloBlue } = Colors;
 
 type Option = {
   name: string;
@@ -97,23 +101,29 @@ type Filters = {
   collections?: string[];
   genders?: string[];
   brands?: string[];
-  price: {
-    min: number;
-    max: number;
-  };
+  price: number[];
 };
 
 type Props = {
   filters: Filters;
+  onApply: () => void;
   onUpdate: (updates: any) => void;
 };
 
-const Filters = ({ filters, onUpdate }: Props) => {
-  const { brands, clothingTypes, collections, fits, genders, sizes, colors } =
-    filters || {};
+const Filters = ({ filters, onApply, onUpdate }: Props) => {
+  const {
+    brands,
+    clothingTypes,
+    collections,
+    fits,
+    genders,
+    sizes,
+    colors,
+    price,
+  } = filters || {};
 
   return (
-    <Box>
+    <Box paddingBottom="38px" w="100%">
       <Multiselect
         name="Sizes Available"
         options={SIZES.map((size) => ({ value: size, name: size }))}
@@ -161,9 +171,23 @@ const Filters = ({ filters, onUpdate }: Props) => {
         <PricePicker
           max={100}
           min={0}
-          onChange={(min, max) => onUpdate({ price: { min, max } })}
+          onChange={(value) => onUpdate({ price: value })}
+          value={price}
         />
       </Panel>
+      <Flex align="center" justify="center" w="100%">
+        <Button
+          bg={abloBlue}
+          borderRadius="50px"
+          color="#FFFFFF"
+          h="40px"
+          mt="16px"
+          onClick={onApply}
+          w="361px"
+        >
+          Apply Filters
+        </Button>
+      </Flex>
     </Box>
   );
 };

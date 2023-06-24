@@ -41,12 +41,36 @@ type Product = {
 
 type Props = {
   onSelectedProduct: (product: Product) => void;
+  products: Product[];
 };
 
 type QuickFiltersBarProps = {
   selectedQuickFilter: string;
   onSelectedQuickFilter: (filter: string) => void;
 };
+
+const matchesClothingType = (types, product) =>
+  !types.length || types.find((type) => type.includes(product.name));
+
+const matchesFit = (fits, product) =>
+  !fits.length || fits.find((fit) => fit.includes(product.name));
+
+const matchesPrice = ([min, max], product) => {
+  const { price } = product;
+
+  return price >= min && price <= max;
+};
+
+const getProductsMatchingFilters = (filters) =>
+  PRODUCTS.filter((product) => {
+    const { clothingTypes = [], fits = [], price: priceRange } = filters;
+
+    return (
+      matchesClothingType(clothingTypes, product) &&
+      matchesFit(fits, product) &&
+      matchesPrice(priceRange, product)
+    );
+  });
 
 const QuickFiltersBar = ({
   selectedQuickFilter,
@@ -170,8 +194,8 @@ const ProductDetails = ({ product }: { product: Product }) => {
   );
 };
 
-const ProductsList = ({ onSelectedProduct }: Props) => {
-  const chunks = chunk(PRODUCTS, 2);
+const ProductsList = ({ products, onSelectedProduct }: Props) => {
+  const chunks = chunk(products, 2);
 
   return (
     <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
@@ -249,9 +273,11 @@ export default function ProductsPage() {
   );
 
   const [areFiltersVisible, setFiltersVisible] = useState(true);
-  const [filters, setFilters] = useState({ price: { min: 20, max: 100 } });
+  const [filters, setFilters] = useState({ price: [20, 100] });
 
   const [selectedQuickFilter, setSelectedQuickFilter] = useState();
+
+  const products = getProductsMatchingFilters(filters);
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
@@ -280,6 +306,11 @@ export default function ProductsPage() {
       {areFiltersVisible ? (
         <Filters
           filters={filters}
+          onApply={() => {
+            setFiltersVisible(false);
+
+            setSelectedProduct(null);
+          }}
           onUpdate={(updates) => setFilters({ ...filters, ...updates })}
         />
       ) : (
@@ -293,6 +324,7 @@ export default function ProductsPage() {
           />
           <ProductsList
             onSelectedProduct={(product) => setSelectedProduct(product)}
+            products={products}
           />
         </Box>
       )}

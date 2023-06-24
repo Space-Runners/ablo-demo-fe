@@ -222,7 +222,6 @@ export default PRODUCTS;
 export const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 export const CLOTHING_TYPES = [
-  'All',
   'Popular',
   'Branded',
   'T-Shirts',

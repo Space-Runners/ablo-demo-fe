@@ -10,24 +10,42 @@ import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
-type PricePicker = {
+type Props = {
   min: number;
   max: number;
-  onChange: (min: number, max: number) => void;
+  onChange: (val: number[]) => void;
+  value: number[];
 };
 
-const PricePicker = ({ min, max, onChange }) => {
+const PriceTag = ({ price }) => (
+  <Text
+    as="b"
+    fontFamily="Roboto Condensed"
+    fontSize="md"
+    fontWeight={700}
+    position="absolute"
+    top="13px"
+  >
+    ${price}
+  </Text>
+);
+
+const PricePicker = ({ onChange, value }: Props) => {
   return (
-    <RangeSlider aria-label={['min', 'max']} defaultValue={[0, max]}>
+    <RangeSlider
+      aria-label={['min', 'max']}
+      onChange={(val) => onChange(val)}
+      value={value}
+    >
       <RangeSliderTrack bg="#D4D4D3" h="2px">
         <RangeSliderFilledTrack bg={abloBlue} />
       </RangeSliderTrack>
       <RangeSliderThumb bg={abloBlue} index={0} position="relative">
-        <Text as="b" position="absolute" top="13px">
-          Hey
-        </Text>
+        <PriceTag price={value[0]} />
       </RangeSliderThumb>
-      <RangeSliderThumb bg={abloBlue} index={1} />
+      <RangeSliderThumb bg={abloBlue} index={1} position="relative">
+        <PriceTag price={value[1]} />
+      </RangeSliderThumb>
     </RangeSlider>
   );
 };
