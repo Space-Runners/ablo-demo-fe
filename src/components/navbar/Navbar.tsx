@@ -18,8 +18,8 @@ const IconBack = () => (
     <path
       d="M20 12L4 12M4 12L10 6M4 12L10 18"
       stroke="white"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </Icon>
 );
@@ -46,7 +46,7 @@ export default function Navbar(props: Props) {
     <Box>
       <Flex
         align="flex-end"
-        backgroundColor={abloBlue}
+        backgroundColor="#000000"
         fontSize="md"
         h="100px"
         justify="space-between"
@@ -85,13 +85,14 @@ export default function Navbar(props: Props) {
       {action ? (
         <Flex
           align="center"
+          bg="#FFFFFF"
           height="73px"
           borderBottom="1px solid #D4D4D3"
           justify={onNext ? 'space-between' : 'flex-start'}
           padding="20px 8px 20px 14px"
         >
           <Text
-            color={abloBlue}
+            color="#000000"
             fontFamily="Roboto Condensed"
             fontSize="22px"
             fontWeight={700}

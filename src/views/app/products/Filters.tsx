@@ -12,8 +12,8 @@ import {
 } from '@/data/products';
 
 import Colors from '@/theme/colors';
+import ColorPicker from '@/components/ColorPicker';
 
-import ColorPicker from './ColorPicker';
 import PricePicker from './PricePicker';
 
 const { abloBlue } = Colors;

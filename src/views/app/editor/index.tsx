@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Box, Flex, VStack } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
@@ -10,10 +10,9 @@ import { isEmpty } from 'lodash';
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
 
-import { UndoButton, RedoButton } from './controls/UndoRedoButtons';
 import ButtonDelete from './controls/ButtonDelete';
-
 import Toolbar from './controls/Toolbar';
+import IconEmptyState from './icons/EmptyState';
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
@@ -42,7 +41,7 @@ export default function ImageEditor() {
     PRODUCTS[0].variants[0].name
   );
 
-  const [orientation, setOrientation] = useState('FRONT');
+  const [selectedSide, setSelectedSide] = useState('Front');
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
@@ -209,34 +208,35 @@ export default function ImageEditor() {
 
   const { urlPrefix } = selectedProduct;
 
-  console.log('Orientation', orientation);
-
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${orientation}.png`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png`;
 
   return (
     <Box h="100%" w="100%">
       <Navbar
-        action="Create your design"
+        action="Design generation"
         onNext={() => null}
         onSignUp={handleSignUp}
-        title="Design generation"
+        title="Create your design"
       />
       <Flex
         align="center"
-        bg="#292929"
+        bg="#FFFFFF"
         flexDirection="column"
+        h="calc(100% - 163px)"
         position="relative"
         w="100%"
       >
         <Toolbar
           isDrawingAreaVisible={isDrawingAreaVisible}
-          onSettingsClick={() => history.push('/app/products')}
           onToggleDrawingArea={() =>
             setDrawingAreaVisible(!isDrawingAreaVisible)
           }
-          onToggleOrientation={() =>
-            setOrientation(orientation === 'FRONT' ? 'BACK' : 'FRONT')
-          }
+          onSelectedSide={(side) => setSelectedSide(side)}
+          onSelectedVariant={(variant) => setSelectedVariant(variant)}
+          onUndo={isEmpty(undoStack) ? null : handleUndo}
+          onRedo={isEmpty(redoStack) ? null : handleRedo}
+          selectedSide={selectedSide}
+          selectedVariant={selectedVariant}
         />
         <Box position="relative">
           <img src={variantImageUrl} width={300} />
@@ -253,15 +253,24 @@ export default function ImageEditor() {
             <div className="canvas-container">
               <canvas id="canvas" ref={canvas}></canvas>
             </div>
+            <Flex
+              align="center"
+              as="button"
+              direction="column"
+              justify="center"
+              onClick={() => null}
+              position="absolute"
+              top="30%"
+              w="100%"
+              textAlign="center"
+            >
+              <IconEmptyState />
+              <Text color="#555251" fontSize="sm" mt="17px">
+                Select a style to begin
+              </Text>
+            </Flex>
           </Box>
         </Box>
-        <VStack position="absolute" right="12px" top="45%" spacing="20px">
-          <UndoButton disabled={isEmpty(undoStack)} onClick={handleUndo} />
-          <RedoButton
-            disabled={isEmpty(redoStack)}
-            onClick={handleRedo}
-          ></RedoButton>
-        </VStack>
         <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
           onAddText={handleAddText}

@@ -1,71 +1,130 @@
-import { Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack } from '@chakra-ui/react';
 
-import IconToggleOrientation from './icons/IconToggleGarment';
+import MiniFilterBar from '@/components/MiniFilterBar';
+import ColorPicker from '@/components/ColorPicker';
+
+import IconToggleSidePicker from './icons/IconToggleSide';
+import IconToggleColorPicker from './icons/IconToggleColorPicker';
+import IconUndo from './icons/IconUndo';
+import IconRedo from './icons/IconRedo';
+
 import {
   IconDrawingArea,
   IconDrawingAreaDisabled,
 } from './icons/IconDrawingArea';
-import IconSettings from './icons/IconSettings';
+import { useState } from 'react';
 
-type Props = {
-  isDrawingAreaVisible;
-  onToggleOrientation: () => void;
-  onToggleDrawingArea: () => void;
-  onSettingsClick: () => void;
-};
+const SIDES = ['Front', 'Back'];
 
-const ToolbarButton = ({ icon, onClick }) => (
+const ToolbarButton = ({
+  icon,
+  isSelected,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  isSelected?: boolean;
+  onClick: () => void;
+}) => (
   <Button
-    background="#383838"
-    border="1px solid #484848"
-    borderRadius="4px"
-    height="42px"
+    background={isSelected ? '#000000' : '#F9F9F7'}
+    borderRadius="50%"
+    height="40px"
     onClick={onClick}
-    padding="10px"
-    width="42px"
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
+    padding="8px"
+    width="40px"
   >
     {icon}
   </Button>
 );
 
+type Props = {
+  isDrawingAreaVisible: boolean;
+  onSelectedSide: (side: string) => void;
+  onSelectedVariant: (variant: string) => void;
+  onToggleDrawingArea: () => void;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  selectedSide: string;
+  selectedVariant: string;
+};
+
 export default function Toolbar({
   isDrawingAreaVisible,
+  onSelectedSide,
+  onSelectedVariant,
   onToggleDrawingArea,
-  onToggleOrientation,
-  onSettingsClick,
+  onUndo,
+  onRedo,
+  selectedSide,
+  selectedVariant,
 }: Props) {
+  const [isSidePickerVisible, setSidePickerVisible] = useState(false);
+  const [isColorPickerVisible, setColorPickerVisible] = useState(false);
+
   return (
-    <HStack
-      justify="space-between"
-      padding="17px 12px 12px 17px"
-      spacing="20px"
-      w="100%"
-    >
-      <HStack spacing="11px">
-        <ToolbarButton
-          icon={<IconToggleOrientation />}
-          onClick={onToggleOrientation}
-        />
-        <ToolbarButton
-          icon={
-            isDrawingAreaVisible ? (
-              <IconDrawingArea />
-            ) : (
-              <IconDrawingAreaDisabled />
-            )
-          }
-          onClick={onToggleDrawingArea}
-        />
+    <Box p="0px 14px" w="100%">
+      <HStack
+        mb="20px"
+        justify="space-between"
+        pt="17px"
+        spacing="20px"
+        w="100%"
+      >
+        <HStack spacing="22px">
+          <ToolbarButton
+            icon={<IconToggleSidePicker isSelected={isSidePickerVisible} />}
+            isSelected={isSidePickerVisible}
+            onClick={() => {
+              setSidePickerVisible(!isSidePickerVisible);
+              setColorPickerVisible(false);
+            }}
+          />
+          <ToolbarButton
+            icon={
+              isDrawingAreaVisible ? (
+                <IconDrawingArea />
+              ) : (
+                <IconDrawingAreaDisabled />
+              )
+            }
+            isSelected={!isDrawingAreaVisible}
+            onClick={onToggleDrawingArea}
+          />
+          <ToolbarButton
+            icon={<IconToggleColorPicker isSelected={isColorPickerVisible} />}
+            isSelected={isColorPickerVisible}
+            onClick={() => {
+              setColorPickerVisible(!isColorPickerVisible);
+              setSidePickerVisible(false);
+            }}
+          />
+        </HStack>
+        <HStack spacing="14px">
+          {onUndo ? (
+            <ToolbarButton icon={<IconUndo />} onClick={onUndo} />
+          ) : null}
+          {onRedo ? (
+            <ToolbarButton icon={<IconRedo />} onClick={onRedo} />
+          ) : null}
+        </HStack>
       </HStack>
-      <ToolbarButton icon={<IconSettings />} onClick={onSettingsClick} />
-    </HStack>
+      {isSidePickerVisible ? (
+        <Box mb="20px">
+          <MiniFilterBar
+            options={SIDES}
+            selectedValue={selectedSide}
+            onChange={onSelectedSide}
+          />
+        </Box>
+      ) : null}
+      {isColorPickerVisible ? (
+        <Box mb="20px">
+          <ColorPicker
+            onSelectedVariants={(values) => onSelectedVariant(values[0])}
+            selectedVariants={[selectedVariant]}
+          />
+        </Box>
+      ) : null}
+    </Box>
   );
 }

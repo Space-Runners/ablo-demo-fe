@@ -27,13 +27,7 @@ export default function Dashboard() {
       flexDirection="column"
       w={{ base: '100%' }}
     >
-      <Box
-        backgroundColor="#2b2a2a"
-        h="calc(100% - 103px)"
-        mx="auto"
-        flex={1}
-        w="100%"
-      >
+      <Box backgroundColor="#2b2a2a" h="100%" mx="auto" flex={1} w="100%">
         <Switch>
           {getRoutes(routes)}
           <Route path={`/products`} component={ProductsPage} />

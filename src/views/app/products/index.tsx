@@ -6,19 +6,16 @@ import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
+import MiniFilterBar from '@/components/MiniFilterBar';
 import Navbar from '@/components/navbar/Navbar';
 import Panel from '@/components/Panel';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
+import ColorPicker from '@/components/ColorPicker';
 
-import Colors from '@/theme/colors';
-
-import ColorPicker from './ColorPicker';
 import Filters from './Filters';
 
 import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
-
-const { abloBlue } = Colors;
 
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -44,11 +41,6 @@ type Props = {
   products: Product[];
 };
 
-type QuickFiltersBarProps = {
-  selectedQuickFilter: string;
-  onSelectedQuickFilter: (filter: string) => void;
-};
-
 const matchesClothingType = (types, product) =>
   !types.length || types.find((type) => type.includes(product.name));
 
@@ -72,37 +64,6 @@ const getProductsMatchingFilters = (filters) =>
     );
   });
 
-const QuickFiltersBar = ({
-  selectedQuickFilter,
-  onSelectedQuickFilter,
-}: QuickFiltersBarProps) => (
-  <HStack mt="20px" overflowX="auto" paddingLeft="14px" spacing="16px" w="100%">
-    {CLOTHING_TYPES.map((filter) => (
-      <Button
-        bg="transparent"
-        color={selectedQuickFilter === filter ? '#000000' : '#6A6866'}
-        h="30px"
-        flexShrink={0}
-        fontWeight={selectedQuickFilter === filter ? '600' : '400'}
-        key={filter}
-        onClick={() => onSelectedQuickFilter(filter)}
-        padding={0}
-      >
-        {selectedQuickFilter === filter ? (
-          <Box
-            bg={abloBlue}
-            borderRadius="50%"
-            mr="8px"
-            h="11px"
-            w="11px"
-          ></Box>
-        ) : null}
-        {filter}
-      </Button>
-    ))}
-  </HStack>
-);
-
 const ProductDetails = ({ product }: { product: Product }) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
@@ -118,6 +79,8 @@ const ProductDetails = ({ product }: { product: Product }) => {
     variants,
   } = product;
 
+  console.log('Variant', selectedVariant.name);
+
   return (
     <Box borderBottom="1px solid #D9D9D9">
       <Flex
@@ -131,7 +94,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
       >
         <Image
           h={216}
-          src={`${urlPrefix}_${variants[0].name}_FRONT.png`}
+          src={`${urlPrefix}_${selectedVariant.name}_FRONT.png`}
           alt={name}
         />
       </Flex>
@@ -275,7 +238,7 @@ export default function ProductsPage() {
   const [areFiltersVisible, setFiltersVisible] = useState(true);
   const [filters, setFilters] = useState({ price: [20, 100] });
 
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState();
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
   const products = getProductsMatchingFilters(filters);
 
@@ -318,9 +281,10 @@ export default function ProductsPage() {
           {selectedProduct ? (
             <ProductDetails product={selectedProduct || PRODUCTS[0]} />
           ) : null}
-          <QuickFiltersBar
-            selectedQuickFilter={selectedQuickFilter}
-            onSelectedQuickFilter={setSelectedQuickFilter}
+          <MiniFilterBar
+            options={CLOTHING_TYPES}
+            selectedValue={selectedQuickFilter}
+            onChange={setSelectedQuickFilter}
           />
           <ProductsList
             onSelectedProduct={(product) => setSelectedProduct(product)}

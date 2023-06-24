@@ -1586,9 +1586,9 @@ else {
     'opacity',
     'stroke',
     'stroke-dasharray',
-    'stroke-linecap',
+    'strokeLinecap',
     'stroke-dashoffset',
-    'stroke-linejoin',
+    'strokeLinejoin',
     'stroke-miterlimit',
     'stroke-opacity',
     'stroke-width',
@@ -1596,7 +1596,7 @@ else {
     'paint-order',
     'vector-effect',
     'instantiated_by_use',
-    'clip-path',
+    'clipPath',
   ]),
   (fabric.DPI = 96),
   (fabric.reNum = '(?:[-+]?(?:\\d+|\\d*\\.\\d+)(?:[eE][-+]?\\d+)?)'),
@@ -3551,15 +3551,15 @@ else {
         'paint-order': 'paintFirst',
         'stroke-dasharray': 'strokeDashArray',
         'stroke-dashoffset': 'strokeDashOffset',
-        'stroke-linecap': 'strokeLineCap',
-        'stroke-linejoin': 'strokeLineJoin',
+        strokeLinecap: 'strokeLineCap',
+        strokeLinejoin: 'strokeLineJoin',
         'stroke-miterlimit': 'strokeMiterLimit',
         'stroke-opacity': 'strokeOpacity',
         'stroke-width': 'strokeWidth',
         'text-decoration': 'textDecoration',
         'text-anchor': 'textAnchor',
         opacity: 'opacity',
-        'clip-path': 'clipPath',
+        clipPath: 'clipPath',
         'clip-rule': 'clipRule',
         'vector-effect': 'strokeUniform',
       },
@@ -5751,7 +5751,7 @@ else {
             this._setSVGHeader(i, t),
             this.clipPath &&
               i.push(
-                '<g clip-path="url(#' + this.clipPath.clipPathId + ')" >\n'
+                '<g clipPath="url(#' + this.clipPath.clipPathId + ')" >\n'
               ),
             this._setSVGBgOverlayColor(i, 'background'),
             this._setSVGBgOverlayImage(i, 'backgroundImage', e),
@@ -9914,13 +9914,13 @@ else {
           'stroke-dasharray: ',
           r,
           '; ',
-          'stroke-linecap: ',
+          'strokeLinecap: ',
           s,
           '; ',
           'stroke-dashoffset: ',
           n,
           '; ',
-          'stroke-linejoin: ',
+          'strokeLinejoin: ',
           o,
           '; ',
           'stroke-miterlimit: ',
@@ -9985,7 +9985,7 @@ else {
         return [
           this.id ? 'id="' + this.id + '" ' : '',
           this.clipPath
-            ? 'clip-path="url(#' + this.clipPath.clipPathId + ')" '
+            ? 'clipPath="url(#' + this.clipPath.clipPathId + ')" '
             : '',
         ].join('');
       },
@@ -11443,7 +11443,7 @@ else {
                   return t.join(' ');
                 })
                 .join(' '),
-              '" stroke-linecap="round" ',
+              '" strokeLinecap="round" ',
               '/>\n',
             ];
           },
@@ -12280,7 +12280,7 @@ else {
                     '" />\n',
                   '</clipPath>\n'
                 ),
-                  (s = ' clip-path="url(#imageCrop_' + o + ')" ');
+                  (s = ' clipPath="url(#imageCrop_' + o + ')" ');
               }
               if (
                 (i.push(
