@@ -8,19 +8,23 @@ import {
   Flex,
   HStack,
   Image,
-  Tag,
   Text,
 } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
+import Panel from '@/components/Panel';
 
 import PRODUCTS from '@/data/products';
+import Colors from '@/theme/colors';
 
-import { IconDown, IconUp } from './Icons';
+import ColorPicker from './ColorPicker';
+import Filters from './Filters';
 
-import IconEarth from './images/Earth.png';
+import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
+
+const { abloBlue } = Colors;
 
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
@@ -47,10 +51,6 @@ type Props = {
 
 const Button = (props) => (
   <ChakraButton
-    borderRadius="6px"
-    h="40px"
-    padding="8px"
-    w="168px"
     _hover={{ bg: '' }}
     _active={{
       bg: '',
@@ -63,38 +63,43 @@ const Button = (props) => (
   ></ChakraButton>
 );
 
-const ColorPicker = ({ selectedVariant, onSelectedVariant, variants }) => (
-  <HStack align="center" mt="37px" overflowX="auto" spacing="20px">
-    {variants.map((variant) => {
-      const { name, color } = variant;
-      const isSelected = name === selectedVariant.name;
+type QuickFiltersBarProps = {
+  selectedQuickFilter: string;
+  onSelectedQuickFilter: (filter: string) => void;
+};
 
-      const size = `${isSelected ? 35 : 25}px`;
-
-      console.log('Color', name, selectedVariant);
-
-      return (
-        <Button
-          bg={color}
-          h={size}
-          flexShrink="0"
-          key={name}
-          padding="0"
-          w={size}
-          borderRadius="50%"
-          marginLeft="20px"
-          marginRight="0"
-          minWidth="auto"
-          onClick={() => onSelectedVariant(variant)}
-        />
-      );
-    })}
+const QuickFiltersBar = ({
+  selectedQuickFilter,
+  onSelectedQuickFilter,
+}: QuickFiltersBarProps) => (
+  <HStack mt="20px" overflowX="auto" paddingLeft="14px" spacing="16px" w="100%">
+    {CLOTHING_TYPES.map((filter) => (
+      <Button
+        bg="transparent"
+        color={selectedQuickFilter === filter ? '#000000' : '#6A6866'}
+        h="30px"
+        flexShrink="0"
+        fontWeight={selectedQuickFilter === filter ? '600' : '400'}
+        key={filter}
+        onClick={() => onSelectedQuickFilter(filter)}
+        padding={0}
+      >
+        {selectedQuickFilter === filter ? (
+          <Box
+            bg={abloBlue}
+            borderRadius="50%"
+            mr="8px"
+            h="11px"
+            w="11px"
+          ></Box>
+        ) : null}
+        {filter}
+      </Button>
+    ))}
   </HStack>
 );
 
 const ProductDetails = ({ product }: { product: Product }) => {
-  const [areDetailsOpen, setDetailsOpen] = useState(false);
-
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
   const {
@@ -110,26 +115,14 @@ const ProductDetails = ({ product }: { product: Product }) => {
   } = product;
 
   return (
-    <Box bg="#292929" padding="51px 18px 28px 18px">
-      {null && (
-        <Box bg="#ffffff" h="23px" textAlign="center" w="100%">
-          <Text
-            color="#212121"
-            fontSize="sm"
-            fontWeight={700}
-            textTransform="uppercase"
-          >
-            Popular
-          </Text>
-        </Box>
-      )}
+    <Box borderBottom="1px solid #D9D9D9">
       <Flex
         align="center"
-        bg="#212121"
-        borderRadius="8px"
+        bg="#F9F9F7"
         direction="column"
+        justify="center"
         margin="0 auto"
-        h="216px"
+        h="271px"
         w="100%"
       >
         <Image
@@ -138,99 +131,60 @@ const ProductDetails = ({ product }: { product: Product }) => {
           alt={name}
         />
       </Flex>
-      <Flex color="#ffffff" justify="space-between" mt="39px">
-        <Box>
-          <Text fontSize="md" textTransform="uppercase">
-            Spaarkd
-          </Text>
-          <Text fontSize="xl">
+      <Box padding="24px 14px">
+        <Text color="#959392" fontSize="sm" mb="13px">
+          SPAARKD
+        </Text>
+        <Flex color="#000000" justify="space-between" mb="16px">
+          <Text fontSize="md">
             {fit} {name}
           </Text>
-          <Text fontSize="md" opacity={0.4}>
-            {fabric}
-          </Text>
-        </Box>
-        <Box>
-          <Text fontSize="2xl" fontWeight={600} textAlign="right">
+          <Text fontSize="md" fontWeight={700}>
             ${price}.00
           </Text>
-          <Box
-            border="1px solid #ffffff"
-            borderRadius="5px"
-            mt="8px"
-            padding="0 8px"
-          >
-            <Text fontSize="10px" fontWeight={600} lineHeight="20px">
-              MIN. ORDER #: 1
+        </Flex>
+        <Flex color="#959392" justify="space-between" mb="23px">
+          <Text fontSize="sm">{fabric}</Text>
+          <Box bg="#F9F9F7" borderRadius="4px" padding="0 8px">
+            <Text bg="#F9F9F7" fontSize="xs" padding="4px 6px">
+              Min. Order #: 1
             </Text>
           </Box>
-        </Box>
-      </Flex>
-      <Flex justify="space-between" mt="8px">
-        <HStack spacing={0}>
-          {SIZES.map((size, index) => (
+        </Flex>
+        <Text color="#000000" fontSize="sm" mb="20px">
+          {tags.join(' / ')}
+        </Text>
+        <HStack mb="20px" spacing="10px">
+          {SIZES.map((size) => (
             <Flex
               align="center"
-              border="1px solid #ffffff"
-              borderRightWidth={index === 0 ? 0 : '1px'}
-              h="25px"
+              border="1px solid #6A6866"
+              borderRadius="4px"
+              h="34px"
               key={size}
               justify="center"
-              w="25px"
+              w="34px"
             >
-              <Text color="#ffffff" fontSize="11px">
+              <Text color="#6A6866" fontSize="sm">
                 {size}
               </Text>
             </Flex>
           ))}
         </HStack>
-      </Flex>
-      <HStack mt="16px" overflowX="auto" spacing="12px">
-        {tags.map((tag) => (
-          <Tag
-            bg="#FFFFFF"
-            border="1px solid #CCCCCC"
-            h="25px"
-            key={tag}
-            padding="0 12px"
-          >
-            <Text
-              as="b"
-              color="#212121"
-              fontSize="sm"
-              textTransform="uppercase"
-            >
-              {tag}
-            </Text>
-          </Tag>
-        ))}
-      </HStack>
-      <ColorPicker
-        onSelectedVariant={setSelectedVariant}
-        selectedVariant={selectedVariant}
-        variants={product.variants}
-      />
-      <Flex mt="15px">
-        <Button
-          bg="transparent"
-          border="1px solid #D9D9D9"
-          borderRadius="6px"
-          onClick={() => setDetailsOpen(!areDetailsOpen)}
-          padding="8px"
-          w="100%"
-        >
-          <Text color="#FFFFFF" fontSize="md" mr="8px">
-            More info
-          </Text>
-          {areDetailsOpen ? <IconUp /> : <IconDown />}
-        </Button>
-      </Flex>
-      {areDetailsOpen ? (
-        <Box color="#FFFFFF" fontSize="md" mt="30px">
+        <ColorPicker
+          onSelectedVariant={setSelectedVariant}
+          selectedVariant={selectedVariant}
+          variants={product.variants}
+        />
+      </Box>
+      <Panel title="More Info">
+        <Box color="#000000" fontSize="md" padding="0 15px 22px 14px">
           <Text as="b">Made in {madeIn}</Text>
-          <Text mt="24px">{description}</Text>
+          <Text fontWeight={300} mt="8px">
+            {description}
+          </Text>
         </Box>
-      ) : null}
+      </Panel>
     </Box>
   );
 };
@@ -239,9 +193,9 @@ const ProductsList = ({ onSelectedProduct }: Props) => {
   const chunks = chunk(PRODUCTS, 2);
 
   return (
-    <Box bg="#ffffff" padding="41px 16px 45px 16px" w="100%">
+    <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
       {chunks.map((chunk, index) => (
-        <Flex key={index} mb="8px">
+        <Flex key={index} mb="24px">
           {chunk.map((product, index) => {
             const { fabric, fit, name, price, variants, urlPrefix } = product;
 
@@ -249,52 +203,53 @@ const ProductsList = ({ onSelectedProduct }: Props) => {
 
             return (
               <Box
-                border="1px solid #EAE9E9"
-                borderRadius="5px"
+                color="#6A6866"
                 flex="1"
                 key={index}
                 marginLeft={`${index === 0 ? 0 : 8}px`}
                 onClick={() => onSelectedProduct(product)}
-                padding="6px 12px"
                 position="relative"
               >
-                <Image
-                  h="20px"
-                  src={IconEarth}
-                  w="20px"
-                  position="absolute"
-                  top="4px"
-                  right="4px"
-                />
-                <Flex align="center" h="180px" mb="16px" justify="center">
+                <IconSustainable position="absolute" top="8px" right="8px" />
+                <Flex
+                  align="center"
+                  bg="#F9F9F7"
+                  borderRadius="10px"
+                  h="180px"
+                  mb="16px"
+                  justify="center"
+                  padding="16px 8px"
+                >
                   <Image
                     h={160}
                     src={`${urlPrefix}_${variant.name}_FRONT.png`}
                     alt={name}
                   />
                 </Flex>
-                <Text
-                  as="b"
-                  display="block"
-                  fontSize="10px"
-                  lineHeight="20px"
-                  textTransform="uppercase"
-                >
+                <Text display="block" fontSize="12px" textTransform="uppercase">
                   Spaarkd
                 </Text>
-                <Text as="b" fontSize="sm" lineHeight="20px">
+                <Text
+                  color="#000000"
+                  fontSize="md"
+                  fontWeight={500}
+                  lineHeight="20px"
+                >
                   {fit} {name}
                 </Text>
-                <Text
-                  color="rgba(33, 33, 33, 0.5)"
-                  fontSize="10px"
-                  lineHeight="18px"
-                >
-                  {fabric}
-                </Text>
-                <Text color="#212121" fontSize="sm">
-                  <Text as="b">${price}.00</Text> (Base Price)
-                </Text>
+                <Text fontSize="xs">{fabric}</Text>
+                <Flex align="center" fontSize="xs">
+                  <Text
+                    as="b"
+                    color="#000000"
+                    fontFamily="Roboto Condensed"
+                    fontSize="md"
+                    mr="4px"
+                  >
+                    ${price}.00
+                  </Text>{' '}
+                  (Base Price)
+                </Flex>
               </Box>
             );
           })}
@@ -312,6 +267,11 @@ export default function ProductsPage() {
     PRODUCTS[0]
   );
 
+  const [areFiltersVisible, setFiltersVisible] = useState(true);
+  const [filters, setFilters] = useState({});
+
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState();
+
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
@@ -322,12 +282,39 @@ export default function ProductsPage() {
         onNextDisabled={!selectedProduct}
         title="Product Selection"
       />
-      {selectedProduct ? (
-        <ProductDetails product={selectedProduct || PRODUCTS[0]} />
-      ) : null}
-      <ProductsList
-        onSelectedProduct={(product) => setSelectedProduct(product)}
-      />
+      <Button
+        align="center"
+        borderBottom="1px solid #D4D4D3"
+        borderRadius={0}
+        display="flex"
+        height="50px"
+        justifyContent="space-between"
+        onClick={() => setFiltersVisible(!areFiltersVisible)}
+        padding="10px 14px"
+        w="100%"
+      >
+        <Text fontWeight={400}>FILTERS</Text>
+        {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
+      </Button>
+      {areFiltersVisible ? (
+        <Filters
+          filters={filters}
+          onUpdate={(updates) => setFilters({ ...filters, ...updates })}
+        />
+      ) : (
+        <Box>
+          {selectedProduct ? (
+            <ProductDetails product={selectedProduct || PRODUCTS[0]} />
+          ) : null}
+          <QuickFiltersBar
+            selectedQuickFilter={selectedQuickFilter}
+            onSelectedQuickFilter={setSelectedQuickFilter}
+          />
+          <ProductsList
+            onSelectedProduct={(product) => setSelectedProduct(product)}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

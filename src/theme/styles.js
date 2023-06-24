@@ -1,4 +1,5 @@
 import { mode } from '@chakra-ui/theme-tools';
+
 export const globalStyles = {
   colors: {
     brand: {
@@ -85,7 +86,7 @@ export const globalStyles = {
       body: {
         overflowX: 'hidden',
         bg: mode('secondaryGray.300', 'navy.900')(props),
-        fontFamily: 'Poppins',
+        fontFamily: 'Roboto',
         fontWeight: 400,
         letterSpacing: '-0.5px',
       },

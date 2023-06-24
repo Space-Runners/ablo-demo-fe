@@ -14,11 +14,10 @@ import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import '@fontsource/poppins/400.css';
-import '@fontsource/poppins/600.css';
-
+import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
+import '@fontsource/roboto-condensed/700.css';
 
 import config from './config';
 

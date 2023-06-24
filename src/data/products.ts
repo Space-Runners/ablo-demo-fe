@@ -1,6 +1,6 @@
 const BUCKET = 'https://sr-demo-products.s3.eu-central-1.amazonaws.com';
 
-const variants = [
+export const variants = [
   {
     name: 'Blanco',
     color: '#FAFAFA',
@@ -218,3 +218,24 @@ const PRODUCTS = [
 ];
 
 export default PRODUCTS;
+
+export const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+export const CLOTHING_TYPES = [
+  'All',
+  'Popular',
+  'Branded',
+  'T-Shirts',
+  'Sweaters',
+  'Hoodies',
+  'Rugby shirts',
+  'Shorts',
+];
+
+export const FITS = ['Regular', 'Oversized', 'Cropped'];
+
+export const COLLECTIONS = ['Best Sellers', 'Trending', 'Most Recent'];
+
+export const GENDERS = ['Male', 'Female', 'Genderless'];
+
+export const BRANDS = ['Spaarkd'];
