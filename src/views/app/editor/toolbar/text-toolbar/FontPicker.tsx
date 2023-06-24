@@ -12,14 +12,6 @@ const Button = (props) => {
       background="#000000"
       borderRadius="20px"
       border={isSelected ? '1px solid #ffffff' : 'none'}
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
       {...rest}
     />
   );

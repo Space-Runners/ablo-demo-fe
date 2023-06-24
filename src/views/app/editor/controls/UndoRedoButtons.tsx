@@ -38,14 +38,6 @@ const Button = ({ icon, ...rest }) => (
     height="42px"
     padding="10px 16px"
     width="42px"
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
     {...rest}
   >
     {icon}

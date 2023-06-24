@@ -12,40 +12,19 @@ export const buttonStyles = {
         boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
         transition: '.25s all ease',
         boxSizing: 'border-box',
-        _hover: { background: 'red' },
-        _active: {
-          background: 'red',
-          boxShadow: 'none',
-        },
-        _focus: {
-          background: 'red',
-          boxShadow: 'none',
-        },
       },
       variants: {
         solid: () => ({
           borderRadius: '16px',
-          _hover: { background: 'red' },
-          _active: {
-            background: 'red',
-            boxShadow: 'none',
-          },
-          _focus: {
-            background: 'red',
-            boxShadow: 'none',
-          },
+          _hover: null,
+          _active: null,
+          _focus: null,
         }),
         outline: () => ({
           borderRadius: '16px',
-          _hover: { background: 'red' },
-          _active: {
-            background: 'red',
-            boxShadow: 'none',
-          },
-          _focus: {
-            background: 'red',
-            boxShadow: 'none',
-          },
+          _hover: null,
+          _active: null,
+          _focus: null,
         }),
         brand: (props) => ({
           bg: mode('brand.500', 'brand.400')(props),

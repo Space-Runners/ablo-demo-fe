@@ -1,35 +1,21 @@
-import { Button as ChakraButton, HStack } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import Colors from '@/theme/colors';
 
 import { variants } from '@/data/products';
 
 const { abloBlue } = Colors;
 
-type ColorPicker = {
+type Props = {
   isMulti?: boolean;
   selectedVariants?: string[];
   onSelectedVariants?: (values: string[]) => void;
 };
 
-const Button = (props) => (
-  <ChakraButton
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
-    {...props}
-  ></ChakraButton>
-);
-
 const ColorPicker = ({
   isMulti,
   selectedVariants = [],
   onSelectedVariants,
-}) => {
+}: Props) => {
   const toggleSelected = (value) => {
     let newSelected;
 
@@ -64,7 +50,7 @@ const ColorPicker = ({
                 : 'none'
             }
             h="24px"
-            flexShrink="0"
+            flexShrink={0}
             key={name}
             padding="0"
             w="24px"

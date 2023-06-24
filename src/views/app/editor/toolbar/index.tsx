@@ -49,14 +49,6 @@ const Button = (props) => (
     minWidth="auto"
     padding="0 8px"
     variant="ghost"
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
     {...props}
   />
 );

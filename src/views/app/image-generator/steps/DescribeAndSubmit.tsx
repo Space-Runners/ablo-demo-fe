@@ -1,14 +1,6 @@
 import { useState } from 'react';
 
-import {
-  Button as ChakraButton,
-  Flex,
-  Image,
-  Input,
-  VStack,
-  Wrap,
-  WrapItem,
-} from '@chakra-ui/react';
+import { Flex, Image, Input, VStack, Wrap, WrapItem } from '@chakra-ui/react';
 
 import { generateImage } from '@/api/image-generator';
 
@@ -113,14 +105,14 @@ export default function DescribeAndSubmit({ params }: Props) {
             placeholder="Add additional prompts"
             _placeholder={{ color: 'inherit' }}
           />
-          <ChakraButton
+          <Button
             colorScheme="purple"
             isLoading={waiting}
             ml={5}
             onClick={handleSubmit}
           >
             Submit
-          </ChakraButton>
+          </Button>
         </Flex>
         {image ? <Image src={image} /> : null}
       </VStack>

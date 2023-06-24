@@ -14,14 +14,6 @@ const Button = (props) => {
     <ChakraButton
       bg={isActive ? '#FFFFFF' : '#2A2A2A'}
       color={isActive ? '#212121' : '#FFFFFF'}
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
       fontSize="md"
       fontWeight={600}
       textTransform="uppercase"

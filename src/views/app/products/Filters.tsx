@@ -1,4 +1,4 @@
-import { Box, Button as ChakraButton, HStack, Icon } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon } from '@chakra-ui/react';
 
 import Panel from '@/components/Panel';
 
@@ -33,8 +33,6 @@ const IconCheckmark = () => (
     />
   </Icon>
 );
-
-const Button = (props) => <ChakraButton {...props} variant="outline" />;
 
 type MultiselectProps = {
   name: string;
@@ -107,7 +105,7 @@ type Filters = {
 
 type Props = {
   filters: Filters;
-  onUpdate: (updates: { [key in keyof Filters]: string[] }) => void;
+  onUpdate: (updates: any) => void;
 };
 
 const Filters = ({ filters, onUpdate }: Props) => {

@@ -14,14 +14,6 @@ const Button = (props) => {
       width={`${size}px`}
       height={`${size}px`}
       borderRadius="50%"
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
       {...rest}
     />
   );

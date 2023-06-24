@@ -2,21 +2,15 @@ import { useState } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
-import {
-  Box,
-  Button as ChakraButton,
-  Flex,
-  HStack,
-  Image,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
 import Panel from '@/components/Panel';
 
-import PRODUCTS from '@/data/products';
+import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
+
 import Colors from '@/theme/colors';
 
 import ColorPicker from './ColorPicker';
@@ -49,20 +43,6 @@ type Props = {
   onSelectedProduct: (product: Product) => void;
 };
 
-const Button = (props) => (
-  <ChakraButton
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
-    {...props}
-  ></ChakraButton>
-);
-
 type QuickFiltersBarProps = {
   selectedQuickFilter: string;
   onSelectedQuickFilter: (filter: string) => void;
@@ -78,7 +58,7 @@ const QuickFiltersBar = ({
         bg="transparent"
         color={selectedQuickFilter === filter ? '#000000' : '#6A6866'}
         h="30px"
-        flexShrink="0"
+        flexShrink={0}
         fontWeight={selectedQuickFilter === filter ? '600' : '400'}
         key={filter}
         onClick={() => onSelectedQuickFilter(filter)}
@@ -172,9 +152,10 @@ const ProductDetails = ({ product }: { product: Product }) => {
           ))}
         </HStack>
         <ColorPicker
-          onSelectedVariant={setSelectedVariant}
-          selectedVariant={selectedVariant}
-          variants={product.variants}
+          onSelectedVariants={([name]) =>
+            setSelectedVariant(variants.find((v) => v.name === name))
+          }
+          selectedVariants={[selectedVariant.name]}
         />
       </Box>
       <Panel title="More Info">
@@ -268,7 +249,7 @@ export default function ProductsPage() {
   );
 
   const [areFiltersVisible, setFiltersVisible] = useState(true);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({ price: { min: 20, max: 100 } });
 
   const [selectedQuickFilter, setSelectedQuickFilter] = useState();
 
@@ -283,7 +264,7 @@ export default function ProductsPage() {
         title="Product Selection"
       />
       <Button
-        align="center"
+        alignItems="center"
         borderBottom="1px solid #D4D4D3"
         borderRadius={0}
         display="flex"
