@@ -1,92 +1,79 @@
-import {
-  Box,
-  Flex,
-  Button,
-  HStack,
-  Icon,
-  Image,
-  Input as ChakraInput,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Image } from '@chakra-ui/react';
 
 import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
+import Button from '@/components/Button';
+
+import Colors from '@/theme/colors';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
+import AddSubject from './add-subject';
+import AddBackground from './add-background';
 
-const ENGINE_ID = 'stable-diffusion-xl-beta-v2-2-2';
+import LinkButton from './components/LinkButton';
+import IconSpark from './components/IconSpark';
+import IconShuffle from './components/IconShuffle';
 
-const IconGenerate = () => (
-  <Icon
-    width="22px"
-    height="22px"
-    viewBox="0 0 22 22"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M8 3L10.5 8.5L16 11L10.5 13.5L8 19L5.5 13.5L0 11L5.5 8.5L8 3ZM8 7.83L7 10L4.83 11L7 12L8 14.17L9 12L11.17 11L9 10L8 7.83ZM18 8L16.74 5.26L14 4L16.74 2.75L18 0L19.25 2.75L22 4L19.25 5.26L18 8ZM18 22L16.74 19.26L14 18L16.74 16.75L18 14L19.25 16.75L22 18L19.25 19.26L18 22Z"
-      fill="black"
-    />
-  </Icon>
-);
+import { Styles, MOODS, KEYWORD_SUGGESTIONS } from './styles';
 
-const Input = (props) => (
-  <ChakraInput
-    bg="#000000"
-    border="1px solid #383838"
-    borderRadius="4px"
-    color="#FFFFFF"
-    fontSize="sm"
-    fontWeight={400}
-    padding="8px"
-    {...props}
-  />
-);
+const { abloBlue } = Colors;
 
-const ButtonGenerate = (props) => (
-  <Button
-    bg="#EAEAEA"
-    border="1px solid #FFFFFF"
-    borderRadius="112px"
-    fontWeight={600}
-    fontSize="sm"
-    color="#212121"
-    height="40px"
-    leftIcon={<IconGenerate />}
-    padding="8px 16px"
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
-    {...props}
-  />
-);
+const getKeywordPrompts = (keywords, style) => {
+  const keywordsForStyle = KEYWORD_SUGGESTIONS[style];
+
+  return keywords.reduce((result, keyword) => {
+    const keywordObject = keywordsForStyle.find((k) => k.name === keyword);
+
+    if (keywordObject) {
+      return [...result, keywordObject.prompt];
+    }
+
+    return result;
+  }, []);
+};
 
 export default function ImageGenerator({ onImageGenerated }) {
-  const [prompt, setPrompt] = useState('');
   const [waiting, setWaiting] = useState(false);
 
-  const [style, setStyle] = useState('');
+  const [style, setStyle] = useState('Kidult');
   const [mood, setMood] = useState('');
+  const [subject, setSubject] = useState('');
+  const [keywords, setKeywords] = useState([]);
+  const [background, setBackground] = useState('');
+  const [backgroundKeywords, setBackgroundKeywords] = useState([]);
 
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(1);
 
   const [images, setImages] = useState([]);
 
+  const handleEditPrompts = () => {};
+
+  const handleNewArtwork = () => {};
+
   const handleGenerate = () => {
     setWaiting(true);
+    setActiveStep(null);
+
+    const paramsForStyle = Styles[style];
+
+    const { text: textArray, ...rest } = paramsForStyle;
+
+    const keywordPrompts = getKeywordPrompts(keywords, style).join(', ');
+
+    const promptElements = [
+      subject,
+      keywordPrompts,
+      background,
+      textArray[0].text,
+      MOODS[mood],
+    ].filter((item) => !!item);
 
     const requestParams = {
-      engineId: ENGINE_ID,
+      ...rest,
       samples: 3,
-      text: [{ text: prompt }],
+      text: [{ text: promptElements.join(', ') }],
     };
 
     generateImage(requestParams)
@@ -99,6 +86,7 @@ export default function ImageGenerator({ onImageGenerated }) {
         setWaiting(false);
       });
   };
+
   return (
     <Box pt="20px">
       {activeStep === 1 ? (
@@ -111,34 +99,77 @@ export default function ImageGenerator({ onImageGenerated }) {
       {activeStep === 2 ? (
         <SelectMood
           onChange={(mood) => setMood(mood)}
+          onBack={() => setActiveStep(activeStep - 1)}
           onNext={() => setActiveStep(activeStep + 1)}
           selectedValue={mood}
         />
       ) : null}
-
-      {/* {images.length ? (
-        <HStack>
-          {images.map((imageUrl) => (
-            <Image
-              h={149}
-              key={imageUrl}
-              w={110}
-              src={imageUrl}
-              alt="Generated image"
-              onClick={() => onImageGenerated(imageUrl)}
-            />
-          ))}
-        </HStack>
-      ) : (
-        <Input
-          onChange={(e) => setPrompt(e.target.value)}
-          value={prompt}
-          w="307px"
+      {activeStep === 3 ? (
+        <AddSubject
+          onChange={(subject) => setSubject(subject)}
+          onBack={() => setActiveStep(activeStep - 1)}
+          onNext={() => setActiveStep(activeStep + 1)}
+          keywords={keywords}
+          onUpdateKeywords={setKeywords}
+          style={style}
+          value={subject}
         />
-      )}
-      <ButtonGenerate isLoading={waiting} mt="34px" onClick={handleGenerate}>
-        {images.length ? 'Generate again' : 'Generate artwork'}
-      </ButtonGenerate> */}
+      ) : null}
+      {activeStep === 4 ? (
+        <AddBackground
+          waiting={waiting}
+          onChange={(background) => setBackground(background)}
+          onBack={() => setActiveStep(activeStep - 1)}
+          onNext={handleGenerate}
+          keywords={backgroundKeywords}
+          onUpdateKeywords={setBackgroundKeywords}
+          style={style}
+          value={background}
+        />
+      ) : null}
+      {images.length ? (
+        <Box>
+          <HStack>
+            {images.map((imageUrl) => (
+              <Image
+                h={117}
+                key={imageUrl}
+                w={117}
+                src={imageUrl}
+                alt="Generated image"
+                onClick={() => onImageGenerated(imageUrl)}
+              />
+            ))}
+          </HStack>
+          <Flex align="center" mt="22px">
+            <LinkButton
+              icon={<IconShuffle color={abloBlue} />}
+              onClick={handleGenerate}
+              title="Generate similar"
+            />
+            <LinkButton
+              icon={<IconSpark color={abloBlue} />}
+              onClick={() => null}
+              ml="20px"
+              title="Generate New"
+            />
+          </Flex>
+          <Flex align="center" mt="34px">
+            <Button
+              flex={1}
+              onClick={handleEditPrompts}
+              outlined
+              title="Edit prompts"
+            />
+            <Button
+              flex={1}
+              ml="10px"
+              onClick={handleNewArtwork}
+              title="New Artwork"
+            />
+          </Flex>
+        </Box>
+      ) : null}
     </Box>
   );
 }

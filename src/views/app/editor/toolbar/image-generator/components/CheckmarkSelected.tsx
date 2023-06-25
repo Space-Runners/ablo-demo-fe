@@ -8,7 +8,7 @@ const IconCheckmark = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1701_11684)">
+    <g clipPath="url(#clip0_1701_11684)">
       <path
         d="M3.75 9L7.5 12.75L15 5.25"
         stroke="white"

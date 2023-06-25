@@ -4,7 +4,7 @@ import { chunk, random } from 'lodash';
 import Button from '@/components/Button';
 
 import CheckmarkSelected from '../components/CheckmarkSelected';
-import IconMagicWand from '../components/IconMagicWand';
+import IconSpark from '../components/IconSpark';
 
 import OilPainting from './images/OilPainting.png';
 import Collage from './images/Collage.png';
@@ -72,8 +72,8 @@ export default function SelectStyle({
         </HStack>
       ))}
       <Button
-        icon={<IconMagicWand />}
-        mt="18px"
+        icon={<IconSpark />}
+        mb="18px"
         onClick={handleSurpriseMe}
         title="Surprise me"
         w="100%"

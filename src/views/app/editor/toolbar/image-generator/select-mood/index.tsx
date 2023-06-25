@@ -4,7 +4,7 @@ import { random, times } from 'lodash';
 import Button from '@/components/Button';
 
 import CheckmarkSelected from '../components/CheckmarkSelected';
-import IconMagicWand from '../components/IconMagicWand';
+import IconSpark from '../components/IconSpark';
 
 function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
@@ -61,7 +61,7 @@ export default function SelectStyle({
         );
       })}
       <Button
-        icon={<IconMagicWand />}
+        icon={<IconSpark />}
         mt="18px"
         onClick={handleSurpriseMe}
         title="Surprise me"
