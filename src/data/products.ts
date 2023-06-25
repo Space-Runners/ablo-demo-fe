@@ -58,6 +58,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Short sleeves'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 87,
+        top: 70,
+        height: 220,
+        width: 175,
+      },
+      back: {
+        left: 87,
+        top: 50,
+        height: 220,
+        width: 175,
+      },
+    },
   },
   {
     name: 'Skater T-Shirt',
@@ -70,6 +84,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Relaxed boxy fit with short sleeves'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 88,
+        top: 70,
+        height: 180,
+        width: 170,
+      },
+      back: {
+        left: 90,
+        top: 50,
+        height: 180,
+        width: 170,
+      },
+    },
   },
   {
     name: 'T-Shirt',
@@ -82,6 +110,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Long sleeves'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 90,
+        top: 70,
+        height: 200,
+        width: 168,
+      },
+      back: {
+        left: 90,
+        top: 50,
+        height: 220,
+        width: 168,
+      },
+    },
   },
   {
     name: 'T-Shirt',
@@ -94,6 +136,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Relaxed boxy fit with short sleeves'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 90,
+        top: 60,
+        height: 190,
+        width: 168,
+      },
+      back: {
+        left: 90,
+        top: 40,
+        height: 210,
+        width: 168,
+      },
+    },
   },
   {
     name: 'Rugby Shirt',
@@ -106,6 +162,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Relaxed fit with long sleevess'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 95,
+        top: 110,
+        height: 140,
+        width: 158,
+      },
+      back: {
+        left: 95,
+        top: 50,
+        height: 190,
+        width: 158,
+      },
+    },
   },
   {
     name: 'Sweatshirt',
@@ -118,6 +188,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Round neck', 'Fitted cuffs and hem'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 78,
+        top: 70,
+        height: 210,
+        width: 190,
+      },
+      back: {
+        left: 78,
+        top: 50,
+        height: 230,
+        width: 190,
+      },
+    },
   },
   {
     name: 'Sweatshirt',
@@ -130,6 +214,20 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Loose, relaxed fit', 'Fitted cuffs and hem'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 78,
+        top: 70,
+        height: 210,
+        width: 190,
+      },
+      back: {
+        left: 78,
+        top: 50,
+        height: 230,
+        width: 190,
+      },
+    },
   },
   {
     name: 'Sleeveless hoodie',
@@ -142,22 +240,103 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Loose, relaxed fit'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 80,
+        top: 185,
+        height: 180,
+        width: 190,
+      },
+      back: {
+        left: 80,
+        top: 175,
+        height: 230,
+        width: 190,
+      },
+    },
+  },
+  {
+    name: 'Sleeveless hoodie',
+    fit: 'Heavyweight',
+    fabric: 'Recycled cotton heavyweight',
+    price: 55,
+    urlPrefix: `${BUCKET}/10001232_SLEEVELESS_HOODIE_HEAVYWEIGHT_50/10001232_SLEEVELESS_HOODIE_Packshot`,
+    description:
+      'A HEAVYWEIGHT RECYCLED COTTON FABRIC MADE FROM 50% RECLAIMED COTTON AND 50% ORGANIC COTTON THAT IS BRUSHED ON THE INSIDE-PERFECT FOR DAYS YOU WANT A SUPER SOFT, COZIER FEEL. TREATED WITH PPRMINTTM OIL, A DURABLE ODOR CONTROL AND BROAD-SPECTRUM ANTIMICROBIAL TREATMENT THAT ENABLES OUR PRODUCTS TO STAY FRESHER FOR LONGER. DUE TO ITS ANTIBACTERIAL PROPERTIES, YOU CAN WEAR CLOTHING TREATED WITH PPRMINTTM MANY TIMES BEFORE THEY NEED WASHING.',
+    variants,
+    tags: ['Genderless', 'Loose, relaxed fit'],
+    madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 80,
+        top: 185,
+        height: 180,
+        width: 190,
+      },
+      back: {
+        left: 80,
+        top: 175,
+        height: 230,
+        width: 190,
+      },
+    },
   },
   {
     name: 'Hoodie',
-    fit: '',
+    fit: 'Regular fit',
     fabric: 'Recycled cotton lightweight',
-    price: 55,
+    price: 61,
     urlPrefix: `${BUCKET}/10000998_REGULAR_FIT_HOODIE_LIGHTWEIGHT_50/10000998_REGULAR_FIT_HOODIE_Packshot`,
     description:
       'THIS HOODIE IS MADE WITH 100% ORGANIC RECYCLED COTTON AND IS DESIGNED TO BE WORN YEAR-ROUND, ACROSS THE SEASONS. IT IS TREATED WITH NATURAL PEPPERMINT OIL (PPR- MINTTM), TO KEEP IT FRESHER FOR LONGER.',
     variants,
     tags: ['Genderless', 'Loose, relaxed fit'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 88,
+        top: 140,
+        height: 140,
+        width: 167,
+      },
+      back: {
+        left: 88,
+        top: 140,
+        height: 200,
+        width: 167,
+      },
+    },
+  },
+  {
+    name: 'Hoodie',
+    fit: 'Regular fit',
+    fabric: 'Recycled cotton heavyweight',
+    price: 63,
+    urlPrefix: `${BUCKET}/10001229_REGULAR_FIT_HOODIE_HEAVYWEIGHT_50/10001229_REGULAR_FIT_HOODIE_Packshot`,
+    description:
+      'A HEAVYWEIGHT RECYCLED COTTON FABRIC MADE FROM 50% RECLAIMED COTTON AND 50% ORGANIC COTTON THAT IS BRUSHED ON THE INSIDE -PERFECT FOR DAYS YOU WANT A SUPER SOFT, COZIER FEEL. TREATED WITH PPRMINTTM OIL, A DURABLE ODOR CON- TROL AND BROAD-SPECTRUM ANTIMI- CROBIAL TREATMENT THAT ENABLES OUR PRODUCTS TO STAY FRESHER FOR LONGER. DUE TO ITS ANTIBACTERIAL PROPERTIES, YOU CAN WEAR CLOTHING TREATED WITH PPRMINTTM MANY TIMES BEFORE THEY NEED WASHING.',
+    variants,
+    tags: ['Genderless', 'Loose, relaxed fit'],
+    madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 88,
+        top: 140,
+        height: 140,
+        width: 167,
+      },
+      back: {
+        left: 88,
+        top: 140,
+        height: 200,
+        width: 167,
+      },
+    },
   },
   {
     name: 'Hoodie',
     fit: 'Oversized',
+    id: 10001016,
     fabric: 'Recycled cotton lightweight',
     price: 63,
     urlPrefix: `${BUCKET}/10001016_OVERSIZED_HOODIE_LIGHTWEIGHT_50/10001016_OVERSIZED_HOODIE_Packshot`,
@@ -166,9 +345,51 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Loose fit with raglan sleeves'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 95,
+        top: 140,
+        height: 120,
+        width: 167,
+      },
+      back: {
+        left: 95,
+        top: 140,
+        height: 180,
+        width: 167,
+      },
+    },
   },
   {
     name: 'Hoodie',
+    fit: 'Oversized',
+    id: 10001230,
+    fabric: 'Recycled cotton heavyweight',
+    price: 65,
+    urlPrefix: `${BUCKET}/10001230_OVERSIZED_HOODIE_HEAVYWEIGHT_50/10001230_OVERSIZED_HOODIE_Packshot`,
+    description:
+      'A HEAVYWEIGHT RECYCLED COTTON FABRIC MADE FROM 50% RECLAIMED COTTON AND 50% ORGANIC COTTON THAT IS BRUSHED ON THE INSIDE -PERFECT FOR DAYS YOU WANT A SUPER SOFT, COZIER FEEL. TREATED WITH PPRMINTTM OIL, A DURABLE ODOR CONTROL AND BROAD-SPECTRUM ANTIMICROBIAL TREATMENT THAT ENABLES OUR PRODUCTS TO STAY FRESHER FOR LONGER. DUE TO ITS ANTIBACTERIAL PROPERTIES, YOU CAN WEAR CLOTHING TREATED WITH PPRMINTTM MANY TIMES BEFORE THEY NEED WASHING.',
+    variants,
+    tags: ['Genderless', 'Loose fit with raglan sleeves'],
+    madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 95,
+        top: 140,
+        height: 120,
+        width: 167,
+      },
+      back: {
+        left: 95,
+        top: 140,
+        height: 180,
+        width: 167,
+      },
+    },
+  },
+  {
+    name: 'Hoodie',
+    id: 10001015,
     fit: 'Cropped',
     fabric: 'Recycled cotton lightweight',
     price: 53,
@@ -178,42 +399,46 @@ const PRODUCTS = [
     variants,
     tags: ['Genderless', 'Loose fit with raw hem'],
     madeIn: 'Portugal',
-  },
-  {
-    name: 'Hoodie',
-    fit: '',
-    fabric: 'Recycled cotton heavyweight',
-    price: 63,
-    urlPrefix: `${BUCKET}/10001229_REGULAR_FIT_HOODIE_HEAVYWEIGHT_50/10001229_REGULAR_FIT_HOODIE_Packshot`,
-    description:
-      'THIS HOODIE IS MADE WITH 100% ORGANIC RECYCLED COTTON AND IS DESIGNED TO BE WORN YEAR-ROUND, ACROSS THE SEASONS. IT IS TREATED WITH NATURAL PEPPERMINT OIL (PPRMINTTM), TO KEEP IT FRESHER FOR LONGER.',
-    variants,
-    tags: ['Genderless', 'Loose fit with raw hem'],
-    madeIn: 'Portugal',
-  },
-  {
-    name: 'Hoodie',
-    fit: 'Oversized',
-    fabric: 'Recycled cotton heavyweight',
-    price: 65,
-    urlPrefix: `${BUCKET}/10001230_OVERSIZED_HOODIE_HEAVYWEIGHT_50/10001230_OVERSIZED_HOODIE_Packshot`,
-    description:
-      'A HEAVYWEIGHT RECYCLED COTTON FABRIC MADE FROM 50% RECLAIMED COTTON AND 50% ORGANIC COTTON THAT IS BRUSHED ON THE INSIDE -PERFECT FOR DAYS YOU WANT A SUPER SOFT, COZIER FEEL. TREATED WITH PPRMINTTM OIL, A DURABLE ODOR CONTROL AND BROAD-SPECTRUM ANTIMICROBIAL TREATMENT THAT ENABLES OUR PRODUCTS TO STAY FRESHER FOR LONGER. DUE TO ITS ANTIBACTERIAL PROPERTIES, YOU CAN WEAR CLOTHING TREATED WITH PPRMINTTM MANY TIMES BEFORE THEY NEED WASHING.',
-    variants,
-    tags: ['Genderless', 'Loose fit with raglan sleeves'],
-    madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 90,
+        top: 140,
+        height: 120,
+        width: 167,
+      },
+      back: {
+        left: 90,
+        top: 140,
+        height: 140,
+        width: 167,
+      },
+    },
   },
   {
     name: 'Hoodie',
     fit: 'Cropped',
     fabric: 'Recycled cotton heavyweight',
     price: 55,
-    urlPrefix: `${BUCKET}/10001230_OVERSIZED_HOODIE_HEAVYWEIGHT_50/10001230_OVERSIZED_HOODIE_Packshot`,
+    urlPrefix: `${BUCKET}/10001231_CROPPED_HOODIE_HEAVYWEIGHT_50/10001231_CROPPED_HOODIE_Packshot`,
     description:
       'A HEAVYWEIGHT RECYCLED COTTON FABRIC MADE FROM 50% RECLAIMED COTTON AND 50% ORGANIC COTTON THAT IS BRUSHED ON THE INSIDE-PERFECT FOR DAYS YOU WANT A SUPER SOFT, COZIER FEEL. TREATED WITH PPRMINTTM OIL, A DURABLE ODOR CONTROL AND BROAD-SPECTRUM ANTIMICROBIAL TREATMENT THAT ENABLES OUR PRODUCTS TO STAY FRESHER FOR LONGER. DUE TO ITS ANTIBACTERIAL PROPERTIES, YOU CAN WEAR CLOTHING TREATED WITH PPRMINTTM MANY TIMES BEFORE THEY NEED WASHING.',
     variants,
     tags: ['Genderless', 'Loose fit with raw hem'],
     madeIn: 'Portugal',
+    printableAreas: {
+      front: {
+        left: 90,
+        top: 140,
+        height: 120,
+        width: 167,
+      },
+      back: {
+        left: 90,
+        top: 140,
+        height: 140,
+        width: 167,
+      },
+    },
   },
 ];
 

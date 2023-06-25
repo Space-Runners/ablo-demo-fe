@@ -111,9 +111,11 @@ const ProductDetails = ({ product }: { product: Product }) => {
           </Text>
         </Flex>
         <Flex color="#959392" justify="space-between" mb="23px">
-          <Text fontSize="sm">{fabric}</Text>
+          <Text color="#959392" fontSize="sm">
+            {fabric}
+          </Text>
           <Box bg="#F9F9F7" borderRadius="4px" padding="0 8px">
-            <Text bg="#F9F9F7" fontSize="xs" padding="4px 6px">
+            <Text color="#959392" bg="#F9F9F7" fontSize="xs" padding="4px 6px">
               Min. Order #: 1
             </Text>
           </Box>
@@ -146,7 +148,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
         />
       </Box>
       <Panel title="More Info">
-        <Box color="#000000" fontSize="md" padding="0 15px 22px 14px">
+        <Box color="#000000" fontSize="md" padding="0 15px 22px 0">
           <Text as="b">Made in {madeIn}</Text>
           <Text fontWeight={300} mt="8px">
             {description}
@@ -171,7 +173,6 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
 
             return (
               <Box
-                color="#6A6866"
                 flex="1"
                 key={index}
                 marginLeft={`${index === 0 ? 0 : 8}px`}
@@ -194,7 +195,12 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
                     alt={name}
                   />
                 </Flex>
-                <Text display="block" fontSize="12px" textTransform="uppercase">
+                <Text
+                  color="#6A6866"
+                  display="block"
+                  fontSize="xs"
+                  textTransform="uppercase"
+                >
                   Spaarkd
                 </Text>
                 <Text
@@ -205,13 +211,16 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
                 >
                   {fit} {name}
                 </Text>
-                <Text fontSize="xs">{fabric}</Text>
-                <Flex align="center" fontSize="xs">
+                <Text color="#6A6866" fontSize="xs">
+                  {fabric}
+                </Text>
+                <Flex color="#6A6866" align="center" fontSize="xs">
                   <Text
                     as="b"
                     color="#000000"
                     fontFamily="Roboto Condensed"
                     fontSize="md"
+                    fontWeight={700}
                     mr="4px"
                   >
                     ${price}.00
@@ -231,11 +240,9 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
 export default function ProductsPage() {
   const history = useHistory();
 
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(
-    PRODUCTS[0]
-  );
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const [areFiltersVisible, setFiltersVisible] = useState(true);
+  const [areFiltersVisible, setFiltersVisible] = useState(false);
   const [filters, setFilters] = useState({ price: [20, 100] });
 
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
@@ -247,7 +254,9 @@ export default function ProductsPage() {
       <Navbar
         action="Select your clothing"
         onNext={() =>
-          history.push(`/app/editor?productName=${selectedProduct.name}`)
+          history.push(
+            `/app/editor?productName=${selectedProduct.fit} ${selectedProduct.name}`
+          )
         }
         onNextDisabled={!selectedProduct}
         title="Product Selection"
@@ -281,11 +290,15 @@ export default function ProductsPage() {
           {selectedProduct ? (
             <ProductDetails product={selectedProduct || PRODUCTS[0]} />
           ) : null}
-          <MiniFilterBar
-            options={CLOTHING_TYPES}
-            selectedValue={selectedQuickFilter}
-            onChange={setSelectedQuickFilter}
-          />
+          {!selectedProduct && (
+            <Box pl="14px">
+              <MiniFilterBar
+                options={CLOTHING_TYPES}
+                selectedValue={selectedQuickFilter}
+                onChange={setSelectedQuickFilter}
+              />
+            </Box>
+          )}
           <ProductsList
             onSelectedProduct={(product) => setSelectedProduct(product)}
             products={products}

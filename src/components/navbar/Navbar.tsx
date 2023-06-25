@@ -38,9 +38,7 @@ export default function Navbar(props: Props) {
 
   const { data: me } = useMe();
 
-  const { action, message, onNext, onNextDisabled, onSignUp, title } = props;
-
-  console.log(window.location);
+  const { action, onNext, onNextDisabled, onSignUp, title } = props;
 
   return (
     <Box>

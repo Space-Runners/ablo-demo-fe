@@ -30,104 +30,122 @@ export const IconShrink = () => (
   </Icon>
 );
 
-export const IconAiGenerator = () => (
+export const IconAiGenerator = ({ isSelected }: { isSelected?: boolean }) => (
   <Icon
-    width="20px"
-    height="22px"
-    viewBox="0 0 20 22"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M8.7521 9.54434L7.1521 14.9443L5.5521 9.54434L0.1521 7.94434L5.5521 6.34434L7.1521 0.944336L8.7521 6.34434L14.1521 7.94434L8.7521 9.54434ZM15.1521 14.1443L19.1521 11.9443L16.9521 15.9443L19.1521 19.9443L15.1521 17.7443L11.1521 19.9443L13.3521 15.9443L11.1521 11.9443L15.1521 14.1443ZM8.1521 15.9443L6.4521 18.9443L8.1521 21.9443L5.1521 20.2443L2.1521 21.9443L3.8521 18.9443L2.1521 15.9443L5.1521 17.6443L8.1521 15.9443Z"
-      fill="white"
-    />
+    <g clipPath="url(#clip0_1577_5018)">
+      <path
+        d="M16 18C16.5304 18 17.0391 18.2107 17.4142 18.5858C17.7893 18.9609 18 19.4696 18 20C18 19.4696 18.2107 18.9609 18.5858 18.5858C18.9609 18.2107 19.4696 18 20 18C19.4696 18 18.9609 17.7893 18.5858 17.4142C18.2107 17.0391 18 16.5304 18 16C18 16.5304 17.7893 17.0391 17.4142 17.4142C17.0391 17.7893 16.5304 18 16 18ZM16 6C16.5304 6 17.0391 6.21071 17.4142 6.58579C17.7893 6.96086 18 7.46957 18 8C18 7.46957 18.2107 6.96086 18.5858 6.58579C18.9609 6.21071 19.4696 6 20 6C19.4696 6 18.9609 5.78929 18.5858 5.41421C18.2107 5.03914 18 4.53043 18 4C18 4.53043 17.7893 5.03914 17.4142 5.41421C17.0391 5.78929 16.5304 6 16 6ZM9 18C9 16.4087 9.63214 14.8826 10.7574 13.7574C11.8826 12.6321 13.4087 12 15 12C13.4087 12 11.8826 11.3679 10.7574 10.2426C9.63214 9.11742 9 7.5913 9 6C9 7.5913 8.36786 9.11742 7.24264 10.2426C6.11742 11.3679 4.5913 12 3 12C4.5913 12 6.11742 12.6321 7.24264 13.7574C8.36786 14.8826 9 16.4087 9 18Z"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1577_5018">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );
 
-export const IconTextEditor = () => (
+export const IconTextEditor = ({ isSelected }: { isSelected?: boolean }) => (
   <Icon
-    width="26px"
-    height="26px"
-    viewBox="0 0 26 26"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M4.34473 7.70406V4.56006H21.1127V7.70406"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9.58398 21.3281H15.872"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M12.7285 4.56006V21.3281"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <g clipPath="url(#clip0_1577_5048)">
+      <path
+        d="M3 7V5H16V7"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 5V19"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 19H8"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 13V12H21V13"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18 12V19"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17 19H19"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1577_5048">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );
 
-export const IconImage = () => (
+export const IconImage = ({ isSelected }: { isSelected?: boolean }) => (
   <Icon
-    width="22px"
-    height="22px"
-    viewBox="0 0 22 22"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M3.54412 20.3762C2.38654 20.3762 1.44812 19.4378 1.44812 18.2802V3.60821C1.44812 2.45063 2.38654 1.51221 3.54412 1.51221H18.2161C19.3737 1.51221 20.3121 2.45063 20.3121 3.60821V18.2802C20.3121 19.4378 19.3737 20.3762 18.2161 20.3762H3.54412Z"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.32371 6.16453C8.93761 6.77843 8.93761 7.77376 8.32371 8.38767C7.7098 9.00158 6.71447 9.00158 6.10056 8.38767C5.48666 7.77377 5.48666 6.77844 6.10056 6.16453C6.71447 5.55063 7.7098 5.55063 8.32371 6.16453"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M20.3121 14.0881L15.0721 8.84814L3.54407 20.3761"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </Icon>
-);
-
-export const IconColorPicker = ({ isSelected }) => (
-  <Icon
-    width="22px"
-    height="22px"
-    opacity={isSelected ? 1 : 0.5}
-    viewBox="0 0 22 22"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      opacity="0.3"
-      d="M11.32 9.63374C12.4147 8.81147 13.7754 8.32422 15.25 8.32422C18.8674 8.32422 21.8 11.2568 21.8 14.8742C21.8 18.4917 18.8674 21.4242 15.25 21.4242C13.7754 21.4242 12.4147 20.937 11.32 20.1147C10.2253 20.937 8.86452 21.4242 7.38997 21.4242C3.77251 21.4242 0.839966 18.4917 0.839966 14.8742C0.839966 11.2568 3.77251 8.32422 7.38997 8.32422C8.86452 8.32422 10.2253 8.81147 11.32 9.63374V9.63374ZM13.067 11.6049C13.6223 12.5671 13.94 13.6835 13.94 14.8742C13.94 16.0649 13.6223 17.1813 13.067 18.1435C13.7027 18.5693 14.4559 18.8042 15.25 18.8042C17.4204 18.8042 19.18 17.0447 19.18 14.8742C19.18 12.7038 17.4204 10.9442 15.25 10.9442C14.4549 10.9442 13.701 11.1806 13.067 11.6049L13.067 11.6049Z"
-      fill="white"
-    />
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M15.9516 2.38281C18.5095 4.94075 18.5095 9.08799 15.9516 11.6459C13.3936 14.2039 9.2464 14.2039 6.68847 11.6459C4.13054 9.08799 4.13054 4.94075 6.68847 2.38281C9.2464 -0.175129 13.3936 -0.175129 15.9516 2.38281"
-      fill="white"
-    />
+    <g clipPath="url(#clip0_1577_5058)">
+      <path
+        d="M15 8H15.01"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 6C3 5.20435 3.31607 4.44129 3.87868 3.87868C4.44129 3.31607 5.20435 3 6 3H18C18.7956 3 19.5587 3.31607 20.1213 3.87868C20.6839 4.44129 21 5.20435 21 6V18C21 18.7956 20.6839 19.5587 20.1213 20.1213C19.5587 20.6839 18.7956 21 18 21H6C5.20435 21 4.44129 20.6839 3.87868 20.1213C3.31607 19.5587 3 18.7956 3 18V6Z"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 16L8 11C8.928 10.107 10.072 10.107 11 11L16 16"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 14L15 13C15.928 12.107 17.072 12.107 18 13L21 16"
+        stroke={isSelected ? '#FFFFFF' : '#959392'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1577_5058">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );

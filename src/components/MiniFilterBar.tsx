@@ -15,7 +15,7 @@ const MiniFilterBar = ({
   onChange,
   options,
 }: MiniFilterBarProps) => (
-  <HStack mt="20px" overflowX="auto" pl="14px" spacing="16px" w="100%">
+  <HStack mt="20px" overflowX="auto" spacing="16px" w="100%">
     {options.map((value) => (
       <Button
         bg="transparent"

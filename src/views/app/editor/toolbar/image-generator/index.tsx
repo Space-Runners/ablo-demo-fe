@@ -1,4 +1,5 @@
 import {
+  Box,
   Flex,
   Button,
   HStack,
@@ -11,6 +12,9 @@ import {
 import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
+
+import SelectStyle from './select-style';
+import SelectMood from './select-mood';
 
 const ENGINE_ID = 'stable-diffusion-xl-beta-v2-2-2';
 
@@ -69,6 +73,11 @@ export default function ImageGenerator({ onImageGenerated }) {
   const [prompt, setPrompt] = useState('');
   const [waiting, setWaiting] = useState(false);
 
+  const [style, setStyle] = useState('');
+  const [mood, setMood] = useState('');
+
+  const [activeStep, setActiveStep] = useState(2);
+
   const [images, setImages] = useState([]);
 
   const handleGenerate = () => {
@@ -91,17 +100,23 @@ export default function ImageGenerator({ onImageGenerated }) {
       });
   };
   return (
-    <Flex
-      color="#ffffff"
-      direction="column"
-      justify="center"
-      padding="30px 14px"
-      textAlign="center"
-    >
-      <Text fontSize="md" fontWeight={400} mb="5px">
-        {images.length ? 'Select Image' : 'Input your prompts'}
-      </Text>
-      {images.length ? (
+    <Box pt="20px">
+      {activeStep === 1 ? (
+        <SelectStyle
+          onChange={(style) => setStyle(style)}
+          onNext={() => setActiveStep(activeStep + 1)}
+          selectedValue={style}
+        />
+      ) : null}
+      {activeStep === 2 ? (
+        <SelectMood
+          onChange={(mood) => setMood(mood)}
+          onNext={() => setActiveStep(activeStep + 1)}
+          selectedValue={mood}
+        />
+      ) : null}
+
+      {/* {images.length ? (
         <HStack>
           {images.map((imageUrl) => (
             <Image
@@ -123,7 +138,7 @@ export default function ImageGenerator({ onImageGenerated }) {
       )}
       <ButtonGenerate isLoading={waiting} mt="34px" onClick={handleGenerate}>
         {images.length ? 'Generate again' : 'Generate artwork'}
-      </ButtonGenerate>
-    </Flex>
+      </ButtonGenerate> */}
+    </Box>
   );
 }

@@ -17,6 +17,8 @@ import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
 
+const DARK_VARIANTS = ['Onyx', 'Oceana'];
+
 export default function ImageEditor() {
   const canvas = useRef(null);
   const [undoStack, setUndoStack] = useState<string[]>([]);
@@ -34,14 +36,24 @@ export default function ImageEditor() {
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
 
   const [selectedProduct] = useState(
-    (productName && PRODUCTS.find((product) => product.name === productName)) ||
+    (productName &&
+      PRODUCTS.find(
+        (product) => `${product.fit} ${product.name}` === productName
+      )) ||
       PRODUCTS[0]
   );
+
   const [selectedVariant, setSelectedVariant] = useState(
     PRODUCTS[0].variants[0].name
   );
 
-  const [selectedSide, setSelectedSide] = useState('Front');
+  const defaultSide = 'Front';
+
+  const [selectedSide, setSelectedSide] = useState(defaultSide);
+
+  const { printableAreas } = selectedProduct;
+
+  const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
@@ -107,13 +119,16 @@ export default function ImageEditor() {
     });
   };
 
-  const initCanvas = () =>
-    new fabric.Canvas('canvas', {
-      width: 160,
-      height: 160,
+  const initCanvas = () => {
+    const { width, height } = drawingArea;
+
+    return new fabric.Canvas('canvas', {
+      width,
+      height,
       selection: false,
       renderOnAddRemove: true,
     });
+  };
 
   const handleAddText = (params) => {
     const textObject = {
@@ -202,6 +217,19 @@ export default function ImageEditor() {
     setSelectedVariant(variant);
   };
 
+  const handleSelectedSide = (side: string) => {
+    setSelectedSide(side);
+
+    const drawingArea = printableAreas[side.toLowerCase()];
+
+    console.log('SS side', side, drawingArea);
+
+    canvas.current.setDimensions({
+      width: drawingArea.width,
+      height: drawingArea.height,
+    });
+  };
+
   const handleSignUp = () => {
     history.push(`/signup?returnTo=${window.location.pathname}`);
   };
@@ -213,14 +241,14 @@ export default function ImageEditor() {
   return (
     <Box h="100%" w="100%">
       <Navbar
-        action="Design generation"
+        action="Create your design"
         onNext={() => null}
         onSignUp={handleSignUp}
-        title="Create your design"
+        title="Design generation"
       />
       <Flex
         align="center"
-        bg="#FFFFFF"
+        bg="#F9F9F7"
         flexDirection="column"
         h="calc(100% - 163px)"
         position="relative"
@@ -231,7 +259,7 @@ export default function ImageEditor() {
           onToggleDrawingArea={() =>
             setDrawingAreaVisible(!isDrawingAreaVisible)
           }
-          onSelectedSide={(side) => setSelectedSide(side)}
+          onSelectedSide={handleSelectedSide}
           onSelectedVariant={(variant) => setSelectedVariant(variant)}
           onUndo={isEmpty(undoStack) ? null : handleUndo}
           onRedo={isEmpty(redoStack) ? null : handleRedo}
@@ -239,15 +267,22 @@ export default function ImageEditor() {
           selectedVariant={selectedVariant}
         />
         <Box position="relative">
-          <img src={variantImageUrl} width={300} />
+          <img src={variantImageUrl} width={350} />
           <Box
-            border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
+            border={
+              isDrawingAreaVisible
+                ? `2px dashed ${
+                    DARK_VARIANTS.includes(selectedVariant)
+                      ? '#FFFFFF'
+                      : '#a8a8a8'
+                  }`
+                : ''
+            }
             borderRadius="4px"
-            left="67px"
+            left={`${drawingArea.left}px`}
             position="absolute"
-            top="120px"
+            top={`${drawingArea.top}px`}
             id="drawingArea"
-            zIndex={10}
             className="drawing-area"
           >
             <div className="canvas-container">
@@ -260,12 +295,21 @@ export default function ImageEditor() {
               justify="center"
               onClick={() => null}
               position="absolute"
-              top="30%"
+              top="20%"
               w="100%"
               textAlign="center"
             >
               <IconEmptyState />
-              <Text color="#555251" fontSize="sm" mt="17px">
+              <Text
+                color={
+                  DARK_VARIANTS.includes(selectedVariant)
+                    ? '#FFFFFF'
+                    : '#000000'
+                }
+                fontSize="sm"
+                fontWeight={400}
+                mt="17px"
+              >
                 Select a style to begin
               </Text>
             </Flex>

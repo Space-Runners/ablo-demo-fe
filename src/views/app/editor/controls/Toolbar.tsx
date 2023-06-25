@@ -70,7 +70,7 @@ export default function Toolbar({
         spacing="20px"
         w="100%"
       >
-        <HStack spacing="22px">
+        <HStack spacing="4px">
           <ToolbarButton
             icon={<IconToggleSidePicker isSelected={isSidePickerVisible} />}
             isSelected={isSidePickerVisible}
@@ -87,7 +87,7 @@ export default function Toolbar({
                 <IconDrawingAreaDisabled />
               )
             }
-            isSelected={!isDrawingAreaVisible}
+            isSelected={isDrawingAreaVisible}
             onClick={onToggleDrawingArea}
           />
           <ToolbarButton
