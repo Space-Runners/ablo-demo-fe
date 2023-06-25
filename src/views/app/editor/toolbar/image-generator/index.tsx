@@ -37,24 +37,36 @@ const getKeywordPrompts = (keywords, style) => {
 export default function ImageGenerator({ onImageGenerated }) {
   const [waiting, setWaiting] = useState(false);
 
-  const [style, setStyle] = useState('Kidult');
+  const [style, setStyle] = useState('');
   const [mood, setMood] = useState('');
   const [subject, setSubject] = useState('');
   const [keywords, setKeywords] = useState([]);
   const [background, setBackground] = useState('');
   const [backgroundKeywords, setBackgroundKeywords] = useState([]);
 
-  const [activeStep, setActiveStep] = useState(1);
-
+  const [selectedImage, setSelectedImage] = useState(null);
   const [images, setImages] = useState([]);
 
-  const handleEditPrompts = () => {};
+  const [activeStep, setActiveStep] = useState(1);
 
-  const handleNewArtwork = () => {};
+  const handleEditPrompts = () => setActiveStep(4);
+
+  const handleNewArtwork = () => {
+    setImages([]);
+    setSelectedImage(null);
+    setMood('');
+    setStyle('');
+    setSubject('');
+    setKeywords([]);
+    setBackground('');
+    setBackgroundKeywords([]);
+
+    setActiveStep(1);
+  };
 
   const handleGenerate = () => {
     setWaiting(true);
-    setActiveStep(null);
+    setImages([]);
 
     const paramsForStyle = Styles[style];
 
@@ -80,7 +92,10 @@ export default function ImageGenerator({ onImageGenerated }) {
       .then((images) => {
         setWaiting(false);
 
+        setActiveStep(null);
+
         setImages(images);
+        setSelectedImage(images[0]);
       })
       .catch(() => {
         setWaiting(false);
@@ -132,12 +147,19 @@ export default function ImageGenerator({ onImageGenerated }) {
           <HStack>
             {images.map((imageUrl) => (
               <Image
+                border={
+                  imageUrl === selectedImage ? '4px solid #000000' : 'none'
+                }
+                borderRadius="5px"
                 h={117}
                 key={imageUrl}
                 w={117}
                 src={imageUrl}
                 alt="Generated image"
-                onClick={() => onImageGenerated(imageUrl)}
+                onClick={() => {
+                  setSelectedImage(imageUrl);
+                  onImageGenerated(imageUrl);
+                }}
               />
             ))}
           </HStack>

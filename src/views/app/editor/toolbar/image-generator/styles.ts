@@ -1,5 +1,5 @@
 export const Styles = {
-  'Oil painting': {
+  'Oil Painting': {
     text: [
       {
         text: 'by conrad roset, greg rutkowski, makoto shinkai, trending on artstation',
@@ -118,7 +118,7 @@ export const Styles = {
     style_preset: '',
     sampler: 'K_LMS',
   },
-  'Pop stained glass': {
+  'Pop Stained Glass': {
     text: [
       {
         text: 'stained glass, isolated, geometric, bright vibrant colorful, poster art',

@@ -1,4 +1,4 @@
-import { Button as ChakraButton, Text } from '@chakra-ui/react';
+import { Box, Button as ChakraButton, Text } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
 
@@ -9,21 +9,27 @@ const Button = ({ icon = null, outlined = false, title, ...rest }) => {
     <ChakraButton
       bg={abloBlue}
       borderRadius={0}
+      color={outlined ? '#000000' : '#FFFFFF'}
       height="50px"
       padding="0 14px"
+      fontWeight={600}
+      textTransform="uppercase"
       _disabled={{ bg: '#BFBEBE' }}
-      {...(outlined ? { bg: '#FFFFFF', border: '1px solid #000000' } : {})}
+      {...(outlined
+        ? {
+            bg: '#FFFFFF',
+            border: '1px solid #000000',
+            _disabled: {
+              bg: '#FFFFFF',
+              border: '1px solid #BFBEBE',
+              color: '#BFBEBE',
+            },
+          }
+        : {})}
       {...rest}
     >
-      <Text
-        color={outlined ? '#000000' : '#FFFFFF'}
-        fontWeight={600}
-        mr="18px"
-        textTransform="uppercase"
-      >
-        {title}
-      </Text>
-      {icon}
+      {title}
+      <Box ml="18px">{icon}</Box>
     </ChakraButton>
   );
 };

@@ -44,17 +44,21 @@ export default function SelectStyle({
   };
 
   return (
-    <Box>
+    <Box paddingBottom="146px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
         Select style
       </Text>
-      {chunks.map((chunk) => (
-        <HStack mb="16px">
-          {chunk.map(([style, image]) => {
+      {chunks.map((chunk, index) => (
+        <HStack key={index} mb="16px">
+          {chunk.map(([style, image], index) => {
             const isSelected = style === selectedValue;
 
             return (
-              <Box onClick={() => onChange(style)} position="relative">
+              <Box
+                key={index}
+                onClick={() => onChange(style)}
+                position="relative"
+              >
                 <Image
                   border={isSelected ? '4px solid #000000' : ''}
                   borderRadius="4px"
@@ -71,19 +75,28 @@ export default function SelectStyle({
           })}
         </HStack>
       ))}
-      <Button
-        icon={<IconSpark />}
-        mb="18px"
-        onClick={handleSurpriseMe}
-        title="Surprise me"
+      <Box
+        bg="#FFFFFF"
+        ml="-14px"
+        padding="14px"
+        position="fixed"
+        bottom={0}
         w="100%"
-      />
-      <Button
-        disabled={!selectedValue}
-        onClick={onNext}
-        title="Next"
-        w="100%"
-      />
+      >
+        <Button
+          icon={<IconSpark />}
+          mb="18px"
+          onClick={handleSurpriseMe}
+          title="Surprise me"
+          w="100%"
+        />
+        <Button
+          disabled={!selectedValue}
+          onClick={onNext}
+          title="Next"
+          w="100%"
+        />
+      </Box>
     </Box>
   );
 }

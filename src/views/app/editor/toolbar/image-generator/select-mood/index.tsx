@@ -19,7 +19,7 @@ type Props = {
   selectedValue: string;
 };
 
-export default function SelectStyle({
+export default function SelectMood({
   onChange,
   onNext,
   onBack,
@@ -30,7 +30,7 @@ export default function SelectStyle({
   };
 
   return (
-    <Box>
+    <Box paddingBottom="146px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
         Select your mood
       </Text>
@@ -50,6 +50,7 @@ export default function SelectStyle({
                 <Image
                   h={112}
                   w={121}
+                  key={index}
                   src={getImgUrl(`${mood}${index + 1}`)}
                   alt={mood}
                 />
@@ -60,23 +61,32 @@ export default function SelectStyle({
           </Box>
         );
       })}
-      <Button
-        icon={<IconSpark />}
-        mt="18px"
-        onClick={handleSurpriseMe}
-        title="Surprise me"
+      <Box
+        bg="#FFFFFF"
+        ml="-14px"
+        padding="14px"
+        position="fixed"
+        bottom={0}
         w="100%"
-      />
-      <Flex align="center" mt="14px">
-        <Button flex={1} onClick={onBack} outlined title="Edit style" />
+      >
         <Button
-          disabled={!selectedValue}
-          flex={1}
-          ml="10px"
-          onClick={onNext}
-          title="Next"
+          icon={<IconSpark />}
+          mt="18px"
+          onClick={handleSurpriseMe}
+          title="Surprise me"
+          w="100%"
         />
-      </Flex>
+        <Flex align="center" mt="14px">
+          <Button flex={1} onClick={onBack} outlined title="Edit style" />
+          <Button
+            disabled={!selectedValue}
+            flex={1}
+            ml="10px"
+            onClick={onNext}
+            title="Next"
+          />
+        </Flex>
+      </Box>
     </Box>
   );
 }

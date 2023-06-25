@@ -34,17 +34,6 @@ const TOOLS = [
   },
 ];
 
-/* const Button = (props) => (
-  <ChakraButton
-    color="#FFFFFF"
-    fontSize="sm"
-    minWidth="auto"
-    padding="0 8px"
-    variant="ghost"
-    {...props}
-  />
-); */
-
 const TextControls = ({ onAddText, onRemoveText }) => (
   <HStack mb="17px" mt="30px" spacing="14px">
     <Button
@@ -73,9 +62,11 @@ const TextControls = ({ onAddText, onRemoveText }) => (
 
 export default function FooterToolbar(props) {
   const {
+    isExpanded,
     onAddText,
     onRemoveText,
     onUpdateTextObject,
+    onToggleExpanded,
     activeTextObject,
     onImageUploaded,
     onImageGenerated,
@@ -83,13 +74,10 @@ export default function FooterToolbar(props) {
 
   const { text = '' } = activeTextObject || {};
 
-  const [isExpanded, setExpanded] = useState(true);
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
-
-    setExpanded(true);
   };
 
   const handleTextUpdate = (text) => {
@@ -108,14 +96,19 @@ export default function FooterToolbar(props) {
   const isImagePicker = selectedTool === 'image';
 
   return (
-    <Box bg="#FFFFFF" bottom={0} position="fixed" w="100%" zIndex={3}>
+    <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       {isTextEditor ? (
         <TextToolbar
           onUpdate={onUpdateTextObject}
           textObject={activeTextObject}
         />
       ) : null}
-      <Box bg="#FFFFFF" padding="0 14px 12px 14px">
+      <Box
+        bg="#FFFFFF"
+        maxHeight="400px"
+        overflow="auto"
+        padding="0 14px 12px 14px"
+      >
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
@@ -141,7 +134,7 @@ export default function FooterToolbar(props) {
               Generate your design with AI
             </Button>
           )}
-          <Button h="24px" onClick={() => setExpanded(!isExpanded)}>
+          <Button h="24px" onClick={onToggleExpanded}>
             {isExpanded ? <IconShrink /> : <IconExpand />}
           </Button>
         </Flex>

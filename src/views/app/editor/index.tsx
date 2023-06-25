@@ -34,6 +34,9 @@ export default function ImageEditor() {
   const productName = searchParams.get('productName');
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
+  const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
+  const [hasSeenInitialCallToAction, setHasSeenInitialCallToAction] =
+    useState(false);
 
   const [selectedProduct] = useState(
     (productName &&
@@ -201,6 +204,8 @@ export default function ImageEditor() {
   };
 
   const handleImageGenerated = (imageUrl) => {
+    canvas.current.remove(canvas.current.getActiveObject());
+
     fabric.Image.fromURL(imageUrl, (img) => {
       img.scaleToWidth(200);
 
@@ -288,38 +293,47 @@ export default function ImageEditor() {
             <div className="canvas-container">
               <canvas id="canvas" ref={canvas}></canvas>
             </div>
-            <Flex
-              align="center"
-              as="button"
-              direction="column"
-              justify="center"
-              onClick={() => null}
-              position="absolute"
-              top="20%"
-              w="100%"
-              textAlign="center"
-            >
-              <IconEmptyState />
-              <Text
-                color={
-                  DARK_VARIANTS.includes(selectedVariant)
-                    ? '#FFFFFF'
-                    : '#000000'
-                }
-                fontSize="sm"
-                fontWeight={400}
-                mt="17px"
+            {!hasSeenInitialCallToAction && (
+              <Flex
+                align="center"
+                as="button"
+                direction="column"
+                justify="center"
+                onClick={() => {
+                  setHasSeenInitialCallToAction(true);
+                  setFooterToolbarExpanded(true);
+                }}
+                position="absolute"
+                top="20%"
+                w="100%"
+                textAlign="center"
               >
-                Select a style to begin
-              </Text>
-            </Flex>
+                <IconEmptyState />
+                <Text
+                  color={
+                    DARK_VARIANTS.includes(selectedVariant)
+                      ? '#FFFFFF'
+                      : '#000000'
+                  }
+                  fontSize="sm"
+                  fontWeight={400}
+                  mt="17px"
+                >
+                  Select a style to begin
+                </Text>
+              </Flex>
+            )}
           </Box>
         </Box>
         <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
+          isExpanded={isFooterToolbarExpanded}
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
           onUpdateTextObject={handleUpdateTextObject}
+          onToggleExpanded={() =>
+            setFooterToolbarExpanded(!isFooterToolbarExpanded)
+          }
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
