@@ -17,7 +17,7 @@ axios.interceptors.request.use(function (config) {
   return config;
 });
 
-/* axios.interceptors.response.use(
+axios.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -32,7 +32,7 @@ axios.interceptors.request.use(function (config) {
 
     return Promise.reject(error);
   }
-); */
+);
 
 export const login = (email: string, password: string) =>
   axios
