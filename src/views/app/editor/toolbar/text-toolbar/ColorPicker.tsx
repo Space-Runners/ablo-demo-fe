@@ -25,6 +25,7 @@ export default function ColorPicker({ selectedColor, onUpdate }) {
       {COLORS.map((color) => (
         <Button
           bg={color}
+          border={color === '#FFFFFF' ? '1px solid #EAE9E9' : 'none'}
           isSelected={color === selectedColor}
           key={color}
           onClick={() => onUpdate(color)}

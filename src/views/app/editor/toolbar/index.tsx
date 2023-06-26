@@ -74,15 +74,16 @@ export default function FooterToolbar(props) {
 
   const { text = '' } = activeTextObject || {};
 
-  const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [selectedTool, setSelectedTool] = useState('text');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
   };
 
   const handleTextUpdate = (text) => {
+    console.log('Text', text, activeTextObject);
     if (!activeTextObject) {
-      onAddText({ text });
+      onAddText({ fill: '#000000', fontSize: 20, text });
 
       return;
     }
@@ -113,9 +114,9 @@ export default function FooterToolbar(props) {
           {isTextEditor ? (
             <Input
               border="none"
-              color="#6A6866"
               fontSize="md"
               onChange={(e) => handleTextUpdate(e.target.value)}
+              padding={0}
               placeholder="Write your text here"
               value={text}
               _focus={{
@@ -159,7 +160,7 @@ export default function FooterToolbar(props) {
             {isImageGenerator ? (
               <ImageGenerator onImageGenerated={onImageGenerated} />
             ) : null}
-            {isTextEditor ? (
+            {isTextEditor && null ? (
               <TextControls
                 onAddText={() => onAddText()}
                 onRemoveText={onRemoveText}

@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/react';
 
-export const IconColorPalette = () => (
+export const IconFontFamily = () => (
   <Icon
     width="28px"
     height="28px"
@@ -8,46 +8,74 @@ export const IconColorPalette = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect
-      x="0.5"
-      y="0.5"
-      width="27"
-      height="27"
-      rx="13.5"
-      fill="url(#paint0_angular_540_5903)"
-    />
-    <rect x="0.5" y="0.5" width="27" height="27" rx="13.5" stroke="#484848" />
+    <g filter="url(#filter0_b_1530_24223)">
+      <g clipPath="url(#clip0_1530_24223)">
+        <g clipPath="url(#clip1_1530_24223)">
+          <path
+            d="M6 22H9"
+            stroke="black"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 22H23"
+            stroke="black"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M8.90039 17H15.8004"
+            stroke="black"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12.2002 8.29999L18.0002 22"
+            stroke="black"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M7 22L13 6H15L22 22"
+            stroke="black"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
+      <rect x="0.5" y="0.5" width="27" height="27" rx="3.5" stroke="black" />
+    </g>
     <defs>
-      <radialGradient
-        id="paint0_angular_540_5903"
-        cx="0"
-        cy="0"
-        r="1"
-        gradientUnits="userSpaceOnUse"
-        gradientTransform="translate(14 14) rotate(90) scale(13)"
+      <filter
+        id="filter0_b_1530_24223"
+        x="-24"
+        y="-24"
+        width="76"
+        height="76"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
       >
-        <stop stopColor="#FF0000" />
-        <stop offset="0.25" stopColor="#FFE927" />
-        <stop offset="0.5" stopColor="#2CCA4F" stopOpacity="0.96" />
-        <stop offset="0.75" stopColor="#1A48EB" />
-        <stop offset="1" stopColor="#B223B5" />
-      </radialGradient>
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feGaussianBlur in="BackgroundImageFix" stdDeviation="12" />
+        <feComposite
+          in2="SourceAlpha"
+          operator="in"
+          result="effect1_backgroundBlur_1530_24223"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_backgroundBlur_1530_24223"
+          result="shape"
+        />
+      </filter>
+      <clipPath id="clip0_1530_24223">
+        <rect width="24" height="24" fill="white" transform="translate(2 2)" />
+      </clipPath>
+      <clipPath id="clip1_1530_24223">
+        <rect width="24" height="24" fill="white" transform="translate(2 2)" />
+      </clipPath>
     </defs>
-  </Icon>
-);
-
-export const IconFontFamily = () => (
-  <Icon
-    width="16px"
-    height="16px"
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12.4444 4.44444H15.1111V15.1111H16V16H12.4444V15.1111H13.3333V12.4444H9.77778L8.44444 15.1111H9.77778V16H6.22222V15.1111H7.11111L12.4444 4.44444ZM13.3333 5.33333L10.2222 11.5556H13.3333V5.33333ZM1.77778 0H6.22222C7.20889 0 8 0.791111 8 1.77778V11.5556H5.33333V7.11111H2.66667V11.5556H0V1.77778C0 0.791111 0.791111 0 1.77778 0ZM2.66667 1.77778V5.33333H5.33333V1.77778H2.66667Z"
-      fill="white"
-    />
   </Icon>
 );
 
