@@ -14,14 +14,6 @@ const Button = (props) => {
       width={`${size}px`}
       height={`${size}px`}
       borderRadius="50%"
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
       {...rest}
     />
   );
@@ -33,6 +25,7 @@ export default function ColorPicker({ selectedColor, onUpdate }) {
       {COLORS.map((color) => (
         <Button
           bg={color}
+          border={color === '#FFFFFF' ? '1px solid #EAE9E9' : 'none'}
           isSelected={color === selectedColor}
           key={color}
           onClick={() => onUpdate(color)}

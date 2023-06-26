@@ -977,6 +977,16 @@
   "resolved" "https://registry.npmjs.org/@fontsource/press-start-2p/-/press-start-2p-5.0.3.tgz"
   "version" "5.0.3"
 
+"@fontsource/roboto-condensed@^5.0.3":
+  "integrity" "sha512-iSEhJeZ3jdM82s3bybBY5Aw+28mBzpHEGh4sBHVxE29USleUuzTGhaD/kAKlF/jMHRQuLHBX6Npp/2ueCDCnlA=="
+  "resolved" "https://registry.npmjs.org/@fontsource/roboto-condensed/-/roboto-condensed-5.0.3.tgz"
+  "version" "5.0.3"
+
+"@fontsource/roboto@^5.0.3":
+  "integrity" "sha512-jbZDFwEFARDlo8TqG7th/xjhuq87GYfFpFb+uxuy+0Ng1bhRVgBRWlLj8+WIKhCTOr+h4QXbjpybLWFLUirOwQ=="
+  "resolved" "https://registry.npmjs.org/@fontsource/roboto/-/roboto-5.0.3.tgz"
+  "version" "5.0.3"
+
 "@fontsource/silkscreen@^5.0.3":
   "integrity" "sha512-JrdGLegHCpnFIz5Iifq8K5kXKHcglChXyLFm4UoSZ/gFb/0WLGDc2rRY3ZPT0ZLrrPHWwN3AeuLxxokb9uH+sg=="
   "resolved" "https://registry.npmjs.org/@fontsource/silkscreen/-/silkscreen-5.0.3.tgz"

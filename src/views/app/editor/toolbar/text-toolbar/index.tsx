@@ -3,15 +3,16 @@ import {
   Button as ChakraButton,
   Flex,
   HStack,
+  Image,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import {
-  IconColorPalette,
   IconFontFamily,
   IconTextLeftAlign,
   IconTextCenter,
@@ -20,6 +21,8 @@ import {
 
 import ColorPicker from './ColorPicker';
 import FontPicker from './FontPicker';
+
+import ColorPalette from './ColorPalette.png';
 
 const TEXT_ALIGN_OPTIONS = [
   { name: 'left', icon: <IconTextLeftAlign /> },
@@ -34,19 +37,9 @@ const Button = (props) => {
     <ChakraButton
       width="28px"
       height="28px"
-      bg="#383838"
       border={`1px solid ${isSelected ? '#ffffff' : '#484848'}`}
       borderRadius="4px"
       minWidth="auto"
-      padding="6px"
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
       {...rest}
     />
   );
@@ -75,58 +68,63 @@ export default function TextToolbar({ onUpdate, textObject }) {
   const isFontFamilyActive = selectedTool === 'fontFamily';
 
   return (
-    <Flex justify="space-between" padding="12px 16px 12px 12px">
-      {!selectedTool ? (
-        <Slider
-          defaultValue={14}
-          min={0}
-          max={60}
-          step={1}
-          height="12px"
-          onChange={(val) => onUpdate({ fontSize: val })}
-          value={fontSize}
-          width="175px"
-        >
-          <SliderTrack
-            bg="linear-gradient(to bottom right, transparent 50%, #464646 50% )"
-            height="12px"
-          >
-            <Box position="relative" right={10} />
-            <SliderFilledTrack bg="" />
-          </SliderTrack>
-          <SliderThumb boxSize="20px" />
-        </Slider>
-      ) : null}
-      {isColorActive ? (
-        <ColorPicker
-          selectedColor={fill}
-          onUpdate={(color) => onUpdate({ fill: color })}
-        />
-      ) : null}
+    <Box>
       {isFontFamilyActive ? (
-        <FontPicker
-          fontFamily={fontFamily}
-          onUpdate={(fontFamily) => onUpdate({ fontFamily })}
-        />
+        <Flex align="center" justify="center" padding="0 16px">
+          <Text fontSize="12px">A</Text>
+          <Slider
+            defaultValue={12}
+            min={8}
+            max={40}
+            step={1}
+            margin="0 18px"
+            height="2px"
+            onChange={(val) => onUpdate({ fontSize: val })}
+            value={fontSize}
+            width="297px"
+          >
+            <SliderTrack bg="#6A6866" height="2px">
+              <Box position="relative" right={10} />
+              <SliderFilledTrack bg="" />
+            </SliderTrack>
+            <SliderThumb bg="#000000" boxSize="20px" />
+          </Slider>
+          <Text fontSize="40px">A</Text>
+        </Flex>
       ) : null}
-      <HStack spacing="16px">
-        <Button
-          bg="transparent"
-          border={isColorActive ? '1px solid #ffffff' : ''}
-          onClick={() => setSelectedTool(isColorActive ? null : 'color')}
-        >
-          <IconColorPalette />
-        </Button>
-        <Button
-          isSelected={isFontFamilyActive}
-          onClick={() =>
-            setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
-          }
-        >
-          <IconFontFamily />
-        </Button>
-        <Button onClick={handleTextAlignClick}>{textAlignOption.icon}</Button>
-      </HStack>
-    </Flex>
+      <Flex justify="space-between" mt="4px" padding="12px 16px 12px 12px">
+        {isColorActive || isFontFamilyActive ? null : <Box />}
+        {isColorActive ? (
+          <ColorPicker
+            selectedColor={fill}
+            onUpdate={(color) => onUpdate({ fill: color })}
+          />
+        ) : null}
+        {isFontFamilyActive ? (
+          <FontPicker
+            fontFamily={fontFamily}
+            onUpdate={(fontFamily) => onUpdate({ fontFamily })}
+          />
+        ) : null}
+        <HStack spacing="6px">
+          <Button
+            bg="transparent"
+            border={isColorActive ? '1px solid #ffffff' : ''}
+            onClick={() => setSelectedTool(isColorActive ? null : 'color')}
+          >
+            <Image maxWidth="none" w="28px" h="28px" src={ColorPalette} />
+          </Button>
+          <Button
+            isSelected={isFontFamilyActive}
+            onClick={() =>
+              setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
+            }
+          >
+            <IconFontFamily />
+          </Button>
+          <Button onClick={handleTextAlignClick}>{textAlignOption.icon}</Button>
+        </HStack>
+      </Flex>
+    </Box>
   );
 }

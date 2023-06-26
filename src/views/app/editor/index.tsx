@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Box, Flex, VStack } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
@@ -10,13 +10,14 @@ import { isEmpty } from 'lodash';
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
 
-import { UndoButton, RedoButton } from './controls/UndoRedoButtons';
 import ButtonDelete from './controls/ButtonDelete';
-
 import Toolbar from './controls/Toolbar';
+import IconEmptyState from './icons/EmptyState';
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
+
+const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 export default function ImageEditor() {
   const canvas = useRef(null);
@@ -33,16 +34,29 @@ export default function ImageEditor() {
   const productName = searchParams.get('productName');
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
+  const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
+  const [hasSeenInitialCallToAction, setHasSeenInitialCallToAction] =
+    useState(false);
 
   const [selectedProduct] = useState(
-    (productName && PRODUCTS.find((product) => product.name === productName)) ||
+    (productName &&
+      PRODUCTS.find(
+        (product) => `${product.fit} ${product.name}` === productName
+      )) ||
       PRODUCTS[0]
   );
+
   const [selectedVariant, setSelectedVariant] = useState(
     PRODUCTS[0].variants[0].name
   );
 
-  const [orientation, setOrientation] = useState('FRONT');
+  const defaultSide = 'Front';
+
+  const [selectedSide, setSelectedSide] = useState(defaultSide);
+
+  const { printableAreas } = selectedProduct;
+
+  const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
@@ -108,13 +122,16 @@ export default function ImageEditor() {
     });
   };
 
-  const initCanvas = () =>
-    new fabric.Canvas('canvas', {
-      width: 160,
-      height: 160,
+  const initCanvas = () => {
+    const { width, height } = drawingArea;
+
+    return new fabric.Canvas('canvas', {
+      width,
+      height,
       selection: false,
       renderOnAddRemove: true,
     });
+  };
 
   const handleAddText = (params) => {
     const textObject = {
@@ -187,6 +204,8 @@ export default function ImageEditor() {
   };
 
   const handleImageGenerated = (imageUrl) => {
+    canvas.current.remove(canvas.current.getActiveObject());
+
     fabric.Image.fromURL(imageUrl, (img) => {
       img.scaleToWidth(200);
 
@@ -203,15 +222,26 @@ export default function ImageEditor() {
     setSelectedVariant(variant);
   };
 
+  const handleSelectedSide = (side: string) => {
+    setSelectedSide(side);
+
+    const drawingArea = printableAreas[side.toLowerCase()];
+
+    console.log('SS side', side, drawingArea);
+
+    canvas.current.setDimensions({
+      width: drawingArea.width,
+      height: drawingArea.height,
+    });
+  };
+
   const handleSignUp = () => {
     history.push(`/signup?returnTo=${window.location.pathname}`);
   };
 
   const { urlPrefix } = selectedProduct;
 
-  console.log('Orientation', orientation);
-
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${orientation}.png`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png`;
 
   return (
     <Box h="100%" w="100%">
@@ -223,50 +253,87 @@ export default function ImageEditor() {
       />
       <Flex
         align="center"
-        bg="#292929"
+        bg="#F9F9F7"
         flexDirection="column"
+        h="calc(100% - 163px)"
         position="relative"
         w="100%"
       >
         <Toolbar
           isDrawingAreaVisible={isDrawingAreaVisible}
-          onSettingsClick={() => history.push('/app/products')}
           onToggleDrawingArea={() =>
             setDrawingAreaVisible(!isDrawingAreaVisible)
           }
-          onToggleOrientation={() =>
-            setOrientation(orientation === 'FRONT' ? 'BACK' : 'FRONT')
-          }
+          onSelectedSide={handleSelectedSide}
+          onSelectedVariant={(variant) => setSelectedVariant(variant)}
+          onUndo={isEmpty(undoStack) ? null : handleUndo}
+          onRedo={isEmpty(redoStack) ? null : handleRedo}
+          selectedSide={selectedSide}
+          selectedVariant={selectedVariant}
         />
         <Box position="relative">
-          <img src={variantImageUrl} width={300} />
+          <img src={variantImageUrl} width={350} />
           <Box
-            border={isDrawingAreaVisible ? '2px dashed #a8a8a8' : ''}
+            border={
+              isDrawingAreaVisible
+                ? `2px dashed ${
+                    DARK_VARIANTS.includes(selectedVariant)
+                      ? '#FFFFFF'
+                      : '#a8a8a8'
+                  }`
+                : ''
+            }
             borderRadius="4px"
-            left="67px"
+            left={`${drawingArea.left}px`}
             position="absolute"
-            top="120px"
+            top={`${drawingArea.top}px`}
             id="drawingArea"
-            zIndex={10}
             className="drawing-area"
           >
             <div className="canvas-container">
               <canvas id="canvas" ref={canvas}></canvas>
             </div>
+            {!hasSeenInitialCallToAction && (
+              <Flex
+                align="center"
+                as="button"
+                direction="column"
+                justify="center"
+                onClick={() => {
+                  setHasSeenInitialCallToAction(true);
+                  setFooterToolbarExpanded(true);
+                }}
+                position="absolute"
+                top="20%"
+                w="100%"
+                textAlign="center"
+              >
+                <IconEmptyState />
+                <Text
+                  color={
+                    DARK_VARIANTS.includes(selectedVariant)
+                      ? '#FFFFFF'
+                      : '#000000'
+                  }
+                  fontSize="sm"
+                  fontWeight={400}
+                  mt="17px"
+                >
+                  Select a style to begin
+                </Text>
+              </Flex>
+            )}
           </Box>
         </Box>
-        <VStack position="absolute" right="12px" top="45%" spacing="20px">
-          <UndoButton disabled={isEmpty(undoStack)} onClick={handleUndo} />
-          <RedoButton
-            disabled={isEmpty(redoStack)}
-            onClick={handleRedo}
-          ></RedoButton>
-        </VStack>
         <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
+          isExpanded={isFooterToolbarExpanded}
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
           onUpdateTextObject={handleUpdateTextObject}
+          onToggleExpanded={() =>
+            setFooterToolbarExpanded(!isFooterToolbarExpanded)
+          }
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}

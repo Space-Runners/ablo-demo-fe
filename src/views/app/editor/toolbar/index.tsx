@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button as ChakraButton,
-  Flex,
-  HStack,
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
 
 import IconTrash from '@/components/icons/IconTrash';
 
@@ -15,50 +8,31 @@ import {
   IconImage,
   IconExpand,
   IconShrink,
-  IconColorPicker,
 } from './Icons';
 
 import { useState, Fragment as F } from 'react';
-import { chunk } from 'lodash';
 
 import TextToolbar from './text-toolbar';
-import ProductColors from './ProductColors';
-import ImageGenerator from './components/ImageGenerator';
+import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
 
 const TOOLS = [
   {
     name: 'imageGenerator',
     icon: <IconAiGenerator />,
+    iconActive: <IconAiGenerator isSelected />,
   },
   {
     name: 'text',
     icon: <IconTextEditor />,
+    iconActive: <IconTextEditor isSelected />,
   },
   {
     name: 'image',
     icon: <IconImage />,
+    iconActive: <IconImage isSelected />,
   },
 ];
-
-const Button = (props) => (
-  <ChakraButton
-    color="#FFFFFF"
-    fontSize="sm"
-    minWidth="auto"
-    padding="0 8px"
-    variant="ghost"
-    _hover={{ bg: '' }}
-    _active={{
-      bg: '',
-    }}
-    _focus={{
-      bg: '',
-      boxShadow: '',
-    }}
-    {...props}
-  />
-);
 
 const TextControls = ({ onAddText, onRemoveText }) => (
   <HStack mb="17px" mt="30px" spacing="14px">
@@ -86,72 +60,30 @@ const TextControls = ({ onAddText, onRemoveText }) => (
   </HStack>
 );
 
-const ColorPicker = ({ selectedColor, onSelectedColor }) => {
-  const chunks = chunk(ProductColors, 5);
-
-  return (
-    <Box padding="10px 24px 45px 27px">
-      <Text color="#ffffff" fontSize="md" textAlign="center">
-        Select the product color
-      </Text>
-      {chunks.map((chunk, index) => (
-        <Flex align="center" key={index} mt="24px">
-          {chunk.map(({ name, value }, index) => {
-            const isSelected = name === selectedColor;
-
-            const size = `${isSelected ? 50 : 35}px`;
-
-            const marginLeft = isSelected ? '22px' : '29px';
-            const marginRight = isSelected ? '-7px' : 0;
-
-            return (
-              <Button
-                bg={value}
-                height={size}
-                key={name}
-                padding="0"
-                width={size}
-                borderRadius="50%"
-                marginLeft={
-                  index === 0 ? (isSelected ? '-7px' : 0) : marginLeft
-                }
-                marginRight={marginRight}
-                onClick={() => onSelectedColor(name)}
-              />
-            );
-          })}
-        </Flex>
-      ))}
-    </Box>
-  );
-};
-
 export default function FooterToolbar(props) {
   const {
+    isExpanded,
     onAddText,
     onRemoveText,
     onUpdateTextObject,
+    onToggleExpanded,
     activeTextObject,
-    selectedColor,
-    onSelectedColor,
     onImageUploaded,
     onImageGenerated,
   } = props;
 
   const { text = '' } = activeTextObject || {};
 
-  const [isExpanded, setExpanded] = useState(true);
-  const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [selectedTool, setSelectedTool] = useState('text');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
-
-    setExpanded(true);
   };
 
   const handleTextUpdate = (text) => {
+    console.log('Text', text, activeTextObject);
     if (!activeTextObject) {
-      onAddText({ text });
+      onAddText({ fill: '#000000', fontSize: 20, text });
 
       return;
     }
@@ -161,11 +93,11 @@ export default function FooterToolbar(props) {
 
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
-  const isProductVariantPicker = selectedTool === 'productVariant';
+
   const isImagePicker = selectedTool === 'image';
 
   return (
-    <Box bottom={0} position="fixed" w="100%" zIndex={2}>
+    <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       {isTextEditor ? (
         <TextToolbar
           onUpdate={onUpdateTextObject}
@@ -173,16 +105,18 @@ export default function FooterToolbar(props) {
         />
       ) : null}
       <Box
-        background="#000000"
-        boxShadow="0px -1px 1px #626262"
-        padding="11px 20px 13px 17px"
+        bg="#FFFFFF"
+        maxHeight="400px"
+        overflow="auto"
+        padding="0 14px 12px 14px"
       >
-        <Flex justify="space-between">
+        <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
               border="none"
-              color="#FFFFFF"
+              fontSize="md"
               onChange={(e) => handleTextUpdate(e.target.value)}
+              padding={0}
               placeholder="Write your text here"
               value={text}
               _focus={{
@@ -190,47 +124,50 @@ export default function FooterToolbar(props) {
               }}
             />
           ) : (
-            <Button opacity={0.7}>Generate your design with AI</Button>
+            <Button
+              bg="transparent"
+              color="#6A6866"
+              fontSize="md"
+              fontWeight={400}
+              h="30px"
+              padding={0}
+            >
+              Generate your design with AI
+            </Button>
           )}
-          <Button onClick={() => setExpanded(!isExpanded)} opacity={0.7}>
+          <Button h="24px" onClick={onToggleExpanded}>
             {isExpanded ? <IconShrink /> : <IconExpand />}
           </Button>
         </Flex>
-        <Flex align="center" justify="space-between" mt="10px">
+        <Flex align="center" justify="space-between" padding="10px 0">
           <HStack spacing="8px">
-            {TOOLS.map(({ name, icon }) => (
+            {TOOLS.map(({ name, icon, iconActive }) => (
               <Button
+                bg={selectedTool === name ? '#000000' : 'transparent'}
+                borderRadius="50%"
+                h="40px"
                 key={name}
                 onClick={() => handleToolChange(name)}
-                opacity={name === selectedTool ? 1 : 0.3}
+                w="40px"
               >
-                {icon}
+                {selectedTool === name ? iconActive : icon}
               </Button>
             ))}
           </HStack>
-          <Button onClick={() => handleToolChange('productVariant')}>
-            <IconColorPicker isSelected={isProductVariantPicker} />
-          </Button>
         </Flex>
         {isExpanded ? (
           <F>
-            {isTextEditor ? (
+            {isImageGenerator ? (
+              <ImageGenerator onImageGenerated={onImageGenerated} />
+            ) : null}
+            {isTextEditor && null ? (
               <TextControls
                 onAddText={() => onAddText()}
                 onRemoveText={onRemoveText}
               />
             ) : null}
-            {isProductVariantPicker ? (
-              <ColorPicker
-                selectedColor={selectedColor}
-                onSelectedColor={onSelectedColor}
-              />
-            ) : null}
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
-            ) : null}
-            {isImageGenerator ? (
-              <ImageGenerator onImageGenerated={onImageGenerated} />
             ) : null}
           </F>
         ) : null}

@@ -1,5 +1,9 @@
 import { Button as ChakraButton, HStack, Text } from '@chakra-ui/react';
 
+import Colors from '@/theme/colors';
+
+const { abloBlue } = Colors;
+
 import Fonts from './fonts';
 
 const Button = (props) => {
@@ -7,19 +11,11 @@ const Button = (props) => {
 
   return (
     <ChakraButton
-      width="40px"
-      height="40px"
-      background="#000000"
-      borderRadius="20px"
-      border={isSelected ? '1px solid #ffffff' : 'none'}
-      _hover={{ bg: '' }}
-      _active={{
-        bg: '',
-      }}
-      _focus={{
-        bg: '',
-        boxShadow: '',
-      }}
+      bg="transparent"
+      width="36px"
+      height="36px"
+      borderRadius="50%"
+      border={isSelected ? `1px solid ${abloBlue}` : 'none'}
       {...rest}
     />
   );
@@ -34,13 +30,7 @@ export default function FontPicker({ fontFamily, onUpdate }) {
           key={font}
           onClick={() => onUpdate(font)}
         >
-          <Text
-            color="#ffffff"
-            fontFamily={font}
-            fontWeight={400}
-            fontSize="18px"
-            lineHeight="20px"
-          >
+          <Text fontFamily={font} fontWeight={700}>
             Aa
           </Text>
         </Button>
