@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
 
