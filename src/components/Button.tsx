@@ -1,4 +1,4 @@
-import { Box, Button as ChakraButton, Text } from '@chakra-ui/react';
+import { Box, Button as ChakraButton } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
 
