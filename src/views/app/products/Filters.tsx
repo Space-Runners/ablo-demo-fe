@@ -169,21 +169,22 @@ const Filters = ({ filters, onApply, onUpdate }: Props) => {
       />
       <Panel title="Price">
         <PricePicker
-          max={100}
+          max={150}
           min={0}
           onChange={(value) => onUpdate({ price: value })}
           value={price}
         />
       </Panel>
-      <Flex align="center" justify="center" w="100%">
+      <Flex align="flex-end" justify="center" w="100%" padding="0 14px">
         <Button
-          bg={abloBlue}
-          borderRadius="50px"
-          color="#FFFFFF"
-          h="40px"
+          bg="transparent"
+          border={`1px solid ${abloBlue}`}
+          borderRadius="100px"
+          color={abloBlue}
+          h="50px"
           mt="16px"
           onClick={onApply}
-          w="361px"
+          w="100%"
         >
           Apply Filters
         </Button>

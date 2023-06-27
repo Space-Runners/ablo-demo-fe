@@ -1,13 +1,6 @@
-import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
+import { Button, Flex, Icon, Text } from '@chakra-ui/react';
 
-import { useHistory } from 'react-router-dom';
-
-import { useMe } from '@/api/auth';
-import Colors from '@/theme/colors';
-
-const { abloBlue } = Colors;
-
-const IconBack = () => (
+const IconNext = () => (
   <Icon
     width="24px"
     height="24px"
@@ -15,107 +8,80 @@ const IconBack = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M20 12L4 12M4 12L10 6M4 12L10 18"
-      stroke="white"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <g clip-path="url(#clip0_1999_20945)">
+      <path
+        d="M5 12H19"
+        stroke="white"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15 16L19 12"
+        stroke="white"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15 8L19 12"
+        stroke="white"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1999_20945">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );
 
+const TOTAL_STEPS = 3;
+
 type Props = {
-  action?: string;
-  message?: string;
   onNext?: () => void;
-  onNextDisabled?: boolean;
+  isNextDisabled?: boolean;
   onSignUp?: () => void;
+  step: number;
   title: string;
 };
 
 export default function Navbar(props: Props) {
-  const history = useHistory();
-
-  const { data: me } = useMe();
-
-  const { action, onNext, onNextDisabled, onSignUp, title } = props;
+  const { onNext, isNextDisabled, step, title } = props;
 
   return (
-    <Box>
-      <Flex
-        align="flex-end"
-        backgroundColor="#000000"
-        fontSize="md"
-        h="100px"
-        justify="space-between"
-        padding="12px 16px 14px 12px"
-        w={{
-          base: '100vw',
-        }}
+    <Flex
+      align="center"
+      bg="#F9F9F7"
+      height="63px"
+      justify={onNext ? 'space-between' : 'flex-start'}
+      padding="14px"
+    >
+      <Text
+        fontFamily="Roboto Condensed"
+        fontSize="24px"
+        fontWeight={700}
+        textTransform="uppercase"
       >
+        {title}
+      </Text>
+      <Flex align="center" justify="flex-start">
+        <Text color="#959392" fontWeight={500} mr="12px">
+          {step}/{TOTAL_STEPS}
+        </Text>
         <Button
-          fontWeight={400}
-          onClick={() => history.goBack()}
-          padding={0}
-          variant="ghost"
+          bg="#000000"
+          borderRadius="40px"
+          disabled={isNextDisabled}
+          height="32px"
+          onClick={onNext}
+          padding="4px 14px"
+          w="52px"
+          _disabled={{ background: '#BFBEBE' }}
         >
-          <IconBack />
-          <Text color="#FFFFFF" ml="18px">
-            {title}
-          </Text>
+          <IconNext />
         </Button>
-        {!me || true ? (
-          <Button
-            color="#FFFFFF"
-            fontWeight={400}
-            onClick={() =>
-              onSignUp
-                ? onSignUp()
-                : history.push(`/signup?returnTo=${window.location.pathname}`)
-            }
-            padding={0}
-            variant="ghost"
-          >
-            Sign Up
-          </Button>
-        ) : null}
       </Flex>
-      {action ? (
-        <Flex
-          align="center"
-          bg="#FFFFFF"
-          height="73px"
-          borderBottom="1px solid #D4D4D3"
-          justify={onNext ? 'space-between' : 'flex-start'}
-          padding="20px 8px 20px 14px"
-        >
-          <Text
-            color="#000000"
-            fontFamily="Roboto Condensed"
-            fontSize="22px"
-            fontWeight={700}
-            textTransform="uppercase"
-          >
-            {action}
-          </Text>
-          {onNext ? (
-            <Button
-              bg={abloBlue}
-              borderRadius="50px"
-              disabled={onNextDisabled}
-              color="white"
-              fontSize="sm"
-              height="32px"
-              onClick={onNext}
-              padding="8px 16px"
-              w="99px"
-              _disabled={{ background: '#D8D8D8', color: '#A7A7A7' }}
-            >
-              NEXT
-            </Button>
-          ) : null}
-        </Flex>
-      ) : null}
-    </Box>
+    </Flex>
   );
 }

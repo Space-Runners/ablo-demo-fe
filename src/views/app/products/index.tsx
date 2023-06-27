@@ -26,6 +26,7 @@ type Variant = {
 
 type Product = {
   fabric: string;
+  id: number;
   madeIn: string;
   name: string;
   fit: string;
@@ -39,6 +40,7 @@ type Product = {
 type Props = {
   onSelectedProduct: (product: Product) => void;
   products: Product[];
+  selectedProduct: Product;
 };
 
 const matchesClothingType = (types, product) =>
@@ -88,10 +90,12 @@ const ProductDetails = ({ product }: { product: Product }) => {
         bg="#F9F9F7"
         direction="column"
         justify="center"
+        position="relative"
         margin="0 auto"
         h="271px"
         w="100%"
       >
+        <IconSustainable position="absolute" right="14px" top="23px" />
         <Image
           h={216}
           src={`${urlPrefix}_${selectedVariant.name}_FRONT.png`}
@@ -159,7 +163,11 @@ const ProductDetails = ({ product }: { product: Product }) => {
   );
 };
 
-const ProductsList = ({ products, onSelectedProduct }: Props) => {
+const ProductsList = ({
+  products,
+  onSelectedProduct,
+  selectedProduct,
+}: Props) => {
   const chunks = chunk(products, 2);
 
   return (
@@ -167,9 +175,15 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="24px">
           {chunk.map((product, index) => {
-            const { fabric, fit, name, price, variants, urlPrefix } = product;
+            const { fabric, fit, id, name, price, variants, urlPrefix } =
+              product;
 
             const [variant] = variants;
+
+            const selectedProps =
+              selectedProduct && selectedProduct.id === id
+                ? { border: '2px solid #000000', borderRadius: '10px' }
+                : {};
 
             return (
               <Box
@@ -178,6 +192,7 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
                 marginLeft={`${index === 0 ? 0 : 8}px`}
                 onClick={() => onSelectedProduct(product)}
                 position="relative"
+                {...selectedProps}
               >
                 <IconSustainable position="absolute" top="8px" right="8px" />
                 <Flex
@@ -185,7 +200,6 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
                   bg="#F9F9F7"
                   borderRadius="10px"
                   h="180px"
-                  mb="16px"
                   justify="center"
                   padding="16px 8px"
                 >
@@ -195,38 +209,40 @@ const ProductsList = ({ products, onSelectedProduct }: Props) => {
                     alt={name}
                   />
                 </Flex>
-                <Text
-                  color="#6A6866"
-                  display="block"
-                  fontSize="xs"
-                  textTransform="uppercase"
-                >
-                  Spaarkd
-                </Text>
-                <Text
-                  color="#000000"
-                  fontSize="md"
-                  fontWeight={500}
-                  lineHeight="20px"
-                >
-                  {fit} {name}
-                </Text>
-                <Text color="#6A6866" fontSize="xs">
-                  {fabric}
-                </Text>
-                <Flex color="#6A6866" align="center" fontSize="xs">
+                <Box padding="8px">
                   <Text
-                    as="b"
-                    color="#000000"
-                    fontFamily="Roboto Condensed"
-                    fontSize="md"
-                    fontWeight={700}
-                    mr="4px"
+                    color="#6A6866"
+                    display="block"
+                    fontSize="xs"
+                    textTransform="uppercase"
                   >
-                    ${price}.00
-                  </Text>{' '}
-                  (Base Price)
-                </Flex>
+                    Spaarkd
+                  </Text>
+                  <Text
+                    color="#000000"
+                    fontSize="md"
+                    fontWeight={500}
+                    lineHeight="20px"
+                  >
+                    {fit} {name}
+                  </Text>
+                  <Text color="#6A6866" fontSize="xs">
+                    {fabric}
+                  </Text>
+                  <Flex color="#6A6866" align="center" fontSize="xs">
+                    <Text
+                      as="b"
+                      color="#000000"
+                      fontFamily="Roboto Condensed"
+                      fontSize="md"
+                      fontWeight={700}
+                      mr="4px"
+                    >
+                      ${price}.00
+                    </Text>{' '}
+                    (Base Price)
+                  </Flex>
+                </Box>
               </Box>
             );
           })}
@@ -243,26 +259,27 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [areFiltersVisible, setFiltersVisible] = useState(false);
-  const [filters, setFilters] = useState({ price: [20, 100] });
+  const [filters, setFilters] = useState({ price: [20, 90] });
 
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('All');
 
   const products = getProductsMatchingFilters(filters);
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
-        action="Select your clothing"
         onNext={() =>
           history.push(
             `/app/editor?productName=${selectedProduct.fit} ${selectedProduct.name}`
           )
         }
-        onNextDisabled={!selectedProduct}
-        title="Product Selection"
+        isNextDisabled={!selectedProduct}
+        step={1}
+        title="Pick your clothes"
       />
       <Button
         alignItems="center"
+        bg="#FFFFFF"
         borderBottom="1px solid #D4D4D3"
         borderRadius={0}
         display="flex"
@@ -272,7 +289,9 @@ export default function ProductsPage() {
         padding="10px 14px"
         w="100%"
       >
-        <Text fontWeight={400}>FILTERS</Text>
+        <Text color="#212121" fontWeight={400}>
+          FILTERS
+        </Text>
         {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
       </Button>
       {areFiltersVisible ? (
@@ -293,7 +312,7 @@ export default function ProductsPage() {
           {!selectedProduct && (
             <Box pl="14px">
               <MiniFilterBar
-                options={CLOTHING_TYPES}
+                options={['All', ...CLOTHING_TYPES]}
                 selectedValue={selectedQuickFilter}
                 onChange={setSelectedQuickFilter}
               />
@@ -302,6 +321,7 @@ export default function ProductsPage() {
           <ProductsList
             onSelectedProduct={(product) => setSelectedProduct(product)}
             products={products}
+            selectedProduct={selectedProduct}
           />
         </Box>
       )}

@@ -30,10 +30,12 @@ const PriceTag = ({ price }) => (
   </Text>
 );
 
-const PricePicker = ({ onChange, value }: Props) => {
+const PricePicker = ({ min, max, onChange, value }: Props) => {
   return (
     <RangeSlider
       aria-label={['min', 'max']}
+      min={min}
+      max={max}
       onChange={(val) => onChange(val)}
       value={value}
     >

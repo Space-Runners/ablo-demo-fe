@@ -5,7 +5,7 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 const LinkButton = ({ icon, title, ...rest }) => (
-  <Button justifyContent="flex-start" padding="0" {...rest}>
+  <Button bg="transparent" justifyContent="flex-start" padding="0" {...rest}>
     {icon}
     <Text as="b" color={abloBlue} fontSize="sm" ml="13px">
       {title}

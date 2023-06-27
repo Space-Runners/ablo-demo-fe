@@ -6,6 +6,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
+import { toPng } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
@@ -21,6 +22,8 @@ const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 export default function ImageEditor() {
   const canvas = useRef(null);
+  const clothingAndCanvasRef = useRef(null);
+
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
   const state = useRef<string>('');
@@ -67,6 +70,8 @@ export default function ImageEditor() {
       console.log('Object modified');
       saveState();
     });
+
+    setSelectedVariant(PRODUCTS[0].variants[0].name);
 
     state.current = JSON.stringify(canvas.current);
 
@@ -147,7 +152,7 @@ export default function ImageEditor() {
 
     // Render the Text on Canvas
     canvas.current.add(text);
-    canvas.current.setActiveObject(text);
+    // canvas.current.setActiveObject(text);
 
     setActiveTextObject(textObject);
 
@@ -206,11 +211,16 @@ export default function ImageEditor() {
   const handleImageGenerated = (imageUrl) => {
     canvas.current.remove(canvas.current.getActiveObject());
 
-    fabric.Image.fromURL(imageUrl, (img) => {
-      img.scaleToWidth(200);
+    fabric.Image.fromURL(
+      imageUrl,
+      (img) => {
+        img.scaleToWidth(200);
 
-      canvas.current.add(img).setActiveObject(img).renderAll();
-    });
+        img.crossOrigin = 'anonymous';
+        canvas.current.add(img).setActiveObject(img).renderAll();
+      },
+      { crossOrigin: 'anonymous' }
+    );
   };
 
   const handleSelectedVariant = (name) => {
@@ -239,6 +249,19 @@ export default function ImageEditor() {
     history.push(`/signup?returnTo=${window.location.pathname}`);
   };
 
+  const handleSaveImage = () => {
+    toPng(clothingAndCanvasRef.current, { cacheBust: false })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'my-image-name.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const { urlPrefix } = selectedProduct;
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png`;
@@ -246,10 +269,10 @@ export default function ImageEditor() {
   return (
     <Box h="100%" w="100%">
       <Navbar
-        action="Create your design"
-        onNext={() => null}
+        onNext={() => handleSaveImage()}
         onSignUp={handleSignUp}
-        title="Design generation"
+        step={2}
+        title="Create your design"
       />
       <Flex
         align="center"
@@ -271,8 +294,8 @@ export default function ImageEditor() {
           selectedSide={selectedSide}
           selectedVariant={selectedVariant}
         />
-        <Box position="relative">
-          <img src={variantImageUrl} width={350} />
+        <Box ref={clothingAndCanvasRef} position="relative">
+          <img src={variantImageUrl} crossOrigin="anonymous" width={350} />
           <Box
             border={
               isDrawingAreaVisible

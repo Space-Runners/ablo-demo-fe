@@ -8,69 +8,73 @@ export const IconFilters = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clipPath="url(#clip0_1343_1818)">
-      <g clipPath="url(#clip1_1343_1818)">
-        <path
-          d="M4 8H8V12H4V8Z"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M6 4V8"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M6 12V20"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M10 14H14V18H10V14Z"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12 4V14"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12 18V20"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M16 5H20V9H16V5Z"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18 4V5"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18 9V20"
-          stroke="#6A6866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
+    <g clip-path="url(#clip0_1999_24430)">
+      <path
+        d="M12 6C12 6.53043 12.2107 7.03914 12.5858 7.41421C12.9609 7.78929 13.4696 8 14 8C14.5304 8 15.0391 7.78929 15.4142 7.41421C15.7893 7.03914 16 6.53043 16 6C16 5.46957 15.7893 4.96086 15.4142 4.58579C15.0391 4.21071 14.5304 4 14 4C13.4696 4 12.9609 4.21071 12.5858 4.58579C12.2107 4.96086 12 5.46957 12 6Z"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 6H12"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M16 6H20"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M6 12C6 12.5304 6.21071 13.0391 6.58579 13.4142C6.96086 13.7893 7.46957 14 8 14C8.53043 14 9.03914 13.7893 9.41421 13.4142C9.78929 13.0391 10 12.5304 10 12C10 11.4696 9.78929 10.9609 9.41421 10.5858C9.03914 10.2107 8.53043 10 8 10C7.46957 10 6.96086 10.2107 6.58579 10.5858C6.21071 10.9609 6 11.4696 6 12Z"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 12H6"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M10 12H20"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15 18C15 18.5304 15.2107 19.0391 15.5858 19.4142C15.9609 19.7893 16.4696 20 17 20C17.5304 20 18.0391 19.7893 18.4142 19.4142C18.7893 19.0391 19 18.5304 19 18C19 17.4696 18.7893 16.9609 18.4142 16.5858C18.0391 16.2107 17.5304 16 17 16C16.4696 16 15.9609 16.2107 15.5858 16.5858C15.2107 16.9609 15 17.4696 15 18Z"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 18H15"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M19 18H20"
+        stroke="black"
+        stroke-width="1.83333"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </g>
     <defs>
-      <clipPath id="clip0_1343_1818">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-      <clipPath id="clip1_1343_1818">
+      <clipPath id="clip0_1999_24430">
         <rect width="24" height="24" fill="white" />
       </clipPath>
     </defs>
@@ -79,18 +83,17 @@ export const IconFilters = () => (
 
 export const IconCloseFilters = () => (
   <Icon
-    width="36px"
-    height="36px"
-    viewBox="0 0 36 36"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width="36" height="36" rx="18" fill="#064AC4" fill-opacity="0.1" />
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"
-      d="M18 19.7782L23.6568 25.435C24.0473 25.8256 24.6805 25.8256 25.071 25.435C25.4615 25.0445 25.4615 24.4113 25.071 24.0208L19.4142 18.364L25.071 12.7071C25.4615 12.3166 25.4615 11.6834 25.071 11.2929C24.6805 10.9024 24.0473 10.9024 23.6568 11.2929L18 16.9498L12.3431 11.2929C11.9526 10.9024 11.3194 10.9024 10.9289 11.2929C10.5384 11.6834 10.5384 12.3166 10.9289 12.7071L16.5857 18.364L10.9289 24.0208C10.5384 24.4114 10.5384 25.0445 10.9289 25.435C11.3194 25.8256 11.9526 25.8256 12.3431 25.435L18 19.7782Z"
-      fill="#064AC4"
+      d="M12.364 13.7782L18.0208 19.435C18.4113 19.8256 19.0445 19.8256 19.435 19.435C19.8256 19.0445 19.8256 18.4113 19.435 18.0208L13.7782 12.364L19.435 6.70712C19.8256 6.31659 19.8256 5.68343 19.435 5.29291C19.0445 4.90238 18.4113 4.90238 18.0208 5.29291L12.364 10.9498L6.70711 5.29289C6.31658 4.90237 5.68342 4.90237 5.29289 5.29289C4.90237 5.68342 4.90237 6.31658 5.29289 6.70711L10.9498 12.364L5.29289 18.0208C4.90237 18.4114 4.90237 19.0445 5.29289 19.435C5.68342 19.8256 6.31658 19.8256 6.70711 19.435L12.364 13.7782Z"
+      fill="black"
     />
   </Icon>
 );

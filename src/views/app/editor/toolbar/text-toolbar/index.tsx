@@ -37,6 +37,7 @@ const Button = (props) => {
     <ChakraButton
       width="28px"
       height="28px"
+      bg="#FFFFFF"
       border={`1px solid ${isSelected ? '#ffffff' : '#484848'}`}
       borderRadius="4px"
       minWidth="auto"
