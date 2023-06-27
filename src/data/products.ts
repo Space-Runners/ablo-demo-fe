@@ -2,14 +2,6 @@ const BUCKET = 'https://sr-demo-products.s3.eu-central-1.amazonaws.com';
 
 export const variants = [
   {
-    name: 'LemonDrop',
-    color: '#F9E39A',
-  },
-  {
-    name: 'Onyx',
-    color: '#2A2A2C',
-  },
-  {
     name: 'Blanco',
     color: '#FAFAFA',
     sides: {
@@ -17,8 +9,20 @@ export const variants = [
     },
   },
   {
+    name: 'Onyx',
+    color: '#2A2A2C',
+  },
+  {
+    name: 'OatMilk',
+    color: '#EBDFC7',
+  },
+  {
     name: 'MatchaTea',
     color: '#B8CCB4',
+  },
+  {
+    name: 'Cloudy',
+    color: '#C7C9CC',
   },
   {
     name: 'ClearSky',
@@ -35,6 +39,10 @@ export const variants = [
   {
     name: 'Lavender',
     color: '#BFB4CD',
+  },
+  {
+    name: 'LemonDrop',
+    color: '#F9E39A',
   },
 ];
 

@@ -264,7 +264,7 @@ export default function ImageEditor() {
 
   const { urlPrefix } = selectedProduct;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
 
   return (
     <Box h="100%" w="100%">
@@ -354,9 +354,7 @@ export default function ImageEditor() {
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
           onUpdateTextObject={handleUpdateTextObject}
-          onToggleExpanded={() =>
-            setFooterToolbarExpanded(!isFooterToolbarExpanded)
-          }
+          onSetExpanded={setFooterToolbarExpanded}
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}

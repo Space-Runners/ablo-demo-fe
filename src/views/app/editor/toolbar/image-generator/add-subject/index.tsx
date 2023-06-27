@@ -37,7 +37,7 @@ export default function AddSubject({
         mb="30px"
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        placeholder="Pinochio"
+        placeholder="No more than 4-5 words"
       />
       {suggestions ? (
         <Keywords
@@ -46,7 +46,7 @@ export default function AddSubject({
           onChange={onUpdateKeywords}
         />
       ) : null}
-      <Flex align="center" mt="34px">
+      <Flex align="center" padding="14px 0">
         <ButtonCTA flex={1} onClick={onBack} outlined title="Edit mood" />
         <ButtonCTA
           disabled={!value && isEmpty(keywords)}

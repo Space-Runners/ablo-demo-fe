@@ -1,5 +1,5 @@
 import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react';
-import { random, times } from 'lodash';
+import { chunk, random, times } from 'lodash';
 
 import Button from '@/components/Button';
 
@@ -10,7 +10,18 @@ function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
 }
 
-const MOODS = ['Pastel', 'Psychedelic', 'Neon', 'Doomsday'];
+const MOODS = [
+  'Blues',
+  'Bloom',
+  'Doomsday',
+  'Energy',
+  'Joy',
+  'Love',
+  'Mystery',
+  'Neon',
+  'Pastel',
+  'Psychedelic',
+];
 
 type Props = {
   onChange: (value: string) => void;
@@ -29,38 +40,44 @@ export default function SelectMood({
     onChange(MOODS[random(0, MOODS.length - 1)]);
   };
 
+  const chunks = chunk(MOODS, 2);
+
   return (
     <Box paddingBottom="146px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
         Select your mood
       </Text>
-      {MOODS.map((mood) => {
-        const isSelected = mood === selectedValue;
+      {chunks.map((chunk, index) => (
+        <Flex key={index} mb="16px" w="100%">
+          {chunk.map((mood, index) => {
+            console.log('Mood', mood);
+            const isSelected = mood === selectedValue;
 
-        return (
-          <Box key={mood} mb="16px" position="relative">
-            <HStack
-              border={isSelected ? '4px solid #000000' : ''}
-              borderRadius="4px"
-              mb="10px"
-              onClick={() => onChange(mood)}
-              spacing="1px"
-            >
-              {times(3, (index) => (
+            return (
+              <Box
+                border={isSelected ? '4px solid #000000' : ''}
+                borderRadius="4px"
+                flex={1}
+                mr={index === 0 ? '16px' : 0}
+                onClick={() => onChange(mood)}
+                key={mood}
+                position="relative"
+                textAlign="center"
+              >
                 <Image
-                  h={112}
-                  w={121}
                   key={index}
-                  src={getImgUrl(`${mood}${index + 1}`)}
+                  mb="8px"
+                  src={getImgUrl(`${mood}`)}
                   alt={mood}
                 />
-              ))}
-            </HStack>
-            <Text>{mood}</Text>
-            {isSelected ? <CheckmarkSelected /> : null}
-          </Box>
-        );
-      })}
+
+                <Text>{mood}</Text>
+                {isSelected ? <CheckmarkSelected /> : null}
+              </Box>
+            );
+          })}
+        </Flex>
+      ))}
       <Box
         bg="#FFFFFF"
         ml="-14px"

@@ -66,7 +66,7 @@ export default function FooterToolbar(props) {
     onAddText,
     onRemoveText,
     onUpdateTextObject,
-    onToggleExpanded,
+    onSetExpanded,
     activeTextObject,
     onImageUploaded,
     onImageGenerated,
@@ -78,6 +78,8 @@ export default function FooterToolbar(props) {
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
+
+    onSetExpanded(true);
   };
 
   const handleTextUpdate = (text) => {
@@ -104,12 +106,7 @@ export default function FooterToolbar(props) {
           textObject={activeTextObject}
         />
       ) : null}
-      <Box
-        bg="#FFFFFF"
-        maxHeight="400px"
-        overflow="auto"
-        padding="0 14px 12px 14px"
-      >
+      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 14px">
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
@@ -121,6 +118,9 @@ export default function FooterToolbar(props) {
               value={text}
               _focus={{
                 border: 'none',
+              }}
+              _placeholder={{
+                color: '#6A6866',
               }}
             />
           ) : (
@@ -135,7 +135,7 @@ export default function FooterToolbar(props) {
               Generate your design with AI
             </Button>
           )}
-          <Button h="24px" onClick={onToggleExpanded}>
+          <Button h="24px" onClick={() => onSetExpanded(!isExpanded)}>
             {isExpanded ? <IconShrink /> : <IconExpand />}
           </Button>
         </Flex>

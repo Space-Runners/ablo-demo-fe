@@ -57,6 +57,7 @@ export default function SelectStyle({
               <Box
                 key={index}
                 onClick={() => onChange(style)}
+                borderRadius="4px"
                 position="relative"
               >
                 <Image

@@ -81,45 +81,105 @@ export const IconFontFamily = () => (
 
 export const IconTextLeftAlign = () => (
   <Icon
-    width="16px"
-    height="12px"
-    viewBox="0 0 16 12"
+    width="28px"
+    height="28px"
+    viewBox="0 0 28 28"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M16 0.666748V2.44454H0V0.666748H16ZM0 11.3335H8V9.5557H0V11.3335ZM0 6.88902H16V5.11122H0V6.88902Z"
-      fill="white"
+      d="M0.5 3.11111C0.5 2.4186 0.775098 1.75445 1.26478 1.26478C1.75445 0.775098 2.4186 0.5 3.11111 0.5H24.8889C25.5814 0.5 26.2455 0.775098 26.7352 1.26478C27.2249 1.75446 27.5 2.4186 27.5 3.11111V24.8889C27.5 25.5814 27.2249 26.2455 26.7352 26.7352C26.2455 27.2249 25.5814 27.5 24.8889 27.5H3.11111C2.4186 27.5 1.75446 27.2249 1.26478 26.7352C0.775098 26.2455 0.5 25.5814 0.5 24.8889V3.11111Z"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9 19H6"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M16 14H6"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M12 9H6"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </Icon>
 );
 
 export const IconTextCenter = () => (
   <Icon
-    width="16px"
-    height="16px"
-    viewBox="0 0 18 18"
+    width="28px"
+    height="28px"
+    viewBox="0 0 28 28"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M0 0H18V2H0V0ZM4 4H14V6H4V4ZM0 8H18V10H0V8ZM4 12H14V14H4V12ZM0 16H18V18H0V16Z"
-      fill="white"
+      d="M0.5 24.8889V3.11111C0.5 2.4186 0.775098 1.75445 1.26478 1.26478C1.75445 0.775098 2.4186 0.5 3.11111 0.5H24.8889C25.5814 0.5 26.2455 0.775098 26.7352 1.26478C27.2249 1.75446 27.5 2.4186 27.5 3.11111V24.8889C27.5 25.5814 27.2249 26.2455 26.7352 26.7352C26.2455 27.2249 25.5814 27.5 24.8889 27.5H3.11111C2.4186 27.5 1.75446 27.2249 1.26478 26.7352C0.775098 26.2455 0.5 25.5814 0.5 24.8889Z"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M12 19H16"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M9 14H19"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M11 9H17"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </Icon>
 );
 
 export const IconTextRightAlign = () => (
   <Icon
-    width="16px"
-    height="16px"
-    viewBox="0 0 18 18"
+    width="28px"
+    height="28px"
+    viewBox="0 0 28 28"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      d="M0 0H18V2H0V0ZM6 4H18V6H6V4ZM0 8H18V10H0V8ZM6 12H18V14H6V12ZM0 16H18V18H0V16Z"
-      fill="white"
+      d="M27.5 3.11111C27.5 2.4186 27.2249 1.75445 26.7352 1.26478C26.2455 0.775098 25.5814 0.5 24.8889 0.5H3.11111C2.4186 0.5 1.75446 0.775098 1.26478 1.26478C0.775099 1.75446 0.5 2.4186 0.5 3.11111V24.8889C0.5 25.5814 0.775099 26.2455 1.26478 26.7352C1.75446 27.2249 2.4186 27.5 3.11111 27.5H24.8889C25.5814 27.5 26.2455 27.2249 26.7352 26.7352C27.2249 26.2455 27.5 25.5814 27.5 24.8889V3.11111Z"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M19 19H22"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M12 14H22"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M16 9H22"
+      stroke="black"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </Icon>
 );

@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Switch, Text } from '@chakra-ui/react';
 
 import ButtonCTA from '@/components/Button';
 
@@ -43,6 +43,7 @@ export default function AddBackground({
           <Text fontWeight={500} mb="16px" textTransform="uppercase">
             Background
           </Text>
+          <Switch value={true}></Switch>
           <Input
             mb="30px"
             onChange={(e) => onChange(e.target.value)}

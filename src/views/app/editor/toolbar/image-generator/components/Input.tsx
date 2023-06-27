@@ -1,6 +1,4 @@
-import { Box, Flex, Input as ChakraInput } from '@chakra-ui/react';
-
-import IconShuffle from './IconShuffle';
+import { Box, Input as ChakraInput } from '@chakra-ui/react';
 
 const Input = (props) => (
   <Box position="relative">
@@ -10,22 +8,11 @@ const Input = (props) => (
       borderRadius={0}
       height="52px"
       padding={0}
+      textAlign="center"
       _placeholder={{ color: '#BFBEBE' }}
       _focus={{ outline: 'none' }}
       {...props}
     />
-    <Flex
-      align="center"
-      bg="#000000"
-      h="40px"
-      w="40px"
-      justify="center"
-      position="absolute"
-      right={0}
-      top="6px"
-    >
-      <IconShuffle />
-    </Flex>
   </Box>
 );
 
