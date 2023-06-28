@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
-
 import Colors from '@/theme/colors';
 
 import SelectStyle from './select-style';
@@ -16,23 +15,7 @@ import LinkButton from './components/LinkButton';
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
 
-import { Styles, MOODS, KEYWORD_SUGGESTIONS } from './styles';
-
 const { abloBlue } = Colors;
-
-const getKeywordPrompts = (keywords, style) => {
-  const keywordsForStyle = KEYWORD_SUGGESTIONS[style];
-
-  return keywords.reduce((result, keyword) => {
-    const keywordObject = keywordsForStyle.find((k) => k.name === keyword);
-
-    if (keywordObject) {
-      return [...result, keywordObject.prompt];
-    }
-
-    return result;
-  }, []);
-};
 
 export default function ImageGenerator({ onImageGenerated }) {
   const [waiting, setWaiting] = useState(false);
@@ -42,6 +25,7 @@ export default function ImageGenerator({ onImageGenerated }) {
   const [subject, setSubject] = useState('');
   const [keywords, setKeywords] = useState([]);
   const [background, setBackground] = useState('');
+  const [isBackgroundOn, setBackgroundOn] = useState(true);
   const [backgroundKeywords, setBackgroundKeywords] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -49,7 +33,7 @@ export default function ImageGenerator({ onImageGenerated }) {
 
   const [activeStep, setActiveStep] = useState(1);
 
-  const handleEditPrompts = () => setActiveStep(4);
+  const handleEditPrompts = () => setActiveStep(null);
 
   const handleNewArtwork = () => {
     setImages([]);
@@ -59,6 +43,7 @@ export default function ImageGenerator({ onImageGenerated }) {
     setSubject('');
     setKeywords([]);
     setBackground('');
+    setBackgroundOn(true);
     setBackgroundKeywords([]);
 
     setActiveStep(1);
@@ -68,24 +53,11 @@ export default function ImageGenerator({ onImageGenerated }) {
     setWaiting(true);
     setImages([]);
 
-    const paramsForStyle = Styles[style];
-
-    const { text: textArray, ...rest } = paramsForStyle;
-
-    const keywordPrompts = getKeywordPrompts(keywords, style).join(', ');
-
-    const promptElements = [
-      subject,
-      keywordPrompts,
-      background,
-      textArray[0].text,
-      MOODS[mood],
-    ].filter((item) => !!item);
-
     const requestParams = {
-      ...rest,
-      samples: 3,
-      text: [{ text: promptElements.join(', ') }],
+      style,
+      mood,
+      subjectSuggestions: keywords,
+      freeText: subject,
     };
 
     generateImage(requestParams)
@@ -138,6 +110,8 @@ export default function ImageGenerator({ onImageGenerated }) {
           onNext={handleGenerate}
           keywords={backgroundKeywords}
           onUpdateKeywords={setBackgroundKeywords}
+          isBackgroundOn={isBackgroundOn}
+          setBackgroundOn={setBackgroundOn}
           style={style}
           value={background}
         />

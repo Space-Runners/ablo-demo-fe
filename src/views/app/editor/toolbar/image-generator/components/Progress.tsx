@@ -24,16 +24,18 @@ const Progress = () => {
   );
 
   return (
-    <Flex align="center" direction="column">
-      <Text fontSize="22px" fontWeight={700} mb="10px">
-        {progressPercentage}%
-      </Text>
-      <Text fontSize="11px" mb="17px">
-        Generating...
-      </Text>
-      <Box bg="#959392" h="3px" w="100%">
+    <Flex align="center">
+      <Box bg="#959392" flex={1} h="3px" w="100%">
         <Box bg={abloBlue} h="100%" w={`${progressPercentage}%`} />
       </Box>
+      <Text
+        fontFamily="Roboto Condensed"
+        fontSize="22px"
+        fontWeight={700}
+        ml="20px"
+      >
+        {progressPercentage}%
+      </Text>
     </Flex>
   );
 };

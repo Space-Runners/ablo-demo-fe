@@ -2,31 +2,85 @@ import { Icon } from '@chakra-ui/react';
 
 export const IconExpand = () => (
   <Icon
-    width="18px"
-    height="18px"
-    viewBox="0 0 18 18"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M7 18V16H3.41L7.91 11.5L6.5 10.09L2 14.59V11H0V18H7ZM11.5 7.91L16 3.41V7H18V0H11V2H14.59L10.09 6.5L11.5 7.91Z"
-      fill="white"
-    />
+    <g clip-path="url(#clip0_2140_3972)">
+      <path
+        d="M16 4H20V8"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M14 10L20 4"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M8 20H4V16"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 20L10 14"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2140_3972">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );
 
 export const IconShrink = () => (
   <Icon
-    width="18px"
-    height="18px"
-    viewBox="0 0 18 18"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M16.4998 0.0898438L11.9998 4.58984V0.999844H9.99984V7.99984H16.9998V5.99984H13.4098L17.9098 1.49984L16.4998 0.0898438ZM0.999844 9.99984V11.9998H4.58984L0.0898438 16.4998L1.49984 17.9098L5.99984 13.4098V16.9998H7.99984V9.99984H0.999844Z"
-      fill="white"
-    />
+    <g clip-path="url(#clip0_2140_17002)">
+      <path
+        d="M18 10H14V6"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M20 4L14 10"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M6 14H10V18"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M10 14L4 20"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2140_17002">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
   </Icon>
 );
 

@@ -11,6 +11,8 @@ import { toPng } from 'html-to-image';
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
 
+import SignUpModal from '@/views/auth/SignUpModal';
+
 import ButtonDelete from './controls/ButtonDelete';
 import Toolbar from './controls/Toolbar';
 import IconEmptyState from './icons/EmptyState';
@@ -26,6 +28,9 @@ export default function ImageEditor() {
 
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
+
+  const [isSignUpModalVisible, setSignUpModalVisible] = useState([]);
+
   const state = useRef<string>('');
 
   const history = useHistory();
@@ -362,6 +367,11 @@ export default function ImageEditor() {
           onImageGenerated={handleImageGenerated}
         />
       </Flex>
+      {/* {isSignUpModalVisible ? (
+        <SignUpModal
+          onClose={() => setSignUpModalVisible(!isSignUpModalVisible)}
+        />
+      ) : null} */}
     </Box>
   );
 }

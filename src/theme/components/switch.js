@@ -9,22 +9,25 @@ export const switchStyles = {
     Switch: {
       baseStyle: {
         thumb: {
-          bg: abloBlue,
+          bg: '#000000',
           fontWeight: 400,
           borderRadius: '50%',
-          w: '16px',
-          h: '16px',
-          _checked: { transform: 'translate(20px, 0px)' },
+          w: '18px',
+          h: '18px',
+          _checked: { bg: abloBlue, transform: 'translate(26px, 0px)' },
         },
         track: {
           bg: '#EAE9E9',
           display: 'flex',
           alignItems: 'center',
           boxSizing: 'border-box',
-          w: '40px',
-          h: '20px',
-          p: '2px',
-          ps: '2px',
+          padding: '3px',
+          borderRadius: '16px',
+          w: '50px',
+          h: '24px',
+          _checked: {
+            bg: '#EAE9E9',
+          },
           _focus: {
             boxShadow: 'none',
           },

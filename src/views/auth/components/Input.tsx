@@ -14,15 +14,19 @@ import { RiEyeCloseLine } from 'react-icons/ri';
 
 const Input = (props) => (
   <ChakraInput
-    padding="12px 16px"
-    height="43px"
-    bg="#F0F0F0"
+    padding="5px 0"
+    height="30px"
+    bg="#FFFFFF"
     border="none"
-    borderRadius="4px"
+    borderBottom="1px solid #404040"
+    borderRadius={0}
     variant="auth"
     fontSize="md"
-    mb="10px"
+    mb="20px"
     fontWeight="400"
+    _placeholder={{
+      fontSize: 'sm',
+    }}
     {...props}
   />
 );
@@ -52,10 +56,10 @@ function FormInput(props) {
     <FormControl w="100%">
       <FormLabel
         display="flex"
-        fontSize="sm"
-        fontWeight="600"
-        color="#212121"
-        mb="4px"
+        fontSize="11px"
+        fontWeight={400}
+        color="#959595"
+        mb="8px"
       >
         {name}
       </FormLabel>

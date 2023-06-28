@@ -44,6 +44,9 @@ export const login = (email: string, password: string) =>
       return data;
     });
 
+export const guestLogin = () =>
+  axios.post('/auth/guest/login', {}).then(({ data }) => data);
+
 export const googleLogin = (token: string) =>
   axios
     .post('/auth/google/login', {

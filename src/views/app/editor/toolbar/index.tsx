@@ -135,7 +135,14 @@ export default function FooterToolbar(props) {
               Generate your design with AI
             </Button>
           )}
-          <Button h="24px" onClick={() => onSetExpanded(!isExpanded)}>
+
+          <Button
+            bg="transparent"
+            h="24px"
+            minWidth="auto"
+            onClick={() => onSetExpanded(!isExpanded)}
+            padding={0}
+          >
             {isExpanded ? <IconShrink /> : <IconExpand />}
           </Button>
         </Flex>

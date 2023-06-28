@@ -2,6 +2,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { isEmpty } from 'lodash';
 
 import ButtonCTA from '@/components/Button';
+import { useOptions } from '@/api/image-generator';
 
 import Input from '../components/Input';
 import Keywords from '../components/Keywords';
@@ -26,7 +27,13 @@ export default function AddSubject({
   style,
   value,
 }: Props) {
-  const suggestions = KEYWORD_SUGGESTIONS[style]?.map(({ name }) => name);
+  const { data: options } = useOptions();
+
+  if (!options) {
+    return null;
+  }
+
+  const suggestions = options.suggestions[style] || [];
 
   return (
     <Box>

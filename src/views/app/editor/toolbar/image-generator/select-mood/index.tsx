@@ -1,7 +1,8 @@
-import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react';
-import { chunk, random, times } from 'lodash';
+import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { chunk, random } from 'lodash';
 
 import Button from '@/components/Button';
+import { useOptions } from '@/api/image-generator';
 
 import CheckmarkSelected from '../components/CheckmarkSelected';
 import IconSpark from '../components/IconSpark';
@@ -36,11 +37,35 @@ export default function SelectMood({
   onBack,
   selectedValue,
 }: Props) {
+  const { data: options } = useOptions();
+
+  if (!options) {
+    return null;
+  }
+
+  const moods = Object.keys(options.moods).reduce((result, key) => {
+    const fullName = options.moods[key];
+
+    const name = fullName.replace(' Mood', '').split(' ').join('');
+
+    if (!MOODS.includes(name)) {
+      return result;
+    }
+
+    return [
+      ...result,
+      {
+        value: key,
+        name,
+      },
+    ];
+  }, []);
+
   const handleSurpriseMe = () => {
-    onChange(MOODS[random(0, MOODS.length - 1)]);
+    onChange(moods[random(0, moods.length - 1)].value);
   };
 
-  const chunks = chunk(MOODS, 2);
+  const chunks = chunk(moods, 2);
 
   return (
     <Box paddingBottom="146px">
@@ -49,9 +74,8 @@ export default function SelectMood({
       </Text>
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="16px" w="100%">
-          {chunk.map((mood, index) => {
-            console.log('Mood', mood);
-            const isSelected = mood === selectedValue;
+          {chunk.map(({ value, name }, index) => {
+            const isSelected = value === selectedValue;
 
             return (
               <Box
@@ -59,19 +83,19 @@ export default function SelectMood({
                 borderRadius="4px"
                 flex={1}
                 mr={index === 0 ? '16px' : 0}
-                onClick={() => onChange(mood)}
-                key={mood}
+                onClick={() => onChange(value)}
+                key={value}
                 position="relative"
                 textAlign="center"
               >
                 <Image
                   key={index}
                   mb="8px"
-                  src={getImgUrl(`${mood}`)}
-                  alt={mood}
+                  src={getImgUrl(`${name}`)}
+                  alt={name}
                 />
 
-                <Text>{mood}</Text>
+                <Text>{name}</Text>
                 {isSelected ? <CheckmarkSelected /> : null}
               </Box>
             );
