@@ -6,6 +6,7 @@ import {
   IconImage,
   IconExpand,
   IconShrink,
+  IconTrash,
 } from './Icons';
 
 import { useState, Fragment as F } from 'react';
@@ -14,6 +15,17 @@ import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
 import GeneratedImageSummary from './ai-image-overview';
+
+const IconButton = (props) => (
+  <Button
+    bg="transparent"
+    h="32px"
+    minW="auto"
+    padding={0}
+    w="32px"
+    {...props}
+  />
+);
 
 const TOOLS = [
   {
@@ -37,6 +49,7 @@ export default function FooterToolbar(props) {
   const {
     isExpanded,
     onAddText,
+    onDeleteActiveObject,
     onUpdateTextObject,
     onSetExpanded,
     activeTextObject,
@@ -47,7 +60,7 @@ export default function FooterToolbar(props) {
 
   const { text = '' } = activeTextObject || {};
 
-  const [selectedTool, setSelectedTool] = useState('text');
+  const [selectedTool, setSelectedTool] = useState('imageGenerator');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -73,12 +86,21 @@ export default function FooterToolbar(props) {
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
-      {isTextEditor ? (
-        <TextToolbar
-          onUpdate={onUpdateTextObject}
-          textObject={activeTextObject}
-        />
-      ) : null}
+      <Flex align="center" justify="space-between">
+        <HStack p="16px 14px">
+          <IconButton onClick={onDeleteActiveObject}>
+            <IconTrash />
+          </IconButton>
+        </HStack>
+        {isTextEditor ? (
+          <TextToolbar
+            onUpdate={onUpdateTextObject}
+            textObject={activeTextObject}
+          />
+        ) : (
+          <Box />
+        )}
+      </Flex>
       <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 14px">
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
@@ -138,13 +160,16 @@ export default function FooterToolbar(props) {
         {isExpanded ? (
           <F>
             {isImageGenerator ? (
-              <ImageGenerator onImageGenerated={onImageGenerated} />
+              <ImageGenerator
+                onImageGenerated={onImageGenerated}
+                onPlaceArtwork={}
+              />
             ) : null}
 
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
             ) : null}
-            {activeImageObject || true ? <GeneratedImageSummary /> : null}
+            {activeImageObject ? <GeneratedImageSummary /> : null}
           </F>
         ) : null}
       </Box>
