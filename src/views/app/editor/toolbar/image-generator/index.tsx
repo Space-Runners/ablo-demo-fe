@@ -68,7 +68,9 @@ export default function ImageGenerator({ onImageGenerated }) {
     setActiveStep(1);
   };
 
-  const handlePlaceArtwork = () => {};
+  const handlePlaceArtwork = () => {
+    console.log('Place artwork');
+  };
 
   const handleGenerate = () => {
     setWaiting(true);

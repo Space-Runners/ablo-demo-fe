@@ -79,10 +79,10 @@ export default function FooterToolbar(props) {
     onUpdateTextObject({ text });
   };
 
-  const handlePlaceArtwork = () => {
+  /*  const handlePlaceArtwork = () => {
     setSelectedTool(null);
   };
-
+ */
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
 
@@ -166,7 +166,7 @@ export default function FooterToolbar(props) {
             {isImageGenerator ? (
               <ImageGenerator
                 onImageGenerated={onImageGenerated}
-                onPlaceArtwork={handlePlaceArtwork}
+                // onPlaceArtwork={handlePlaceArtwork}
               />
             ) : null}
 

@@ -6,7 +6,6 @@ import { useOptions } from '@/api/image-generator';
 
 import Input from '../components/Input';
 import Keywords from '../components/Keywords';
-import { KEYWORD_SUGGESTIONS } from '../styles';
 
 type Props = {
   onChange: (value: string) => void;

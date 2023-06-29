@@ -1,11 +1,10 @@
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
-import { chunk, random } from 'lodash';
+import { chunk } from 'lodash';
 
 import Button from '@/components/Button';
 import { useOptions } from '@/api/image-generator';
 
 import CheckmarkSelected from '../components/CheckmarkSelected';
-import IconSpark from '../components/IconSpark';
 
 function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
