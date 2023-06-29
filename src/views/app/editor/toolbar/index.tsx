@@ -91,10 +91,14 @@ export default function FooterToolbar(props) {
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
-        <HStack p="16px 14px">
-          <IconButton onClick={onDeleteActiveObject}>
-            <IconTrash />
-          </IconButton>
+        <HStack>
+          {!isTextEditor ? (
+            <IconButton onClick={onDeleteActiveObject} pl="14px">
+              <IconTrash />
+            </IconButton>
+          ) : (
+            <Box />
+          )}
         </HStack>
         {isTextEditor ? (
           <TextToolbar
