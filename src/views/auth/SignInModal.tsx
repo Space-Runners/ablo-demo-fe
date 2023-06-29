@@ -47,6 +47,8 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
         localStorage.setItem('access-token', accessToken);
         localStorage.removeItem('client-token');
 
+        setWaiting(false);
+
         onSignIn();
       })
       .catch(() => {

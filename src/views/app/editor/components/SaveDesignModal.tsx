@@ -1,11 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {
   Box,
-  Button as ChakraButton,
   Flex,
-  FormControl,
-  FormErrorMessage,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,44 +12,24 @@ import {
 
 import Button from '@/components/Button';
 
-import { GoogleLogin } from '@react-oauth/google';
-
-import { googleLogin, login } from '@/api/auth';
 import ButtonClose from '@/components/modal/ButtonCloseModal';
 import FormInput from '@/components/modal/FormInput';
-import Colors from '@/theme/colors';
-
-const { abloBlue } = Colors;
 
 type Props = {
   onClose: () => void;
-  onGoToSignup: () => void;
-  onSignIn: () => void;
+  onSave: () => void;
 };
 
-function SaveDesignModal({ onClose, onGoToSignup, onSignIn }: Props) {
-  // Chakra color mode
+function SaveDesignModal({ onClose, onSave }: Props) {
+  const inputRef = useRef(null);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const [error, setError] = useState('');
-  const [waiting, setWaiting] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSubmit = () => {
-    setWaiting(true);
+    console.log(title, description);
 
-    login(email, password)
-      .then(({ access_token: accessToken }) => {
-        localStorage.setItem('access-token', accessToken);
-
-        onSignIn();
-      })
-      .catch(() => {
-        setError('Error signing in');
-
-        setWaiting(false);
-      });
+    onSave();
   };
 
   return (
@@ -82,80 +59,23 @@ function SaveDesignModal({ onClose, onGoToSignup, onSignIn }: Props) {
                 textAlign="left"
                 textTransform="uppercase"
               >
-                Login
-              </Text>
-              <Flex align="center">
-                <Text fontSize="sm" mr="8px">
-                  You don't have an account?
-                </Text>
-                <ChakraButton
-                  bg="transparent"
-                  color={abloBlue}
-                  fontSize="sm"
-                  fontWeight={400}
-                  height="auto"
-                  onClick={onGoToSignup}
-                  padding={0}
-                  textDecoration="underline"
-                >
-                  Sign up
-                </ChakraButton>
-              </Flex>
-              <Text
-                color="#AAA9AB"
-                fontSize="sm"
-                m="32px 0 16px 0"
-                textAlign="left"
-              >
-                Login with
-              </Text>
-              <GoogleLogin
-                onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse);
-
-                  googleLogin(credentialResponse.credential).then(
-                    ({ access_token: accessToken }) => {
-                      localStorage.setItem('access-token', accessToken);
-
-                      window.location.href = '/';
-                    }
-                  );
-                }}
-                width="300px"
-              />
-              <Text
-                color="#AAA9AB"
-                fontSize="sm"
-                m="32px 0 16px 0"
-                textAlign="left"
-              >
-                or
+                Save your design
               </Text>
               <FormInput
-                autoComplete="new-password"
-                name="Email Address"
-                type="email"
-                placeholder="Example@mail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                autoFocus
+                ref={inputRef}
+                name="Design Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                tabIndex={0}
               />
               <FormInput
-                autoComplete="new-password"
-                name="Password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
+                name="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
-              <FormControl isInvalid={!!error}>
-                {error && <FormErrorMessage>{error}</FormErrorMessage>}
-              </FormControl>
 
-              <Button
-                isLoading={waiting}
-                onClick={handleSubmit}
-                title="Sign in"
-              />
+              <Button onClick={handleSubmit} title="Save my design" />
             </Flex>
           </Box>
         </ModalBody>

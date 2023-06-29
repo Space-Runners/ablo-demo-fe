@@ -43,6 +43,7 @@ const Input = (props) => (
 function FormInput(props) {
   const { error, name, ...rest } = props;
 
+  console.log('Rest', rest);
   return (
     <FormControl w="100%">
       <FormLabel

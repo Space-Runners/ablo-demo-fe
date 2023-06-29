@@ -111,7 +111,6 @@ export default function SelectMood({
         w="100%"
       >
         <Button
-          icon={<IconSpark />}
           mt="18px"
           onClick={handleSurpriseMe}
           title="Surprise me"

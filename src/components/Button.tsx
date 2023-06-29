@@ -21,8 +21,8 @@ const Button = ({ icon = null, outlined = false, title, ...rest }) => {
       }}
       {...rest}
     >
+      {icon ? <Box mr="8px">{icon}</Box> : null}
       {title}
-      {icon ? <Box ml="18px">{icon}</Box> : null}
     </ChakraButton>
   );
 };

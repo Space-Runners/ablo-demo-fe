@@ -84,7 +84,6 @@ export default function SelectStyle({
         w="100%"
       >
         <Button
-          icon={<IconSpark />}
           mb="18px"
           onClick={handleSurpriseMe}
           title="Surprise me"

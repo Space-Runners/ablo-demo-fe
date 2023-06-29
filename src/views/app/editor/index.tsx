@@ -36,6 +36,8 @@ export default function ImageEditor() {
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
 
+  const history = useHistory();
+
   const state = useRef<string>('');
 
   const { search } = useLocation();
@@ -256,18 +258,31 @@ export default function ImageEditor() {
   };
 
   const handleNext = () => {
-    console.log('Me', me);
-
-    if (me && me.roles[0] === 'guest') {
+    if (me && me.roles[0] !== 'guest') {
       console.log('Me 2', me, me.roles);
 
       handleGoToSaveDesign();
 
       return;
     }
+
+    setSignInModalVisible(true);
   };
 
   const handleGoToSaveDesign = () => {
+    setSignInModalVisible(false);
+    setSaveDesignModalVisible(true);
+
+    return;
+  };
+
+  const handleSaveDesign = () => {
+    setSaveDesignModalVisible(false);
+
+    history.push('/app/order-or-share');
+
+    return;
+
     toPng(clothingAndCanvasRef.current, { cacheBust: false })
       .then((dataUrl) => {
         const link = document.createElement('a');
@@ -279,8 +294,6 @@ export default function ImageEditor() {
         console.log(err);
       });
   };
-
-  const handleSaveDesign = () => {};
 
   const { urlPrefix } = selectedProduct;
 
