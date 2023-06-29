@@ -11,7 +11,6 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
-import Colors from '@/theme/colors';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
@@ -156,7 +155,7 @@ export default function ImageGenerator({ onImageGenerated }) {
               title="Generate New"
             />
           </Flex>
-          <HStack>
+          <HStack mb="20px">
             {images.map((imageUrl) => (
               <Image
                 border={

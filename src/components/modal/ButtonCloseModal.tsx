@@ -8,19 +8,19 @@ const IconClose = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1499_18365)">
+    <g clipPath="url(#clip0_1499_18365)">
       <rect width="36" height="36" fill="black" />
       <path
         d="M27 9L9 27"
         stroke="white"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M9 9L27 27"
         stroke="white"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>

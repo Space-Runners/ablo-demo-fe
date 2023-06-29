@@ -1,11 +1,10 @@
 import { Box, HStack, Image, Text } from '@chakra-ui/react';
-import { chunk, random } from 'lodash';
+import { chunk } from 'lodash';
 
 import Button from '@/components/Button';
 import { useOptions } from '@/api/image-generator';
 
 import CheckmarkSelected from '../components/CheckmarkSelected';
-import IconSpark from '../components/IconSpark';
 
 function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
@@ -34,11 +33,6 @@ export default function SelectStyle({
       value: key,
       name: options.styles[key].split(' ').join(''),
     }));
-
-  const handleSurpriseMe = () => {
-    console.log('Styles', styles);
-    onChange(styles[random(0, styles.length - 1)].value);
-  };
 
   const chunks = chunk(styles, 2);
 
@@ -83,12 +77,6 @@ export default function SelectStyle({
         bottom={0}
         w="100%"
       >
-        <Button
-          mb="18px"
-          onClick={handleSurpriseMe}
-          title="Surprise me"
-          w="100%"
-        />
         <Button
           disabled={!selectedValue}
           onClick={onNext}

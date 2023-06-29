@@ -8,30 +8,30 @@ export const IconExpand = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_2140_3972)">
+    <g clipPath="url(#clip0_2140_3972)">
       <path
         d="M16 4H20V8"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M14 10L20 4"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M8 20H4V16"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4 20L10 14"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>
@@ -50,30 +50,30 @@ export const IconShrink = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_2140_17002)">
+    <g clipPath="url(#clip0_2140_17002)">
       <path
         d="M18 10H14V6"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M20 4L14 10"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6 14H10V18"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M10 14L4 20"
         stroke="black"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <defs>
@@ -199,6 +199,165 @@ export const IconImage = ({ isSelected }: { isSelected?: boolean }) => (
     <defs>
       <clipPath id="clip0_1577_5058">
         <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
+  </Icon>
+);
+
+export const IconTrash = () => (
+  <Icon
+    width="32px"
+    height="32px"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_1817_26146)">
+      <path
+        d="M5.33301 9.33301H26.6663"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.333 14.6665V22.6665"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.666 14.6665V22.6665"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.66602 9.33301L7.99935 25.333C7.99935 26.0403 8.2803 26.7185 8.7804 27.2186C9.28049 27.7187 9.95877 27.9997 10.666 27.9997H21.3327C22.0399 27.9997 22.7182 27.7187 23.2183 27.2186C23.7184 26.7185 23.9994 26.0403 23.9994 25.333L25.3327 9.33301"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 9.33333V5.33333C12 4.97971 12.1405 4.64057 12.3905 4.39052C12.6406 4.14048 12.9797 4 13.3333 4H18.6667C19.0203 4 19.3594 4.14048 19.6095 4.39052C19.8595 4.64057 20 4.97971 20 5.33333V9.33333"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1817_26146">
+        <rect width="32" height="32" fill="white" />
+      </clipPath>
+    </defs>
+  </Icon>
+);
+
+export const IconLayerUp = () => (
+  <Icon
+    width="32px"
+    height="32px"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_1817_26153)">
+      <path
+        d="M10.666 8.00016C10.666 7.29292 10.947 6.61464 11.4471 6.11454C11.9472 5.61445 12.6254 5.3335 13.3327 5.3335H23.9993C24.7066 5.3335 25.3849 5.61445 25.885 6.11454C26.3851 6.61464 26.666 7.29292 26.666 8.00016V18.6668C26.666 19.3741 26.3851 20.0524 25.885 20.5524C25.3849 21.0525 24.7066 21.3335 23.9993 21.3335H13.3327C12.6254 21.3335 11.9472 21.0525 11.4471 20.5524C10.947 20.0524 10.666 19.3741 10.666 18.6668V8.00016Z"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21.333 21.3332V23.9998C21.333 24.7071 21.0521 25.3854 20.552 25.8855C20.0519 26.3856 19.3736 26.6665 18.6663 26.6665H7.99967C7.29243 26.6665 6.61415 26.3856 6.11406 25.8855C5.61396 25.3854 5.33301 24.7071 5.33301 23.9998V13.3332C5.33301 12.6259 5.61396 11.9477 6.11406 11.4476C6.61415 10.9475 7.29243 10.6665 7.99967 10.6665H10.6663"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12.666 16L15.9993 19.3333"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.333 8L23.9997 18.6667"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21.333 8L24.6663 11.3333"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1817_26153">
+        <rect width="32" height="32" fill="white" />
+      </clipPath>
+    </defs>
+  </Icon>
+);
+
+export const IconLayerDown = () => (
+  <Icon
+    width="32px"
+    height="32px"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_1817_26160)">
+      <path
+        d="M10.666 8.00016C10.666 7.29292 10.947 6.61464 11.4471 6.11454C11.9472 5.61445 12.6254 5.3335 13.3327 5.3335H23.9993C24.7066 5.3335 25.3849 5.61445 25.885 6.11454C26.3851 6.61464 26.666 7.29292 26.666 8.00016V18.6668C26.666 19.3741 26.3851 20.0524 25.885 20.5524C25.3849 21.0525 24.7066 21.3335 23.9993 21.3335H13.3327C12.6254 21.3335 11.9472 21.0525 11.4471 20.5524C10.947 20.0524 10.666 19.3741 10.666 18.6668V8.00016Z"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21.333 21.3332V23.9998C21.333 24.7071 21.0521 25.3854 20.552 25.8855C20.0519 26.3856 19.3736 26.6665 18.6663 26.6665H7.99967C7.29243 26.6665 6.61415 26.3856 6.11406 25.8855C5.61396 25.3854 5.33301 24.7071 5.33301 23.9998V13.3332C5.33301 12.6259 5.61396 11.9477 6.11406 11.4476C6.61415 10.9475 7.29243 10.6665 7.99967 10.6665H10.6663"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 21.3335L11.3333 24.6668"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 13.3335L10.6667 16.0002"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16 21.3335L18.6667 24.0002"
+        stroke="black"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1817_26160">
+        <rect width="32" height="32" fill="white" />
       </clipPath>
     </defs>
   </Icon>

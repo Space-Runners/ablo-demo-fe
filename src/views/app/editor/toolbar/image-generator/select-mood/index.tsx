@@ -11,19 +11,6 @@ function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
 }
 
-const MOODS = [
-  'Blues',
-  'Bloom',
-  'Doomsday',
-  'Energy',
-  'Joy',
-  'Love',
-  'Mystery',
-  'Neon',
-  'Pastel',
-  'Psychedelic',
-];
-
 type Props = {
   onChange: (value: string) => void;
   onNext: () => void;
@@ -43,27 +30,16 @@ export default function SelectMood({
     return null;
   }
 
-  const moods = Object.keys(options.moods).reduce((result, key) => {
+  const moods = Object.keys(options.moods).map((key) => {
     const fullName = options.moods[key];
 
     const name = fullName.replace(' Mood', '').split(' ').join('');
 
-    if (!MOODS.includes(name)) {
-      return result;
-    }
-
-    return [
-      ...result,
-      {
-        value: key,
-        name,
-      },
-    ];
-  }, []);
-
-  const handleSurpriseMe = () => {
-    onChange(moods[random(0, moods.length - 1)].value);
-  };
+    return {
+      value: key,
+      name,
+    };
+  });
 
   const chunks = chunk(moods, 2);
 
@@ -82,6 +58,7 @@ export default function SelectMood({
                 border={isSelected ? '4px solid #000000' : ''}
                 borderRadius="4px"
                 flex={1}
+                maxW="50%"
                 mr={index === 0 ? '16px' : 0}
                 onClick={() => onChange(value)}
                 key={value}
@@ -110,12 +87,6 @@ export default function SelectMood({
         bottom={0}
         w="100%"
       >
-        <Button
-          mt="18px"
-          onClick={handleSurpriseMe}
-          title="Surprise me"
-          w="100%"
-        />
         <Flex align="center" mt="14px">
           <Button flex={1} onClick={onBack} outlined title="Edit style" />
           <Button

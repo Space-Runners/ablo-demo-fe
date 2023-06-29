@@ -39,14 +39,15 @@ axios.interceptors.response.use(
       if (url.startsWith('/generate')) {
         // Guest usage
 
-        return guestLogin().then(({ access_token: token }) => {
-          console.log('Access token', token);
+        localStorage.removeItem('access-token');
 
+        return guestLogin().then(({ access_token: token }) => {
           localStorage.setItem('client-token', token);
 
           return axios.request(response.config);
         });
       }
+
       //  window.location.href = '/auth';
     }
 

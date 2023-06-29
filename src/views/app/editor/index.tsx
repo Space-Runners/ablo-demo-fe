@@ -16,7 +16,6 @@ import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
 import SaveDesignModal from './components/SaveDesignModal';
-import ButtonDelete from './controls/ButtonDelete';
 import Toolbar from './controls/Toolbar';
 import IconEmptyState from './icons/EmptyState';
 import FooterToolbar from './toolbar';
@@ -164,7 +163,8 @@ export default function ImageEditor() {
 
     // Render the Text on Canvas
     canvas.current.add(text);
-    // canvas.current.setActiveObject(text);
+
+    canvas.current.setActiveObject(text);
 
     setActiveTextObject(textObject);
 
@@ -376,13 +376,16 @@ export default function ImageEditor() {
             )}
           </Box>
         </Box>
-        <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
+          onDeleteActiveObject={handleRemoveActiveObject}
           onUpdateTextObject={handleUpdateTextObject}
-          onSetExpanded={setFooterToolbarExpanded}
+          onSetExpanded={(isExpanded) => {
+            setHasSeenInitialCallToAction(true);
+            setFooterToolbarExpanded(isExpanded);
+          }}
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
