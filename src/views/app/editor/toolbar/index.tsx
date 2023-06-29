@@ -1,7 +1,5 @@
 import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
 
-import IconTrash from '@/components/icons/IconTrash';
-
 import {
   IconAiGenerator,
   IconTextEditor,
@@ -15,6 +13,7 @@ import { useState, Fragment as F } from 'react';
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
+import GeneratedImageSummary from './ai-image-overview';
 
 const TOOLS = [
   {
@@ -34,40 +33,14 @@ const TOOLS = [
   },
 ];
 
-const TextControls = ({ onAddText, onRemoveText }) => (
-  <HStack mb="17px" mt="30px" spacing="14px">
-    <Button
-      border="1px solid #FFFFFF"
-      borderRadius="112px"
-      fontWeight={600}
-      fontSize="sm"
-      color="#FFFFFF"
-      height="40px"
-      leftIcon={<IconTrash />}
-      onClick={onRemoveText}
-      padding="8px 32px"
-    >
-      Remove Text
-    </Button>
-    <Button
-      background="#ffffff"
-      color="#212121"
-      onClick={onAddText}
-      padding="8px 32px"
-    >
-      Add New Text
-    </Button>
-  </HStack>
-);
-
 export default function FooterToolbar(props) {
   const {
     isExpanded,
     onAddText,
-    onRemoveText,
     onUpdateTextObject,
     onSetExpanded,
     activeTextObject,
+    activeImageObject,
     onImageUploaded,
     onImageGenerated,
   } = props;
@@ -167,15 +140,11 @@ export default function FooterToolbar(props) {
             {isImageGenerator ? (
               <ImageGenerator onImageGenerated={onImageGenerated} />
             ) : null}
-            {isTextEditor && null ? (
-              <TextControls
-                onAddText={() => onAddText()}
-                onRemoveText={onRemoveText}
-              />
-            ) : null}
+
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
             ) : null}
+            {activeImageObject || true ? <GeneratedImageSummary /> : null}
           </F>
         ) : null}
       </Box>

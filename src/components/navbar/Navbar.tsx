@@ -41,7 +41,6 @@ const TOTAL_STEPS = 3;
 type Props = {
   onNext?: () => void;
   isNextDisabled?: boolean;
-  onSignUp?: () => void;
   step: number;
   title: string;
 };

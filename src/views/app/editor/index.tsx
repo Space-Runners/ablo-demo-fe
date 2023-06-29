@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { useMe } from '@/api/auth';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
@@ -11,8 +12,10 @@ import { toPng } from 'html-to-image';
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
 
+import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
+import SaveDesignModal from './components/SaveDesignModal';
 import ButtonDelete from './controls/ButtonDelete';
 import Toolbar from './controls/Toolbar';
 import IconEmptyState from './icons/EmptyState';
@@ -29,13 +32,15 @@ export default function ImageEditor() {
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
 
-  const [isSignUpModalVisible, setSignUpModalVisible] = useState([]);
+  const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
+  const [isSignInModalVisible, setSignInModalVisible] = useState(false);
+  const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
 
   const state = useRef<string>('');
 
-  const history = useHistory();
-
   const { search } = useLocation();
+
+  const { data: me } = useMe();
 
   const searchParams = new URLSearchParams(search);
 
@@ -250,11 +255,19 @@ export default function ImageEditor() {
     });
   };
 
-  const handleSignUp = () => {
-    history.push(`/signup?returnTo=${window.location.pathname}`);
+  const handleNext = () => {
+    console.log('Me', me);
+
+    if (me && me.roles[0] === 'guest') {
+      console.log('Me 2', me, me.roles);
+
+      handleGoToSaveDesign();
+
+      return;
+    }
   };
 
-  const handleSaveImage = () => {
+  const handleGoToSaveDesign = () => {
     toPng(clothingAndCanvasRef.current, { cacheBust: false })
       .then((dataUrl) => {
         const link = document.createElement('a');
@@ -267,18 +280,15 @@ export default function ImageEditor() {
       });
   };
 
+  const handleSaveDesign = () => {};
+
   const { urlPrefix } = selectedProduct;
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
 
   return (
     <Box h="100%" w="100%">
-      <Navbar
-        onNext={() => handleSaveImage()}
-        onSignUp={handleSignUp}
-        step={2}
-        title="Create your design"
-      />
+      <Navbar onNext={() => handleNext()} step={2} title="Create your design" />
       <Flex
         align="center"
         bg="#F9F9F7"
@@ -367,11 +377,32 @@ export default function ImageEditor() {
           onImageGenerated={handleImageGenerated}
         />
       </Flex>
-      {/* {isSignUpModalVisible ? (
+      {isSignUpModalVisible ? (
         <SignUpModal
-          onClose={() => setSignUpModalVisible(!isSignUpModalVisible)}
+          onClose={() => setSignUpModalVisible(false)}
+          onGoToSignin={() => {
+            setSignInModalVisible(true);
+            setSignUpModalVisible(false);
+          }}
+          onSignUp={handleGoToSaveDesign}
         />
-      ) : null} */}
+      ) : null}
+      {isSignInModalVisible ? (
+        <SignInModal
+          onClose={() => setSignInModalVisible(false)}
+          onGoToSignup={() => {
+            setSignInModalVisible(false);
+            setSignUpModalVisible(true);
+          }}
+          onSignIn={handleGoToSaveDesign}
+        />
+      ) : null}
+      {isSaveDesignModalVisible ? (
+        <SaveDesignModal
+          onClose={() => setSaveDesignModalVisible(false)}
+          onSave={handleSaveDesign}
+        />
+      ) : null}
     </Box>
   );
 }

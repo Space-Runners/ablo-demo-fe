@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import SignInPage from '@/views/auth/SignIn';
 import VerifyEmailPage from '@/views/auth/VerifyEmail';
 import Dashboard from '@/layouts/admin';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -41,8 +40,6 @@ root.render(
           <ThemeEditorProvider>
             <BrowserRouter>
               <Switch>
-                <Route path={`/auth`} component={SignInPage} />
-
                 <Route path={`/verify-email`} component={VerifyEmailPage} />
                 <Route path={`/app`} component={Dashboard} />
                 <Redirect from="/" to="/app" />

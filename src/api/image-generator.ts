@@ -9,7 +9,7 @@ export const useOptions = () =>
   useQuery(['image-generation-options'], () => getOptions());
 
 export const generateImage = (params: TextToImageRequest) => {
-  return axios.post('/generate/text-to-image', params).then(({ data }) => {
+  return axios.post('/generate/image', params).then(({ data }) => {
     return data.images;
   });
 };
