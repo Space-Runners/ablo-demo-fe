@@ -12,6 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
+import Colors from '@/theme/colors';
+
 import {
   IconFontFamily,
   IconTextLeftAlign,
@@ -24,26 +26,25 @@ import FontPicker from './FontPicker';
 
 import ColorPalette from './ColorPalette.png';
 
+const { abloBlue } = Colors;
+
 const TEXT_ALIGN_OPTIONS = [
   { name: 'left', icon: <IconTextLeftAlign /> },
   { name: 'center', icon: <IconTextCenter /> },
   { name: 'right', icon: <IconTextRightAlign /> },
 ];
 
-const Button = (props) => {
-  const { isSelected, ...rest } = props;
-
-  return (
-    <ChakraButton
-      width="28px"
-      height="28px"
-      border={`1px solid ${isSelected ? '#ffffff' : '#484848'}`}
-      borderRadius="4px"
-      minWidth="auto"
-      {...rest}
-    />
-  );
-};
+const Button = (props) => (
+  <ChakraButton
+    width="28px"
+    height="28px"
+    bg="#FFFFFF"
+    borderRadius="4px"
+    minWidth="auto"
+    padding={0}
+    {...props}
+  />
+);
 
 export default function TextToolbar({ onUpdate, textObject }) {
   const [selectedTool, setSelectedTool] = useState(null);
@@ -109,13 +110,19 @@ export default function TextToolbar({ onUpdate, textObject }) {
         <HStack spacing="6px">
           <Button
             bg="transparent"
-            border={isColorActive ? '1px solid #ffffff' : ''}
+            borderRadius="14px"
             onClick={() => setSelectedTool(isColorActive ? null : 'color')}
           >
-            <Image maxWidth="none" w="28px" h="28px" src={ColorPalette} />
+            <Image
+              maxWidth="none"
+              w="28px"
+              h="28px"
+              src={ColorPalette}
+              borderRadius="14px"
+              border={isColorActive ? `2px solid ${abloBlue}` : ''}
+            />
           </Button>
           <Button
-            isSelected={isFontFamilyActive}
             onClick={() =>
               setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
             }

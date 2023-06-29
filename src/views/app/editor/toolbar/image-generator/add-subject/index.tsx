@@ -2,6 +2,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import { isEmpty } from 'lodash';
 
 import ButtonCTA from '@/components/Button';
+import { useOptions } from '@/api/image-generator';
 
 import Input from '../components/Input';
 import Keywords from '../components/Keywords';
@@ -26,7 +27,13 @@ export default function AddSubject({
   style,
   value,
 }: Props) {
-  const suggestions = KEYWORD_SUGGESTIONS[style]?.map(({ name }) => name);
+  const { data: options } = useOptions();
+
+  if (!options) {
+    return null;
+  }
+
+  const suggestions = options.suggestions[style] || [];
 
   return (
     <Box>
@@ -37,7 +44,7 @@ export default function AddSubject({
         mb="30px"
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        placeholder="Pinochio"
+        placeholder="No more than 4-5 words"
       />
       {suggestions ? (
         <Keywords
@@ -46,7 +53,7 @@ export default function AddSubject({
           onChange={onUpdateKeywords}
         />
       ) : null}
-      <Flex align="center" mt="34px">
+      <Flex align="center" padding="14px 0">
         <ButtonCTA flex={1} onClick={onBack} outlined title="Edit mood" />
         <ButtonCTA
           disabled={!value && isEmpty(keywords)}

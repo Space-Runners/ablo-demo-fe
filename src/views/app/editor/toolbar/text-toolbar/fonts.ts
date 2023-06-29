@@ -11,10 +11,10 @@ export default [
   'Poppins',
   'Space Grotesk',
   'Karla',
-  'Special Elite',
-  'Luckiest Guy',
   'Bangers',
   'Press Start 2P',
   'Silkscreen',
   'Koulen',
+  'Special Elite',
+  'Luckiest Guy',
 ];

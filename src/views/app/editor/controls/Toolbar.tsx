@@ -1,10 +1,13 @@
 import { Box, Button, HStack } from '@chakra-ui/react';
 
+import { useHistory } from 'react-router-dom';
+
 import MiniFilterBar from '@/components/MiniFilterBar';
 import ColorPicker from '@/components/ColorPicker';
 
 import IconToggleSidePicker from './icons/IconToggleSide';
 import IconToggleColorPicker from './icons/IconToggleColorPicker';
+import IconOpenProductPicker from './icons/IconOpenProductPicker';
 import IconUndo from './icons/IconUndo';
 import IconRedo from './icons/IconRedo';
 
@@ -61,6 +64,8 @@ export default function Toolbar({
   const [isSidePickerVisible, setSidePickerVisible] = useState(false);
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
 
+  const history = useHistory();
+
   return (
     <Box p="0px 14px" w="100%">
       <HStack
@@ -89,6 +94,10 @@ export default function Toolbar({
             }
             isSelected={isDrawingAreaVisible}
             onClick={onToggleDrawingArea}
+          />
+          <ToolbarButton
+            icon={<IconOpenProductPicker />}
+            onClick={() => history.push('/app/products')}
           />
           <ToolbarButton
             icon={<IconToggleColorPicker isSelected={isColorPickerVisible} />}

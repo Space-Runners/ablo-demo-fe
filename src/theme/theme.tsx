@@ -12,6 +12,19 @@ import { linkStyles } from './components/link';
 import { breakpoints } from './foundations/breakpoints';
 import { globalStyles } from './styles';
 
+import Colors from './colors';
+
+const { abloBlue } = Colors;
+
+fabric.Object.prototype.set({
+  transparentCorners: true,
+  borderColor: abloBlue,
+  borderRadius: '1px',
+  cornerColor: abloBlue,
+  cornerSize: 7,
+  mb: false,
+});
+
 export default extendTheme(
   { breakpoints }, // Breakpoints
   globalStyles,

@@ -8,6 +8,7 @@ export const buttonStyles = {
     },
     Button: {
       baseStyle: {
+        bg: 'transparent',
         borderRadius: '16px',
         boxShadow: '45px 76px 113px 7px rgba(112, 144, 176, 0.08)',
         transition: '.25s all ease',

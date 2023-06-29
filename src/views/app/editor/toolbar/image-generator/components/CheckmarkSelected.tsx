@@ -28,7 +28,6 @@ const CheckmarkSelected = () => (
   <Flex
     align="center"
     bg="#000000"
-    borderTopLeftRadius="4px"
     justify="center"
     left={0}
     h="36px"

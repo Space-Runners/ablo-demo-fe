@@ -1,13 +1,12 @@
 import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
 
-import IconTrash from '@/components/icons/IconTrash';
-
 import {
   IconAiGenerator,
   IconTextEditor,
   IconImage,
   IconExpand,
   IconShrink,
+  IconTrash,
 } from './Icons';
 
 import { useState, Fragment as F } from 'react';
@@ -15,6 +14,18 @@ import { useState, Fragment as F } from 'react';
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
+import GeneratedImageSummary from './ai-image-overview';
+
+const IconButton = (props) => (
+  <Button
+    bg="transparent"
+    h="32px"
+    minW="auto"
+    padding={0}
+    w="32px"
+    {...props}
+  />
+);
 
 const TOOLS = [
   {
@@ -34,50 +45,27 @@ const TOOLS = [
   },
 ];
 
-const TextControls = ({ onAddText, onRemoveText }) => (
-  <HStack mb="17px" mt="30px" spacing="14px">
-    <Button
-      border="1px solid #FFFFFF"
-      borderRadius="112px"
-      fontWeight={600}
-      fontSize="sm"
-      color="#FFFFFF"
-      height="40px"
-      leftIcon={<IconTrash />}
-      onClick={onRemoveText}
-      padding="8px 32px"
-    >
-      Remove Text
-    </Button>
-    <Button
-      background="#ffffff"
-      color="#212121"
-      onClick={onAddText}
-      padding="8px 32px"
-    >
-      Add New Text
-    </Button>
-  </HStack>
-);
-
 export default function FooterToolbar(props) {
   const {
     isExpanded,
     onAddText,
-    onRemoveText,
+    onDeleteActiveObject,
     onUpdateTextObject,
-    onToggleExpanded,
+    onSetExpanded,
     activeTextObject,
+    activeImageObject,
     onImageUploaded,
     onImageGenerated,
   } = props;
 
   const { text = '' } = activeTextObject || {};
 
-  const [selectedTool, setSelectedTool] = useState('text');
+  const [selectedTool, setSelectedTool] = useState('imageGenerator');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
+
+    onSetExpanded(true);
   };
 
   const handleTextUpdate = (text) => {
@@ -91,6 +79,10 @@ export default function FooterToolbar(props) {
     onUpdateTextObject({ text });
   };
 
+  const handlePlaceArtwork = () => {
+    setSelectedTool(null);
+  };
+
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
 
@@ -98,18 +90,22 @@ export default function FooterToolbar(props) {
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
-      {isTextEditor ? (
-        <TextToolbar
-          onUpdate={onUpdateTextObject}
-          textObject={activeTextObject}
-        />
-      ) : null}
-      <Box
-        bg="#FFFFFF"
-        maxHeight="400px"
-        overflow="auto"
-        padding="0 14px 12px 14px"
-      >
+      <Flex align="center" justify="space-between">
+        <HStack p="16px 14px">
+          <IconButton onClick={onDeleteActiveObject}>
+            <IconTrash />
+          </IconButton>
+        </HStack>
+        {isTextEditor ? (
+          <TextToolbar
+            onUpdate={onUpdateTextObject}
+            textObject={activeTextObject}
+          />
+        ) : (
+          <Box />
+        )}
+      </Flex>
+      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 14px">
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
@@ -121,6 +117,9 @@ export default function FooterToolbar(props) {
               value={text}
               _focus={{
                 border: 'none',
+              }}
+              _placeholder={{
+                color: '#6A6866',
               }}
             />
           ) : (
@@ -135,7 +134,14 @@ export default function FooterToolbar(props) {
               Generate your design with AI
             </Button>
           )}
-          <Button h="24px" onClick={onToggleExpanded}>
+
+          <Button
+            bg="transparent"
+            h="24px"
+            minWidth="auto"
+            onClick={() => onSetExpanded(!isExpanded)}
+            padding={0}
+          >
             {isExpanded ? <IconShrink /> : <IconExpand />}
           </Button>
         </Flex>
@@ -158,17 +164,16 @@ export default function FooterToolbar(props) {
         {isExpanded ? (
           <F>
             {isImageGenerator ? (
-              <ImageGenerator onImageGenerated={onImageGenerated} />
-            ) : null}
-            {isTextEditor && null ? (
-              <TextControls
-                onAddText={() => onAddText()}
-                onRemoveText={onRemoveText}
+              <ImageGenerator
+                onImageGenerated={onImageGenerated}
+                onPlaceArtwork={handlePlaceArtwork}
               />
             ) : null}
+
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
             ) : null}
+            {activeImageObject ? <GeneratedImageSummary /> : null}
           </F>
         ) : null}
       </Box>

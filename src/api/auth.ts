@@ -9,7 +9,11 @@ const { API_URL } = config;
 axios.defaults.baseURL = API_URL;
 
 axios.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('access-token');
+  const token =
+    localStorage.getItem('access-token') ||
+    localStorage.getItem('client-token');
+
+  console.log('Request interceptor', config);
 
   config.headers.Authorization = `Bearer ${token}`;
   config.headers['Target-URL'] = API_URL;
@@ -27,7 +31,24 @@ axios.interceptors.response.use(
     console.log('Axios error:', response);
 
     if (response.status === 401) {
-      window.location.href = '/auth';
+      console.log(response);
+      const {
+        config: { url },
+      } = response;
+
+      if (url.startsWith('/generate')) {
+        // Guest usage
+
+        localStorage.removeItem('access-token');
+
+        return guestLogin().then(({ access_token: token }) => {
+          localStorage.setItem('client-token', token);
+
+          return axios.request(response.config);
+        });
+      }
+
+      //  window.location.href = '/auth';
     }
 
     return Promise.reject(error);
@@ -43,6 +64,9 @@ export const login = (email: string, password: string) =>
     .then(({ data }) => {
       return data;
     });
+
+export const guestLogin = () =>
+  axios.post('/auth/guest/login', {}).then(({ data }) => data);
 
 export const googleLogin = (token: string) =>
   axios

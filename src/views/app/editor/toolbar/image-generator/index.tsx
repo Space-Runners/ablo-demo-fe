@@ -1,38 +1,40 @@
-import { Box, Flex, HStack, Image } from '@chakra-ui/react';
+import {
+  Box,
+  Button as ChakraButton,
+  Flex,
+  HStack,
+  Image,
+  Text,
+} from '@chakra-ui/react';
 
 import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
 
-import Colors from '@/theme/colors';
-
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
 import AddSubject from './add-subject';
 import AddBackground from './add-background';
 
-import LinkButton from './components/LinkButton';
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
 
-import { Styles, MOODS, KEYWORD_SUGGESTIONS } from './styles';
-
-const { abloBlue } = Colors;
-
-const getKeywordPrompts = (keywords, style) => {
-  const keywordsForStyle = KEYWORD_SUGGESTIONS[style];
-
-  return keywords.reduce((result, keyword) => {
-    const keywordObject = keywordsForStyle.find((k) => k.name === keyword);
-
-    if (keywordObject) {
-      return [...result, keywordObject.prompt];
-    }
-
-    return result;
-  }, []);
-};
+const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
+  <ChakraButton
+    bg="transparent"
+    border="1px solid #555251"
+    color="#555251"
+    justifyContent="center"
+    padding="12px 20px"
+    {...rest}
+  >
+    {icon}
+    <Text as="b" color="#555251" fontSize="sm" ml="10px">
+      {title}
+    </Text>
+  </ChakraButton>
+);
 
 export default function ImageGenerator({ onImageGenerated }) {
   const [waiting, setWaiting] = useState(false);
@@ -42,6 +44,7 @@ export default function ImageGenerator({ onImageGenerated }) {
   const [subject, setSubject] = useState('');
   const [keywords, setKeywords] = useState([]);
   const [background, setBackground] = useState('');
+  const [isBackgroundOn, setBackgroundOn] = useState(true);
   const [backgroundKeywords, setBackgroundKeywords] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -49,7 +52,7 @@ export default function ImageGenerator({ onImageGenerated }) {
 
   const [activeStep, setActiveStep] = useState(1);
 
-  const handleEditPrompts = () => setActiveStep(4);
+  const handleEditPrompts = () => setActiveStep(null);
 
   const handleNewArtwork = () => {
     setImages([]);
@@ -59,33 +62,23 @@ export default function ImageGenerator({ onImageGenerated }) {
     setSubject('');
     setKeywords([]);
     setBackground('');
+    setBackgroundOn(true);
     setBackgroundKeywords([]);
 
     setActiveStep(1);
   };
 
+  const handlePlaceArtwork = () => {};
+
   const handleGenerate = () => {
     setWaiting(true);
     setImages([]);
 
-    const paramsForStyle = Styles[style];
-
-    const { text: textArray, ...rest } = paramsForStyle;
-
-    const keywordPrompts = getKeywordPrompts(keywords, style).join(', ');
-
-    const promptElements = [
-      subject,
-      keywordPrompts,
-      background,
-      textArray[0].text,
-      MOODS[mood],
-    ].filter((item) => !!item);
-
     const requestParams = {
-      ...rest,
-      samples: 3,
-      text: [{ text: promptElements.join(', ') }],
+      style,
+      mood,
+      subjectSuggestions: keywords,
+      freeText: subject,
     };
 
     generateImage(requestParams)
@@ -138,13 +131,31 @@ export default function ImageGenerator({ onImageGenerated }) {
           onNext={handleGenerate}
           keywords={backgroundKeywords}
           onUpdateKeywords={setBackgroundKeywords}
+          isBackgroundOn={isBackgroundOn}
+          setBackgroundOn={setBackgroundOn}
           style={style}
           value={background}
         />
       ) : null}
       {images.length ? (
         <Box>
-          <HStack>
+          <Text fontSize="md" mb="22px">
+            Select image
+          </Text>
+          <Flex align="center" mb="22px">
+            <ButtonGenerateAgain
+              icon={<IconShuffle />}
+              onClick={handleGenerate}
+              title="Generate similar"
+            />
+            <ButtonGenerateAgain
+              icon={<IconSpark />}
+              onClick={() => null}
+              ml="20px"
+              title="Generate New"
+            />
+          </Flex>
+          <HStack mb="20px">
             {images.map((imageUrl) => (
               <Image
                 border={
@@ -163,20 +174,8 @@ export default function ImageGenerator({ onImageGenerated }) {
               />
             ))}
           </HStack>
-          <Flex align="center" mt="22px">
-            <LinkButton
-              icon={<IconShuffle color={abloBlue} />}
-              onClick={handleGenerate}
-              title="Generate similar"
-            />
-            <LinkButton
-              icon={<IconSpark color={abloBlue} />}
-              onClick={() => null}
-              ml="20px"
-              title="Generate New"
-            />
-          </Flex>
-          <Flex align="center" mt="34px">
+          <Button onClick={handlePlaceArtwork} title="Place artwork" w="100%" />
+          <Flex align="center" mt="14px" pb="14px">
             <Button
               flex={1}
               onClick={handleEditPrompts}

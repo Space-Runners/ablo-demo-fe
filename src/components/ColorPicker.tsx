@@ -44,7 +44,7 @@ const ColorPicker = ({
             bg={color}
             border={
               isSelected
-                ? `2px solid ${abloBlue}`
+                ? `1px solid ${abloBlue}`
                 : name === 'Blanco'
                 ? '1px solid #D9D9D9'
                 : 'none'

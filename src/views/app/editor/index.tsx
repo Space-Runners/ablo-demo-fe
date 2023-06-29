@@ -3,14 +3,19 @@ import { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex, Text } from '@chakra-ui/react';
+import { useMe } from '@/api/auth';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
+import { toPng } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
 
-import ButtonDelete from './controls/ButtonDelete';
+import SignInModal from '@/views/auth/SignInModal';
+import SignUpModal from '@/views/auth/SignUpModal';
+
+import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
 import IconEmptyState from './icons/EmptyState';
 import FooterToolbar from './toolbar';
@@ -21,13 +26,22 @@ const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 export default function ImageEditor() {
   const canvas = useRef(null);
+  const clothingAndCanvasRef = useRef(null);
+
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
-  const state = useRef<string>('');
+
+  const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
+  const [isSignInModalVisible, setSignInModalVisible] = useState(false);
+  const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
 
   const history = useHistory();
 
+  const state = useRef<string>('');
+
   const { search } = useLocation();
+
+  const { data: me } = useMe();
 
   const searchParams = new URLSearchParams(search);
 
@@ -67,6 +81,8 @@ export default function ImageEditor() {
       console.log('Object modified');
       saveState();
     });
+
+    setSelectedVariant(PRODUCTS[0].variants[0].name);
 
     state.current = JSON.stringify(canvas.current);
 
@@ -147,6 +163,7 @@ export default function ImageEditor() {
 
     // Render the Text on Canvas
     canvas.current.add(text);
+
     canvas.current.setActiveObject(text);
 
     setActiveTextObject(textObject);
@@ -206,11 +223,16 @@ export default function ImageEditor() {
   const handleImageGenerated = (imageUrl) => {
     canvas.current.remove(canvas.current.getActiveObject());
 
-    fabric.Image.fromURL(imageUrl, (img) => {
-      img.scaleToWidth(200);
+    fabric.Image.fromURL(
+      imageUrl,
+      (img) => {
+        img.scaleToWidth(200);
 
-      canvas.current.add(img).setActiveObject(img).renderAll();
-    });
+        img.crossOrigin = 'anonymous';
+        canvas.current.add(img).setActiveObject(img).renderAll();
+      },
+      { crossOrigin: 'anonymous' }
+    );
   };
 
   const handleSelectedVariant = (name) => {
@@ -235,22 +257,51 @@ export default function ImageEditor() {
     });
   };
 
-  const handleSignUp = () => {
-    history.push(`/signup?returnTo=${window.location.pathname}`);
+  const handleNext = () => {
+    if (me && me.roles[0] !== 'guest') {
+      console.log('Me 2', me, me.roles);
+
+      handleGoToSaveDesign();
+
+      return;
+    }
+
+    setSignInModalVisible(true);
+  };
+
+  const handleGoToSaveDesign = () => {
+    setSignInModalVisible(false);
+    setSaveDesignModalVisible(true);
+
+    return;
+  };
+
+  const handleSaveDesign = () => {
+    setSaveDesignModalVisible(false);
+
+    history.push('/app/order-or-share');
+
+    return;
+
+    toPng(clothingAndCanvasRef.current, { cacheBust: false })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'my-image-name.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const { urlPrefix } = selectedProduct;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
 
   return (
     <Box h="100%" w="100%">
-      <Navbar
-        action="Create your design"
-        onNext={() => null}
-        onSignUp={handleSignUp}
-        title="Design generation"
-      />
+      <Navbar onNext={() => handleNext()} step={2} title="Create your design" />
       <Flex
         align="center"
         bg="#F9F9F7"
@@ -271,8 +322,8 @@ export default function ImageEditor() {
           selectedSide={selectedSide}
           selectedVariant={selectedVariant}
         />
-        <Box position="relative">
-          <img src={variantImageUrl} width={350} />
+        <Box ref={clothingAndCanvasRef} position="relative">
+          <img src={variantImageUrl} crossOrigin="anonymous" width={350} />
           <Box
             border={
               isDrawingAreaVisible
@@ -325,15 +376,16 @@ export default function ImageEditor() {
             )}
           </Box>
         </Box>
-        <ButtonDelete mt="12px" onClick={handleRemoveActiveObject} w="122px" />
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
+          onDeleteActiveObject={handleRemoveActiveObject}
           onUpdateTextObject={handleUpdateTextObject}
-          onToggleExpanded={() =>
-            setFooterToolbarExpanded(!isFooterToolbarExpanded)
-          }
+          onSetExpanded={(isExpanded) => {
+            setHasSeenInitialCallToAction(true);
+            setFooterToolbarExpanded(isExpanded);
+          }}
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
@@ -341,6 +393,32 @@ export default function ImageEditor() {
           onImageGenerated={handleImageGenerated}
         />
       </Flex>
+      {isSignUpModalVisible ? (
+        <SignUpModal
+          onClose={() => setSignUpModalVisible(false)}
+          onGoToSignin={() => {
+            setSignInModalVisible(true);
+            setSignUpModalVisible(false);
+          }}
+          onSignUp={handleGoToSaveDesign}
+        />
+      ) : null}
+      {isSignInModalVisible ? (
+        <SignInModal
+          onClose={() => setSignInModalVisible(false)}
+          onGoToSignup={() => {
+            setSignInModalVisible(false);
+            setSignUpModalVisible(true);
+          }}
+          onSignIn={handleGoToSaveDesign}
+        />
+      ) : null}
+      {isSaveDesignModalVisible ? (
+        <SaveDesignModal
+          onClose={() => setSaveDesignModalVisible(false)}
+          onSave={handleSaveDesign}
+        />
+      ) : null}
     </Box>
   );
 }
