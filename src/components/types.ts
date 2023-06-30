@@ -10,3 +10,8 @@ export interface TextToImageRequest {
   freeText: string;
   subjectSuggestions: string[];
 }
+
+export interface Template {
+  name: string;
+  img: string;
+}

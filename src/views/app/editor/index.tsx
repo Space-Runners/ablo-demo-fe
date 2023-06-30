@@ -4,10 +4,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
+import { saveTemplate } from '@/api/image-generator';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
 import PRODUCTS from '@/data/products';
@@ -270,6 +271,9 @@ export default function ImageEditor() {
   };
 
   const handleGoToSaveDesign = () => {
+    handleSaveDesign();
+
+    return;
     setSignInModalVisible(false);
     setSaveDesignModalVisible(true);
 
@@ -277,22 +281,27 @@ export default function ImageEditor() {
   };
 
   const handleSaveDesign = () => {
+    toPng(clothingAndCanvasRef.current, { cacheBust: false })
+      .then((dataUrl) => {
+        /*  const link = document.createElement('a');
+        link.download = 'my-image-name.png';
+        link.href = dataUrl;
+        link.click(); */
+
+        saveTemplate('Testing', dataUrl).then(() => {
+          console.log('success');
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    return;
     setSaveDesignModalVisible(false);
 
     history.push('/app/order-or-share');
 
     return;
-
-    toPng(clothingAndCanvasRef.current, { cacheBust: false })
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = 'my-image-name.png';
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const { urlPrefix } = selectedProduct;

@@ -14,7 +14,7 @@ import { useState, Fragment as F } from 'react';
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
-import GeneratedImageSummary from './ai-image-overview';
+import ImageOverview from './ai-image-overview';
 
 const IconButton = (props) => (
   <Button
@@ -60,7 +60,7 @@ export default function FooterToolbar(props) {
 
   const { text = '' } = activeTextObject || {};
 
-  const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [selectedTool, setSelectedTool] = useState(null);
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -93,7 +93,7 @@ export default function FooterToolbar(props) {
       <Flex align="center" justify="space-between">
         <HStack>
           {!isTextEditor ? (
-            <IconButton onClick={onDeleteActiveObject} pl="14px">
+            <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
               <IconTrash />
             </IconButton>
           ) : (
@@ -133,12 +133,12 @@ export default function FooterToolbar(props) {
               fontSize="md"
               fontWeight={400}
               h="30px"
+              onClick={() => onSetExpanded(true)}
               padding={0}
             >
               Generate your design with AI
             </Button>
           )}
-
           <Button
             bg="transparent"
             h="24px"
@@ -173,11 +173,10 @@ export default function FooterToolbar(props) {
                 // onPlaceArtwork={handlePlaceArtwork}
               />
             ) : null}
-
             {isImagePicker ? (
               <ImagePicker onImageUploaded={onImageUploaded} />
             ) : null}
-            {activeImageObject ? <GeneratedImageSummary /> : null}
+            {activeImageObject ? <ImageOverview /> : null}
           </F>
         ) : null}
       </Box>

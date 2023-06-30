@@ -19,6 +19,7 @@ import AddBackground from './add-background';
 
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
+import Progress from './components/Progress';
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
   <ChakraButton
@@ -52,7 +53,10 @@ export default function ImageGenerator({ onImageGenerated }) {
 
   const [activeStep, setActiveStep] = useState(1);
 
-  const handleEditPrompts = () => setActiveStep(null);
+  const handleEditPrompts = () => {
+    setActiveStep(3);
+    setImages([]);
+  };
 
   const handleNewArtwork = () => {
     setImages([]);
@@ -77,6 +81,8 @@ export default function ImageGenerator({ onImageGenerated }) {
     setImages([]);
 
     const requestParams = {
+      backgroundText: background,
+      backgroundPrompt: backgroundKeywords,
       style,
       mood,
       subjectSuggestions: keywords,
@@ -125,9 +131,8 @@ export default function ImageGenerator({ onImageGenerated }) {
           value={subject}
         />
       ) : null}
-      {activeStep === 4 ? (
+      {activeStep === 4 && !waiting ? (
         <AddBackground
-          waiting={waiting}
           onChange={(background) => setBackground(background)}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={handleGenerate}
@@ -139,6 +144,7 @@ export default function ImageGenerator({ onImageGenerated }) {
           value={background}
         />
       ) : null}
+      {waiting ? <Progress /> : null}
       {images.length ? (
         <Box>
           <Text fontSize="md" mb="22px">
@@ -166,7 +172,7 @@ export default function ImageGenerator({ onImageGenerated }) {
                 borderRadius="5px"
                 h={117}
                 key={imageUrl}
-                w={117}
+                w={113}
                 src={imageUrl}
                 alt="Generated image"
                 onClick={() => {

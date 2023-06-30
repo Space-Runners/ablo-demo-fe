@@ -5,7 +5,6 @@ import Colors from '@/theme/colors';
 
 import Input from '../components/Input';
 import Keywords from '../components/Keywords';
-import Progress from '../components/Progress';
 
 import { BACKGROUND_KEYWORD_SUGGESTIONS } from '../styles';
 
@@ -21,7 +20,6 @@ type Props = {
   value: string;
   keywords: string[];
   onUpdateKeywords: (keywords: string[]) => void;
-  waiting: boolean;
 };
 
 export default function AddBackground({
@@ -34,7 +32,6 @@ export default function AddBackground({
   onUpdateKeywords,
   style,
   value,
-  waiting,
 }: Props) {
   const suggestions = BACKGROUND_KEYWORD_SUGGESTIONS[style]?.map(
     ({ name }) => name
@@ -42,63 +39,47 @@ export default function AddBackground({
 
   return (
     <Box>
-      {waiting ? (
-        <Progress />
-      ) : (
-        <Box>
-          <Flex align="center" justify="space-between" mb="16px">
-            <Text fontWeight={500} textTransform="uppercase">
-              Background
-            </Text>
-            <Switch
-              isChecked={isBackgroundOn}
-              onChange={(e) => setBackgroundOn(e.target.checked)}
-              position="relative"
+      <Box>
+        <Flex align="center" justify="space-between" mb="16px">
+          <Text fontWeight={500} textTransform="uppercase">
+            Background
+          </Text>
+          <Switch
+            isChecked={isBackgroundOn}
+            onChange={(e) => setBackgroundOn(e.target.checked)}
+            position="relative"
+          >
+            <Text
+              as="b"
+              color={isBackgroundOn ? abloBlue : '#000000'}
+              fontSize="10px"
+              position="absolute"
+              textTransform="uppercase"
+              top="12px"
+              left={isBackgroundOn ? '8px' : undefined}
+              right={isBackgroundOn ? undefined : '8px'}
             >
-              <Text
-                as="b"
-                color={isBackgroundOn ? abloBlue : '#000000'}
-                fontSize="10px"
-                position="absolute"
-                textTransform="uppercase"
-                top="12px"
-                left={isBackgroundOn ? '8px' : undefined}
-                right={isBackgroundOn ? undefined : '8px'}
-              >
-                {isBackgroundOn ? 'On' : 'Off'}
-              </Text>
-            </Switch>
-          </Flex>
-          <Input
-            mb="30px"
-            onChange={(e) => onChange(e.target.value)}
-            value={value}
-            placeholder="Pinochio"
+              {isBackgroundOn ? 'On' : 'Off'}
+            </Text>
+          </Switch>
+        </Flex>
+        <Input
+          mb="30px"
+          onChange={(e) => onChange(e.target.value)}
+          value={value}
+          placeholder="Pinochio"
+        />
+        {suggestions ? (
+          <Keywords
+            keywords={suggestions}
+            selectedValues={keywords}
+            onChange={onUpdateKeywords}
           />
-          {suggestions ? (
-            <Keywords
-              keywords={suggestions}
-              selectedValues={keywords}
-              onChange={onUpdateKeywords}
-            />
-          ) : null}
-        </Box>
-      )}
+        ) : null}
+      </Box>
       <Flex align="center" padding="14px 0">
-        <ButtonCTA
-          disabled={waiting}
-          flex={1}
-          onClick={onBack}
-          outlined
-          title="Edit subject"
-        />
-        <ButtonCTA
-          disabled={waiting}
-          flex={1}
-          ml="10px"
-          onClick={onNext}
-          title="Generate"
-        />
+        <ButtonCTA flex={1} onClick={onBack} outlined title="Edit subject" />
+        <ButtonCTA flex={1} ml="10px" onClick={onNext} title="Generate" />
       </Flex>
     </Box>
   );

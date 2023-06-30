@@ -2,6 +2,8 @@ import { Flex, Button, Icon } from '@chakra-ui/react';
 
 import { useRef } from 'react';
 
+import { saveTemplate } from '@/api/image-generator';
+
 const IconUpload = () => (
   <Icon
     width="24px"
@@ -65,6 +67,8 @@ export default function ImagePicker(props) {
     if (!fileObj) {
       return;
     }
+
+    saveTemplate('Upload file', fileObj);
 
     console.log('fileObj is', fileObj);
 
