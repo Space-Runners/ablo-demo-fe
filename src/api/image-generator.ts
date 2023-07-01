@@ -16,3 +16,14 @@ export const generateImage = (params: TextToImageRequest) => {
 
 const getOptions = () =>
   axios.get<ImageGenerationOptions>(`${URL}/options`).then(({ data }) => data);
+
+export const saveTemplate = (name, image) => {
+  const formData = new FormData();
+
+  formData.append('filename', name);
+  formData.append('image', image);
+
+  return axios.post('/templates', formData).then(({ data }) => {
+    return data.images;
+  });
+};

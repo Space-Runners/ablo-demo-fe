@@ -14,7 +14,7 @@ import { useState, Fragment as F } from 'react';
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
-import GeneratedImageSummary from './ai-image-overview';
+import ImageOverview from './ai-image-overview';
 
 const IconButton = (props) => (
   <Button
@@ -56,6 +56,7 @@ export default function FooterToolbar(props) {
     activeImageObject,
     onImageUploaded,
     onImageGenerated,
+    onImageSelected,
   } = props;
 
   const { text = '' } = activeTextObject || {};
@@ -93,7 +94,7 @@ export default function FooterToolbar(props) {
       <Flex align="center" justify="space-between">
         <HStack>
           {!isTextEditor ? (
-            <IconButton onClick={onDeleteActiveObject} pl="14px">
+            <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
               <IconTrash />
             </IconButton>
           ) : (
@@ -133,12 +134,12 @@ export default function FooterToolbar(props) {
               fontSize="md"
               fontWeight={400}
               h="30px"
+              onClick={() => onSetExpanded(true)}
               padding={0}
             >
               Generate your design with AI
             </Button>
           )}
-
           <Button
             bg="transparent"
             h="24px"
@@ -165,21 +166,18 @@ export default function FooterToolbar(props) {
             ))}
           </HStack>
         </Flex>
-        {isExpanded ? (
-          <F>
-            {isImageGenerator ? (
-              <ImageGenerator
-                onImageGenerated={onImageGenerated}
-                // onPlaceArtwork={handlePlaceArtwork}
-              />
-            ) : null}
-
-            {isImagePicker ? (
-              <ImagePicker onImageUploaded={onImageUploaded} />
-            ) : null}
-            {activeImageObject ? <GeneratedImageSummary /> : null}
-          </F>
-        ) : null}
+        <Box display={isExpanded ? 'block' : 'none'}>
+          {isImageGenerator ? (
+            <ImageGenerator
+              onImageGenerated={onImageGenerated}
+              onImageSelected={onImageSelected}
+            />
+          ) : null}
+          {isImagePicker ? (
+            <ImagePicker onImageUploaded={onImageUploaded} />
+          ) : null}
+          {activeImageObject ? <ImageOverview /> : null}
+        </Box>
       </Box>
     </Box>
   );

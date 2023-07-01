@@ -1,6 +1,7 @@
 import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
 import Panel from '@/components/Panel';
+import { Filters } from '@/components/types';
 
 import {
   BRANDS,
@@ -93,24 +94,13 @@ const Multiselect = ({
   );
 };
 
-type Filters = {
-  sizes?: string[];
-  colors?: string[];
-  clothingTypes?: string[];
-  fits?: string[];
-  collections?: string[];
-  genders?: string[];
-  brands?: string[];
-  price: number[];
-};
-
 type Props = {
   filters: Filters;
   onApply: () => void;
   onUpdate: (updates: any) => void;
 };
 
-const Filters = ({ filters, onApply, onUpdate }: Props) => {
+const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
   const {
     brands,
     clothingTypes,
@@ -120,7 +110,7 @@ const Filters = ({ filters, onApply, onUpdate }: Props) => {
     sizes,
     colors,
     price,
-  } = filters || {};
+  } = filters;
 
   return (
     <Box paddingBottom="38px" w="100%">
@@ -193,4 +183,4 @@ const Filters = ({ filters, onApply, onUpdate }: Props) => {
   );
 };
 
-export default Filters;
+export default ProductFilters;

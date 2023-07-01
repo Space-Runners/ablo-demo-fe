@@ -66,8 +66,6 @@ export default function ImagePicker(props) {
       return;
     }
 
-    console.log('fileObj is', fileObj);
-
     onImageUploaded(fileObj);
 
     // 👇️ reset file input

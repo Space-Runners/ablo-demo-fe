@@ -43,7 +43,7 @@ export default function SelectMood({
   const chunks = chunk(moods, 2);
 
   return (
-    <Box paddingBottom="146px">
+    <Box paddingBottom="100px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
         Select your mood
       </Text>
@@ -65,10 +65,13 @@ export default function SelectMood({
                 textAlign="center"
               >
                 <Image
+                  borderRadius="4px"
                   key={index}
                   mb="8px"
+                  h="75px"
                   src={getImgUrl(`${name}`)}
                   alt={name}
+                  w="100%"
                 />
 
                 <Text>{name}</Text>

@@ -204,12 +204,13 @@ export const IconImage = ({ isSelected }: { isSelected?: boolean }) => (
   </Icon>
 );
 
-export const IconTrash = () => (
+export const IconTrash = (props) => (
   <Icon
     width="32px"
     height="32px"
     viewBox="0 0 32 32"
     fill="none"
+    {...props}
     xmlns="http://www.w3.org/2000/svg"
   >
     <g clipPath="url(#clip0_1817_26146)">

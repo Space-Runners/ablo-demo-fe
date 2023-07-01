@@ -10,8 +10,6 @@ const Keywords = ({ keywords, onChange, selectedValues }: Props) => {
   const handleKeywordsChange = (value) => {
     let newSelected;
 
-    console.log('Keywords', keywords, value);
-
     if (selectedValues.includes(value)) {
       newSelected = selectedValues.filter((s) => s !== value);
     } else {

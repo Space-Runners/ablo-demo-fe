@@ -4,7 +4,13 @@ import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
-const Button = ({ icon = null, outlined = false, title, ...rest }) => {
+const Button = ({
+  icon = null,
+  outlined = false,
+  iconRight = null,
+  title,
+  ...rest
+}) => {
   return (
     <ChakraButton
       bg="#FFFFFF"
@@ -23,6 +29,7 @@ const Button = ({ icon = null, outlined = false, title, ...rest }) => {
     >
       {icon ? <Box mr="8px">{icon}</Box> : null}
       {title}
+      {iconRight ? <Box ml="8px">{iconRight}</Box> : null}
     </ChakraButton>
   );
 };
