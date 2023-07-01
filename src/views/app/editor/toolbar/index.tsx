@@ -9,7 +9,7 @@ import {
   IconTrash,
 } from './Icons';
 
-import { useState, Fragment as F } from 'react';
+import { useState } from 'react';
 
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
@@ -52,6 +52,7 @@ export default function FooterToolbar(props) {
     onDeleteActiveObject,
     onUpdateTextObject,
     onSetExpanded,
+    activeObject,
     activeTextObject,
     activeImageObject,
     onImageUploaded,
@@ -62,6 +63,7 @@ export default function FooterToolbar(props) {
   const { text = '' } = activeTextObject || {};
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -93,7 +95,7 @@ export default function FooterToolbar(props) {
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
         <HStack>
-          {!isTextEditor ? (
+          {(activeObject || activeTextObject) && !selectedTextEditTool ? (
             <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
               <IconTrash />
             </IconButton>
@@ -105,6 +107,8 @@ export default function FooterToolbar(props) {
           <TextToolbar
             onUpdate={onUpdateTextObject}
             textObject={activeTextObject}
+            selectedTool={selectedTextEditTool}
+            onSelectedTool={setSelectedTextEditTool}
           />
         ) : (
           <Box />

@@ -45,6 +45,8 @@ export default function ImageEditor({
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
 
+  const [activeObject, setActiveObject] = useState(null);
+
   const history = useHistory();
 
   const state = useRef<string>('');
@@ -103,9 +105,11 @@ export default function ImageEditor({
     });
 
     canvas.current.on('mouse:up', function (e) {
-      if (e.target) {
-        console.log('Clicked on', e.target);
-      }
+      console.log('Log', e);
+
+      console.log('Clicked on', e.target);
+
+      setActiveObject(e.target);
     });
 
     return () => {
@@ -416,6 +420,7 @@ export default function ImageEditor({
             setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
+          activeObject={activeObject}
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
