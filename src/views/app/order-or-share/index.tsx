@@ -11,7 +11,8 @@ import {
 import Button from '@/components/Button';
 import Colors from '@/theme/colors';
 
-import ShareBackground from './ShareBackground.png';
+import { Design } from '@/components/types';
+
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
 
 const { abloBlue } = Colors;
@@ -70,7 +71,7 @@ const IconCopy = () => (
   </Icon>
 );
 
-export default function ImageGenerator() {
+export default function ImageGenerator({ design }: { design: Design }) {
   return (
     <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
       <Text
@@ -83,7 +84,7 @@ export default function ImageGenerator() {
         Share
       </Text>
 
-      <Image src={ShareBackground} height={450} mb="16px" width={375} />
+      <Image src={design.templateUrl} height={306} mb="16px" width={375} />
       <Button icon={<IconCopy />} mb="30px" title="Copy share link" w="100%" />
       <Text mb="24px" textAlign="center">
         Share on your socials

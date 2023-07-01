@@ -67,4 +67,5 @@ export interface Design {
     options: AiImageOptions;
     url: string;
   };
+  templateUrl?: string;
 }

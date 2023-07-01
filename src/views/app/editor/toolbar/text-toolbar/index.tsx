@@ -10,7 +10,6 @@ import {
   SliderThumb,
   Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 
 import Colors from '@/theme/colors';
 
@@ -46,9 +45,12 @@ const Button = (props) => (
   />
 );
 
-export default function TextToolbar({ onUpdate, textObject }) {
-  const [selectedTool, setSelectedTool] = useState(null);
-
+export default function TextToolbar({
+  onUpdate,
+  selectedTool,
+  onSelectedTool,
+  textObject,
+}) {
   const { fill, fontFamily, fontSize, textAlign } = textObject || {};
 
   const textAlignOption =
@@ -111,7 +113,7 @@ export default function TextToolbar({ onUpdate, textObject }) {
           <Button
             bg="transparent"
             borderRadius="14px"
-            onClick={() => setSelectedTool(isColorActive ? null : 'color')}
+            onClick={() => onSelectedTool(isColorActive ? null : 'color')}
           >
             <Image
               maxWidth="none"
@@ -124,7 +126,7 @@ export default function TextToolbar({ onUpdate, textObject }) {
           </Button>
           <Button
             onClick={() =>
-              setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
+              onSelectedTool(isFontFamilyActive ? null : 'fontFamily')
             }
           >
             <IconFontFamily />
