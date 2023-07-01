@@ -20,11 +20,11 @@ const TEST_URL =
 
 const STEPS = [
   {
-    name: 'Style',
+    name: 'Art Style',
     icon: <IconStyle />,
   },
   {
-    name: 'Mood',
+    name: 'Color Mood',
     icon: <IconMood />,
   },
   {

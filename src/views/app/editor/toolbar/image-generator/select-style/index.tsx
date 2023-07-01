@@ -37,7 +37,7 @@ export default function SelectStyle({
   const chunks = chunk(styles, 2);
 
   return (
-    <Box paddingBottom="146px">
+    <Box paddingBottom="100px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
         Select style
       </Text>

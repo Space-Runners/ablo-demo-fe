@@ -60,8 +60,6 @@ const ProductDetails = ({
   const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } =
     product;
 
-  console.log('Selected garment', garment);
-
   return (
     <Box borderBottom="1px solid #D9D9D9">
       <Flex
@@ -148,15 +146,17 @@ const ProductDetails = ({
 type ProductsListProps = {
   products: Product[];
   onSelectedProduct: (product: Product) => void;
-  selectedProduct: Product;
+  selectedGarment: Garment;
 };
 
 const ProductsList = ({
   products,
   onSelectedProduct,
-  selectedProduct,
+  selectedGarment,
 }: ProductsListProps) => {
   const chunks = chunk(products, 2);
+
+  console.log('Product list selected garment', selectedGarment);
 
   return (
     <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
@@ -166,10 +166,15 @@ const ProductsList = ({
             const { fabric, fit, id, name, price, variants, urlPrefix } =
               product;
 
-            const [variant] = variants;
+            const variant =
+              selectedGarment && selectedGarment.variant
+                ? variants.find(
+                    (variant) => variant.name === selectedGarment.variant
+                  )
+                : variants[0];
 
             const selectedProps =
-              selectedProduct && selectedProduct.id === id
+              selectedGarment && selectedGarment.productId === id
                 ? { border: '2px solid #000000', borderRadius: '10px' }
                 : {};
 
@@ -274,7 +279,7 @@ export default function ProductsPage({
         }
         isNextDisabled={!selectedProduct}
         step={1}
-        title="Pick your clothes"
+        title="Pick your garment"
       />
       <Button
         alignItems="center"
@@ -299,7 +304,7 @@ export default function ProductsPage({
           onApply={() => {
             setFiltersVisible(false);
 
-            onSelectedGarment(null);
+            onSelectedGarment({ ...selectedGarment, productId: null });
           }}
           onUpdate={(updates) => onFiltersChange({ ...filters, ...updates })}
         />
@@ -329,12 +334,14 @@ export default function ProductsPage({
             onSelectedProduct={({ id, variants }) =>
               onSelectedGarment({
                 productId: id,
-                variant: variants[0].name,
+                variant: selectedGarment
+                  ? selectedGarment.variant
+                  : variants[0].name,
                 size: 'S',
               })
             }
             products={products}
-            selectedProduct={selectedProduct}
+            selectedGarment={selectedGarment}
           />
         </Box>
       )}

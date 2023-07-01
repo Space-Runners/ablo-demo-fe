@@ -8,9 +8,10 @@ import { saveTemplate } from '@/api/image-generator';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
-import { toPng, toBlob } from 'html-to-image';
+import { toPng } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
+import { Design } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
@@ -25,7 +26,15 @@ import './ImageEditor.css';
 
 const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
-export default function ImageEditor() {
+type ImageEditorProps = {
+  design: Design;
+  onDesignChange: (design: Design) => void;
+};
+
+export default function ImageEditor({
+  design,
+  onDesignChange,
+}: ImageEditorProps) {
   const canvas = useRef(null);
   const clothingAndCanvasRef = useRef(null);
 
@@ -40,54 +49,65 @@ export default function ImageEditor() {
 
   const state = useRef<string>('');
 
-  const { search } = useLocation();
-
   const { data: me } = useMe();
-
-  const searchParams = new URLSearchParams(search);
-
-  const productName = searchParams.get('productName');
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
   const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
   const [hasSeenInitialCallToAction, setHasSeenInitialCallToAction] =
     useState(false);
 
-  const [selectedProduct] = useState(
-    (productName &&
-      PRODUCTS.find(
-        (product) => `${product.fit} ${product.name}` === productName
-      )) ||
-      PRODUCTS[0]
-  );
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+
+  const productId = searchParams.get('productName');
+  const variant = searchParams.get('variant');
+
+  const product =
+    PRODUCTS.find((product) => product.id === parseInt(productId, 10)) ||
+    PRODUCTS[0];
 
   const [selectedVariant, setSelectedVariant] = useState(
-    PRODUCTS[0].variants[0].name
+    variant || PRODUCTS[0].variants[0].name
   );
 
   const defaultSide = 'Front';
 
   const [selectedSide, setSelectedSide] = useState(defaultSide);
 
-  const { printableAreas } = selectedProduct;
+  const { printableAreas } = product;
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
+  console.log('Design', design);
+
   useEffect(() => {
+    console.log('Effect');
     canvas.current = initCanvas();
+
+    if (design) {
+      // Loading an already active design if you to go another page and come back
+      const { canvasStateAsJson } = design;
+
+      state.current = canvasStateAsJson;
+
+      reloadCanvasFromState();
+    } else {
+      state.current = JSON.stringify(canvas.current);
+    }
 
     canvas.current.on('object:modified', () => {
       console.log('Object modified');
       saveState();
     });
 
-    setSelectedVariant(PRODUCTS[0].variants[0].name);
+    canvas.current.on('mouse:up', function (e) {
+      if (e.target) {
+        console.log('Clicked on', e.target);
+      }
+    });
 
-    state.current = JSON.stringify(canvas.current);
-
-    // destroy fabric on unmount
     return () => {
       if (canvas.current) {
         canvas.current.dispose();
@@ -97,25 +117,26 @@ export default function ImageEditor() {
   }, []);
 
   const saveState = () => {
-    // Clear redo stack
     setRedoStack([]);
 
-    console.log('Current', state.current);
-
-    // initial call won't have a state
+    // Initial call won't have a state
     if (state.current) {
       setUndoStack([...undoStack, state.current]);
     }
 
-    state.current = JSON.stringify(canvas.current);
+    const json = canvas.current.toJSON(['imageUrl']);
+
+    state.current = JSON.stringify(json);
+
+    console.log('Save state');
+
+    onDesignChange({ ...(design || {}), canvasStateAsJson: state.current });
   };
 
   const handleUndo = () => {
     setRedoStack([...redoStack, state.current]);
 
     state.current = undoStack.pop();
-
-    console.log('STate current', state.current);
 
     setUndoStack(undoStack);
 
@@ -216,6 +237,8 @@ export default function ImageEditor() {
         });
         img.scaleToWidth(200);
         canvas.current.add(img).setActiveObject(img).renderAll();
+
+        saveState();
       };
     };
     reader.readAsDataURL(fileObj);
@@ -229,16 +252,23 @@ export default function ImageEditor() {
       (img) => {
         img.scaleToWidth(200);
 
+        img.set('aiImageUrl', imageUrl);
+
         img.crossOrigin = 'anonymous';
         canvas.current.add(img).setActiveObject(img).renderAll();
+
+        saveState();
       },
       { crossOrigin: 'anonymous' }
     );
   };
 
+  const handleImageSelected = (image) => {
+    onDesignChange({ ...design, aiImage: image });
+  };
+
   const handleSelectedVariant = (name) => {
-    console.log('Name', name);
-    const { variants } = selectedProduct;
+    const { variants } = product;
 
     const variant = variants.find((variant) => variant.name === name).name;
 
@@ -250,8 +280,6 @@ export default function ImageEditor() {
 
     const drawingArea = printableAreas[side.toLowerCase()];
 
-    console.log('SS side', side, drawingArea);
-
     canvas.current.setDimensions({
       width: drawingArea.width,
       height: drawingArea.height,
@@ -260,8 +288,6 @@ export default function ImageEditor() {
 
   const handleNext = () => {
     if (me && me.roles[0] !== 'guest') {
-      console.log('Me 2', me, me.roles);
-
       handleGoToSaveDesign();
 
       return;
@@ -283,11 +309,6 @@ export default function ImageEditor() {
   const handleSaveDesign = () => {
     toPng(clothingAndCanvasRef.current, { cacheBust: false })
       .then((dataUrl) => {
-        /*  const link = document.createElement('a');
-        link.download = 'my-image-name.png';
-        link.href = dataUrl;
-        link.click(); */
-
         saveTemplate(`Testing-${Date.now()}`, dataUrl).then(() => {
           console.log('success');
         });
@@ -304,7 +325,7 @@ export default function ImageEditor() {
     return;
   };
 
-  const { urlPrefix } = selectedProduct;
+  const { urlPrefix } = product;
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
 
@@ -353,7 +374,7 @@ export default function ImageEditor() {
             <div className="canvas-container">
               <canvas id="canvas" ref={canvas}></canvas>
             </div>
-            {!hasSeenInitialCallToAction && (
+            {!hasSeenInitialCallToAction && !design && (
               <Flex
                 align="center"
                 as="button"
@@ -400,6 +421,7 @@ export default function ImageEditor() {
           onSelectedColor={handleSelectedVariant}
           onImageUploaded={handleImageUpload}
           onImageGenerated={handleImageGenerated}
+          onImageSelected={handleImageSelected}
         />
       </Flex>
       {isSignUpModalVisible ? (

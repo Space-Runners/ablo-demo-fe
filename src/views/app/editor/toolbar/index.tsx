@@ -56,11 +56,12 @@ export default function FooterToolbar(props) {
     activeImageObject,
     onImageUploaded,
     onImageGenerated,
+    onImageSelected,
   } = props;
 
   const { text = '' } = activeTextObject || {};
 
-  const [selectedTool, setSelectedTool] = useState(null);
+  const [selectedTool, setSelectedTool] = useState('imageGenerator');
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -165,20 +166,18 @@ export default function FooterToolbar(props) {
             ))}
           </HStack>
         </Flex>
-        {isExpanded ? (
-          <F>
-            {isImageGenerator ? (
-              <ImageGenerator
-                onImageGenerated={onImageGenerated}
-                // onPlaceArtwork={handlePlaceArtwork}
-              />
-            ) : null}
-            {isImagePicker ? (
-              <ImagePicker onImageUploaded={onImageUploaded} />
-            ) : null}
-            {activeImageObject ? <ImageOverview /> : null}
-          </F>
-        ) : null}
+        <Box display={isExpanded ? 'block' : 'none'}>
+          {isImageGenerator ? (
+            <ImageGenerator
+              onImageGenerated={onImageGenerated}
+              onImageSelected={onImageSelected}
+            />
+          ) : null}
+          {isImagePicker ? (
+            <ImagePicker onImageUploaded={onImageUploaded} />
+          ) : null}
+          {activeImageObject ? <ImageOverview /> : null}
+        </Box>
       </Box>
     </Box>
   );

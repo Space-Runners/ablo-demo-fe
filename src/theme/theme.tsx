@@ -21,8 +21,14 @@ fabric.Object.prototype.set({
   borderColor: abloBlue,
   borderRadius: '1px',
   cornerColor: abloBlue,
-  cornerSize: 7,
+  cornerSize: 15,
+});
+
+fabric.Object.prototype.setControlsVisibility({
+  mt: false,
   mb: false,
+  ml: false,
+  mr: false,
 });
 
 export default extendTheme(

@@ -13,8 +13,6 @@ axios.interceptors.request.use(function (config) {
     localStorage.getItem('access-token') ||
     localStorage.getItem('client-token');
 
-  console.log('Request interceptor', config);
-
   config.headers.Authorization = `Bearer ${token}`;
   config.headers['Target-URL'] = API_URL;
 
@@ -28,10 +26,7 @@ axios.interceptors.response.use(
 
   (error) => {
     const { response } = error || {};
-    console.log('Axios error:', response);
-
     if (response.status === 401) {
-      console.log(response);
       const {
         config: { url },
       } = response;

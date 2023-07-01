@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { Filters, Garment } from '@/components/types';
+import { Design, Filters, Garment } from '@/components/types';
 
 import ProductsPage from '@/views/app/products';
 import Editor from '@/views/app/editor';
@@ -15,6 +15,8 @@ export default function DesignTool() {
     price: [20, 90],
   });
   const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
+
+  const [activeDesign, setActiveDesign] = useState<Design>(null);
 
   return (
     <Box
@@ -36,7 +38,12 @@ export default function DesignTool() {
               />
             )}
           />
-          <Route path={`/app/editor`} render={() => <Editor />} />
+          <Route
+            path={`/app/editor`}
+            render={() => (
+              <Editor design={activeDesign} onDesignChange={setActiveDesign} />
+            )}
+          />
           <Route path={`/app/order-or-share`} component={OrderOrSharePage} />
           <Redirect from="/" to="/app/products" />
         </Switch>

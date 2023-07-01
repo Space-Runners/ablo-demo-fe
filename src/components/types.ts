@@ -51,3 +51,20 @@ export interface Product {
   variants: Variant[];
   tags: string[];
 }
+
+export interface AiImageOptions {
+  style: string;
+  mood: string;
+  keywords: string[];
+  subject: string;
+  background: string;
+  backgroundKeywords: string[];
+}
+
+export interface Design {
+  canvasStateAsJson: string;
+  aiImage?: {
+    options: AiImageOptions;
+    url: string;
+  };
+}

@@ -11,6 +11,7 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
+import { AiImageOptions } from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
@@ -37,7 +38,15 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
   </ChakraButton>
 );
 
-export default function ImageGenerator({ onImageGenerated }) {
+type ImageGeneratorProps = {
+  onImageGenerated: (url: string) => void;
+  onImageSelected: (image: { options: AiImageOptions; url: string }) => void;
+};
+
+export default function ImageGenerator({
+  onImageGenerated,
+  onImageSelected,
+}: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
 
   const [style, setStyle] = useState('');
@@ -69,11 +78,23 @@ export default function ImageGenerator({ onImageGenerated }) {
     setBackgroundOn(true);
     setBackgroundKeywords([]);
 
-    setActiveStep(1);
+    setActiveStep(null);
   };
 
   const handlePlaceArtwork = () => {
-    console.log('Place artwork');
+    onImageSelected({
+      options: {
+        style,
+        mood,
+        subject,
+        keywords,
+        background,
+        backgroundKeywords,
+      },
+      url: selectedImage,
+    });
+
+    handleNewArtwork();
   };
 
   const handleGenerate = () => {
