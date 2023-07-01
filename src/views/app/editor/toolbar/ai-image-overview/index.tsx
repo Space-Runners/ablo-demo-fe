@@ -43,6 +43,7 @@ type Props = {
 };
 
 export default function ImageOverview({ aiImage }: Props) {
+  console.log('AI image', aiImage);
   return (
     <Box bg="#FFFFFF" h="100%" w="100%" paddingBottom="32px">
       <Image
@@ -82,11 +83,20 @@ export default function ImageOverview({ aiImage }: Props) {
         <Button
           flex={1}
           iconRight={<IconTrash width="24px" height="24px" />}
-          onClick={() => {}}
+          onClick={() => {
+            console.log('Click');
+          }}
           outlined
           title="Remove"
         />
-        <Button flex={1} ml="10px" onClick={() => {}} title="Add" />
+        <Button
+          flex={1}
+          ml="10px"
+          onClick={() => {
+            console.log('Click Add');
+          }}
+          title="Add"
+        />
       </Flex>
     </Box>
   );

@@ -119,14 +119,16 @@ export default function FooterToolbar(props) {
           ) : (
             <Box />
           )}
-          <IconButton
-            isLoading={waiting}
-            onClick={handleRemoveBackground}
-            ml="14px"
-            mb="16px"
-          >
-            <IconTrash />
-          </IconButton>
+          {null && (
+            <IconButton
+              isLoading={waiting}
+              onClick={handleRemoveBackground}
+              ml="14px"
+              mb="16px"
+            >
+              <IconTrash />
+            </IconButton>
+          )}
         </HStack>
         {isTextEditor ? (
           <TextToolbar

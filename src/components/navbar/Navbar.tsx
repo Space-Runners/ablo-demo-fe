@@ -130,25 +130,29 @@ export default function Navbar(props: Props) {
         justify={onNext ? 'space-between' : 'flex-start'}
         padding="14px"
       >
-        {step > 0 ? (
-          <Button
-            bg="transparent"
-            height="24px"
-            onClick={() => history.goBack()}
-            padding="0"
-            w="24px"
+        <Flex align="center">
+          {step > 1 ? (
+            <Button
+              bg="transparent"
+              height="24px"
+              minWidth="none"
+              onClick={() => history.goBack()}
+              padding={0}
+              w="24px"
+            >
+              <IconBack />
+            </Button>
+          ) : null}
+          <Text
+            fontFamily="Roboto Condensed"
+            fontSize="24px"
+            fontWeight={700}
+            ml="8px"
+            textTransform="uppercase"
           >
-            <IconBack />
-          </Button>
-        ) : null}
-        <Text
-          fontFamily="Roboto Condensed"
-          fontSize="24px"
-          fontWeight={700}
-          textTransform="uppercase"
-        >
-          {title}
-        </Text>
+            {title}
+          </Text>
+        </Flex>
         <Flex align="center" justify="flex-start">
           <Text color="#959392" fontWeight={500} mr="12px">
             {step}/{TOTAL_STEPS}
