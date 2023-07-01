@@ -20,7 +20,7 @@ const getOptions = () =>
 export const saveTemplate = (name, image) => {
   const formData = new FormData();
 
-  formData.append('name', name);
+  formData.append('filename', name);
   formData.append('image', image);
 
   return axios.post('/templates', formData).then(({ data }) => {

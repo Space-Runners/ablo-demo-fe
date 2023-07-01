@@ -9,39 +9,19 @@ import { chunk } from 'lodash';
 import MiniFilterBar from '@/components/MiniFilterBar';
 import Navbar from '@/components/navbar/Navbar';
 import Panel from '@/components/Panel';
+import { Filters, Garment, Product } from '@/components/types';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
 import ColorPicker from '@/components/ColorPicker';
+import Colors from '@/theme/colors';
 
-import Filters from './Filters';
+const { abloBlue } = Colors;
+
+import ProductFilters from './Filters';
 
 import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
 
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
-type Variant = {
-  name: string;
-  color: string;
-};
-
-type Product = {
-  fabric: string;
-  id: number;
-  madeIn: string;
-  name: string;
-  fit: string;
-  price: number;
-  urlPrefix: string;
-  description: string;
-  variants: Variant[];
-  tags: string[];
-};
-
-type Props = {
-  onSelectedProduct: (product: Product) => void;
-  products: Product[];
-  selectedProduct: Product;
-};
 
 const matchesClothingType = (types, product) =>
   !types.length || types.find((type) => type.includes(product.name));
@@ -66,22 +46,21 @@ const getProductsMatchingFilters = (filters) =>
     );
   });
 
-const ProductDetails = ({ product }: { product: Product }) => {
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+const ProductDetails = ({
+  garment,
+  onGarmentUpdate,
+  product,
+}: {
+  garment: Garment;
+  onGarmentUpdate: (updates: any) => void;
+  product: Product;
+}) => {
+  const { variant, size: selectedSize } = garment;
 
-  const {
-    description,
-    fabric,
-    fit,
-    madeIn,
-    name,
-    price,
-    urlPrefix,
-    tags,
-    variants,
-  } = product;
+  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } =
+    product;
 
-  console.log('Variant', selectedVariant.name);
+  console.log('Selected garment', garment);
 
   return (
     <Box borderBottom="1px solid #D9D9D9">
@@ -96,11 +75,7 @@ const ProductDetails = ({ product }: { product: Product }) => {
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image
-          h={216}
-          src={`${urlPrefix}_${selectedVariant.name}_FRONT.png`}
-          alt={name}
-        />
+        <Image h={216} src={`${urlPrefix}_${variant}_FRONT.png`} alt={name} />
       </Flex>
       <Box padding="24px 14px">
         <Text color="#959392" fontSize="sm" mb="13px">
@@ -128,27 +103,34 @@ const ProductDetails = ({ product }: { product: Product }) => {
           {tags.join(' / ')}
         </Text>
         <HStack mb="20px" spacing="10px">
-          {SIZES.map((size) => (
-            <Flex
-              align="center"
-              border="1px solid #6A6866"
-              borderRadius="4px"
-              h="34px"
-              key={size}
-              justify="center"
-              w="34px"
-            >
-              <Text color="#6A6866" fontSize="sm">
-                {size}
-              </Text>
-            </Flex>
-          ))}
+          {SIZES.map((size) => {
+            const isSelected = size === selectedSize;
+
+            return (
+              <Flex
+                align="center"
+                as="button"
+                border={
+                  isSelected ? `1px solid ${abloBlue}` : '1px solid #6A6866'
+                }
+                borderRadius="4px"
+                fontWeight={isSelected ? 600 : 400}
+                onClick={() => onGarmentUpdate({ size })}
+                h="34px"
+                key={size}
+                justify="center"
+                w="34px"
+              >
+                <Text color={isSelected ? abloBlue : '#6A6866'} fontSize="sm">
+                  {size}
+                </Text>
+              </Flex>
+            );
+          })}
         </HStack>
         <ColorPicker
-          onSelectedVariants={([name]) =>
-            setSelectedVariant(variants.find((v) => v.name === name))
-          }
-          selectedVariants={[selectedVariant.name]}
+          onSelectedVariants={([variant]) => onGarmentUpdate({ variant })}
+          selectedVariants={[variant]}
         />
       </Box>
       <Panel title="More Info">
@@ -163,11 +145,17 @@ const ProductDetails = ({ product }: { product: Product }) => {
   );
 };
 
+type ProductsListProps = {
+  products: Product[];
+  onSelectedProduct: (product: Product) => void;
+  selectedProduct: Product;
+};
+
 const ProductsList = ({
   products,
   onSelectedProduct,
   selectedProduct,
-}: Props) => {
+}: ProductsListProps) => {
   const chunks = chunk(products, 2);
 
   return (
@@ -253,25 +241,36 @@ const ProductsList = ({
   );
 };
 
-export default function ProductsPage() {
+type ProductPageProps = {
+  filters: Filters;
+  onFiltersChange: (filters: Filters) => void;
+  selectedGarment: Garment;
+  onSelectedGarment: (garment: Garment) => void;
+};
+
+export default function ProductsPage({
+  filters,
+  onFiltersChange,
+  selectedGarment,
+  onSelectedGarment,
+}: ProductPageProps) {
   const history = useHistory();
 
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
   const [areFiltersVisible, setFiltersVisible] = useState(false);
-  const [filters, setFilters] = useState({ price: [20, 90] });
 
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState('All');
+  const { clothingTypes } = filters;
 
   const products = getProductsMatchingFilters(filters);
+
+  const { productId, variant } = selectedGarment || {};
+
+  const selectedProduct = PRODUCTS.find(({ id }) => id === productId);
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
         onNext={() =>
-          history.push(
-            `/app/editor?productName=${selectedProduct.fit} ${selectedProduct.name}`
-          )
+          history.push(`/app/editor?productId=${productId}&variant=${variant}`)
         }
         isNextDisabled={!selectedProduct}
         step={1}
@@ -295,31 +294,45 @@ export default function ProductsPage() {
         {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
       </Button>
       {areFiltersVisible ? (
-        <Filters
+        <ProductFilters
           filters={filters}
           onApply={() => {
             setFiltersVisible(false);
 
-            setSelectedProduct(null);
+            onSelectedGarment(null);
           }}
-          onUpdate={(updates) => setFilters({ ...filters, ...updates })}
+          onUpdate={(updates) => onFiltersChange({ ...filters, ...updates })}
         />
       ) : (
         <Box>
           {selectedProduct ? (
-            <ProductDetails product={selectedProduct || PRODUCTS[0]} />
+            <ProductDetails
+              garment={selectedGarment}
+              onGarmentUpdate={(updates) =>
+                onSelectedGarment({ ...selectedGarment, ...updates })
+              }
+              product={selectedProduct}
+            />
           ) : null}
           {!selectedProduct && (
             <Box pl="14px">
               <MiniFilterBar
                 options={['All', ...CLOTHING_TYPES]}
-                selectedValue={selectedQuickFilter}
-                onChange={setSelectedQuickFilter}
+                selectedValue={clothingTypes[0] || 'All'}
+                onChange={(value) =>
+                  onFiltersChange({ ...filters, clothingTypes: [value] })
+                }
               />
             </Box>
           )}
           <ProductsList
-            onSelectedProduct={(product) => setSelectedProduct(product)}
+            onSelectedProduct={({ id, variants }) =>
+              onSelectedGarment({
+                productId: id,
+                variant: variants[0].name,
+                size: 'S',
+              })
+            }
             products={products}
             selectedProduct={selectedProduct}
           />

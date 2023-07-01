@@ -288,7 +288,7 @@ export default function ImageEditor() {
         link.href = dataUrl;
         link.click(); */
 
-        saveTemplate('Testing', dataUrl).then(() => {
+        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(() => {
           console.log('success');
         });
       })

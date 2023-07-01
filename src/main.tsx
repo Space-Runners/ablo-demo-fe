@@ -4,7 +4,7 @@ import './index.css';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import VerifyEmailPage from '@/views/auth/VerifyEmail';
-import Dashboard from '@/layouts/admin';
+import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
