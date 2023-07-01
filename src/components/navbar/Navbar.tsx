@@ -1,5 +1,46 @@
 import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 
+import { useHistory } from 'react-router-dom';
+
+const IconBack = () => (
+  <Icon
+    width="24px"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clip-path="url(#clip0_2455_20036)">
+      <path
+        d="M5 12H19"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 12L9 16"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 12L9 8"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2455_20036">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
+  </Icon>
+);
+
 const AbloText = () => (
   <Icon
     width="49px"
@@ -75,6 +116,8 @@ type Props = {
 export default function Navbar(props: Props) {
   const { onNext, isNextDisabled, step, title } = props;
 
+  const history = useHistory();
+
   return (
     <Box>
       <Flex align="center" bg="#FFFFFF" h="58px" justify="center">
@@ -87,6 +130,17 @@ export default function Navbar(props: Props) {
         justify={onNext ? 'space-between' : 'flex-start'}
         padding="14px"
       >
+        {step > 0 ? (
+          <Button
+            bg="transparent"
+            height="24px"
+            onClick={() => history.goBack()}
+            padding="0"
+            w="24px"
+          >
+            <IconBack />
+          </Button>
+        ) : null}
         <Text
           fontFamily="Roboto Condensed"
           fontSize="24px"

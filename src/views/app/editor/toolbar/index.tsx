@@ -1,5 +1,7 @@
 import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
 
+import { useState, Fragment as F } from 'react';
+
 import {
   IconAiGenerator,
   IconTextEditor,
@@ -9,7 +11,7 @@ import {
   IconTrash,
 } from './Icons';
 
-import { useState } from 'react';
+import { removeBackground } from '@/api/image-generator';
 
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
@@ -54,7 +56,7 @@ export default function FooterToolbar(props) {
     onSetExpanded,
     activeObject,
     activeTextObject,
-    activeImageObject,
+    aiImage,
     onImageUploaded,
     onImageGenerated,
     onImageSelected,
@@ -64,6 +66,8 @@ export default function FooterToolbar(props) {
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
+
+  const [waiting, setWaiting] = useState(false);
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -82,26 +86,47 @@ export default function FooterToolbar(props) {
     onUpdateTextObject({ text });
   };
 
-  /*  const handlePlaceArtwork = () => {
-    setSelectedTool(null);
+  const handleRemoveBackground = () => {
+    setWaiting(true);
+
+    removeBackground(aiImage.url).then((url) => {
+      console.log('Remove background', url);
+
+      onImageGenerated(url);
+      onImageSelected({ ...aiImage, url });
+
+      setWaiting(false);
+    });
   };
- */
+
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
 
   const isImagePicker = selectedTool === 'image';
+
+  console.log('AI image', aiImage);
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
         <HStack>
           {(activeObject || activeTextObject) && !selectedTextEditTool ? (
-            <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
-              <IconTrash />
-            </IconButton>
+            <F>
+              <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
+                <IconTrash />
+              </IconButton>
+            </F>
           ) : (
             <Box />
           )}
+          <IconButton
+            isLoading={waiting}
+            onClick={handleRemoveBackground}
+            ml="14px"
+            mb="16px"
+          >
+            <IconTrash />
+          </IconButton>
         </HStack>
         {isTextEditor ? (
           <TextToolbar
@@ -180,7 +205,9 @@ export default function FooterToolbar(props) {
           {isImagePicker ? (
             <ImagePicker onImageUploaded={onImageUploaded} />
           ) : null}
-          {activeImageObject ? <ImageOverview /> : null}
+          {aiImage && activeObject && activeObject.imageUrl ? (
+            <ImageOverview aiImage={aiImage} />
+          ) : null}
         </Box>
       </Box>
     </Box>

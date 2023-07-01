@@ -18,9 +18,10 @@ import FormInput from '@/components/modal/FormInput';
 type Props = {
   onClose: () => void;
   onSave: () => void;
+  waiting: boolean;
 };
 
-function SaveDesignModal({ onClose, onSave }: Props) {
+function SaveDesignModal({ onClose, onSave, waiting }: Props) {
   const inputRef = useRef(null);
 
   const [title, setTitle] = useState('');
@@ -75,7 +76,11 @@ function SaveDesignModal({ onClose, onSave }: Props) {
                 onChange={(e) => setDescription(e.target.value)}
               />
 
-              <Button onClick={handleSubmit} title="Save my design" />
+              <Button
+                isLoading={waiting}
+                onClick={handleSubmit}
+                title="Save my design"
+              />
             </Flex>
           </Box>
         </ModalBody>

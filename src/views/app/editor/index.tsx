@@ -44,6 +44,7 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
+  const [isSavingTemplate, setSavingTemplate] = useState(false);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -82,7 +83,7 @@ export default function ImageEditor({
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
-  console.log('Design', design);
+  console.log('Design', design, activeObject);
 
   useEffect(() => {
     console.log('Effect');
@@ -301,30 +302,28 @@ export default function ImageEditor({
   };
 
   const handleGoToSaveDesign = () => {
-    handleSaveDesign();
-
-    return;
-    setSignInModalVisible(false);
     setSaveDesignModalVisible(true);
-
-    return;
   };
 
   const handleSaveDesign = () => {
+    setSavingTemplate(true);
+
     toPng(clothingAndCanvasRef.current, { cacheBust: false })
       .then((dataUrl) => {
-        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(() => {
+        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
           console.log('success');
+
+          setSaveDesignModalVisible(false);
+
+          onDesignChange({ ...design, templateUrl: url });
+
+          history.push('/app/order-or-share');
         });
       })
       .catch((err) => {
+        setSavingTemplate(false);
         console.log(err);
       });
-
-    return;
-    setSaveDesignModalVisible(false);
-
-    history.push('/app/order-or-share');
 
     return;
   };
@@ -420,6 +419,7 @@ export default function ImageEditor({
             setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
+          aiImage={design && design.aiImage}
           activeObject={activeObject}
           activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
@@ -436,7 +436,11 @@ export default function ImageEditor({
             setSignInModalVisible(true);
             setSignUpModalVisible(false);
           }}
-          onSignUp={handleGoToSaveDesign}
+          onSignUp={() => {
+            setSignUpModalVisible(false);
+
+            handleGoToSaveDesign();
+          }}
         />
       ) : null}
       {isSignInModalVisible ? (
@@ -446,13 +450,18 @@ export default function ImageEditor({
             setSignInModalVisible(false);
             setSignUpModalVisible(true);
           }}
-          onSignIn={handleGoToSaveDesign}
+          onSignIn={() => {
+            setSignInModalVisible(false);
+
+            handleGoToSaveDesign();
+          }}
         />
       ) : null}
       {isSaveDesignModalVisible ? (
         <SaveDesignModal
           onClose={() => setSaveDesignModalVisible(false)}
           onSave={handleSaveDesign}
+          waiting={isSavingTemplate}
         />
       ) : null}
     </Box>

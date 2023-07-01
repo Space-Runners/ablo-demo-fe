@@ -9,6 +9,7 @@ import {
 
 import Button from '@/components/Button';
 import Colors from '@/theme/colors';
+import { AiImageOptions } from '@/components/types';
 
 import { IconMood, IconStyle, IconSubject, IconBackground } from './Icons';
 import { IconTrash } from '../Icons';
@@ -37,7 +38,11 @@ const STEPS = [
   },
 ];
 
-export default function ImageOverview() {
+type Props = {
+  aiImage: AiImageOptions;
+};
+
+export default function ImageOverview({ aiImage }: Props) {
   return (
     <Box bg="#FFFFFF" h="100%" w="100%" paddingBottom="32px">
       <Image
