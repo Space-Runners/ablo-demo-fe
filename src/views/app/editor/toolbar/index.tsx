@@ -16,7 +16,6 @@ import { removeBackground } from '@/api/image-generator';
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
-import ImageOverview from './ai-image-overview';
 
 const IconButton = (props) => (
   <Button
@@ -207,9 +206,9 @@ export default function FooterToolbar(props) {
           {isImagePicker ? (
             <ImagePicker onImageUploaded={onImageUploaded} />
           ) : null}
-          {aiImage && activeObject && activeObject.imageUrl ? (
+          {/* {aiImage && activeObject && activeObject.imageUrl && null ? (
             <ImageOverview aiImage={aiImage} />
-          ) : null}
+          ) : null} */}
         </Box>
       </Box>
     </Box>
