@@ -124,6 +124,8 @@ export default function ImageGenerator({
       });
   };
 
+  console.log('Active step', activeStep);
+
   return (
     <Box pt="20px">
       {activeStep === 1 ? (
