@@ -57,9 +57,9 @@ export default function FooterToolbar(props) {
     activeObject,
     aiImage,
     onImageUploaded,
-    onImageGenerated,
-    onImageSelected,
-    onImageRemoved,
+    onGeneratedImagePreview,
+    onGeneratedImageSelected,
+    onGeneratedImageRemoved,
   } = props;
 
   console.log('Active object', activeObject);
@@ -93,8 +93,8 @@ export default function FooterToolbar(props) {
     removeBackground(aiImage.url).then((url) => {
       console.log('Remove background', url);
 
-      onImageGenerated(url);
-      onImageSelected({ ...aiImage, url });
+      onGeneratedImagePreview(url);
+      onGeneratedImageSelected({ ...aiImage, url });
 
       setWaiting(false);
     });
@@ -207,9 +207,9 @@ export default function FooterToolbar(props) {
           {isImageGenerator ? (
             <ImageGenerator
               aiImage={imageSummary}
-              onImageGenerated={onImageGenerated}
-              onImageSelected={onImageSelected}
-              onImageRemoved={onImageRemoved}
+              onGeneratedImagePreview={onGeneratedImagePreview}
+              onGeneratedImageSelected={onGeneratedImageSelected}
+              onGeneratedImageRemoved={onGeneratedImageRemoved}
               onExitImageSummary={onUnselectActiveObject}
             />
           ) : null}

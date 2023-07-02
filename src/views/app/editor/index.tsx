@@ -109,7 +109,7 @@ export default function ImageEditor({
     };
   }, []);
 
-  const saveState = () => {
+  const saveState = (aiImage = undefined) => {
     setRedoStack([]);
 
     // Initial call won't have a state
@@ -121,7 +121,13 @@ export default function ImageEditor({
 
     state.current = JSON.stringify(json);
 
-    onDesignChange({ ...design, canvasStateAsJson: state.current });
+    const updates = { canvasStateAsJson: state.current } as Design;
+
+    if (aiImage !== undefined) {
+      updates.aiImage = aiImage;
+    }
+
+    onDesignChange({ ...design, ...updates });
   };
 
   const handleUndo = () => {
@@ -240,10 +246,10 @@ export default function ImageEditor({
     reader.readAsDataURL(fileObj);
   };
 
-  const handleImageGenerated = (imageUrl) => {
+  const handleGeneratedImagePreview = (imageUrl) => {
     const activeObject = canvas.current.getActiveObject();
 
-    if (activeObject.aiImageUrl) {
+    if (activeObject && activeObject.aiImageUrl) {
       canvas.current.remove(activeObject);
     }
 
@@ -256,28 +262,31 @@ export default function ImageEditor({
 
         img.crossOrigin = 'anonymous';
         canvas.current.add(img).setActiveObject(img).renderAll();
-
-        saveState();
       },
       { crossOrigin: 'anonymous' }
     );
   };
 
-  const handleImageSelected = (image) => {
-    onDesignChange({ ...design, aiImage: image });
+  const handleGeneratedImageSelected = (image) => {
+    saveState(image);
   };
 
   console.log('Render', design);
 
-  const handleImageRemoved = () => {
-    const aiImage = canvas.current._objects.filter((obj) => obj.aiImageUrl);
+  const handleGeneratedImageRemoved = (imageUrl) => {
+    console.log('Image URL', imageUrl, canvas.current._objects);
+
+    const aiImage = canvas.current._objects.filter(
+      (obj) => obj.aiImageUrl === imageUrl
+    );
 
     console.log('Handle image removed', aiImage);
-    canvas.current.remove(aiImage);
+    canvas.current.remove(aiImage[0]);
     canvas.current.renderAll();
 
-    onDesignChange({ ...design, aiImage: null });
-    // saveState();
+    setActiveObject(null);
+
+    saveState(null);
   };
 
   const handleSelectedVariant = (name) => {
@@ -325,6 +334,7 @@ export default function ImageEditor({
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
 
+  console.log('Design', activeObject, design);
   return (
     <Box h="100%" w="100%">
       <Navbar onNext={() => handleNext()} step={2} title="Create your design" />
@@ -404,22 +414,22 @@ export default function ImageEditor({
         </Box>
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
-          onAddText={handleAddText}
-          onDeleteActiveObject={handleRemoveActiveObject}
-          onUnselectActiveObject={handleDeselectActiveObject}
-          onUpdateTextObject={handleUpdateTextObject}
           onSetExpanded={(isExpanded) => {
             setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
-          aiImage={design && design.aiImage}
-          activeObject={activeObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
+          onAddText={handleAddText}
+          onUpdateTextObject={handleUpdateTextObject}
+          activeObject={activeObject}
+          onDeleteActiveObject={handleRemoveActiveObject}
+          onUnselectActiveObject={handleDeselectActiveObject}
+          aiImage={design && design.aiImage}
           onImageUploaded={handleImageUpload}
-          onImageGenerated={handleImageGenerated}
-          onImageSelected={handleImageSelected}
-          onImageRemoved={handleImageRemoved}
+          onGeneratedImagePreview={handleGeneratedImagePreview}
+          onGeneratedImageSelected={handleGeneratedImageSelected}
+          onGeneratedImageRemoved={handleGeneratedImageRemoved}
         />
       </Flex>
       {isSignUpModalVisible ? (

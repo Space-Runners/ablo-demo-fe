@@ -50,18 +50,21 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 
 type ImageGeneratorProps = {
   aiImage: AiImage;
-  onImageGenerated: (url: string) => void;
-  onImageSelected: (image: { options: AiImageOptions; url: string }) => void;
-  onImageRemoved: () => void;
+  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImageSelected: (image: {
+    options: AiImageOptions;
+    url: string;
+  }) => void;
+  onGeneratedImageRemoved: (imageUrl: string) => void;
   onExitImageSummary: () => void;
 };
 
 export default function ImageGenerator({
   aiImage,
-  onImageGenerated,
-  onImageSelected,
+  onGeneratedImagePreview,
+  onGeneratedImageSelected,
   onExitImageSummary,
-  onImageRemoved,
+  onGeneratedImageRemoved,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
 
@@ -71,7 +74,7 @@ export default function ImageGenerator({
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
-  const [isBackgroundOn, setBackgroundOn] = useState(false);
+  const [isBackgroundOn, setBackgroundOn] = useState(true);
 
   const { background, backgroundKeywords, keywords, style, mood, subject } =
     options;
@@ -79,23 +82,31 @@ export default function ImageGenerator({
   const handleEditPrompts = () => {
     setActiveStep(3);
     setImages([]);
+
+    onGeneratedImageRemoved(selectedImage);
   };
 
   const handleNewArtwork = () => {
-    setImages([]);
-    setSelectedImage(null);
-    setOptions(defaultParams);
+    handleReset();
 
-    setActiveStep(null);
+    onGeneratedImageRemoved(selectedImage);
   };
 
   const handlePlaceArtwork = () => {
-    onImageSelected({
+    onGeneratedImageSelected({
       options,
       url: selectedImage,
     });
 
-    handleNewArtwork();
+    handleReset();
+  };
+
+  const handleReset = () => {
+    setImages([]);
+    setSelectedImage(null);
+    setOptions(defaultParams);
+
+    setActiveStep(1);
   };
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
@@ -112,7 +123,9 @@ export default function ImageGenerator({
   const handleRemove = () => {
     setActiveStep(1);
 
-    onImageRemoved();
+    console.log('Handle remove', aiImage);
+
+    onGeneratedImageRemoved(aiImage.url);
   };
 
   const handleGenerate = () => {
@@ -228,7 +241,7 @@ export default function ImageGenerator({
                 alt="Generated image"
                 onClick={() => {
                   setSelectedImage(imageUrl);
-                  onImageGenerated(imageUrl);
+                  onGeneratedImagePreview(imageUrl);
                 }}
               />
             ))}
