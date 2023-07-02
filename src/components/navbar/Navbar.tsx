@@ -10,7 +10,7 @@ const IconBack = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_2455_20036)">
+    <g clipPath="url(#clip0_2455_20036)">
       <path
         d="M5 12H19"
         stroke="black"
@@ -153,23 +153,25 @@ export default function Navbar(props: Props) {
             {title}
           </Text>
         </Flex>
-        <Flex align="center" justify="flex-start">
-          <Text color="#959392" fontWeight={500} mr="12px">
-            {step}/{TOTAL_STEPS}
-          </Text>
-          <Button
-            bg="#000000"
-            borderRadius="40px"
-            disabled={isNextDisabled}
-            height="32px"
-            onClick={onNext}
-            padding="4px 14px"
-            w="52px"
-            _disabled={{ background: '#BFBEBE' }}
-          >
-            <IconNext />
-          </Button>
-        </Flex>
+        {onNext ? (
+          <Flex align="center" justify="flex-start">
+            <Text color="#959392" fontWeight={500} mr="12px">
+              {step}/{TOTAL_STEPS}
+            </Text>
+            <Button
+              bg="#000000"
+              borderRadius="40px"
+              disabled={isNextDisabled}
+              height="32px"
+              onClick={onNext}
+              padding="4px 14px"
+              w="52px"
+              _disabled={{ background: '#BFBEBE' }}
+            >
+              <IconNext />
+            </Button>
+          </Flex>
+        ) : null}
       </Flex>
     </Box>
   );

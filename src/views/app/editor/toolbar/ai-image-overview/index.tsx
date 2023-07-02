@@ -9,15 +9,12 @@ import {
 
 import Button from '@/components/Button';
 import Colors from '@/theme/colors';
-import { AiImageOptions } from '@/components/types';
+import { AiImage } from '@/components/types';
 
 import { IconMood, IconStyle, IconSubject, IconBackground } from './Icons';
 import { IconTrash } from '../Icons';
 
 const { abloBlue } = Colors;
-
-const TEST_URL =
-  'https://d3bezdph00y8ns.cloudfront.net/cc927b25-2d8d-4492-a6e6-a715454e365b/1688127044813.png';
 
 const STEPS = [
   {
@@ -39,24 +36,22 @@ const STEPS = [
 ];
 
 type Props = {
-  aiImage: AiImageOptions;
+  aiImage: AiImage;
+  onEdit: (step: number) => void;
+  onRemove: () => void;
 };
 
-export default function ImageOverview({ aiImage }: Props) {
-  console.log('AI image', aiImage);
+export default function ImageOverview({ aiImage, onEdit, onRemove }: Props) {
+  const { url } = aiImage;
+
   return (
-    <Box bg="#FFFFFF" h="100%" w="100%" paddingBottom="32px">
-      <Image
-        borderRadius="6px"
-        src={TEST_URL}
-        height={365}
-        mb="16px"
-        width={365}
-      />
+    <Box bg="#FFFFFF" h="100%" w="100%">
+      <Image borderRadius="6px" src={url} height={365} mb="16px" width={365} />
       {STEPS.map(({ name, icon }, index) => (
         <Flex
           align="center"
           borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
+          key={name}
           justify="space-between"
           padding="13px 0"
           w="100%"
@@ -72,6 +67,7 @@ export default function ImageOverview({ aiImage }: Props) {
             color={abloBlue}
             fontSize="xs"
             fontWeight={600}
+            onClick={() => onEdit(index + 1)}
             padding={0}
             textTransform="uppercase"
           >
@@ -83,9 +79,7 @@ export default function ImageOverview({ aiImage }: Props) {
         <Button
           flex={1}
           iconRight={<IconTrash width="24px" height="24px" />}
-          onClick={() => {
-            console.log('Click');
-          }}
+          onClick={onRemove}
           outlined
           title="Remove"
         />

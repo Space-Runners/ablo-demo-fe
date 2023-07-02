@@ -2,29 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
-import { saveTemplate } from '@/api/image-generator';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
-import { toPng } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
-import { Design } from '@/components/types';
+import { Design, TemplateDesign } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
+import CanvasContainer from './components/CanvasContainer';
 import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
-import IconEmptyState from './icons/EmptyState';
+
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
-
-const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 type ImageEditorProps = {
   design: Design;
@@ -32,11 +29,13 @@ type ImageEditorProps = {
 };
 
 export default function ImageEditor({
-  design,
+  design: designForFrontAndBack,
   onDesignChange,
 }: ImageEditorProps) {
-  const canvas = useRef(null);
-  const clothingAndCanvasRef = useRef(null);
+  const canvasFront = useRef(null);
+  const canvasBack = useRef(null);
+  const clothingAndCanvasRefFront = useRef(null);
+  const clothingAndCanvasRefBack = useRef(null);
 
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
@@ -44,7 +43,6 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
-  const [isSavingTemplate, setSavingTemplate] = useState(false);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -62,7 +60,7 @@ export default function ImageEditor({
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
 
-  const productId = searchParams.get('productName');
+  const productId = searchParams.get('productId');
   const variant = searchParams.get('variant');
 
   const product =
@@ -77,17 +75,16 @@ export default function ImageEditor({
 
   const [selectedSide, setSelectedSide] = useState(defaultSide);
 
+  const design = designForFrontAndBack[selectedSide];
+
+  const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
+
   const { printableAreas } = product;
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
-  const [activeTextObject, setActiveTextObject] = useState(null);
-
-  console.log('Design', design, activeObject);
-
   useEffect(() => {
-    console.log('Effect');
-    canvas.current = initCanvas();
+    canvas.current = initCanvas(selectedSide);
 
     if (design) {
       // Loading an already active design if you to go another page and come back
@@ -106,10 +103,6 @@ export default function ImageEditor({
     });
 
     canvas.current.on('mouse:up', function (e) {
-      console.log('Log', e);
-
-      console.log('Clicked on', e.target);
-
       setActiveObject(e.target);
     });
 
@@ -121,7 +114,7 @@ export default function ImageEditor({
     };
   }, []);
 
-  const saveState = () => {
+  const saveState = (aiImage = undefined) => {
     setRedoStack([]);
 
     // Initial call won't have a state
@@ -129,13 +122,21 @@ export default function ImageEditor({
       setUndoStack([...undoStack, state.current]);
     }
 
-    const json = canvas.current.toJSON(['imageUrl']);
+    const json = canvas.current.toJSON(['aiImageUrl']);
 
     state.current = JSON.stringify(json);
 
-    console.log('Save state');
+    const updates = { canvasStateAsJson: state.current } as TemplateDesign;
 
-    onDesignChange({ ...(design || {}), canvasStateAsJson: state.current });
+    if (aiImage !== undefined) {
+      updates.aiImage = aiImage;
+    }
+
+    handleDesignChange({ ...design, ...updates });
+  };
+
+  const handleDesignChange = (designForSide) => {
+    onDesignChange({ ...designForFrontAndBack, [selectedSide]: designForSide });
   };
 
   const handleUndo = () => {
@@ -165,24 +166,31 @@ export default function ImageEditor({
     });
   };
 
-  const initCanvas = () => {
-    const { width, height } = drawingArea;
+  const initCanvas = (side) => {
+    const { width, height } = printableAreas[side.toLowerCase()];
 
-    return new fabric.Canvas('canvas', {
-      width,
-      height,
-      selection: false,
-      renderOnAddRemove: true,
-    });
+    return new fabric.Canvas(
+      side === 'Front' ? 'canvas-front' : 'canvas-back',
+      {
+        width,
+        height,
+        selection: false,
+        renderOnAddRemove: true,
+      }
+    );
   };
 
   const handleAddText = (params) => {
+    const { width, height } = drawingArea;
+
     const textObject = {
       fill: '#FFFFFF',
       fontFamily: 'Poppins',
       text: 'this is\na multiline\ntext\naligned right!',
       fontSize: 12,
       textAlign: 'left',
+      left: width / 2 - 20,
+      top: height / 2 - 20,
       ...params,
     };
 
@@ -193,15 +201,7 @@ export default function ImageEditor({
 
     canvas.current.setActiveObject(text);
 
-    setActiveTextObject(textObject);
-
-    saveState();
-  };
-
-  const handleRemoveText = () => {
-    canvas.current.remove(canvas.current.getActiveObject());
-
-    setActiveTextObject(null);
+    setActiveObject(textObject);
 
     saveState();
   };
@@ -214,14 +214,23 @@ export default function ImageEditor({
     saveState();
   };
 
-  const handleUpdateTextObject = (updates) => {
-    setActiveTextObject({ ...activeTextObject, ...updates });
+  const handleDeselectActiveObject = () => {
+    canvas.current.discardActiveObject();
+    canvas.current.renderAll();
 
+    setActiveObject(null);
+
+    setFooterToolbarExpanded(true);
+  };
+
+  const handleUpdateTextObject = (updates) => {
     Object.keys(updates).forEach((key) => {
       canvas.current.getActiveObject().set(key, updates[key]);
 
       canvas.current.renderAll();
     });
+
+    setActiveObject({ ...activeObject, ...updates });
 
     saveState();
   };
@@ -249,8 +258,12 @@ export default function ImageEditor({
     reader.readAsDataURL(fileObj);
   };
 
-  const handleImageGenerated = (imageUrl) => {
-    canvas.current.remove(canvas.current.getActiveObject());
+  const handleGeneratedImagePreview = (imageUrl) => {
+    const activeObject = canvas.current.getActiveObject();
+
+    if (activeObject && activeObject.aiImageUrl) {
+      canvas.current.remove(activeObject);
+    }
 
     fabric.Image.fromURL(
       imageUrl,
@@ -261,15 +274,29 @@ export default function ImageEditor({
 
         img.crossOrigin = 'anonymous';
         canvas.current.add(img).setActiveObject(img).renderAll();
-
-        saveState();
       },
       { crossOrigin: 'anonymous' }
     );
   };
 
-  const handleImageSelected = (image) => {
-    onDesignChange({ ...design, aiImage: image });
+  const handleGeneratedImageSelected = (image) => {
+    saveState(image);
+  };
+
+  const handleGeneratedImageRemoved = (imageUrl) => {
+    console.log('Image URL', imageUrl, canvas.current._objects);
+
+    const aiImage = canvas.current._objects.filter(
+      (obj) => obj.aiImageUrl === imageUrl
+    );
+
+    console.log('Handle image removed', aiImage);
+    canvas.current.remove(aiImage[0]);
+    canvas.current.renderAll();
+
+    setActiveObject(null);
+
+    saveState(null);
   };
 
   const handleSelectedVariant = (name) => {
@@ -283,11 +310,21 @@ export default function ImageEditor({
   const handleSelectedSide = (side: string) => {
     setSelectedSide(side);
 
-    const drawingArea = printableAreas[side.toLowerCase()];
+    const canvas = side === 'Front' ? canvasFront : canvasBack;
 
-    canvas.current.setDimensions({
-      width: drawingArea.width,
-      height: drawingArea.height,
+    if (!canvas.current.clear) {
+      canvas.current = initCanvas(side);
+    }
+
+    const design = designForFrontAndBack[side];
+
+    const { canvasStateAsJson = {} } = design || {};
+
+    state.current = canvasStateAsJson;
+
+    canvas.current.clear();
+    canvas.current.loadFromJSON(state.current, function () {
+      canvas.current.renderAll();
     });
   };
 
@@ -305,32 +342,24 @@ export default function ImageEditor({
     setSaveDesignModalVisible(true);
   };
 
-  const handleSaveDesign = () => {
-    setSavingTemplate(true);
+  const handleSaveDesign = ([urlFront, urlBack]) => {
+    setSaveDesignModalVisible(false);
 
-    toPng(clothingAndCanvasRef.current, { cacheBust: false })
-      .then((dataUrl) => {
-        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
-          console.log('success');
+    const { Front, Back } = designForFrontAndBack;
 
-          setSaveDesignModalVisible(false);
+    onDesignChange({
+      Front: { ...Front, templateUrl: urlFront },
+      Back: { ...Back, templateUrl: urlBack },
+    });
 
-          onDesignChange({ ...design, templateUrl: url });
-
-          history.push('/app/order-or-share');
-        });
-      })
-      .catch((err) => {
-        setSavingTemplate(false);
-        console.log(err);
-      });
-
-    return;
+    history.push('/app/order-or-share');
   };
 
   const { urlPrefix } = product;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
+
+  const showHint = !hasSeenInitialCallToAction && isEmpty(design);
 
   return (
     <Box h="100%" w="100%">
@@ -355,78 +384,68 @@ export default function ImageEditor({
           selectedSide={selectedSide}
           selectedVariant={selectedVariant}
         />
-        <Box ref={clothingAndCanvasRef} position="relative">
-          <img src={variantImageUrl} crossOrigin="anonymous" width={350} />
+        {
           <Box
-            border={
-              isDrawingAreaVisible
-                ? `2px dashed ${
-                    DARK_VARIANTS.includes(selectedVariant)
-                      ? '#FFFFFF'
-                      : '#a8a8a8'
-                  }`
-                : ''
-            }
-            borderRadius="4px"
-            left={`${drawingArea.left}px`}
-            position="absolute"
-            top={`${drawingArea.top}px`}
-            id="drawingArea"
-            className="drawing-area"
+            id="#canvas-container-front"
+            display={selectedSide === 'Front' ? 'block' : 'none'}
+            ref={clothingAndCanvasRefFront}
+            position="relative"
           >
-            <div className="canvas-container">
-              <canvas id="canvas" ref={canvas}></canvas>
-            </div>
-            {!hasSeenInitialCallToAction && !design && (
-              <Flex
-                align="center"
-                as="button"
-                direction="column"
-                justify="center"
-                onClick={() => {
-                  setHasSeenInitialCallToAction(true);
-                  setFooterToolbarExpanded(true);
-                }}
-                position="absolute"
-                top="20%"
-                w="100%"
-                textAlign="center"
-              >
-                <IconEmptyState />
-                <Text
-                  color={
-                    DARK_VARIANTS.includes(selectedVariant)
-                      ? '#FFFFFF'
-                      : '#000000'
-                  }
-                  fontSize="sm"
-                  fontWeight={400}
-                  mt="17px"
-                >
-                  Select a style to begin
-                </Text>
-              </Flex>
-            )}
+            <CanvasContainer
+              canvasRef={canvasFront}
+              drawingArea={printableAreas.front}
+              id="canvas-front"
+              isDrawingAreaVisible={isDrawingAreaVisible}
+              variantImageUrl={variantImageUrl}
+              selectedVariant={selectedVariant}
+              showHint={showHint}
+              side="front"
+              onHintClick={() => {
+                setHasSeenInitialCallToAction(true);
+                setFooterToolbarExpanded(true);
+              }}
+            />
           </Box>
+        }
+        <Box
+          id="#canvas-container-back"
+          display={selectedSide === 'Back' ? 'block' : 'none'}
+          ref={clothingAndCanvasRefBack}
+          position="relative"
+        >
+          <CanvasContainer
+            canvasRef={canvasBack}
+            drawingArea={printableAreas.back}
+            id="canvas-back"
+            isDrawingAreaVisible={isDrawingAreaVisible}
+            variantImageUrl={variantImageUrl}
+            selectedVariant={selectedVariant}
+            showHint={showHint}
+            side="back"
+            onHintClick={() => {
+              setHasSeenInitialCallToAction(true);
+              setFooterToolbarExpanded(true);
+            }}
+          />
         </Box>
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
-          onAddText={handleAddText}
-          onRemoveText={handleRemoveText}
-          onDeleteActiveObject={handleRemoveActiveObject}
-          onUpdateTextObject={handleUpdateTextObject}
           onSetExpanded={(isExpanded) => {
             setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
-          aiImage={design && design.aiImage}
-          activeObject={activeObject}
-          activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
+          onAddText={handleAddText}
+          onUpdateTextObject={handleUpdateTextObject}
+          activeObject={activeObject}
+          onDeleteActiveObject={handleRemoveActiveObject}
+          onUnselectActiveObject={handleDeselectActiveObject}
+          aiImage={design && design.aiImage}
           onImageUploaded={handleImageUpload}
-          onImageGenerated={handleImageGenerated}
-          onImageSelected={handleImageSelected}
+          onGeneratedImagePreview={handleGeneratedImagePreview}
+          onGeneratedImageSelected={handleGeneratedImageSelected}
+          onGeneratedImageRemoved={handleGeneratedImageRemoved}
         />
       </Flex>
       {isSignUpModalVisible ? (
@@ -461,7 +480,12 @@ export default function ImageEditor({
         <SaveDesignModal
           onClose={() => setSaveDesignModalVisible(false)}
           onSave={handleSaveDesign}
-          waiting={isSavingTemplate}
+          designRef={
+            !isEmpty(canvasFront.current?._objects) && clothingAndCanvasRefFront
+          }
+          designRefBack={
+            !isEmpty(canvasBack.current?._objects) && clothingAndCanvasRefBack
+          }
         />
       ) : null}
     </Box>

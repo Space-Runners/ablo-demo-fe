@@ -1,6 +1,8 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import {
+  Alert,
+  AlertDescription,
   Box,
   Flex,
   Modal,
@@ -10,27 +12,65 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { toPng } from 'html-to-image';
+
 import Button from '@/components/Button';
 
 import ButtonClose from '@/components/modal/ButtonCloseModal';
 import FormInput from '@/components/modal/FormInput';
 
+import { saveTemplate } from '@/api/image-generator';
+
 type Props = {
   onClose: () => void;
-  onSave: () => void;
-  waiting: boolean;
+  onSave: (urls: string[]) => void;
+  designRef: any;
+  designRefBack: any;
 };
 
-function SaveDesignModal({ onClose, onSave, waiting }: Props) {
-  const inputRef = useRef(null);
+const getTemplateImgFromHtml = (element) =>
+  toPng(element, { cacheBust: false })
+    .then((dataUrl) => saveTemplate(`Testing-${Date.now()}`, dataUrl))
+    .then(({ url }) => url);
 
+function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleSubmit = () => {
-    console.log(title, description);
+  const [isSaving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
-    onSave();
+  const handleSubmit = () => {
+    setSaving(true);
+    setError(null);
+
+    const front = document.getElementById('#canvas-container-front');
+    const back = document.getElementById('#canvas-container-back');
+
+    const frontOld = front.style.display;
+    const backOld = back.style.display;
+
+    front.style.display = 'block';
+    back.style.display = 'block';
+
+    const promises = [designRef, designRefBack].map((ref) =>
+      ref ? getTemplateImgFromHtml(ref.current) : Promise.resolve(null)
+    );
+
+    Promise.all(promises)
+      .then(([urlFront, urlBack]) => {
+        front.style.display = frontOld;
+        back.style.display = backOld;
+
+        onSave([urlFront, urlBack]);
+      })
+      .catch((err) => {
+        setSaving(false);
+
+        console.log(err.message, err.response);
+
+        setError(err.message);
+      });
   };
 
   return (
@@ -64,7 +104,6 @@ function SaveDesignModal({ onClose, onSave, waiting }: Props) {
               </Text>
               <FormInput
                 autoFocus
-                ref={inputRef}
                 name="Design Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -75,9 +114,13 @@ function SaveDesignModal({ onClose, onSave, waiting }: Props) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
-
+              {error ? (
+                <Alert status="error">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              ) : null}
               <Button
-                isLoading={waiting}
+                isLoading={isSaving}
                 onClick={handleSubmit}
                 title="Save my design"
               />

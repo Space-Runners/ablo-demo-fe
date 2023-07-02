@@ -9,11 +9,13 @@ import {
 } from '@chakra-ui/react';
 
 import Button from '@/components/Button';
+import Navbar from '@/components/navbar/Navbar';
 import Colors from '@/theme/colors';
 
 import { Design } from '@/components/types';
 
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
+import { useState } from 'react';
 
 const { abloBlue } = Colors;
 
@@ -31,6 +33,43 @@ const SHARE_OPTIONS = [
     icon: <IconFacebook />,
   },
 ];
+
+const IconChangeOrientation = () => (
+  <Icon
+    width="22px"
+    height="22px"
+    viewBox="0 0 22 22"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_2455_8217)">
+      <path
+        d="M15.4999 13.9956C17.6725 13.3494 19.0999 12.2496 19.0999 11.0004C19.0999 9.01139 15.4729 7.40039 10.9999 7.40039C6.5269 7.40039 2.8999 9.01139 2.8999 11.0004C2.8999 12.9894 6.5269 14.6004 10.9999 14.6004"
+        stroke="white"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.29993 11.9004L10.9999 14.6004L8.29993 17.3004"
+        stroke="white"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2455_8217">
+        <rect
+          width="21.6"
+          height="21.6"
+          fill="white"
+          transform="translate(0.199951 0.200195)"
+        />
+      </clipPath>
+    </defs>
+  </Icon>
+);
 
 const IconCopy = () => (
   <Icon
@@ -71,50 +110,79 @@ const IconCopy = () => (
   </Icon>
 );
 
-export default function ImageGenerator({ design }: { design: Design }) {
-  return (
-    <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
-      <Text
-        fontFamily="Roboto Condensed"
-        fontSize="22px"
-        fontWeight={700}
-        mb="30px"
-        textTransform="uppercase"
-      >
-        Share
-      </Text>
+export default function OrderOrShare({ design }: { design: Design }) {
+  const { Front, Back } = design || {};
 
-      <Image src={design.templateUrl} height={306} mb="16px" width={375} />
-      <Button icon={<IconCopy />} mb="30px" title="Copy share link" w="100%" />
-      <Text mb="24px" textAlign="center">
-        Share on your socials
-      </Text>
-      {SHARE_OPTIONS.map(({ name, icon }, index) => (
-        <Flex
-          align="center"
-          borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
-          justify="space-between"
-          padding="13px 0"
+  const [selectedSide, setSelectedSide] = useState(Front ? 'Front' : 'Back');
+
+  console.log((selectedSide === 'Front' ? Front : Back).templateUrl);
+
+  return (
+    <Box>
+      <Navbar step={3} title="Share" />
+      <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
+        <Box position="relative">
+          {Front && Back ? (
+            <Flex
+              align="center"
+              as="button"
+              bg="#000000"
+              borderRadius={0}
+              h="36px"
+              justify="center"
+              onClick={() =>
+                setSelectedSide(selectedSide === 'Front' ? 'Back' : 'Front')
+              }
+              position="absolute"
+              w="36px"
+            >
+              <IconChangeOrientation />
+            </Flex>
+          ) : null}
+          <Image
+            src={(selectedSide === 'Front' ? Front : Back).templateUrl}
+            height={306}
+            mb="16px"
+            width={375}
+          />
+        </Box>
+        <Button
+          icon={<IconCopy />}
+          mb="30px"
+          title="Copy share link"
           w="100%"
-        >
-          <HStack>
-            {icon}
-            <Text fontSize="sm" ml="12px">
-              {name}
-            </Text>
-          </HStack>
-          <ChakraButton
-            bg="transparent"
-            color={abloBlue}
-            fontSize="xs"
-            fontWeight={600}
-            padding={0}
-            textTransform="uppercase"
+        />
+        <Text mb="24px" textAlign="center">
+          Share on your socials
+        </Text>
+        {SHARE_OPTIONS.map(({ name, icon }, index) => (
+          <Flex
+            align="center"
+            borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
+            justify="space-between"
+            key={index}
+            padding="13px 0"
+            w="100%"
           >
-            Share
-          </ChakraButton>
-        </Flex>
-      ))}
+            <HStack>
+              {icon}
+              <Text fontSize="sm" ml="12px">
+                {name}
+              </Text>
+            </HStack>
+            <ChakraButton
+              bg="transparent"
+              color={abloBlue}
+              fontSize="xs"
+              fontWeight={600}
+              padding={0}
+              textTransform="uppercase"
+            >
+              Share
+            </ChakraButton>
+          </Flex>
+        ))}
+      </Box>
     </Box>
   );
 }

@@ -3,7 +3,8 @@
   user-select: none;
 }
 
-#canvas {
+#canvas,
+#canvasBack {
   position: absolute;
   left: 0px;
   top: 0px;

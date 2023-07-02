@@ -51,17 +51,18 @@ export default function FooterToolbar(props) {
     isExpanded,
     onAddText,
     onDeleteActiveObject,
+    onUnselectActiveObject,
     onUpdateTextObject,
     onSetExpanded,
     activeObject,
-    activeTextObject,
     aiImage,
     onImageUploaded,
-    onImageGenerated,
-    onImageSelected,
+    onGeneratedImagePreview,
+    onGeneratedImageSelected,
+    onGeneratedImageRemoved,
   } = props;
 
-  const { text = '' } = activeTextObject || {};
+  const { text = '' } = activeObject || {};
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
@@ -75,8 +76,8 @@ export default function FooterToolbar(props) {
   };
 
   const handleTextUpdate = (text) => {
-    console.log('Text', text, activeTextObject);
-    if (!activeTextObject) {
+    console.log(activeObject);
+    if (!activeObject || !activeObject.text) {
       onAddText({ fill: '#000000', fontSize: 20, text });
 
       return;
@@ -91,8 +92,8 @@ export default function FooterToolbar(props) {
     removeBackground(aiImage.url).then((url) => {
       console.log('Remove background', url);
 
-      onImageGenerated(url);
-      onImageSelected({ ...aiImage, url });
+      onGeneratedImagePreview(url);
+      onGeneratedImageSelected({ ...aiImage, url });
 
       setWaiting(false);
     });
@@ -103,13 +104,13 @@ export default function FooterToolbar(props) {
 
   const isImagePicker = selectedTool === 'image';
 
-  console.log('AI image', aiImage);
+  const imageSummary = activeObject?.aiImageUrl && aiImage;
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
         <HStack>
-          {(activeObject || activeTextObject) && !selectedTextEditTool ? (
+          {activeObject && !selectedTextEditTool && !imageSummary ? (
             <F>
               <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
                 <IconTrash />
@@ -132,7 +133,7 @@ export default function FooterToolbar(props) {
         {isTextEditor ? (
           <TextToolbar
             onUpdate={onUpdateTextObject}
-            textObject={activeTextObject}
+            textObject={activeObject}
             selectedTool={selectedTextEditTool}
             onSelectedTool={setSelectedTextEditTool}
           />
@@ -140,7 +141,12 @@ export default function FooterToolbar(props) {
           <Box />
         )}
       </Flex>
-      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 14px">
+      <Box
+        bg="#FFFFFF"
+        maxHeight={imageSummary ? 'calc(100vh - 121px)' : '400px'}
+        overflow="auto"
+        padding="0 14px"
+      >
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
@@ -196,19 +202,19 @@ export default function FooterToolbar(props) {
             ))}
           </HStack>
         </Flex>
-        <Box display={isExpanded ? 'block' : 'none'}>
+        <Box display={isExpanded || imageSummary ? 'block' : 'none'}>
           {isImageGenerator ? (
             <ImageGenerator
-              onImageGenerated={onImageGenerated}
-              onImageSelected={onImageSelected}
+              aiImage={imageSummary}
+              onGeneratedImagePreview={onGeneratedImagePreview}
+              onGeneratedImageSelected={onGeneratedImageSelected}
+              onGeneratedImageRemoved={onGeneratedImageRemoved}
+              onExitImageSummary={onUnselectActiveObject}
             />
           ) : null}
           {isImagePicker ? (
             <ImagePicker onImageUploaded={onImageUploaded} />
           ) : null}
-          {/* {aiImage && activeObject && activeObject.imageUrl && null ? (
-            <ImageOverview aiImage={aiImage} />
-          ) : null} */}
         </Box>
       </Box>
     </Box>

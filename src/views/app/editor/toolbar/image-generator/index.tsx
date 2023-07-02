@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
-import { AiImageOptions } from '@/components/types';
+import { AiImage, AiImageOptions } from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
@@ -21,6 +21,16 @@ import AddBackground from './add-background';
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
 import Progress from './components/Progress';
+
+import ImageOverview from '../ai-image-overview';
+
+const defaultParams = {
+  style: '',
+  mood: '',
+  subject: '',
+  keywords: [],
+  backgroundKeywords: [],
+};
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
   <ChakraButton
@@ -39,62 +49,83 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 );
 
 type ImageGeneratorProps = {
-  onImageGenerated: (url: string) => void;
-  onImageSelected: (image: { options: AiImageOptions; url: string }) => void;
+  aiImage: AiImage;
+  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImageSelected: (image: {
+    options: AiImageOptions;
+    url: string;
+  }) => void;
+  onGeneratedImageRemoved: (imageUrl: string) => void;
+  onExitImageSummary: () => void;
 };
 
 export default function ImageGenerator({
-  onImageGenerated,
-  onImageSelected,
+  aiImage,
+  onGeneratedImagePreview,
+  onGeneratedImageSelected,
+  onExitImageSummary,
+  onGeneratedImageRemoved,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
 
-  const [style, setStyle] = useState('');
-  const [mood, setMood] = useState('');
-  const [subject, setSubject] = useState('');
-  const [keywords, setKeywords] = useState([]);
-  const [background, setBackground] = useState('');
-  const [isBackgroundOn, setBackgroundOn] = useState(true);
-  const [backgroundKeywords, setBackgroundKeywords] = useState([]);
+  const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
+  const [isBackgroundOn, setBackgroundOn] = useState(true);
+
+  const { background, backgroundKeywords, keywords, style, mood, subject } =
+    options;
 
   const handleEditPrompts = () => {
     setActiveStep(3);
     setImages([]);
+
+    onGeneratedImageRemoved(selectedImage);
   };
 
   const handleNewArtwork = () => {
-    setImages([]);
-    setSelectedImage(null);
-    setMood('');
-    setStyle('');
-    setSubject('');
-    setKeywords([]);
-    setBackground('');
-    setBackgroundOn(true);
-    setBackgroundKeywords([]);
+    handleReset();
 
-    setActiveStep(null);
+    onGeneratedImageRemoved(selectedImage);
   };
 
   const handlePlaceArtwork = () => {
-    onImageSelected({
-      options: {
-        style,
-        mood,
-        subject,
-        keywords,
-        background,
-        backgroundKeywords,
-      },
+    onGeneratedImageSelected({
+      options,
       url: selectedImage,
     });
 
-    handleNewArtwork();
+    handleReset();
+  };
+
+  const handleReset = () => {
+    setImages([]);
+    setSelectedImage(null);
+    setOptions(defaultParams);
+
+    setActiveStep(1);
+  };
+
+  const handleUpdate = (updates) => setOptions({ ...options, ...updates });
+
+  const handleEdit = (index) => {
+    const { options } = aiImage;
+
+    setOptions(options);
+
+    setActiveStep(index);
+    onExitImageSummary();
+  };
+
+  const handleRemove = () => {
+    setActiveStep(1);
+
+    console.log('Handle remove', aiImage);
+
+    onGeneratedImageRemoved(aiImage.url);
   };
 
   const handleGenerate = () => {
@@ -124,20 +155,28 @@ export default function ImageGenerator({
       });
   };
 
-  console.log('Active step', activeStep);
+  if (aiImage) {
+    return (
+      <ImageOverview
+        aiImage={aiImage}
+        onEdit={handleEdit}
+        onRemove={handleRemove}
+      />
+    );
+  }
 
   return (
     <Box pt="20px">
       {activeStep === 1 ? (
         <SelectStyle
-          onChange={(style) => setStyle(style)}
+          onChange={(style) => handleUpdate({ style })}
           onNext={() => setActiveStep(activeStep + 1)}
           selectedValue={style}
         />
       ) : null}
       {activeStep === 2 ? (
         <SelectMood
-          onChange={(mood) => setMood(mood)}
+          onChange={(mood) => handleUpdate({ mood })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={() => setActiveStep(activeStep + 1)}
           selectedValue={mood}
@@ -145,22 +184,24 @@ export default function ImageGenerator({
       ) : null}
       {activeStep === 3 ? (
         <AddSubject
-          onChange={(subject) => setSubject(subject)}
+          onChange={(subject) => handleUpdate({ subject })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={() => setActiveStep(activeStep + 1)}
           keywords={keywords}
-          onUpdateKeywords={setKeywords}
+          onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
           style={style}
           value={subject}
         />
       ) : null}
       {activeStep === 4 && !waiting ? (
         <AddBackground
-          onChange={(background) => setBackground(background)}
+          onChange={(background) => handleUpdate({ background })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={handleGenerate}
           keywords={backgroundKeywords}
-          onUpdateKeywords={setBackgroundKeywords}
+          onUpdateKeywords={(backgroundKeywords) =>
+            handleUpdate({ backgroundKeywords })
+          }
           isBackgroundOn={isBackgroundOn}
           setBackgroundOn={setBackgroundOn}
           style={style}
@@ -200,7 +241,7 @@ export default function ImageGenerator({
                 alt="Generated image"
                 onClick={() => {
                   setSelectedImage(imageUrl);
-                  onImageGenerated(imageUrl);
+                  onGeneratedImagePreview(imageUrl);
                 }}
               />
             ))}

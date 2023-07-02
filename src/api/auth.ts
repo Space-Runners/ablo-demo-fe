@@ -26,7 +26,8 @@ axios.interceptors.response.use(
 
   (error) => {
     const { response } = error || {};
-    if (response.status === 401) {
+
+    if (response && response.status === 401) {
       const {
         config: { url },
       } = response;
