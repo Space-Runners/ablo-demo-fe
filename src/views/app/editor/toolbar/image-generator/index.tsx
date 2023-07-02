@@ -11,7 +11,7 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
-import { AiImageOptions } from '@/components/types';
+import { AiImage, AiImageOptions } from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
@@ -21,6 +21,14 @@ import AddBackground from './add-background';
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
 import Progress from './components/Progress';
+
+import ImageOverview from '../ai-image-overview';
+
+const defaultParams = {
+  style: '',
+  mood: '',
+  subject: '',
+};
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
   <ChakraButton
@@ -39,28 +47,32 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 );
 
 type ImageGeneratorProps = {
+  aiImage: AiImage;
   onImageGenerated: (url: string) => void;
   onImageSelected: (image: { options: AiImageOptions; url: string }) => void;
+  onImageRemoved: () => void;
+  onExitImageSummary: () => void;
 };
 
 export default function ImageGenerator({
+  aiImage,
   onImageGenerated,
   onImageSelected,
+  onExitImageSummary,
+  onImageRemoved,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
 
-  const [style, setStyle] = useState('');
-  const [mood, setMood] = useState('');
-  const [subject, setSubject] = useState('');
-  const [keywords, setKeywords] = useState([]);
-  const [background, setBackground] = useState('');
-  const [isBackgroundOn, setBackgroundOn] = useState(true);
-  const [backgroundKeywords, setBackgroundKeywords] = useState([]);
+  const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
+  const [isBackgroundOn, setBackgroundOn] = useState(false);
+
+  const { background, backgroundKeywords, keywords, style, mood, subject } =
+    options;
 
   const handleEditPrompts = () => {
     setActiveStep(3);
@@ -70,31 +82,35 @@ export default function ImageGenerator({
   const handleNewArtwork = () => {
     setImages([]);
     setSelectedImage(null);
-    setMood('');
-    setStyle('');
-    setSubject('');
-    setKeywords([]);
-    setBackground('');
-    setBackgroundOn(true);
-    setBackgroundKeywords([]);
+    setOptions(defaultParams);
 
     setActiveStep(null);
   };
 
   const handlePlaceArtwork = () => {
     onImageSelected({
-      options: {
-        style,
-        mood,
-        subject,
-        keywords,
-        background,
-        backgroundKeywords,
-      },
+      options,
       url: selectedImage,
     });
 
     handleNewArtwork();
+  };
+
+  const handleUpdate = (updates) => setOptions({ ...options, ...updates });
+
+  const handleEdit = (index) => {
+    const { options } = aiImage;
+
+    setOptions(options);
+
+    setActiveStep(index);
+    onExitImageSummary();
+  };
+
+  const handleRemove = () => {
+    setActiveStep(1);
+
+    onImageRemoved();
   };
 
   const handleGenerate = () => {
@@ -124,20 +140,28 @@ export default function ImageGenerator({
       });
   };
 
-  console.log('Active step', activeStep);
+  if (aiImage) {
+    return (
+      <ImageOverview
+        aiImage={aiImage}
+        onEdit={handleEdit}
+        onRemove={handleRemove}
+      />
+    );
+  }
 
   return (
     <Box pt="20px">
       {activeStep === 1 ? (
         <SelectStyle
-          onChange={(style) => setStyle(style)}
+          onChange={(style) => handleUpdate({ style })}
           onNext={() => setActiveStep(activeStep + 1)}
           selectedValue={style}
         />
       ) : null}
       {activeStep === 2 ? (
         <SelectMood
-          onChange={(mood) => setMood(mood)}
+          onChange={(mood) => handleUpdate({ mood })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={() => setActiveStep(activeStep + 1)}
           selectedValue={mood}
@@ -145,22 +169,24 @@ export default function ImageGenerator({
       ) : null}
       {activeStep === 3 ? (
         <AddSubject
-          onChange={(subject) => setSubject(subject)}
+          onChange={(subject) => handleUpdate({ subject })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={() => setActiveStep(activeStep + 1)}
           keywords={keywords}
-          onUpdateKeywords={setKeywords}
+          onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
           style={style}
           value={subject}
         />
       ) : null}
       {activeStep === 4 && !waiting ? (
         <AddBackground
-          onChange={(background) => setBackground(background)}
+          onChange={(background) => handleUpdate({ background })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={handleGenerate}
           keywords={backgroundKeywords}
-          onUpdateKeywords={setBackgroundKeywords}
+          onUpdateKeywords={(backgroundKeywords) =>
+            handleUpdate({ backgroundKeywords })
+          }
           isBackgroundOn={isBackgroundOn}
           setBackgroundOn={setBackgroundOn}
           style={style}

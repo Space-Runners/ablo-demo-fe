@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 
 import {
+  Alert,
+  AlertDescription,
   Box,
   Flex,
   Modal,
@@ -18,10 +20,11 @@ import FormInput from '@/components/modal/FormInput';
 type Props = {
   onClose: () => void;
   onSave: () => void;
+  error: string;
   waiting: boolean;
 };
 
-function SaveDesignModal({ onClose, onSave, waiting }: Props) {
+function SaveDesignModal({ onClose, onSave, error, waiting }: Props) {
   const inputRef = useRef(null);
 
   const [title, setTitle] = useState('');
@@ -75,7 +78,11 @@ function SaveDesignModal({ onClose, onSave, waiting }: Props) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
-
+              {error ? (
+                <Alert status="error">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              ) : null}
               <Button
                 isLoading={waiting}
                 onClick={handleSubmit}

@@ -9,17 +9,7 @@ import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 import { useState } from 'react';
 
-/* const AI_IMAGE = {
-  options: {
-    background: '',
-    backgroundKeywords: [],
-    keywords: ['Fish in ocean', 'Emoticons'],
-    mood: 'cool',
-    style: 'kidult',
-    subject: '',
-  },
-  url: 'https://d3bezdph00y8ns.cloudfront.net/8da3ff77-320e-47a5-9994-866fb909c2f3/1688234959368.png',
-}; */
+import DESIGN from './design.json';
 
 export default function DesignTool() {
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
@@ -28,7 +18,7 @@ export default function DesignTool() {
   });
   const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
 
-  const [activeDesign, setActiveDesign] = useState<Design>(null);
+  const [activeDesign, setActiveDesign] = useState<Design>(DESIGN);
 
   return (
     <Box

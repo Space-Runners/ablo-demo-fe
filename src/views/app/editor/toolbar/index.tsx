@@ -51,6 +51,7 @@ export default function FooterToolbar(props) {
     isExpanded,
     onAddText,
     onDeleteActiveObject,
+    onUnselectActiveObject,
     onUpdateTextObject,
     onSetExpanded,
     activeObject,
@@ -59,6 +60,7 @@ export default function FooterToolbar(props) {
     onImageUploaded,
     onImageGenerated,
     onImageSelected,
+    onImageRemoved,
   } = props;
 
   const { text = '' } = activeTextObject || {};
@@ -75,7 +77,6 @@ export default function FooterToolbar(props) {
   };
 
   const handleTextUpdate = (text) => {
-    console.log('Text', text, activeTextObject);
     if (!activeTextObject) {
       onAddText({ fill: '#000000', fontSize: 20, text });
 
@@ -103,13 +104,15 @@ export default function FooterToolbar(props) {
 
   const isImagePicker = selectedTool === 'image';
 
-  console.log('AI image', aiImage);
+  const imageSummary = activeObject?.aiImageUrl && aiImage;
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
         <HStack>
-          {(activeObject || activeTextObject) && !selectedTextEditTool ? (
+          {(activeObject || activeTextObject) &&
+          !selectedTextEditTool &&
+          !imageSummary ? (
             <F>
               <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
                 <IconTrash />
@@ -140,7 +143,12 @@ export default function FooterToolbar(props) {
           <Box />
         )}
       </Flex>
-      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 14px">
+      <Box
+        bg="#FFFFFF"
+        maxHeight={imageSummary ? 'calc(100vh - 121px)' : '400px'}
+        overflow="auto"
+        padding="0 14px"
+      >
         <Flex align="center" height="50px" justify="space-between">
           {isTextEditor ? (
             <Input
@@ -196,19 +204,19 @@ export default function FooterToolbar(props) {
             ))}
           </HStack>
         </Flex>
-        <Box display={isExpanded ? 'block' : 'none'}>
+        <Box display={isExpanded || imageSummary ? 'block' : 'none'}>
           {isImageGenerator ? (
             <ImageGenerator
+              aiImage={imageSummary}
               onImageGenerated={onImageGenerated}
               onImageSelected={onImageSelected}
+              onImageRemoved={onImageRemoved}
+              onExitImageSummary={onUnselectActiveObject}
             />
           ) : null}
           {isImagePicker ? (
             <ImagePicker onImageUploaded={onImageUploaded} />
           ) : null}
-          {/* {aiImage && activeObject && activeObject.imageUrl && null ? (
-            <ImageOverview aiImage={aiImage} />
-          ) : null} */}
         </Box>
       </Box>
     </Box>

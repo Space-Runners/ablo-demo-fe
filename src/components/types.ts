@@ -55,17 +55,19 @@ export interface Product {
 export interface AiImageOptions {
   style: string;
   mood: string;
-  keywords: string[];
-  subject: string;
-  background: string;
-  backgroundKeywords: string[];
+  keywords?: string[];
+  subject?: string;
+  background?: string;
+  backgroundKeywords?: string[];
+}
+
+export interface AiImage {
+  options: AiImageOptions;
+  url: string;
 }
 
 export interface Design {
   canvasStateAsJson: string;
-  aiImage?: {
-    options: AiImageOptions;
-    url: string;
-  };
+  aiImage?: AiImage;
   templateUrl?: string;
 }

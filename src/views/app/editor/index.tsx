@@ -45,6 +45,7 @@ export default function ImageEditor({
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
   const [isSavingTemplate, setSavingTemplate] = useState(false);
+  const [errorSavingTemplate, setErrorSavingTemplate] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -83,10 +84,7 @@ export default function ImageEditor({
 
   const [activeTextObject, setActiveTextObject] = useState(null);
 
-  console.log('Design', design, activeObject);
-
   useEffect(() => {
-    console.log('Effect');
     canvas.current = initCanvas();
 
     if (design) {
@@ -106,10 +104,6 @@ export default function ImageEditor({
     });
 
     canvas.current.on('mouse:up', function (e) {
-      console.log('Log', e);
-
-      console.log('Clicked on', e.target);
-
       setActiveObject(e.target);
     });
 
@@ -129,11 +123,9 @@ export default function ImageEditor({
       setUndoStack([...undoStack, state.current]);
     }
 
-    const json = canvas.current.toJSON(['imageUrl']);
+    const json = canvas.current.toJSON(['aiImageUrl']);
 
     state.current = JSON.stringify(json);
-
-    console.log('Save state');
 
     onDesignChange({ ...(design || {}), canvasStateAsJson: state.current });
   };
@@ -214,6 +206,15 @@ export default function ImageEditor({
     saveState();
   };
 
+  const handleDeselectActiveObject = () => {
+    canvas.current.discardActiveObject();
+    canvas.current.renderAll();
+
+    setActiveObject(null);
+
+    setFooterToolbarExpanded(true);
+  };
+
   const handleUpdateTextObject = (updates) => {
     setActiveTextObject({ ...activeTextObject, ...updates });
 
@@ -272,6 +273,19 @@ export default function ImageEditor({
     onDesignChange({ ...design, aiImage: image });
   };
 
+  console.log('Render', design);
+
+  const handleImageRemoved = () => {
+    const aiImage = canvas.current._objects.filter((obj) => obj.aiImageUrl);
+
+    console.log('Handle image removed', aiImage);
+    canvas.current.remove(aiImage);
+    canvas.current.renderAll();
+
+    onDesignChange({ ...design, aiImage: null });
+    // saveState();
+  };
+
   const handleSelectedVariant = (name) => {
     const { variants } = product;
 
@@ -307,9 +321,12 @@ export default function ImageEditor({
 
   const handleSaveDesign = () => {
     setSavingTemplate(true);
+    setErrorSavingTemplate(null);
 
-    toPng(clothingAndCanvasRef.current, { cacheBust: false })
-      .then((dataUrl) => {
+    toPng(clothingAndCanvasRef.current, {
+      cacheBust: false,
+    })
+      .then((dataUrl) =>
         saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
           console.log('success');
 
@@ -318,11 +335,14 @@ export default function ImageEditor({
           onDesignChange({ ...design, templateUrl: url });
 
           history.push('/app/order-or-share');
-        });
-      })
+        })
+      )
       .catch((err) => {
         setSavingTemplate(false);
-        console.log(err);
+
+        console.log(err.message, err.response);
+
+        setErrorSavingTemplate(err.message);
       });
 
     return;
@@ -414,6 +434,7 @@ export default function ImageEditor({
           onAddText={handleAddText}
           onRemoveText={handleRemoveText}
           onDeleteActiveObject={handleRemoveActiveObject}
+          onUnselectActiveObject={handleDeselectActiveObject}
           onUpdateTextObject={handleUpdateTextObject}
           onSetExpanded={(isExpanded) => {
             setHasSeenInitialCallToAction(true);
@@ -427,6 +448,7 @@ export default function ImageEditor({
           onImageUploaded={handleImageUpload}
           onImageGenerated={handleImageGenerated}
           onImageSelected={handleImageSelected}
+          onImageRemoved={handleImageRemoved}
         />
       </Flex>
       {isSignUpModalVisible ? (
@@ -461,6 +483,7 @@ export default function ImageEditor({
         <SaveDesignModal
           onClose={() => setSaveDesignModalVisible(false)}
           onSave={handleSaveDesign}
+          error={errorSavingTemplate}
           waiting={isSavingTemplate}
         />
       ) : null}
