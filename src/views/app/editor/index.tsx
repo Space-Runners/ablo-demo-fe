@@ -2,27 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
-import { Design } from '@/components/types';
+import { Design, TemplateDesign } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
+import CanvasContainer from './components/CanvasContainer';
 import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
-import IconEmptyState from './icons/EmptyState';
+
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
-
-const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 type ImageEditorProps = {
   design: Design;
@@ -30,11 +29,13 @@ type ImageEditorProps = {
 };
 
 export default function ImageEditor({
-  design,
+  design: designForFrontAndBack,
   onDesignChange,
 }: ImageEditorProps) {
-  const canvas = useRef(null);
-  const clothingAndCanvasRef = useRef(null);
+  const canvasFront = useRef(null);
+  const canvasBack = useRef(null);
+  const clothingAndCanvasRefFront = useRef(null);
+  const clothingAndCanvasRefBack = useRef(null);
 
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
@@ -59,7 +60,7 @@ export default function ImageEditor({
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
 
-  const productId = searchParams.get('productName');
+  const productId = searchParams.get('productId');
   const variant = searchParams.get('variant');
 
   const product =
@@ -74,12 +75,16 @@ export default function ImageEditor({
 
   const [selectedSide, setSelectedSide] = useState(defaultSide);
 
+  const design = designForFrontAndBack[selectedSide];
+
+  const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
+
   const { printableAreas } = product;
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
   useEffect(() => {
-    canvas.current = initCanvas();
+    canvas.current = initCanvas(selectedSide);
 
     if (design) {
       // Loading an already active design if you to go another page and come back
@@ -121,13 +126,17 @@ export default function ImageEditor({
 
     state.current = JSON.stringify(json);
 
-    const updates = { canvasStateAsJson: state.current } as Design;
+    const updates = { canvasStateAsJson: state.current } as TemplateDesign;
 
     if (aiImage !== undefined) {
       updates.aiImage = aiImage;
     }
 
-    onDesignChange({ ...design, ...updates });
+    handleDesignChange({ ...design, ...updates });
+  };
+
+  const handleDesignChange = (designForSide) => {
+    onDesignChange({ ...designForFrontAndBack, [selectedSide]: designForSide });
   };
 
   const handleUndo = () => {
@@ -157,15 +166,18 @@ export default function ImageEditor({
     });
   };
 
-  const initCanvas = () => {
-    const { width, height } = drawingArea;
+  const initCanvas = (side) => {
+    const { width, height } = printableAreas[side.toLowerCase()];
 
-    return new fabric.Canvas('canvas', {
-      width,
-      height,
-      selection: false,
-      renderOnAddRemove: true,
-    });
+    return new fabric.Canvas(
+      side === 'Front' ? 'canvas-front' : 'canvas-back',
+      {
+        width,
+        height,
+        selection: false,
+        renderOnAddRemove: true,
+      }
+    );
   };
 
   const handleAddText = (params) => {
@@ -271,8 +283,6 @@ export default function ImageEditor({
     saveState(image);
   };
 
-  console.log('Render', design);
-
   const handleGeneratedImageRemoved = (imageUrl) => {
     console.log('Image URL', imageUrl, canvas.current._objects);
 
@@ -300,11 +310,21 @@ export default function ImageEditor({
   const handleSelectedSide = (side: string) => {
     setSelectedSide(side);
 
-    const drawingArea = printableAreas[side.toLowerCase()];
+    const canvas = side === 'Front' ? canvasFront : canvasBack;
 
-    canvas.current.setDimensions({
-      width: drawingArea.width,
-      height: drawingArea.height,
+    if (!canvas.current.clear) {
+      canvas.current = initCanvas(side);
+    }
+
+    const design = designForFrontAndBack[side];
+
+    const { canvasStateAsJson = {} } = design || {};
+
+    state.current = canvasStateAsJson;
+
+    canvas.current.clear();
+    canvas.current.loadFromJSON(state.current, function () {
+      canvas.current.renderAll();
     });
   };
 
@@ -322,19 +342,25 @@ export default function ImageEditor({
     setSaveDesignModalVisible(true);
   };
 
-  const handleSaveDesign = (url) => {
+  const handleSaveDesign = ([urlFront, urlBack]) => {
     setSaveDesignModalVisible(false);
 
-    onDesignChange({ ...design, templateUrl: url });
+    const { Front, Back } = designForFrontAndBack;
+
+    onDesignChange({
+      Front: { ...Front, templateUrl: urlFront },
+      Back: { ...Back, templateUrl: urlBack },
+    });
 
     history.push('/app/order-or-share');
   };
 
   const { urlPrefix } = product;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}_${selectedSide.toUpperCase()}.png?timestamp=${Date.now()}`;
+  const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
 
-  console.log('Design', activeObject, design);
+  const showHint = !hasSeenInitialCallToAction && isEmpty(design);
+
   return (
     <Box h="100%" w="100%">
       <Navbar onNext={() => handleNext()} step={2} title="Create your design" />
@@ -358,59 +384,49 @@ export default function ImageEditor({
           selectedSide={selectedSide}
           selectedVariant={selectedVariant}
         />
-        <Box ref={clothingAndCanvasRef} position="relative">
-          <img src={variantImageUrl} crossOrigin="anonymous" width={350} />
+        {
           <Box
-            border={
-              isDrawingAreaVisible
-                ? `2px dashed ${
-                    DARK_VARIANTS.includes(selectedVariant)
-                      ? '#FFFFFF'
-                      : '#a8a8a8'
-                  }`
-                : ''
-            }
-            borderRadius="4px"
-            left={`${drawingArea.left}px`}
-            position="absolute"
-            top={`${drawingArea.top}px`}
-            id="drawingArea"
-            className="drawing-area"
+            id="#canvas-container-front"
+            display={selectedSide === 'Front' ? 'block' : 'none'}
+            ref={clothingAndCanvasRefFront}
+            position="relative"
           >
-            <div className="canvas-container">
-              <canvas id="canvas" ref={canvas}></canvas>
-            </div>
-            {!hasSeenInitialCallToAction && isEmpty(design) && (
-              <Flex
-                align="center"
-                as="button"
-                direction="column"
-                justify="center"
-                onClick={() => {
-                  setHasSeenInitialCallToAction(true);
-                  setFooterToolbarExpanded(true);
-                }}
-                position="absolute"
-                top="20%"
-                w="100%"
-                textAlign="center"
-              >
-                <IconEmptyState />
-                <Text
-                  color={
-                    DARK_VARIANTS.includes(selectedVariant)
-                      ? '#FFFFFF'
-                      : '#000000'
-                  }
-                  fontSize="sm"
-                  fontWeight={400}
-                  mt="17px"
-                >
-                  Select a style to begin
-                </Text>
-              </Flex>
-            )}
+            <CanvasContainer
+              canvasRef={canvasFront}
+              drawingArea={printableAreas.front}
+              id="canvas-front"
+              isDrawingAreaVisible={isDrawingAreaVisible}
+              variantImageUrl={variantImageUrl}
+              selectedVariant={selectedVariant}
+              showHint={showHint}
+              side="front"
+              onHintClick={() => {
+                setHasSeenInitialCallToAction(true);
+                setFooterToolbarExpanded(true);
+              }}
+            />
           </Box>
+        }
+        <Box
+          id="#canvas-container-back"
+          display={selectedSide === 'Back' ? 'block' : 'none'}
+          ref={clothingAndCanvasRefBack}
+          position="relative"
+        >
+          <CanvasContainer
+            canvasRef={canvasBack}
+            drawingArea={printableAreas.back}
+            id="canvas-back"
+            isDrawingAreaVisible={isDrawingAreaVisible}
+            variantImageUrl={variantImageUrl}
+            selectedVariant={selectedVariant}
+            showHint={showHint}
+            side="back"
+            onHintClick={() => {
+              setHasSeenInitialCallToAction(true);
+              setFooterToolbarExpanded(true);
+            }}
+          />
         </Box>
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
@@ -464,7 +480,12 @@ export default function ImageEditor({
         <SaveDesignModal
           onClose={() => setSaveDesignModalVisible(false)}
           onSave={handleSaveDesign}
-          designRef={clothingAndCanvasRef}
+          designRef={
+            !isEmpty(canvasFront.current?._objects) && clothingAndCanvasRefFront
+          }
+          designRefBack={
+            !isEmpty(canvasBack.current?._objects) && clothingAndCanvasRefBack
+          }
         />
       ) : null}
     </Box>

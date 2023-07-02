@@ -62,7 +62,6 @@ export default function FooterToolbar(props) {
     onGeneratedImageRemoved,
   } = props;
 
-  console.log('Active object', activeObject);
   const { text = '' } = activeObject || {};
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');

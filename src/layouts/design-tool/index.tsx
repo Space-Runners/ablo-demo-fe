@@ -9,8 +9,6 @@ import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 import { useState } from 'react';
 
-import DESIGN from './design.json';
-
 export default function DesignTool() {
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
     clothingTypes: [],
@@ -18,7 +16,10 @@ export default function DesignTool() {
   });
   const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
 
-  const [activeDesign, setActiveDesign] = useState<Design>({});
+  const [activeDesign, setActiveDesign] = useState<Design>({
+    Front: null,
+    Back: null,
+  });
 
   return (
     <Box

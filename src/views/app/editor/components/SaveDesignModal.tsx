@@ -23,13 +23,17 @@ import { saveTemplate } from '@/api/image-generator';
 
 type Props = {
   onClose: () => void;
-  onSave: (url: string) => void;
+  onSave: (urls: string[]) => void;
   designRef: any;
+  designRefBack: any;
 };
 
-function SaveDesignModal({ onClose, onSave, designRef }: Props) {
-  const inputRef = useRef(null);
+const getTemplateImgFromHtml = (element) =>
+  toPng(element, { cacheBust: false })
+    .then((dataUrl) => saveTemplate(`Testing-${Date.now()}`, dataUrl))
+    .then(({ url }) => url);
 
+function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -40,16 +44,26 @@ function SaveDesignModal({ onClose, onSave, designRef }: Props) {
     setSaving(true);
     setError(null);
 
-    toPng(designRef.current, {
-      cacheBust: false,
-    })
-      .then((dataUrl) =>
-        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
-          console.log('success');
+    const front = document.getElementById('#canvas-container-front');
+    const back = document.getElementById('#canvas-container-back');
 
-          onSave(url);
-        })
-      )
+    const frontOld = front.style.display;
+    const backOld = back.style.display;
+
+    front.style.display = 'block';
+    back.style.display = 'block';
+
+    const promises = [designRef, designRefBack].map((ref) =>
+      ref ? getTemplateImgFromHtml(ref.current) : Promise.resolve(null)
+    );
+
+    Promise.all(promises)
+      .then(([urlFront, urlBack]) => {
+        front.style.display = frontOld;
+        back.style.display = backOld;
+
+        onSave([urlFront, urlBack]);
+      })
       .catch((err) => {
         setSaving(false);
 
@@ -57,8 +71,6 @@ function SaveDesignModal({ onClose, onSave, designRef }: Props) {
 
         setError(err.message);
       });
-
-    return;
   };
 
   return (
@@ -92,7 +104,6 @@ function SaveDesignModal({ onClose, onSave, designRef }: Props) {
               </Text>
               <FormInput
                 autoFocus
-                ref={inputRef}
                 name="Design Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
