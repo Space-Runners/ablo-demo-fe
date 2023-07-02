@@ -28,6 +28,8 @@ const defaultParams = {
   style: '',
   mood: '',
   subject: '',
+  keywords: [],
+  backgroundKeywords: [],
 };
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (

@@ -18,7 +18,7 @@ export default function DesignTool() {
   });
   const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
 
-  const [activeDesign, setActiveDesign] = useState<Design>(DESIGN);
+  const [activeDesign, setActiveDesign] = useState<Design>({});
 
   return (
     <Box

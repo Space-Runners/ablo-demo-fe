@@ -55,7 +55,6 @@ export default function FooterToolbar(props) {
     onUpdateTextObject,
     onSetExpanded,
     activeObject,
-    activeTextObject,
     aiImage,
     onImageUploaded,
     onImageGenerated,
@@ -63,7 +62,8 @@ export default function FooterToolbar(props) {
     onImageRemoved,
   } = props;
 
-  const { text = '' } = activeTextObject || {};
+  console.log('Active object', activeObject);
+  const { text = '' } = activeObject || {};
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
@@ -77,7 +77,8 @@ export default function FooterToolbar(props) {
   };
 
   const handleTextUpdate = (text) => {
-    if (!activeTextObject) {
+    console.log(activeObject);
+    if (!activeObject || !activeObject.text) {
       onAddText({ fill: '#000000', fontSize: 20, text });
 
       return;
@@ -110,9 +111,7 @@ export default function FooterToolbar(props) {
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="space-between">
         <HStack>
-          {(activeObject || activeTextObject) &&
-          !selectedTextEditTool &&
-          !imageSummary ? (
+          {activeObject && !selectedTextEditTool && !imageSummary ? (
             <F>
               <IconButton onClick={onDeleteActiveObject} ml="14px" mb="16px">
                 <IconTrash />
@@ -135,7 +134,7 @@ export default function FooterToolbar(props) {
         {isTextEditor ? (
           <TextToolbar
             onUpdate={onUpdateTextObject}
-            textObject={activeTextObject}
+            textObject={activeObject}
             selectedTool={selectedTextEditTool}
             onSelectedTool={setSelectedTextEditTool}
           />

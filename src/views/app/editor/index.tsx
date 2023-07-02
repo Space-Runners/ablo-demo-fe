@@ -4,11 +4,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
-import { saveTemplate } from '@/api/image-generator';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
-import { toPng } from 'html-to-image';
 
 import Navbar from '@/components/navbar/Navbar';
 import { Design } from '@/components/types';
@@ -44,8 +42,6 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
-  const [isSavingTemplate, setSavingTemplate] = useState(false);
-  const [errorSavingTemplate, setErrorSavingTemplate] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -81,8 +77,6 @@ export default function ImageEditor({
   const { printableAreas } = product;
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
-
-  const [activeTextObject, setActiveTextObject] = useState(null);
 
   useEffect(() => {
     canvas.current = initCanvas();
@@ -127,7 +121,7 @@ export default function ImageEditor({
 
     state.current = JSON.stringify(json);
 
-    onDesignChange({ ...(design || {}), canvasStateAsJson: state.current });
+    onDesignChange({ ...design, canvasStateAsJson: state.current });
   };
 
   const handleUndo = () => {
@@ -169,12 +163,16 @@ export default function ImageEditor({
   };
 
   const handleAddText = (params) => {
+    const { width, height } = drawingArea;
+
     const textObject = {
       fill: '#FFFFFF',
       fontFamily: 'Poppins',
       text: 'this is\na multiline\ntext\naligned right!',
       fontSize: 12,
       textAlign: 'left',
+      left: width / 2 - 20,
+      top: height / 2 - 20,
       ...params,
     };
 
@@ -185,15 +183,7 @@ export default function ImageEditor({
 
     canvas.current.setActiveObject(text);
 
-    setActiveTextObject(textObject);
-
-    saveState();
-  };
-
-  const handleRemoveText = () => {
-    canvas.current.remove(canvas.current.getActiveObject());
-
-    setActiveTextObject(null);
+    setActiveObject(textObject);
 
     saveState();
   };
@@ -216,13 +206,13 @@ export default function ImageEditor({
   };
 
   const handleUpdateTextObject = (updates) => {
-    setActiveTextObject({ ...activeTextObject, ...updates });
-
     Object.keys(updates).forEach((key) => {
       canvas.current.getActiveObject().set(key, updates[key]);
 
       canvas.current.renderAll();
     });
+
+    setActiveObject({ ...activeObject, ...updates });
 
     saveState();
   };
@@ -251,7 +241,11 @@ export default function ImageEditor({
   };
 
   const handleImageGenerated = (imageUrl) => {
-    canvas.current.remove(canvas.current.getActiveObject());
+    const activeObject = canvas.current.getActiveObject();
+
+    if (activeObject.aiImageUrl) {
+      canvas.current.remove(activeObject);
+    }
 
     fabric.Image.fromURL(
       imageUrl,
@@ -319,33 +313,12 @@ export default function ImageEditor({
     setSaveDesignModalVisible(true);
   };
 
-  const handleSaveDesign = () => {
-    setSavingTemplate(true);
-    setErrorSavingTemplate(null);
+  const handleSaveDesign = (url) => {
+    setSaveDesignModalVisible(false);
 
-    toPng(clothingAndCanvasRef.current, {
-      cacheBust: false,
-    })
-      .then((dataUrl) =>
-        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
-          console.log('success');
+    onDesignChange({ ...design, templateUrl: url });
 
-          setSaveDesignModalVisible(false);
-
-          onDesignChange({ ...design, templateUrl: url });
-
-          history.push('/app/order-or-share');
-        })
-      )
-      .catch((err) => {
-        setSavingTemplate(false);
-
-        console.log(err.message, err.response);
-
-        setErrorSavingTemplate(err.message);
-      });
-
-    return;
+    history.push('/app/order-or-share');
   };
 
   const { urlPrefix } = product;
@@ -397,7 +370,7 @@ export default function ImageEditor({
             <div className="canvas-container">
               <canvas id="canvas" ref={canvas}></canvas>
             </div>
-            {!hasSeenInitialCallToAction && !design && (
+            {!hasSeenInitialCallToAction && isEmpty(design) && (
               <Flex
                 align="center"
                 as="button"
@@ -432,7 +405,6 @@ export default function ImageEditor({
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onAddText={handleAddText}
-          onRemoveText={handleRemoveText}
           onDeleteActiveObject={handleRemoveActiveObject}
           onUnselectActiveObject={handleDeselectActiveObject}
           onUpdateTextObject={handleUpdateTextObject}
@@ -442,7 +414,6 @@ export default function ImageEditor({
           }}
           aiImage={design && design.aiImage}
           activeObject={activeObject}
-          activeTextObject={activeTextObject}
           selectedColor={selectedVariant}
           onSelectedColor={handleSelectedVariant}
           onImageUploaded={handleImageUpload}
@@ -483,8 +454,7 @@ export default function ImageEditor({
         <SaveDesignModal
           onClose={() => setSaveDesignModalVisible(false)}
           onSave={handleSaveDesign}
-          error={errorSavingTemplate}
-          waiting={isSavingTemplate}
+          designRef={clothingAndCanvasRef}
         />
       ) : null}
     </Box>

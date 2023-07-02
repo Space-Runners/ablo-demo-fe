@@ -12,28 +12,53 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { toPng } from 'html-to-image';
+
 import Button from '@/components/Button';
 
 import ButtonClose from '@/components/modal/ButtonCloseModal';
 import FormInput from '@/components/modal/FormInput';
 
+import { saveTemplate } from '@/api/image-generator';
+
 type Props = {
   onClose: () => void;
-  onSave: () => void;
-  error: string;
-  waiting: boolean;
+  onSave: (url: string) => void;
+  designRef: any;
 };
 
-function SaveDesignModal({ onClose, onSave, error, waiting }: Props) {
+function SaveDesignModal({ onClose, onSave, designRef }: Props) {
   const inputRef = useRef(null);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleSubmit = () => {
-    console.log(title, description);
+  const [isSaving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
-    onSave();
+  const handleSubmit = () => {
+    setSaving(true);
+    setError(null);
+
+    toPng(designRef.current, {
+      cacheBust: false,
+    })
+      .then((dataUrl) =>
+        saveTemplate(`Testing-${Date.now()}`, dataUrl).then(({ url }) => {
+          console.log('success');
+
+          onSave(url);
+        })
+      )
+      .catch((err) => {
+        setSaving(false);
+
+        console.log(err.message, err.response);
+
+        setError(err.message);
+      });
+
+    return;
   };
 
   return (
@@ -84,7 +109,7 @@ function SaveDesignModal({ onClose, onSave, error, waiting }: Props) {
                 </Alert>
               ) : null}
               <Button
-                isLoading={waiting}
+                isLoading={isSaving}
                 onClick={handleSubmit}
                 title="Save my design"
               />
