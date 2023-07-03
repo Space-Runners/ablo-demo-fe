@@ -39,7 +39,7 @@ export default function SelectStyle({
   return (
     <Box paddingBottom="100px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
-        Select style
+        Select art style
       </Text>
       {chunks.map((chunk, index) => (
         <HStack key={index} mb="16px">
