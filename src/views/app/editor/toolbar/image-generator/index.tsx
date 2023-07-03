@@ -16,7 +16,6 @@ import { AiImage, AiImageOptions } from '@/components/types';
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
 import AddSubject from './add-subject';
-import AddBackground from './add-background';
 
 import IconSpark from './components/IconSpark';
 import IconShuffle from './components/IconShuffle';
@@ -29,7 +28,7 @@ const defaultParams = {
   mood: '',
   subject: '',
   keywords: [],
-  backgroundKeywords: [],
+  flatBackground: true,
 };
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
@@ -74,10 +73,8 @@ export default function ImageGenerator({
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
-  const [isBackgroundOn, setBackgroundOn] = useState(true);
 
-  const { background, backgroundKeywords, keywords, style, mood, subject } =
-    options;
+  const { flatBackground, keywords, style, mood, subject } = options;
 
   const handleEditPrompts = () => {
     setActiveStep(3);
@@ -133,8 +130,7 @@ export default function ImageGenerator({
     setImages([]);
 
     const requestParams = {
-      backgroundText: background,
-      backgroundPrompt: backgroundKeywords,
+      flatBackground,
       style,
       mood,
       subjectSuggestions: keywords,
@@ -184,37 +180,26 @@ export default function ImageGenerator({
           selectedValue={mood}
         />
       ) : null}
-      {activeStep === 3 ? (
+      {activeStep === 3 && !waiting ? (
         <AddSubject
+          flatBackground={flatBackground}
+          onChangeFlatBackground={(flatBackground) =>
+            handleUpdate({ flatBackground })
+          }
           onChange={(subject) => handleUpdate({ subject })}
           onBack={() => setActiveStep(activeStep - 1)}
-          onNext={() => setActiveStep(activeStep + 1)}
+          onNext={handleGenerate}
           keywords={keywords}
           onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
           style={style}
           value={subject}
         />
       ) : null}
-      {activeStep === 4 && !waiting ? (
-        <AddBackground
-          onChange={(background) => handleUpdate({ background })}
-          onBack={() => setActiveStep(activeStep - 1)}
-          onNext={handleGenerate}
-          keywords={backgroundKeywords}
-          onUpdateKeywords={(backgroundKeywords) =>
-            handleUpdate({ backgroundKeywords })
-          }
-          isBackgroundOn={isBackgroundOn}
-          setBackgroundOn={setBackgroundOn}
-          style={style}
-          value={background}
-        />
-      ) : null}
       {waiting ? <Progress /> : null}
       {images.length ? (
         <Box>
           <Text fontSize="md" mb="22px">
-            Select image (only one)
+            Select image
           </Text>
           <Flex align="center" mb="22px">
             <ButtonGenerateAgain
