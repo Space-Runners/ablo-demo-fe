@@ -268,7 +268,7 @@ export default function ImageEditor({
     }
 
     fabric.Image.fromURL(
-      imageUrl,
+      `${imageUrl}?timestamp=${Date.now()}`,
       (img) => {
         img.scaleToWidth(150);
 
