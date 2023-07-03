@@ -364,7 +364,7 @@ export default function ImageEditor({
       return;
     }
 
-    canvas.current.setSignInModalVisible(true);
+    setSignInModalVisible(true);
   };
 
   const handleGoToSaveDesign = () => {
