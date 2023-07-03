@@ -105,7 +105,7 @@ const IconNext = () => (
 const TOTAL_STEPS = 3;
 
 type Props = {
-  onBack: () => void;
+  onBack?: () => void;
   onNext?: () => void;
   isNextDisabled?: boolean;
   step: number;
