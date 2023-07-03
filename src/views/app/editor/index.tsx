@@ -268,7 +268,7 @@ export default function ImageEditor({
     }
 
     fabric.Image.fromURL(
-      `${imageUrl}?timestamp=${Date.now()}`,
+      imageUrl,
       (img) => {
         img.scaleToWidth(150);
 
@@ -367,7 +367,12 @@ export default function ImageEditor({
 
   return (
     <Box h="100%" w="100%">
-      <Navbar onNext={() => handleNext()} step={2} title="Create your design" />
+      <Navbar
+        onBack={() => history.push('/app/products')}
+        onNext={() => handleNext()}
+        step={2}
+        title="Create your design"
+      />
       <Flex
         align="center"
         bg="#F9F9F7"
