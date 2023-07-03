@@ -1,6 +1,8 @@
 import { Box } from '@chakra-ui/react';
 
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { Design, Filters, Garment } from '@/components/types';
 
