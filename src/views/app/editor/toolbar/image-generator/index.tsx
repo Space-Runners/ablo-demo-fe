@@ -68,6 +68,7 @@ export default function ImageGenerator({
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
@@ -112,6 +113,8 @@ export default function ImageGenerator({
     setOptions(options);
 
     setActiveStep(index);
+
+    setIsEditing(true);
   };
 
   const handleRemove = () => {
@@ -150,7 +153,7 @@ export default function ImageGenerator({
       });
   };
 
-  if (aiImage) {
+  if (aiImage && !isEditing) {
     return (
       <ImageOverview
         aiImage={aiImage}
