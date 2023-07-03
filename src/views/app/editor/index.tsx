@@ -214,15 +214,6 @@ export default function ImageEditor({
     saveState();
   };
 
-  const handleDeselectActiveObject = () => {
-    canvas.current.discardActiveObject();
-    canvas.current.renderAll();
-
-    setActiveObject(null);
-
-    setFooterToolbarExpanded(true);
-  };
-
   const handleUpdateTextObject = (updates) => {
     Object.keys(updates).forEach((key) => {
       canvas.current.getActiveObject().set(key, updates[key]);
@@ -391,7 +382,7 @@ export default function ImageEditor({
   const showHint = !hasSeenInitialCallToAction && isEmpty(design);
 
   return (
-    <Box h="100%" w="100%">
+    <Box h="100vh" w="100%">
       <Navbar
         onBack={() => history.push('/app/products')}
         onNext={() => handleNext()}
@@ -474,7 +465,6 @@ export default function ImageEditor({
           onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
           onDeleteActiveObject={handleRemoveActiveObject}
-          onUnselectActiveObject={handleDeselectActiveObject}
           aiImage={design && design.aiImage}
           onImageUploaded={handleImageUpload}
           onGeneratedImagePreview={handleGeneratedImagePreview}

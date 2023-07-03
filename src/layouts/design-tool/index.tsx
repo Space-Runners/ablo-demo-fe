@@ -1,8 +1,8 @@
 import { Box } from '@chakra-ui/react';
 
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-// import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { Design, Filters, Garment } from '@/components/types';
 
@@ -14,6 +14,8 @@ import CorsTestPage from '@/views/app/cors-test';
 import { useState } from 'react';
 
 export default function DesignTool() {
+  const location = useLocation();
+
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
     clothingTypes: [],
     price: [20, 90],
@@ -32,32 +34,43 @@ export default function DesignTool() {
       flexDirection="column"
       w={{ base: '100%' }}
     >
-      <Box backgroundColor="#2b2a2a" h="100%" mx="auto" flex={1} w="100%">
-        <Switch>
-          <Route
-            path={`/app/products`}
-            render={() => (
-              <ProductsPage
-                filters={selectedFilters}
-                onFiltersChange={setSelectedFilters}
-                selectedGarment={selectedGarment}
-                onSelectedGarment={setSelectedGarment}
+      <Box backgroundColor="#FFFFFF" h="100%" mx="auto" flex={1} w="100%">
+        <TransitionGroup>
+          <CSSTransition
+            key={location.pathname}
+            classNames="page"
+            timeout={300}
+          >
+            <Switch location={location}>
+              <Route
+                path={`/app/products`}
+                render={() => (
+                  <ProductsPage
+                    filters={selectedFilters}
+                    onFiltersChange={setSelectedFilters}
+                    selectedGarment={selectedGarment}
+                    onSelectedGarment={setSelectedGarment}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            path={`/app/editor`}
-            render={() => (
-              <Editor design={activeDesign} onDesignChange={setActiveDesign} />
-            )}
-          />
-          <Route
-            path={`/app/order-or-share`}
-            render={() => <OrderOrSharePage design={activeDesign} />}
-          />
-          <Route path={`/app/cors-test`} render={() => <CorsTestPage />} />
-          <Redirect from="/" to="/app/products" />
-        </Switch>
+              <Route
+                path={`/app/editor`}
+                render={() => (
+                  <Editor
+                    design={activeDesign}
+                    onDesignChange={setActiveDesign}
+                  />
+                )}
+              />
+              <Route
+                path={`/app/order-or-share`}
+                render={() => <OrderOrSharePage design={activeDesign} />}
+              />
+              <Route path={`/app/cors-test`} render={() => <CorsTestPage />} />
+              <Redirect from="/" to="/app/products" />
+            </Switch>
+          </CSSTransition>
+        </TransitionGroup>
       </Box>
     </Box>
   );

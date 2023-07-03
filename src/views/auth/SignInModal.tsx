@@ -59,7 +59,7 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
       <ModalContent>
         <ModalBody padding={0}>

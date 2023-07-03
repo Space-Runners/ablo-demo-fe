@@ -67,3 +67,21 @@ button {
     background-color: #f9f9f9;
   }
 }
+
+.page-enter {
+  transform: translateX(100%);
+}
+
+.page-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms;
+}
+
+.page-exit {
+  transform: translateX(0);
+}
+
+.page-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms;
+}

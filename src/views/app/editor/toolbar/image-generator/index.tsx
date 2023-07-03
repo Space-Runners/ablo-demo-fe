@@ -55,14 +55,12 @@ type ImageGeneratorProps = {
     url: string;
   }) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
-  onExitImageSummary: () => void;
 };
 
 export default function ImageGenerator({
   aiImage,
   onGeneratedImagePreview,
   onGeneratedImageSelected,
-  onExitImageSummary,
   onGeneratedImageRemoved,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
@@ -114,7 +112,6 @@ export default function ImageGenerator({
     setOptions(options);
 
     setActiveStep(index);
-    onExitImageSummary();
   };
 
   const handleRemove = () => {

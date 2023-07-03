@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Input, Collapse } from '@chakra-ui/react';
 
 import { useState, Fragment as F } from 'react';
 
@@ -54,7 +54,6 @@ export default function FooterToolbar(props) {
     isExpanded,
     onAddText,
     onDeleteActiveObject,
-    onUnselectActiveObject,
     onUpdateTextObject,
     onSetExpanded,
     activeObject,
@@ -211,20 +210,21 @@ export default function FooterToolbar(props) {
             <IconSave />
           </Button>
         </Flex>
-        <Box display={isExpanded ? 'block' : 'none'}>
-          {isImageGenerator ? (
-            <ImageGenerator
-              aiImage={aiImage}
-              onGeneratedImagePreview={onGeneratedImagePreview}
-              onGeneratedImageSelected={onGeneratedImageSelected}
-              onGeneratedImageRemoved={onGeneratedImageRemoved}
-              onExitImageSummary={onUnselectActiveObject}
-            />
-          ) : null}
-          {isImagePicker ? (
-            <ImagePicker onImageUploaded={onImageUploaded} />
-          ) : null}
-        </Box>
+        <Collapse in={isExpanded} animateOpacity>
+          <Box display={isExpanded ? 'block' : 'none'}>
+            {isImageGenerator ? (
+              <ImageGenerator
+                aiImage={aiImage}
+                onGeneratedImagePreview={onGeneratedImagePreview}
+                onGeneratedImageSelected={onGeneratedImageSelected}
+                onGeneratedImageRemoved={onGeneratedImageRemoved}
+              />
+            ) : null}
+            {isImagePicker ? (
+              <ImagePicker onImageUploaded={onImageUploaded} />
+            ) : null}
+          </Box>
+        </Collapse>
       </Box>
     </Box>
   );
