@@ -285,6 +285,8 @@ export default function ImageEditor({
 
   const handleGeneratedImageSelected = (image) => {
     saveState(image);
+
+    setFooterToolbarExpanded(false);
   };
 
   const handleGeneratedImageRemoved = (imageUrl) => {
@@ -301,6 +303,26 @@ export default function ImageEditor({
     setActiveObject(null);
 
     saveState(null);
+  };
+
+  const handleLayerUp = () => {
+    const selectedObject = canvas.current.getActiveObject();
+
+    console.log('Up', selectedObject);
+
+    canvas.current.bringForward(selectedObject);
+    canvas.current.discardActiveObject();
+    canvas.current.renderAll();
+  };
+
+  const handleLayerDown = () => {
+    const selectedObject = canvas.current.getActiveObject();
+
+    console.log('Down', selectedObject);
+
+    canvas.current.sendBackwards(selectedObject);
+    canvas.current.discardActiveObject();
+    canvas.current.renderAll();
   };
 
   const handleSelectedVariant = (name) => {
@@ -333,13 +355,16 @@ export default function ImageEditor({
   };
 
   const handleNext = () => {
+    canvas.current.discardActiveObject();
+    canvas.current.renderAll();
+
     if (me && me.roles[0] !== 'guest') {
       handleGoToSaveDesign();
 
       return;
     }
 
-    setSignInModalVisible(true);
+    canvas.current.setSignInModalVisible(true);
   };
 
   const handleGoToSaveDesign = () => {
@@ -455,6 +480,9 @@ export default function ImageEditor({
           onGeneratedImagePreview={handleGeneratedImagePreview}
           onGeneratedImageSelected={handleGeneratedImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
+          onLayerUp={handleLayerUp}
+          onLayerDown={handleLayerDown}
+          onSave={handleNext}
         />
       </Flex>
       {isSignUpModalVisible ? (

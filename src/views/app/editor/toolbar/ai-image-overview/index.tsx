@@ -83,14 +83,6 @@ export default function ImageOverview({ aiImage, onEdit, onRemove }: Props) {
           outlined
           title="Remove"
         />
-        <Button
-          flex={1}
-          ml="10px"
-          onClick={() => {
-            console.log('Click Add');
-          }}
-          title="Add"
-        />
       </Flex>
     </Box>
   );

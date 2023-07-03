@@ -57,8 +57,7 @@ export interface AiImageOptions {
   mood: string;
   keywords?: string[];
   subject?: string;
-  background?: string;
-  backgroundKeywords?: string[];
+  flatBackground: boolean;
 }
 
 export interface AiImage {

@@ -119,8 +119,9 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
                   googleLogin(credentialResponse.credential).then(
                     ({ access_token: accessToken }) => {
                       localStorage.setItem('access-token', accessToken);
+                      localStorage.removeItem('client-token');
 
-                      window.location.href = '/';
+                      onSignIn();
                     }
                   );
                 }}
