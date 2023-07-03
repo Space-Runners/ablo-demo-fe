@@ -53,7 +53,7 @@ export default function AddSubject({
         />
       ) : null}
       <Flex align="center" padding="14px 0">
-        <ButtonCTA flex={1} onClick={onBack} outlined title="Edit mood" />
+        <ButtonCTA flex={1} onClick={onBack} outlined title="Edit color mood" />
         <ButtonCTA
           disabled={!value && isEmpty(keywords)}
           flex={1}

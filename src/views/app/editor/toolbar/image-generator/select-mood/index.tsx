@@ -45,7 +45,7 @@ export default function SelectMood({
   return (
     <Box paddingBottom="100px">
       <Text fontWeight={500} mb="16px" textTransform="uppercase">
-        Select your mood
+        Select your color mood
       </Text>
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="16px" w="100%">
@@ -90,7 +90,7 @@ export default function SelectMood({
         w="100%"
       >
         <Flex align="center" mt="14px">
-          <Button flex={1} onClick={onBack} outlined title="Edit style" />
+          <Button flex={1} onClick={onBack} outlined title="Edit art style" />
           <Button
             disabled={!selectedValue}
             flex={1}
