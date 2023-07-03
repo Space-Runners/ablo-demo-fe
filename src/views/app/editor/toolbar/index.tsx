@@ -17,6 +17,30 @@ import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
 
+const IconRemoveBackground = () => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_2455_6091)">
+      <path
+        d="M24 26C24.5304 26 25.0391 26.2107 25.4142 26.5858C25.7893 26.9609 26 27.4696 26 28C26 27.4696 26.2107 26.9609 26.5858 26.5858C26.9609 26.2107 27.4696 26 28 26C27.4696 26 26.9609 25.7893 26.5858 25.4142C26.2107 25.0391 26 24.5304 26 24C26 24.5304 25.7893 25.0391 25.4142 25.4142C25.0391 25.7893 24.5304 26 24 26ZM24 14C24.5304 14 25.0391 14.2107 25.4142 14.5858C25.7893 14.9609 26 15.4696 26 16C26 15.4696 26.2107 14.9609 26.5858 14.5858C26.9609 14.2107 27.4696 14 28 14C27.4696 14 26.9609 13.7893 26.5858 13.4142C26.2107 13.0391 26 12.5304 26 12C26 12.5304 25.7893 13.0391 25.4142 13.4142C25.0391 13.7893 24.5304 14 24 14ZM17 26C17 24.4087 17.6321 22.8826 18.7574 21.7574C19.8826 20.6321 21.4087 20 23 20C21.4087 20 19.8826 19.3679 18.7574 18.2426C17.6321 17.1174 17 15.5913 17 14C17 15.5913 16.3679 17.1174 15.2426 18.2426C14.1174 19.3679 12.5913 20 11 20C12.5913 20 14.1174 20.6321 15.2426 21.7574C16.3679 22.8826 17 24.4087 17 26Z"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2455_6091">
+        <rect width="24" height="24" fill="white" transform="translate(8 8)" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 const IconButton = (props) => (
   <Button
     bg="transparent"
@@ -119,16 +143,16 @@ export default function FooterToolbar(props) {
           ) : (
             <Box />
           )}
-          {null && (
+          {aiImage ? (
             <IconButton
               isLoading={waiting}
               onClick={handleRemoveBackground}
               ml="14px"
               mb="16px"
             >
-              <IconTrash />
+              <IconRemoveBackground />
             </IconButton>
-          )}
+          ) : null}
         </HStack>
         {isTextEditor ? (
           <TextToolbar

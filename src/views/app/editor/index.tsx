@@ -259,6 +259,8 @@ export default function ImageEditor({
   };
 
   const handleGeneratedImagePreview = (imageUrl) => {
+    const { width, height } = drawingArea;
+
     const activeObject = canvas.current.getActiveObject();
 
     if (activeObject && activeObject.aiImageUrl) {
@@ -268,9 +270,11 @@ export default function ImageEditor({
     fabric.Image.fromURL(
       imageUrl,
       (img) => {
-        img.scaleToWidth(200);
+        img.scaleToWidth(150);
 
         img.set('aiImageUrl', imageUrl);
+        img.set('left', width / 2 - 75);
+        img.set('top', height / 2 - 75);
 
         img.crossOrigin = 'anonymous';
         canvas.current.add(img).setActiveObject(img).renderAll();
