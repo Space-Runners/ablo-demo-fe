@@ -212,7 +212,7 @@ export default function ImageGenerator({
       {images.length ? (
         <Box>
           <Text fontSize="md" mb="22px">
-            Select image
+            Select image (only one)
           </Text>
           <Flex align="center" mb="22px">
             <ButtonGenerateAgain
