@@ -7,6 +7,8 @@ import { Design, Filters, Garment } from '@/components/types';
 import ProductsPage from '@/views/app/products';
 import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
+import CorsTestPage from '@/views/app/cors-test';
+
 import { useState } from 'react';
 
 export default function DesignTool() {
@@ -51,6 +53,7 @@ export default function DesignTool() {
             path={`/app/order-or-share`}
             render={() => <OrderOrSharePage design={activeDesign} />}
           />
+          <Route path={`/app/cors-test`} render={() => <CorsTestPage />} />
           <Redirect from="/" to="/app/products" />
         </Switch>
       </Box>

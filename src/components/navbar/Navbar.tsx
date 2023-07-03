@@ -1,7 +1,5 @@
 import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 
-import { useHistory } from 'react-router-dom';
-
 const IconBack = () => (
   <Icon
     width="24px"
@@ -107,6 +105,7 @@ const IconNext = () => (
 const TOTAL_STEPS = 3;
 
 type Props = {
+  onBack: () => void;
   onNext?: () => void;
   isNextDisabled?: boolean;
   step: number;
@@ -114,9 +113,7 @@ type Props = {
 };
 
 export default function Navbar(props: Props) {
-  const { onNext, isNextDisabled, step, title } = props;
-
-  const history = useHistory();
+  const { onBack, onNext, isNextDisabled, step, title } = props;
 
   return (
     <Box>
@@ -131,12 +128,12 @@ export default function Navbar(props: Props) {
         padding="14px"
       >
         <Flex align="center">
-          {step > 1 ? (
+          {onBack ? (
             <Button
               bg="transparent"
               height="24px"
               minWidth="none"
-              onClick={() => history.goBack()}
+              onClick={onBack}
               padding={0}
               w="24px"
             >

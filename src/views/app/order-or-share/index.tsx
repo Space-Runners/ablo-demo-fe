@@ -8,6 +8,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { useHistory } from 'react-router-dom';
+
 import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
 import Colors from '@/theme/colors';
@@ -115,11 +117,13 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   const [selectedSide, setSelectedSide] = useState(Front ? 'Front' : 'Back');
 
+  const history = useHistory();
+
   console.log((selectedSide === 'Front' ? Front : Back).templateUrl);
 
   return (
     <Box>
-      <Navbar step={3} title="Share" />
+      <Navbar onBack={() => history.goBack()} step={3} title="Share" />
       <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
         <Box position="relative">
           {Front && Back ? (
