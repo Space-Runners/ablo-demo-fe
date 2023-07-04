@@ -171,7 +171,7 @@ const ProductsList = ({
                 ? variants.find(
                     (variant) => variant.name === selectedGarment.variant
                   )
-                : variants[0];
+                : variants.find((variant) => variant.name === 'OatMilk');
 
             const selectedProps =
               selectedGarment && selectedGarment.productId === id
@@ -331,12 +331,10 @@ export default function ProductsPage({
             </Box>
           )}
           <ProductsList
-            onSelectedProduct={({ id, variants }) =>
+            onSelectedProduct={({ id }) =>
               onSelectedGarment({
                 productId: id,
-                variant: selectedGarment
-                  ? selectedGarment.variant
-                  : variants[0].name,
+                variant: selectedGarment ? selectedGarment.variant : 'OatMilk',
                 size: 'S',
               })
             }

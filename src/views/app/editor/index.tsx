@@ -387,9 +387,7 @@ export default function ImageEditor({
     });
 
     img.crossOrigin = 'anonymous';
-    canvas.current.add(img).setActiveObject(img).renderAll();
-
-    setActiveObject(img);
+    canvas.current.add(img).renderAll();
   };
 
   const handleLayerUp = () => {

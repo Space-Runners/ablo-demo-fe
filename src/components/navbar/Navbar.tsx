@@ -1,5 +1,9 @@
 import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 
+import Colors from '@/theme/colors';
+
+const { abloBlue } = Colors;
+
 const IconBack = () => (
   <Icon
     width="24px"
@@ -131,11 +135,16 @@ export default function Navbar(props: Props) {
           {onBack ? (
             <Button
               bg="transparent"
-              height="24px"
+              height="30px"
               minWidth="none"
               onClick={onBack}
               padding={0}
-              w="24px"
+              w="48px"
+              _hover={{
+                bg: '#F9F9F7',
+                border: `1px solid ${abloBlue}`,
+                boxShadow: '0px 0px 8px 0px #97B9F5',
+              }}
             >
               <IconBack />
             </Button>
@@ -144,7 +153,7 @@ export default function Navbar(props: Props) {
             fontFamily="Roboto Condensed"
             fontSize="24px"
             fontWeight={700}
-            ml="8px"
+            ml="2px"
             textTransform="uppercase"
           >
             {title}
@@ -164,6 +173,9 @@ export default function Navbar(props: Props) {
               padding="4px 14px"
               w="52px"
               _disabled={{ background: '#BFBEBE' }}
+              _hover={{
+                bg: '#6A6866',
+              }}
             >
               <IconNext />
             </Button>

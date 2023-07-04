@@ -1,4 +1,6 @@
-import { Flex, Button, Icon } from '@chakra-ui/react';
+import { Flex, Icon } from '@chakra-ui/react';
+
+import ToolbarButton from '@/components/ToolbarButton';
 
 import { useRef } from 'react';
 
@@ -39,15 +41,9 @@ const IconUpload = () => (
 );
 
 const ButtonUpload = (props) => (
-  <Button
-    bg="#FFFFFF"
-    borderRadius="50%"
-    height="32px"
-    padding="13px"
-    {...props}
-  >
+  <ToolbarButton {...props}>
     <IconUpload />
-  </Button>
+  </ToolbarButton>
 );
 
 export default function ImagePicker(props) {
