@@ -28,7 +28,7 @@ const defaultParams = {
   mood: '',
   subject: '',
   keywords: [],
-  flatBackground: true,
+  background: true,
 };
 
 const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
@@ -70,7 +70,7 @@ export default function ImageGenerator({
 
   const [activeStep, setActiveStep] = useState(1);
 
-  const { flatBackground, keywords, style, mood, subject } = options;
+  const { background, keywords, style, mood, subject } = options;
 
   const handleEditPrompts = () => {
     setActiveStep(3);
@@ -127,7 +127,7 @@ export default function ImageGenerator({
     setImages([]);
 
     const requestParams = {
-      flatBackground,
+      background,
       style,
       mood,
       subjectSuggestions: keywords,
@@ -179,10 +179,8 @@ export default function ImageGenerator({
       ) : null}
       {activeStep === 3 && !waiting ? (
         <AddSubject
-          flatBackground={flatBackground}
-          onChangeFlatBackground={(flatBackground) =>
-            handleUpdate({ flatBackground })
-          }
+          background={background}
+          onChangeBackground={(background) => handleUpdate({ background })}
           onChange={(subject) => handleUpdate({ subject })}
           onBack={() => setActiveStep(activeStep - 1)}
           onNext={handleGenerate}

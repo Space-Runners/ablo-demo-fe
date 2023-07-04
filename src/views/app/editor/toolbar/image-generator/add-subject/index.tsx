@@ -11,8 +11,8 @@ import Keywords from '../components/Keywords';
 const { abloBlue } = Colors;
 
 type Props = {
-  flatBackground: boolean;
-  onChangeFlatBackground: (value: boolean) => void;
+  background: boolean;
+  onChangeBackground: (value: boolean) => void;
   onChange: (value: string) => void;
   onNext: () => void;
   onBack: () => void;
@@ -24,8 +24,8 @@ type Props = {
 
 export default function AddSubject({
   keywords,
-  flatBackground,
-  onChangeFlatBackground,
+  background,
+  onChangeBackground,
   onChange,
   onNext,
   onBack,
@@ -52,21 +52,21 @@ export default function AddSubject({
             Flat background
           </Text>
           <Switch
-            isChecked={flatBackground}
-            onChange={(e) => onChangeFlatBackground(e.target.checked)}
+            isChecked={background}
+            onChange={(e) => onChangeBackground(e.target.checked)}
             position="relative"
           >
             <Text
               as="b"
-              color={flatBackground ? abloBlue : '#000000'}
+              color={background ? abloBlue : '#000000'}
               fontSize="10px"
               position="absolute"
               textTransform="uppercase"
               top="12px"
-              left={flatBackground ? '8px' : undefined}
-              right={flatBackground ? undefined : '8px'}
+              left={background ? '8px' : undefined}
+              right={background ? undefined : '8px'}
             >
-              {flatBackground ? 'On' : 'Off'}
+              {background ? 'On' : 'Off'}
             </Text>
           </Switch>
         </HStack>
@@ -85,7 +85,7 @@ export default function AddSubject({
         />
       ) : null}
       <Flex align="center" padding="14px 0">
-        <ButtonCTA flex={1} onClick={onBack} outlined title="Edit color mood" />
+        <ButtonCTA flex={1} onClick={onBack} outlined title="Back" />
         <ButtonCTA
           disabled={!value && isEmpty(keywords)}
           flex={1}
