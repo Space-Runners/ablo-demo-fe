@@ -176,7 +176,7 @@ const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
         />
       </Panel>
       <Flex align="flex-end" justify="center" w="100%" padding="0 14px">
-        <ButtonCTA mt="16px" title="Apply Filters" w="100%" />
+        <ButtonCTA mt="16px" onClick={onApply} title="Apply Filters" w="100%" />
       </Flex>
     </Box>
   );
