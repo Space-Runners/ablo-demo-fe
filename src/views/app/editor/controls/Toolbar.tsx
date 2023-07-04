@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import MiniFilterBar from '@/components/MiniFilterBar';
 import ColorPicker from '@/components/ColorPicker';
+import ToolbarButton from '@/components/ToolbarButton';
 
 import IconToggleSidePicker from './icons/IconToggleSide';
 import IconToggleColorPicker from './icons/IconToggleColorPicker';
@@ -18,27 +19,6 @@ import {
 import { useState } from 'react';
 
 const SIDES = ['Front', 'Back'];
-
-const ToolbarButton = ({
-  icon,
-  isSelected,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  isSelected?: boolean;
-  onClick: () => void;
-}) => (
-  <Button
-    background={isSelected ? '#000000' : '#F9F9F7'}
-    borderRadius="50%"
-    height="40px"
-    onClick={onClick}
-    padding="8px"
-    width="40px"
-  >
-    {icon}
-  </Button>
-);
 
 type Props = {
   isDrawingAreaVisible: boolean;
@@ -68,45 +48,39 @@ export default function Toolbar({
 
   return (
     <Box p="0px 14px" w="100%">
-      <HStack
-        mb="20px"
-        justify="space-between"
-        pt="17px"
-        spacing="20px"
-        w="100%"
-      >
+      <HStack justify="space-between" pt="17px" spacing="20px" w="100%">
         <HStack spacing="4px">
           <ToolbarButton
-            icon={<IconToggleSidePicker isSelected={isSidePickerVisible} />}
             isSelected={isSidePickerVisible}
             onClick={() => {
               setSidePickerVisible(!isSidePickerVisible);
               setColorPickerVisible(false);
             }}
-          />
+          >
+            <IconToggleSidePicker isSelected={isSidePickerVisible} />
+          </ToolbarButton>
           <ToolbarButton
-            icon={
-              isDrawingAreaVisible ? (
-                <IconDrawingArea />
-              ) : (
-                <IconDrawingAreaDisabled />
-              )
-            }
             isSelected={isDrawingAreaVisible}
             onClick={onToggleDrawingArea}
-          />
+          >
+            {isDrawingAreaVisible ? (
+              <IconDrawingArea />
+            ) : (
+              <IconDrawingAreaDisabled />
+            )}
+          </ToolbarButton>
+          <ToolbarButton onClick={() => history.push('/app/products')}>
+            <IconOpenProductPicker />
+          </ToolbarButton>
           <ToolbarButton
-            icon={<IconOpenProductPicker />}
-            onClick={() => history.push('/app/products')}
-          />
-          <ToolbarButton
-            icon={<IconToggleColorPicker isSelected={isColorPickerVisible} />}
             isSelected={isColorPickerVisible}
             onClick={() => {
               setColorPickerVisible(!isColorPickerVisible);
               setSidePickerVisible(false);
             }}
-          />
+          >
+            <IconToggleColorPicker isSelected={isColorPickerVisible} />
+          </ToolbarButton>
         </HStack>
         <HStack spacing="14px">
           {onUndo ? (

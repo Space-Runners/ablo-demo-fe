@@ -10,6 +10,7 @@ import {
 
 import { useState, Fragment as F } from 'react';
 
+import ToolbarButton from '@/components/ToolbarButton';
 import { AiImage } from '@/components/types';
 
 import {
@@ -190,7 +191,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
             <Box />
           )}
         </HStack>
-        {isTextEditor ? (
+        {isTextEditor && activeObject?.text ? (
           <TextToolbar
             onUpdate={onUpdateTextObject}
             textObject={activeObject}
@@ -201,7 +202,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
           <Box />
         )}
         {activeObject?.aiImageUrl && aiImage && (
-          <HStack mb="8px" mr="16px">
+          <HStack mb="4px" mr="16px">
             <Text
               color={isBackgroundRemoved ? '#6A6866' : '000000'}
               fontSize="xs"
@@ -229,9 +230,14 @@ export default function FooterToolbar(props: FooterToolbarProps) {
           '400px'
         }
         overflow="auto"
-        padding="0 14px"
+        padding="0 7px"
       >
-        <Flex align="center" height="50px" justify="space-between">
+        <Flex
+          align="center"
+          height="50px"
+          justify="space-between"
+          padding="0 7px"
+        >
           {isTextEditor ? (
             <Input
               border="none"
@@ -273,27 +279,18 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         <Flex align="center" justify="space-between" padding="10px 0">
           <HStack spacing="8px">
             {TOOLS.map(({ name, icon, iconActive }) => (
-              <Button
-                bg={selectedTool === name ? '#000000' : 'transparent'}
-                borderRadius="50%"
-                h="40px"
+              <ToolbarButton
+                isSelected={selectedTool === name}
                 key={name}
                 onClick={() => handleToolChange(name)}
-                w="40px"
               >
                 {selectedTool === name ? iconActive : icon}
-              </Button>
+              </ToolbarButton>
             ))}
           </HStack>
-          <Button
-            bg="transparent"
-            onClick={onSave}
-            padding={0}
-            minWidth="auto"
-            w="26px"
-          >
+          <ToolbarButton onClick={onSave}>
             <IconSave />
-          </Button>
+          </ToolbarButton>
         </Flex>
         <Collapse in={isExpanded} animateOpacity>
           <Box display={isExpanded ? 'block' : 'none'}>

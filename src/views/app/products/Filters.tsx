@@ -1,5 +1,7 @@
 import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
+import ButtonCTA from '@/components/Button';
+
 import Panel from '@/components/Panel';
 import { Filters } from '@/components/types';
 
@@ -83,6 +85,14 @@ const Multiselect = ({
               h="30px"
               onClick={() => toggleSelected(value)}
               padding="7px 12px"
+              _focus={{
+                border: `1px solid ${abloBlue}`,
+                boxShadow: '0px 0px 8px 0px #97B9F5',
+              }}
+              _hover={{
+                border: `1px solid ${abloBlue}`,
+                boxShadow: '0px 0px 8px 0px #97B9F5',
+              }}
             >
               {isSelected ? <IconCheckmark /> : null}
               {name}
@@ -166,18 +176,7 @@ const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
         />
       </Panel>
       <Flex align="flex-end" justify="center" w="100%" padding="0 14px">
-        <Button
-          bg="transparent"
-          border={`1px solid ${abloBlue}`}
-          borderRadius="100px"
-          color={abloBlue}
-          h="50px"
-          mt="16px"
-          onClick={onApply}
-          w="100%"
-        >
-          Apply Filters
-        </Button>
+        <ButtonCTA mt="16px" title="Apply Filters" w="100%" />
       </Flex>
     </Box>
   );

@@ -39,8 +39,17 @@ const Button = (props) => (
     height="28px"
     bg="#FFFFFF"
     borderRadius="4px"
+    border="1px solid #000000"
+    padding="2px"
     minWidth="auto"
-    padding={0}
+    _focus={{
+      border: `1px solid ${abloBlue}`,
+      boxShadow: '0px 0px 8px 0px #97B9F5',
+    }}
+    _hover={{
+      border: `1px solid ${abloBlue}`,
+      boxShadow: '0px 0px 8px 0px #97B9F5',
+    }}
     {...props}
   />
 );
@@ -71,7 +80,7 @@ export default function TextToolbar({
   const isFontFamilyActive = selectedTool === 'fontFamily';
 
   return (
-    <Box>
+    <Box w="100%">
       {isFontFamilyActive ? (
         <Flex align="center" justify="center" padding="0 16px">
           <Text fontSize="12px">A</Text>
@@ -84,7 +93,7 @@ export default function TextToolbar({
             height="2px"
             onChange={(val) => onUpdate({ fontSize: val })}
             value={fontSize}
-            width="297px"
+            width="260px"
           >
             <SliderTrack bg="#6A6866" height="2px">
               <Box position="relative" right={10} />

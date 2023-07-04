@@ -2,78 +2,47 @@ import { Icon } from '@chakra-ui/react';
 
 export const IconFontFamily = () => (
   <Icon
-    width="28px"
-    height="28px"
-    viewBox="0 0 28 28"
+    width="24px"
+    height="24px"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g filter="url(#filter0_b_1530_24223)">
-      <g clipPath="url(#clip0_1530_24223)">
-        <g clipPath="url(#clip1_1530_24223)">
-          <path
-            d="M6 22H9"
-            stroke="black"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 22H23"
-            stroke="black"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M8.90039 17H15.8004"
-            stroke="black"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12.2002 8.29999L18.0002 22"
-            stroke="black"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M7 22L13 6H15L22 22"
-            stroke="black"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-      </g>
-      <rect x="0.5" y="0.5" width="27" height="27" rx="3.5" stroke="black" />
+    <g clip-path="url(#clip0_2688_322)">
+      <path
+        d="M4 20H7"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 20H21"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6.90039 15H13.8004"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.2002 6.2998L16.0002 19.9998"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 20L11 4H13L20 20"
+        stroke="black"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </g>
     <defs>
-      <filter
-        id="filter0_b_1530_24223"
-        x="-24"
-        y="-24"
-        width="76"
-        height="76"
-        filterUnits="userSpaceOnUse"
-        colorInterpolationFilters="sRGB"
-      >
-        <feFlood floodOpacity="0" result="BackgroundImageFix" />
-        <feGaussianBlur in="BackgroundImageFix" stdDeviation="12" />
-        <feComposite
-          in2="SourceAlpha"
-          operator="in"
-          result="effect1_backgroundBlur_1530_24223"
-        />
-        <feBlend
-          mode="normal"
-          in="SourceGraphic"
-          in2="effect1_backgroundBlur_1530_24223"
-          result="shape"
-        />
-      </filter>
-      <clipPath id="clip0_1530_24223">
-        <rect width="24" height="24" fill="white" transform="translate(2 2)" />
-      </clipPath>
-      <clipPath id="clip1_1530_24223">
-        <rect width="24" height="24" fill="white" transform="translate(2 2)" />
+      <clipPath id="clip0_2688_322">
+        <rect width="24" height="24" fill="white" />
       </clipPath>
     </defs>
   </Icon>
@@ -87,12 +56,6 @@ export const IconTextLeftAlign = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M0.5 3.11111C0.5 2.4186 0.775098 1.75445 1.26478 1.26478C1.75445 0.775098 2.4186 0.5 3.11111 0.5H24.8889C25.5814 0.5 26.2455 0.775098 26.7352 1.26478C27.2249 1.75446 27.5 2.4186 27.5 3.11111V24.8889C27.5 25.5814 27.2249 26.2455 26.7352 26.7352C26.2455 27.2249 25.5814 27.5 24.8889 27.5H3.11111C2.4186 27.5 1.75446 27.2249 1.26478 26.7352C0.775098 26.2455 0.5 25.5814 0.5 24.8889V3.11111Z"
-      stroke="black"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
     <path
       d="M9 19H6"
       stroke="black"
