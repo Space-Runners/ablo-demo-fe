@@ -200,7 +200,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         ) : (
           <Box />
         )}
-        {activeObject?.aiImageUrl && (
+        {activeObject?.aiImageUrl && aiImage && (
           <HStack mb="16px" mr="16px">
             <Text
               color={isBackgroundRemoved ? '#6A6866' : '000000'}

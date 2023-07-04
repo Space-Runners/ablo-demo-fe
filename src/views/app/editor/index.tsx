@@ -19,6 +19,8 @@ import CanvasContainer from './components/CanvasContainer';
 import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
 
+import renderRotateLabel from './fabric/rotateLabel';
+
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
@@ -58,6 +60,8 @@ export default function ImageEditor({
 
   const state = useRef<string>('');
 
+  const userState = useRef({ angle: 0, isRotating: false });
+
   const { data: me } = useMe();
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
@@ -91,8 +95,6 @@ export default function ImageEditor({
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
-  console.log('Design', design, canvasStateFront);
-
   useEffect(() => {
     canvas.current = initCanvas(selectedSide);
 
@@ -112,6 +114,25 @@ export default function ImageEditor({
 
     canvas.current.on('mouse:up', function (e) {
       setActiveObject(e.target);
+
+      const { isRotating } = userState.current;
+
+      if (isRotating) {
+        e.target.set('angle', Math.round(e.target.angle));
+      }
+
+      userState.current.isRotating = false;
+    });
+
+    canvas.current.on('object:rotating', function (e) {
+      userState.current.isRotating = true;
+
+      userState.current.angle = e.target.angle;
+    });
+
+    canvas.current.on('after:render', function (opt) {
+      userState.current.isRotating &&
+        renderRotateLabel(opt.ctx, userState.current);
     });
 
     return () => {
@@ -257,14 +278,8 @@ export default function ImageEditor({
 
       image.onload = function () {
         const img = new fabric.Image(image);
-        img.set({
-          left: 100,
-          top: 60,
-        });
-        img.scaleToWidth(200);
-        canvas.current.add(img).setActiveObject(img).renderAll();
 
-        saveState();
+        addImageToCanvas(img);
       };
     };
     reader.readAsDataURL(fileObj);
@@ -286,7 +301,7 @@ export default function ImageEditor({
       return;
     }
 
-    addImageToCanvas(imageUrl);
+    addAiImageToCanvas(imageUrl);
   };
 
   const handleGeneratedImageSelected = (image: AiImage) => {
@@ -332,30 +347,37 @@ export default function ImageEditor({
 
     handleGeneratedImageSelected(aiImage);
 
-    addImageToCanvas(aiImage.url);
+    addAiImageToCanvas(aiImage.url);
   };
 
-  const addImageToCanvas = (imageUrl) => {
-    const { width, height } = drawingArea;
-
+  const addAiImageToCanvas = (imageUrl) => {
     fabric.Image.fromURL(
       imageUrl,
       (img) => {
-        img.scaleToWidth(150);
-
-        img.set('aiImageUrl', imageUrl);
-        img.set('left', width / 2 - 75);
-        img.set('top', height / 2 - 75);
-
-        img.crossOrigin = 'anonymous';
-        canvas.current.add(img).setActiveObject(img).renderAll();
-
-        setActiveObject(img);
-
-        saveState();
+        addImageToCanvas(img, { aiImageUrl: imageUrl });
       },
       { crossOrigin: 'anonymous' }
     );
+  };
+
+  const addImageToCanvas = (img, options = {}) => {
+    const { width, height } = drawingArea;
+
+    img.scaleToWidth(150);
+
+    img.set({
+      left: width / 2,
+      top: height / 2,
+      originX: 'center',
+      originY: 'center',
+      centeredScaling: true,
+      ...options,
+    });
+
+    img.crossOrigin = 'anonymous';
+    canvas.current.add(img).setActiveObject(img).renderAll();
+
+    setActiveObject(img);
   };
 
   const handleLayerUp = () => {
@@ -435,7 +457,7 @@ export default function ImageEditor({
         onBack={() => history.push('/app/products')}
         onNext={() => handleNext()}
         step={2}
-        title="Create your design"
+        title="Create design"
       />
       <Flex
         align="center"

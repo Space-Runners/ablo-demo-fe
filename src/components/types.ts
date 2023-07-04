@@ -9,6 +9,7 @@ export interface TextToImageRequest {
   mood: string;
   freeText: string;
   subjectSuggestions: string[];
+  background: boolean;
 }
 
 export interface Template {
@@ -57,7 +58,7 @@ export interface AiImageOptions {
   mood: string;
   keywords?: string[];
   subject?: string;
-  flatBackground: boolean;
+  background: boolean;
 }
 
 export interface AiImage {

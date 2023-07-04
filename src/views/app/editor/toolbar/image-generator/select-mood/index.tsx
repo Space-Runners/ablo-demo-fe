@@ -90,7 +90,7 @@ export default function SelectMood({
         w="100%"
       >
         <Flex align="center" mt="14px">
-          <Button flex={1} onClick={onBack} outlined title="Edit art style" />
+          <Button flex={1} onClick={onBack} outlined title="Back" />
           <Button
             disabled={!selectedValue}
             flex={1}
