@@ -49,7 +49,7 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 
 type ImageGeneratorProps = {
   aiImage: AiImage;
-  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
 };
@@ -108,6 +108,8 @@ export default function ImageGenerator({
     const { options } = aiImage;
 
     setOptions(options);
+    setImages([]);
+    setSelectedImage(null);
 
     setActiveStep(index);
 
@@ -116,6 +118,8 @@ export default function ImageGenerator({
 
   const handleRemove = () => {
     setActiveStep(1);
+
+    handleReset();
 
     console.log('Handle remove', aiImage);
 
@@ -204,7 +208,7 @@ export default function ImageGenerator({
             />
             <ButtonGenerateAgain
               icon={<IconSpark />}
-              onClick={() => null}
+              onClick={handleNewArtwork}
               ml="20px"
               title="Generate New"
             />
@@ -218,12 +222,12 @@ export default function ImageGenerator({
                 borderRadius="5px"
                 h={117}
                 key={imageUrl}
-                w={113}
+                w="108px"
                 src={imageUrl}
                 alt="Generated image"
                 onClick={() => {
                   setSelectedImage(imageUrl);
-                  onGeneratedImagePreview(imageUrl);
+                  onGeneratedImagePreview({ url: imageUrl, options });
                 }}
               />
             ))}

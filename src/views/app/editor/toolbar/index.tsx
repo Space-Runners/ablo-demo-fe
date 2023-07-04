@@ -76,7 +76,7 @@ type FooterToolbarProps = {
   onDeleteActiveObject: () => void;
   aiImage: AiImage;
   onImageUploaded: (image: File) => void;
-  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (url: string) => void;
   onAiImageUpdate: (image: AiImage) => void;
@@ -201,7 +201,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
           <Box />
         )}
         {activeObject?.aiImageUrl && aiImage && (
-          <HStack mb="16px" mr="16px">
+          <HStack mb="8px" mr="16px">
             <Text
               color={isBackgroundRemoved ? '#6A6866' : '000000'}
               fontSize="xs"
