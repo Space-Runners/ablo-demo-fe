@@ -32,7 +32,7 @@ type Props = {
   onSignUp: () => void;
 };
 
-function SignUp({ onClose, onGoToSignin }: Props) {
+function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
   // Chakra color mode
 
   const [email, setEmail] = useState('');
@@ -73,7 +73,7 @@ function SignUp({ onClose, onGoToSignin }: Props) {
   console.log('Error', error, waiting, success);
 
   return (
-    <Modal isOpen={true} onClose={onClose}>
+    <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
       <ModalContent>
         <ModalBody padding={0}>
@@ -140,8 +140,9 @@ function SignUp({ onClose, onGoToSignin }: Props) {
                   googleLogin(credentialResponse.credential).then(
                     ({ access_token: accessToken }) => {
                       localStorage.setItem('access-token', accessToken);
+                      localStorage.removeItem('client-token');
 
-                      window.location.href = '/';
+                      onSignUp();
                     }
                   );
                 }}

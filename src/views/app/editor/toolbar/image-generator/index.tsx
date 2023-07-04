@@ -50,19 +50,14 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 type ImageGeneratorProps = {
   aiImage: AiImage;
   onGeneratedImagePreview: (url: string) => void;
-  onGeneratedImageSelected: (image: {
-    options: AiImageOptions;
-    url: string;
-  }) => void;
+  onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
-  onExitImageSummary: () => void;
 };
 
 export default function ImageGenerator({
   aiImage,
   onGeneratedImagePreview,
   onGeneratedImageSelected,
-  onExitImageSummary,
   onGeneratedImageRemoved,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
@@ -70,6 +65,7 @@ export default function ImageGenerator({
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [images, setImages] = useState([]);
 
   const [activeStep, setActiveStep] = useState(1);
@@ -114,7 +110,8 @@ export default function ImageGenerator({
     setOptions(options);
 
     setActiveStep(index);
-    onExitImageSummary();
+
+    setIsEditing(true);
   };
 
   const handleRemove = () => {
@@ -153,7 +150,7 @@ export default function ImageGenerator({
       });
   };
 
-  if (aiImage) {
+  if (aiImage && !isEditing) {
     return (
       <ImageOverview
         aiImage={aiImage}

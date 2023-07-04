@@ -63,10 +63,11 @@ export interface AiImageOptions {
 export interface AiImage {
   options: AiImageOptions;
   url: string;
+  noBackgroundUrl?: string;
+  withBackgroundUrl?: string;
 }
 
 export interface TemplateDesign {
-  canvasStateAsJson: string;
   aiImage?: AiImage;
   templateUrl?: string;
 }

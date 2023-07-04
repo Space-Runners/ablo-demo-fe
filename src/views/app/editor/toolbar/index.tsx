@@ -1,6 +1,16 @@
-import { Box, Button, Flex, HStack, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Input,
+  Collapse,
+  Text,
+} from '@chakra-ui/react';
 
 import { useState, Fragment as F } from 'react';
+
+import { AiImage } from '@/components/types';
 
 import {
   IconAiGenerator,
@@ -12,9 +22,11 @@ import {
   IconLayerDown,
   IconLayerUp,
   IconSave,
+  IconRemoveBackground,
+  IconBackgroundRemoved,
 } from './Icons';
 
-// import { removeBackground } from '@/api/image-generator';
+import { removeBackground } from '@/api/image-generator';
 
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
@@ -49,20 +61,44 @@ const TOOLS = [
   },
 ];
 
-export default function FooterToolbar(props) {
+type NewText = {
+  fill: string;
+  fontSize: number;
+  text: string;
+};
+
+type FooterToolbarProps = {
+  isExpanded: boolean;
+  onSetExpanded: (isExpaned: boolean) => void;
+  onAddText: (text: NewText) => void;
+  onUpdateTextObject: (updates: object) => void;
+  activeObject: { aiImageUrl?: string; text: string };
+  onDeleteActiveObject: () => void;
+  aiImage: AiImage;
+  onImageUploaded: (image: File) => void;
+  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImageSelected: (image: AiImage) => void;
+  onGeneratedImageRemoved: (url: string) => void;
+  onAiImageUpdate: (image: AiImage) => void;
+  onLayerUp: () => void;
+  onLayerDown: () => void;
+  onSave: () => void;
+};
+
+export default function FooterToolbar(props: FooterToolbarProps) {
   const {
     isExpanded,
-    onAddText,
-    onDeleteActiveObject,
-    onUnselectActiveObject,
-    onUpdateTextObject,
     onSetExpanded,
+    onAddText,
+    onUpdateTextObject,
     activeObject,
+    onDeleteActiveObject,
     aiImage,
     onImageUploaded,
     onGeneratedImagePreview,
     onGeneratedImageSelected,
     onGeneratedImageRemoved,
+    onAiImageUpdate,
     onLayerUp,
     onLayerDown,
     onSave,
@@ -72,6 +108,9 @@ export default function FooterToolbar(props) {
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
+  const [removingBackground, setRemovingBackground] = useState(false);
+
+  const isBackgroundRemoved = aiImage?.url === aiImage?.noBackgroundUrl;
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -80,7 +119,6 @@ export default function FooterToolbar(props) {
   };
 
   const handleTextUpdate = (text) => {
-    console.log(activeObject);
     if (!activeObject || !activeObject.text) {
       onAddText({ fill: '#000000', fontSize: 20, text });
 
@@ -90,18 +128,42 @@ export default function FooterToolbar(props) {
     onUpdateTextObject({ text });
   };
 
-  /*  const handleRemoveBackground = () => {
-    setWaiting(true);
+  const handleToggleBackground = () => {
+    const { noBackgroundUrl, withBackgroundUrl } = aiImage;
+
+    if (isBackgroundRemoved) {
+      onAiImageUpdate({
+        ...aiImage,
+        url: withBackgroundUrl,
+      });
+
+      return;
+    }
+
+    if (noBackgroundUrl) {
+      onAiImageUpdate({
+        ...aiImage,
+        url: noBackgroundUrl,
+      });
+
+      return;
+    }
+
+    setRemovingBackground(true);
 
     removeBackground(aiImage.url).then((url) => {
-      console.log('Remove background', url);
+      console.log('Removed background', url);
 
-      onGeneratedImagePreview(url);
-      onGeneratedImageSelected({ ...aiImage, url });
+      onAiImageUpdate({
+        ...aiImage,
+        url,
+        noBackgroundUrl: url,
+        withBackgroundUrl: aiImage.url,
+      });
 
-      setWaiting(false);
+      setRemovingBackground(false);
     });
-  }; */
+  };
 
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
@@ -138,11 +200,33 @@ export default function FooterToolbar(props) {
         ) : (
           <Box />
         )}
+        {activeObject?.aiImageUrl && (
+          <HStack mb="16px" mr="16px">
+            <Text
+              color={isBackgroundRemoved ? '#6A6866' : '000000'}
+              fontSize="xs"
+              textTransform="uppercase"
+            >
+              Background
+            </Text>
+            <IconButton
+              isLoading={removingBackground}
+              onClick={handleToggleBackground}
+            >
+              {isBackgroundRemoved ? (
+                <IconBackgroundRemoved />
+              ) : (
+                <IconRemoveBackground />
+              )}
+            </IconButton>
+          </HStack>
+        )}
       </Flex>
       <Box
         bg="#FFFFFF"
         maxHeight={
-          aiImage && isImageGenerator ? 'calc(100vh - 121px)' : '400px'
+          // aiImage && isImageGenerator ? 'calc(100vh - 121px)' : '400px'
+          '400px'
         }
         overflow="auto"
         padding="0 14px"
@@ -211,20 +295,21 @@ export default function FooterToolbar(props) {
             <IconSave />
           </Button>
         </Flex>
-        <Box display={isExpanded ? 'block' : 'none'}>
-          {isImageGenerator ? (
-            <ImageGenerator
-              aiImage={aiImage}
-              onGeneratedImagePreview={onGeneratedImagePreview}
-              onGeneratedImageSelected={onGeneratedImageSelected}
-              onGeneratedImageRemoved={onGeneratedImageRemoved}
-              onExitImageSummary={onUnselectActiveObject}
-            />
-          ) : null}
-          {isImagePicker ? (
-            <ImagePicker onImageUploaded={onImageUploaded} />
-          ) : null}
-        </Box>
+        <Collapse in={isExpanded} animateOpacity>
+          <Box display={isExpanded ? 'block' : 'none'}>
+            {isImageGenerator ? (
+              <ImageGenerator
+                aiImage={aiImage}
+                onGeneratedImagePreview={onGeneratedImagePreview}
+                onGeneratedImageSelected={onGeneratedImageSelected}
+                onGeneratedImageRemoved={onGeneratedImageRemoved}
+              />
+            ) : null}
+            {isImagePicker ? (
+              <ImagePicker onImageUploaded={onImageUploaded} />
+            ) : null}
+          </Box>
+        </Collapse>
       </Box>
     </Box>
   );

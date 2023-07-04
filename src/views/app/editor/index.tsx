@@ -9,7 +9,7 @@ import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
-import { Design, TemplateDesign } from '@/components/types';
+import { AiImage, Design } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
@@ -25,11 +25,19 @@ import './ImageEditor.css';
 
 type ImageEditorProps = {
   design: Design;
+  canvasFront;
+  canvasBack;
   onDesignChange: (design: Design) => void;
+  onCanvasFrontChange: (canvasStateAsJson: string) => void;
+  onCanvasBackChange: (canvasStateAsJson: string) => void;
 };
 
 export default function ImageEditor({
   design: designForFrontAndBack,
+  canvasFront: canvasStateFront,
+  canvasBack: canvasStateBack,
+  onCanvasFrontChange,
+  onCanvasBackChange,
   onDesignChange,
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
@@ -83,14 +91,14 @@ export default function ImageEditor({
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
+  console.log('Design', design, canvasStateFront);
+
   useEffect(() => {
     canvas.current = initCanvas(selectedSide);
 
-    if (design) {
+    if (canvasStateFront) {
       // Loading an already active design if you to go another page and come back
-      const { canvasStateAsJson } = design;
-
-      state.current = canvasStateAsJson;
+      state.current = canvasStateFront;
 
       reloadCanvasFromState();
     } else {
@@ -114,7 +122,7 @@ export default function ImageEditor({
     };
   }, []);
 
-  const saveState = (aiImage = undefined) => {
+  const saveState = () => {
     setRedoStack([]);
 
     // Initial call won't have a state
@@ -126,17 +134,20 @@ export default function ImageEditor({
 
     state.current = JSON.stringify(json);
 
-    const updates = { canvasStateAsJson: state.current } as TemplateDesign;
+    const canvasId = canvas.current.getElement().id;
 
-    if (aiImage !== undefined) {
-      updates.aiImage = aiImage;
+    if (canvasId === 'canvas-front') {
+      onCanvasFrontChange(state.current);
+    } else {
+      onCanvasBackChange(state.current);
     }
-
-    handleDesignChange({ ...design, ...updates });
   };
 
-  const handleDesignChange = (designForSide) => {
-    onDesignChange({ ...designForFrontAndBack, [selectedSide]: designForSide });
+  const handleDesignUpdate = (updates) => {
+    onDesignChange({
+      ...designForFrontAndBack,
+      [selectedSide]: { ...design, ...updates },
+    });
   };
 
   const handleUndo = () => {
@@ -207,20 +218,21 @@ export default function ImageEditor({
   };
 
   const handleRemoveActiveObject = () => {
-    canvas.current.remove(canvas.current.getActiveObject());
+    const activeObject = canvas.current.getActiveObject();
 
-    canvas.current.renderAll();
+    const isAiImage = activeObject.aiImageUrl;
 
-    saveState();
-  };
+    canvas.current.remove(activeObject);
 
-  const handleDeselectActiveObject = () => {
-    canvas.current.discardActiveObject();
     canvas.current.renderAll();
 
     setActiveObject(null);
 
-    setFooterToolbarExpanded(true);
+    saveState();
+
+    if (isAiImage) {
+      handleDesignUpdate({ aiImage: null });
+    }
   };
 
   const handleUpdateTextObject = (updates) => {
@@ -258,38 +270,46 @@ export default function ImageEditor({
     reader.readAsDataURL(fileObj);
   };
 
-  const handleGeneratedImagePreview = (imageUrl) => {
-    const { width, height } = drawingArea;
+  const handleGeneratedImagePreview = (imageUrl: string) => {
+    const aiImagesToRemove = canvas.current._objects.filter(
+      ({ aiImageUrl }) =>
+        aiImageUrl !== imageUrl && aiImageUrl !== design?.aiImage?.url
+    );
 
-    const activeObject = canvas.current.getActiveObject();
+    console.log('AI image preview', imageUrl, aiImagesToRemove);
 
-    if (activeObject && activeObject.aiImageUrl) {
-      canvas.current.remove(activeObject);
+    aiImagesToRemove.forEach((aiImage) => {
+      canvas.current.remove(aiImage);
+    });
+
+    if (canvas.current._objects.find((obj) => obj.aiImageUrl === imageUrl)) {
+      return;
     }
 
-    fabric.Image.fromURL(
-      imageUrl,
-      (img) => {
-        img.scaleToWidth(150);
-
-        img.set('aiImageUrl', imageUrl);
-        img.set('left', width / 2 - 75);
-        img.set('top', height / 2 - 75);
-
-        img.crossOrigin = 'anonymous';
-        canvas.current.add(img).setActiveObject(img).renderAll();
-      },
-      { crossOrigin: 'anonymous' }
-    );
+    addImageToCanvas(imageUrl);
   };
 
-  const handleGeneratedImageSelected = (image) => {
-    saveState(image);
+  const handleGeneratedImageSelected = (image: AiImage) => {
+    const aiImagesToRemove = canvas.current._objects.filter(
+      (obj) => obj.aiImageUrl !== image.url
+    );
+
+    console.log('AI image', image);
+
+    aiImagesToRemove.forEach((aiImage) => {
+      canvas.current.remove(aiImage);
+    });
+
+    saveState();
+
+    setActiveObject(canvas.current.getActiveObject());
+
+    handleDesignUpdate({ aiImage: image });
 
     setFooterToolbarExpanded(false);
   };
 
-  const handleGeneratedImageRemoved = (imageUrl) => {
+  const handleGeneratedImageRemoved = (imageUrl: string) => {
     console.log('Image URL', imageUrl, canvas.current._objects);
 
     const aiImage = canvas.current._objects.filter(
@@ -302,7 +322,40 @@ export default function ImageEditor({
 
     setActiveObject(null);
 
-    saveState(null);
+    saveState();
+
+    handleDesignUpdate({ aiImage: null });
+  };
+
+  const handleAiImageUpdate = (aiImage) => {
+    console.log('AI image update', aiImage);
+
+    handleGeneratedImageSelected(aiImage);
+
+    addImageToCanvas(aiImage.url);
+  };
+
+  const addImageToCanvas = (imageUrl) => {
+    const { width, height } = drawingArea;
+
+    fabric.Image.fromURL(
+      imageUrl,
+      (img) => {
+        img.scaleToWidth(150);
+
+        img.set('aiImageUrl', imageUrl);
+        img.set('left', width / 2 - 75);
+        img.set('top', height / 2 - 75);
+
+        img.crossOrigin = 'anonymous';
+        canvas.current.add(img).setActiveObject(img).renderAll();
+
+        setActiveObject(img);
+
+        saveState();
+      },
+      { crossOrigin: 'anonymous' }
+    );
   };
 
   const handleLayerUp = () => {
@@ -325,14 +378,6 @@ export default function ImageEditor({
     canvas.current.renderAll();
   };
 
-  const handleSelectedVariant = (name) => {
-    const { variants } = product;
-
-    const variant = variants.find((variant) => variant.name === name).name;
-
-    setSelectedVariant(variant);
-  };
-
   const handleSelectedSide = (side: string) => {
     setSelectedSide(side);
 
@@ -342,11 +387,7 @@ export default function ImageEditor({
       canvas.current = initCanvas(side);
     }
 
-    const design = designForFrontAndBack[side];
-
-    const { canvasStateAsJson = {} } = design || {};
-
-    state.current = canvasStateAsJson;
+    state.current = side === 'Front' ? canvasStateFront : canvasStateBack;
 
     canvas.current.clear();
     canvas.current.loadFromJSON(state.current, function () {
@@ -374,11 +415,9 @@ export default function ImageEditor({
   const handleSaveDesign = ([urlFront, urlBack]) => {
     setSaveDesignModalVisible(false);
 
-    const { Front, Back } = designForFrontAndBack;
-
     onDesignChange({
-      Front: { ...Front, templateUrl: urlFront },
-      Back: { ...Back, templateUrl: urlBack },
+      Front: { ...(designForFrontAndBack.Front || {}), templateUrl: urlFront },
+      Back: { ...(designForFrontAndBack.Back || {}), templateUrl: urlBack },
     });
 
     history.push('/app/order-or-share');
@@ -391,7 +430,7 @@ export default function ImageEditor({
   const showHint = !hasSeenInitialCallToAction && isEmpty(design);
 
   return (
-    <Box h="100%" w="100%">
+    <Box h="100vh" w="100%">
       <Navbar
         onBack={() => history.push('/app/products')}
         onNext={() => handleNext()}
@@ -468,18 +507,16 @@ export default function ImageEditor({
             setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
-          selectedColor={selectedVariant}
-          onSelectedColor={handleSelectedVariant}
           onAddText={handleAddText}
           onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
           onDeleteActiveObject={handleRemoveActiveObject}
-          onUnselectActiveObject={handleDeselectActiveObject}
           aiImage={design && design.aiImage}
           onImageUploaded={handleImageUpload}
           onGeneratedImagePreview={handleGeneratedImagePreview}
           onGeneratedImageSelected={handleGeneratedImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
+          onAiImageUpdate={handleAiImageUpdate}
           onLayerUp={handleLayerUp}
           onLayerDown={handleLayerDown}
           onSave={handleNext}
