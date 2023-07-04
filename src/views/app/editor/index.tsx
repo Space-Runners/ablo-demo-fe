@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { Box, Flex } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
+import Button from '@/components/Button';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
@@ -53,6 +54,7 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -254,6 +256,10 @@ export default function ImageEditor({
     if (isAiImage) {
       handleDesignUpdate({ aiImage: null });
     }
+
+    if (imagePreview && activeObject.aiImageUrl === imagePreview.url) {
+      setImagePreview(null);
+    }
   };
 
   const handleUpdateTextObject = (updates) => {
@@ -285,7 +291,9 @@ export default function ImageEditor({
     reader.readAsDataURL(fileObj);
   };
 
-  const handleGeneratedImagePreview = (imageUrl: string) => {
+  const handleGeneratedImagePreview = (image: AiImage) => {
+    const { url: imageUrl } = image;
+
     const aiImagesToRemove = canvas.current._objects.filter(
       ({ aiImageUrl }) =>
         aiImageUrl !== imageUrl && aiImageUrl !== design?.aiImage?.url
@@ -300,6 +308,8 @@ export default function ImageEditor({
     if (canvas.current._objects.find((obj) => obj.aiImageUrl === imageUrl)) {
       return;
     }
+
+    setImagePreview(image);
 
     addAiImageToCanvas(imageUrl);
   };
@@ -318,6 +328,7 @@ export default function ImageEditor({
     saveState();
 
     setActiveObject(canvas.current.getActiveObject());
+    setImagePreview(null);
 
     handleDesignUpdate({ aiImage: image });
 
@@ -335,6 +346,7 @@ export default function ImageEditor({
     canvas.current.remove(aiImage[0]);
     canvas.current.renderAll();
 
+    setImagePreview(null);
     setActiveObject(null);
 
     saveState();
@@ -523,6 +535,12 @@ export default function ImageEditor({
             }}
           />
         </Box>
+        {imagePreview ? (
+          <Button
+            onClick={() => handleGeneratedImageSelected(imagePreview)}
+            title="Place artwork"
+          />
+        ) : null}
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={(isExpanded) => {
