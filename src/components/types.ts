@@ -66,7 +66,6 @@ export interface AiImage {
 }
 
 export interface TemplateDesign {
-  canvasStateAsJson: string;
   aiImage?: AiImage;
   templateUrl?: string;
 }

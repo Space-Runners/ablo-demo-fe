@@ -119,14 +119,14 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   const history = useHistory();
 
-  console.log((selectedSide === 'Front' ? Front : Back).templateUrl);
+  console.log(Front, Back);
 
   return (
     <Box>
       <Navbar onBack={() => history.goBack()} step={3} title="Share" />
       <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
         <Box position="relative">
-          {Front && Back ? (
+          {Front?.templateUrl && Back?.templateUrl ? (
             <Flex
               align="center"
               as="button"

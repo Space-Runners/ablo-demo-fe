@@ -2,6 +2,8 @@ import { Box, Button, Flex, HStack, Input, Collapse } from '@chakra-ui/react';
 
 import { useState, Fragment as F } from 'react';
 
+import { AiImage } from '@/components/types';
+
 import {
   IconAiGenerator,
   IconTextEditor,
@@ -49,14 +51,37 @@ const TOOLS = [
   },
 ];
 
-export default function FooterToolbar(props) {
+type NewText = {
+  fill: string;
+  fontSize: number;
+  text: string;
+};
+
+type FooterToolbarProps = {
+  isExpanded: boolean;
+  onSetExpanded: (isExpaned: boolean) => void;
+  onAddText: (text: NewText) => void;
+  onUpdateTextObject: (updates: object) => void;
+  activeObject: { text: string };
+  onDeleteActiveObject: () => void;
+  aiImage: AiImage;
+  onImageUploaded: (image: File) => void;
+  onGeneratedImagePreview: (url: string) => void;
+  onGeneratedImageSelected: (image: AiImage) => void;
+  onGeneratedImageRemoved: (url: string) => void;
+  onLayerUp: () => void;
+  onLayerDown: () => void;
+  onSave: () => void;
+};
+
+export default function FooterToolbar(props: FooterToolbarProps) {
   const {
     isExpanded,
-    onAddText,
-    onDeleteActiveObject,
-    onUpdateTextObject,
     onSetExpanded,
+    onAddText,
+    onUpdateTextObject,
     activeObject,
+    onDeleteActiveObject,
     aiImage,
     onImageUploaded,
     onGeneratedImagePreview,
@@ -79,7 +104,6 @@ export default function FooterToolbar(props) {
   };
 
   const handleTextUpdate = (text) => {
-    console.log(activeObject);
     if (!activeObject || !activeObject.text) {
       onAddText({ fill: '#000000', fontSize: 20, text });
 
@@ -141,7 +165,8 @@ export default function FooterToolbar(props) {
       <Box
         bg="#FFFFFF"
         maxHeight={
-          aiImage && isImageGenerator ? 'calc(100vh - 121px)' : '400px'
+          // aiImage && isImageGenerator ? 'calc(100vh - 121px)' : '400px'
+          '400px'
         }
         overflow="auto"
         padding="0 14px"

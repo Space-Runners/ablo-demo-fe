@@ -27,6 +27,9 @@ export default function DesignTool() {
     Back: null,
   });
 
+  const [canvasFront, setCanvasFront] = useState('');
+  const [canvasBack, setCanvasBack] = useState('');
+
   return (
     <Box
       height="100vh"
@@ -59,6 +62,10 @@ export default function DesignTool() {
                   <Editor
                     design={activeDesign}
                     onDesignChange={setActiveDesign}
+                    canvasFront={canvasFront}
+                    onCanvasFrontChange={setCanvasFront}
+                    canvasBack={canvasBack}
+                    onCanvasBackChange={setCanvasBack}
                   />
                 )}
               />

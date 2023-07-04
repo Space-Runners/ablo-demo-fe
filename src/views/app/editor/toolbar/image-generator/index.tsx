@@ -50,10 +50,7 @@ const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
 type ImageGeneratorProps = {
   aiImage: AiImage;
   onGeneratedImagePreview: (url: string) => void;
-  onGeneratedImageSelected: (image: {
-    options: AiImageOptions;
-    url: string;
-  }) => void;
+  onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
 };
 
