@@ -271,12 +271,12 @@ export default function ImageEditor({
   };
 
   const handleGeneratedImagePreview = (imageUrl: string) => {
-    const { width, height } = drawingArea;
-
     const aiImagesToRemove = canvas.current._objects.filter(
       ({ aiImageUrl }) =>
         aiImageUrl !== imageUrl && aiImageUrl !== design?.aiImage?.url
     );
+
+    console.log('AI image preview', imageUrl, aiImagesToRemove);
 
     aiImagesToRemove.forEach((aiImage) => {
       canvas.current.remove(aiImage);
@@ -286,20 +286,7 @@ export default function ImageEditor({
       return;
     }
 
-    fabric.Image.fromURL(
-      imageUrl,
-      (img) => {
-        img.scaleToWidth(150);
-
-        img.set('aiImageUrl', imageUrl);
-        img.set('left', width / 2 - 75);
-        img.set('top', height / 2 - 75);
-
-        img.crossOrigin = 'anonymous';
-        canvas.current.add(img).setActiveObject(img).renderAll();
-      },
-      { crossOrigin: 'anonymous' }
-    );
+    addImageToCanvas(imageUrl);
   };
 
   const handleGeneratedImageSelected = (image: AiImage) => {
@@ -314,6 +301,8 @@ export default function ImageEditor({
     });
 
     saveState();
+
+    setActiveObject(canvas.current.getActiveObject());
 
     handleDesignUpdate({ aiImage: image });
 
@@ -336,6 +325,37 @@ export default function ImageEditor({
     saveState();
 
     handleDesignUpdate({ aiImage: null });
+  };
+
+  const handleAiImageUpdate = (aiImage) => {
+    console.log('AI image update', aiImage);
+
+    handleGeneratedImageSelected(aiImage);
+
+    addImageToCanvas(aiImage.url);
+  };
+
+  const addImageToCanvas = (imageUrl) => {
+    const { width, height } = drawingArea;
+
+    fabric.Image.fromURL(
+      imageUrl,
+      (img) => {
+        img.scaleToWidth(150);
+
+        img.set('aiImageUrl', imageUrl);
+        img.set('left', width / 2 - 75);
+        img.set('top', height / 2 - 75);
+
+        img.crossOrigin = 'anonymous';
+        canvas.current.add(img).setActiveObject(img).renderAll();
+
+        setActiveObject(img);
+
+        saveState();
+      },
+      { crossOrigin: 'anonymous' }
+    );
   };
 
   const handleLayerUp = () => {
@@ -496,6 +516,7 @@ export default function ImageEditor({
           onGeneratedImagePreview={handleGeneratedImagePreview}
           onGeneratedImageSelected={handleGeneratedImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
+          onAiImageUpdate={handleAiImageUpdate}
           onLayerUp={handleLayerUp}
           onLayerDown={handleLayerDown}
           onSave={handleNext}
