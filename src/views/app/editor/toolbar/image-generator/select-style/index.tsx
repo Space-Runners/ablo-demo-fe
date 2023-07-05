@@ -27,12 +27,10 @@ export default function SelectStyle({
     return null;
   }
 
-  const styles = Object.keys(options.styles)
-    .filter((key) => !['line_art', 'mixed_media'].includes(key))
-    .map((key) => ({
-      value: key,
-      name: options.styles[key].split(' ').join(''),
-    }));
+  const styles = Object.keys(options.styles).map((key) => ({
+    value: key,
+    name: options.styles[key].split(' ').join(''),
+  }));
 
   const chunks = chunk(styles, 2);
 
