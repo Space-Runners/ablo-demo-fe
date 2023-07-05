@@ -316,7 +316,7 @@ export default function ImageEditor({
 
   const handleGeneratedImageSelected = (image: AiImage) => {
     const aiImagesToRemove = canvas.current._objects.filter(
-      (obj) => obj.aiImageUrl !== image.url
+      (obj) => obj.aiImageUrl && obj.aiImageUrl !== image.url
     );
 
     console.log('AI image', image);
