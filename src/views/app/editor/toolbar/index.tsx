@@ -104,15 +104,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
           onSelectedTool={setSelectedTextEditTool}
         />
       </Flex>
-      <Box
-        bg="#FFFFFF"
-        maxHeight={
-          // aiImage && isImageGenerator ? 'calc(100vh - 121px)' : '400px'
-          '400px'
-        }
-        overflow="auto"
-        padding="0 7px"
-      >
+      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 7px">
         <Flex
           align="center"
           height="50px"

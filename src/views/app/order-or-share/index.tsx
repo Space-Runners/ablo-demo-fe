@@ -133,7 +133,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
     <Box>
       <Navbar onBack={() => history.goBack()} step={3} title="Share" />
       <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
-        <Box position="relative" w="375px">
+        <Box position="relative" w="100%">
           {Front?.templateUrl && Back?.templateUrl ? (
             <Flex
               align="center"
