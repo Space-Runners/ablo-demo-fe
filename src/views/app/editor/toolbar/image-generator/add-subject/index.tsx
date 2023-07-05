@@ -49,7 +49,7 @@ export default function AddSubject({
         </Text>
         <HStack>
           <Text fontSize="sm" mr="8px" textTransform="uppercase">
-            Flat background
+            Solid background
           </Text>
           <Switch
             isChecked={background}

@@ -1,14 +1,6 @@
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Input,
-  Collapse,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Input, Collapse } from '@chakra-ui/react';
 
-import { useState, Fragment as F } from 'react';
+import { useState } from 'react';
 
 import ToolbarButton from '@/components/ToolbarButton';
 import { AiImage } from '@/components/types';
@@ -19,29 +11,11 @@ import {
   IconImage,
   IconExpand,
   IconShrink,
-  IconTrash,
-  IconLayerDown,
-  IconLayerUp,
-  IconRemoveBackground,
-  IconBackgroundRemoved,
 } from './Icons';
-
-import { removeBackground } from '@/api/image-generator';
 
 import TextToolbar from './text-toolbar';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
-
-const IconButton = (props) => (
-  <Button
-    bg="transparent"
-    h="32px"
-    minW="auto"
-    padding={0}
-    w="32px"
-    {...props}
-  />
-);
 
 const TOOLS = [
   {
@@ -73,16 +47,11 @@ type FooterToolbarProps = {
   onAddText: (text: NewText) => void;
   onUpdateTextObject: (updates: object) => void;
   activeObject: { aiImageUrl?: string; text: string };
-  onDeleteActiveObject: () => void;
   aiImage: AiImage;
   onImageUploaded: (image: File) => void;
   onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (url: string) => void;
-  onAiImageUpdate: (image: AiImage) => void;
-  onLayerUp: () => void;
-  onLayerDown: () => void;
-  onSave: () => void;
 };
 
 export default function FooterToolbar(props: FooterToolbarProps) {
@@ -92,24 +61,17 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onAddText,
     onUpdateTextObject,
     activeObject,
-    onDeleteActiveObject,
     aiImage,
     onImageUploaded,
     onGeneratedImagePreview,
     onGeneratedImageSelected,
     onGeneratedImageRemoved,
-    onAiImageUpdate,
-    onLayerUp,
-    onLayerDown,
   } = props;
 
   const { text = '' } = activeObject || {};
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [selectedTextEditTool, setSelectedTextEditTool] = useState(null);
-  const [removingBackground, setRemovingBackground] = useState(false);
-
-  const isBackgroundRemoved = aiImage?.url === aiImage?.noBackgroundUrl;
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -127,43 +89,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onUpdateTextObject({ text });
   };
 
-  const handleToggleBackground = () => {
-    const { noBackgroundUrl, withBackgroundUrl } = aiImage;
-
-    if (isBackgroundRemoved) {
-      onAiImageUpdate({
-        ...aiImage,
-        url: withBackgroundUrl,
-      });
-
-      return;
-    }
-
-    if (noBackgroundUrl) {
-      onAiImageUpdate({
-        ...aiImage,
-        url: noBackgroundUrl,
-      });
-
-      return;
-    }
-
-    setRemovingBackground(true);
-
-    removeBackground(aiImage.url).then((url) => {
-      console.log('Removed background', url);
-
-      onAiImageUpdate({
-        ...aiImage,
-        url,
-        noBackgroundUrl: url,
-        withBackgroundUrl: aiImage.url,
-      });
-
-      setRemovingBackground(false);
-    });
-  };
-
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isTextEditor = selectedTool === 'text';
 
@@ -171,55 +96,13 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
-      <Flex align="center" justify="space-between">
-        <HStack>
-          {activeObject && !selectedTextEditTool ? (
-            <F>
-              <IconButton onClick={onDeleteActiveObject} ml="14px">
-                <IconTrash />
-              </IconButton>
-              <IconButton onClick={onLayerUp}>
-                <IconLayerUp />
-              </IconButton>
-              <IconButton onClick={onLayerDown}>
-                <IconLayerDown />
-              </IconButton>
-            </F>
-          ) : (
-            <Box />
-          )}
-        </HStack>
-        {isTextEditor && activeObject?.text ? (
-          <TextToolbar
-            onUpdate={onUpdateTextObject}
-            textObject={activeObject}
-            selectedTool={selectedTextEditTool}
-            onSelectedTool={setSelectedTextEditTool}
-          />
-        ) : (
-          <Box />
-        )}
-        {activeObject?.aiImageUrl && aiImage && (
-          <HStack mb="4px" mr="16px">
-            <Text
-              color={isBackgroundRemoved ? '#6A6866' : '000000'}
-              fontSize="xs"
-              textTransform="uppercase"
-            >
-              Background
-            </Text>
-            <IconButton
-              isLoading={removingBackground}
-              onClick={handleToggleBackground}
-            >
-              {isBackgroundRemoved ? (
-                <IconBackgroundRemoved />
-              ) : (
-                <IconRemoveBackground />
-              )}
-            </IconButton>
-          </HStack>
-        )}
+      <Flex align="center" justify="flex-end">
+        <TextToolbar
+          onUpdate={onUpdateTextObject}
+          textObject={activeObject}
+          selectedTool={selectedTextEditTool}
+          onSelectedTool={setSelectedTextEditTool}
+        />
       </Flex>
       <Box
         bg="#FFFFFF"

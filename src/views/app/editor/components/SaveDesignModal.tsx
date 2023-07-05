@@ -46,26 +46,42 @@ function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
 
     const front = document.getElementById('#canvas-container-front');
     const back = document.getElementById('#canvas-container-back');
+    const drawingAreas = document.getElementsByClassName('drawing-area');
 
     const frontOld = front.style.display;
     const backOld = back.style.display;
+    const drawingAreaOld = (drawingAreas[0] as HTMLElement).style.border;
 
     front.style.display = 'block';
     back.style.display = 'block';
+
+    [...drawingAreas].forEach((element) => {
+      (element as HTMLElement).style.border = 'none';
+    });
 
     const promises = [designRef, designRefBack].map((ref) =>
       ref ? getTemplateImgFromHtml(ref.current) : Promise.resolve(null)
     );
 
+    const reset = () => {
+      front.style.display = frontOld;
+      back.style.display = backOld;
+
+      [...drawingAreas].forEach((element) => {
+        (element as HTMLElement).style.border = drawingAreaOld;
+      });
+    };
+
     Promise.all(promises)
       .then(([urlFront, urlBack]) => {
-        front.style.display = frontOld;
-        back.style.display = backOld;
+        reset();
 
         onSave([urlFront, urlBack]);
       })
       .catch((err) => {
         setSaving(false);
+
+        reset();
 
         console.log(err.message, err.response);
 
@@ -76,56 +92,61 @@ function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent h="700px">
         <ModalBody padding={0}>
-          <Box position="relative">
-            <ButtonClose
-              position="absolute"
-              top="-1px"
-              right="-1px"
-              onClick={onClose}
-            />
-            <Flex
-              justifyContent="center"
-              flexDirection="column"
-              padding="50px 14px 14px 14px"
-              textAlign="center"
-              w="100%"
-            >
-              <Text
-                fontFamily="Roboto Condensed"
-                fontSize="40px"
-                fontWeight={700}
-                mb="32px"
-                textAlign="left"
-                textTransform="uppercase"
+          <Flex direction="column" justify="space-between" h="100%">
+            <Box position="relative">
+              <ButtonClose
+                position="absolute"
+                top="-1px"
+                right="-1px"
+                onClick={onClose}
+              />
+              <Flex
+                justifyContent="center"
+                flexDirection="column"
+                padding="50px 14px 14px 14px"
+                textAlign="center"
+                w="100%"
               >
-                Save your design
-              </Text>
-              <FormInput
-                autoFocus
-                name="Design Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                tabIndex={0}
-              />
-              <FormInput
-                name="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              {error ? (
-                <Alert status="error">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              ) : null}
+                <Text
+                  fontFamily="Roboto Condensed"
+                  fontSize="40px"
+                  fontWeight={700}
+                  mb="32px"
+                  textAlign="left"
+                  textTransform="uppercase"
+                >
+                  Save your design
+                </Text>
+                <FormInput
+                  autoFocus
+                  name="Design Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  tabIndex={0}
+                />
+                <FormInput
+                  name="Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                {error ? (
+                  <Alert status="error">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                ) : null}
+              </Flex>
+            </Box>
+            <Box padding="14px" w="100%">
               <Button
                 isLoading={isSaving}
                 onClick={handleSubmit}
                 title="Save my design"
+                w="100%"
               />
-            </Flex>
-          </Box>
+            </Box>
+          </Flex>
         </ModalBody>
       </ModalContent>
     </Modal>

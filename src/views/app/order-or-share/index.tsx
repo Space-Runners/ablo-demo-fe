@@ -19,6 +19,10 @@ import { Design } from '@/components/types';
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
 import { useState } from 'react';
 
+function getImgUrl(name) {
+  return new URL(`./images/${name}.webp`, import.meta.url).href;
+}
+
 const { abloBlue } = Colors;
 
 const SHARE_OPTIONS = [
@@ -121,11 +125,15 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   console.log(Front, Back);
 
+  const { aiImage } = design[selectedSide];
+
+  const { style = 'kidult' } = aiImage?.options || {};
+
   return (
     <Box>
       <Navbar onBack={() => history.goBack()} step={3} title="Share" />
-      <Box bg="#FFFFFF" h="100%" w="100%" padding="32px 10px">
-        <Box position="relative">
+      <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
+        <Box position="relative" w="375px">
           {Front?.templateUrl && Back?.templateUrl ? (
             <Flex
               align="center"
@@ -143,49 +151,57 @@ export default function OrderOrShare({ design }: { design: Design }) {
               <IconChangeOrientation />
             </Flex>
           ) : null}
-          <Image
-            src={(selectedSide === 'Front' ? Front : Back).templateUrl}
-            height={306}
-            mb="16px"
-            width={375}
-          />
+          <Image w="100%" src={getImgUrl(`${style}`)} alt={style} />
+          {style ? (
+            <Image
+              src={(selectedSide === 'Front' ? Front : Back).templateUrl}
+              left="40px"
+              mb="16px"
+              position="absolute"
+              top="30px"
+              width={306}
+            />
+          ) : null}
         </Box>
-        <Button
-          icon={<IconCopy />}
-          mb="30px"
-          title="Copy share link"
-          w="100%"
-        />
-        <Text mb="24px" textAlign="center">
-          Share on your socials
-        </Text>
-        {SHARE_OPTIONS.map(({ name, icon }, index) => (
-          <Flex
-            align="center"
-            borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
-            justify="space-between"
-            key={index}
-            padding="13px 0"
+        <Box p="0 10px">
+          <Button
+            icon={<IconCopy />}
+            mb="16px"
+            mt="16px"
+            title="Copy share link"
             w="100%"
-          >
-            <HStack>
-              {icon}
-              <Text fontSize="sm" ml="12px">
-                {name}
-              </Text>
-            </HStack>
-            <ChakraButton
-              bg="transparent"
-              color={abloBlue}
-              fontSize="xs"
-              fontWeight={600}
-              padding={0}
-              textTransform="uppercase"
+          />
+          <Text mb="24px" textAlign="center">
+            Share on your socials
+          </Text>
+          {SHARE_OPTIONS.map(({ name, icon }, index) => (
+            <Flex
+              align="center"
+              borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
+              justify="space-between"
+              key={index}
+              padding="13px 0"
+              w="100%"
             >
-              Share
-            </ChakraButton>
-          </Flex>
-        ))}
+              <HStack>
+                {icon}
+                <Text fontSize="sm" ml="12px">
+                  {name}
+                </Text>
+              </HStack>
+              <ChakraButton
+                bg="transparent"
+                color={abloBlue}
+                fontSize="xs"
+                fontWeight={600}
+                padding={0}
+                textTransform="uppercase"
+              >
+                Share
+              </ChakraButton>
+            </Flex>
+          ))}
+        </Box>
       </Box>
     </Box>
   );

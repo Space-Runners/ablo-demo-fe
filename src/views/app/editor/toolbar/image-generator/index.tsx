@@ -213,7 +213,7 @@ export default function ImageGenerator({
               title="Generate New"
             />
           </Flex>
-          <HStack mb="20px">
+          <HStack justify="center" mb="20px">
             {images.map((imageUrl) => (
               <Image
                 border={
