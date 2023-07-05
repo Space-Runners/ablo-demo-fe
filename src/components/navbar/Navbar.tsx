@@ -121,65 +121,76 @@ export default function Navbar(props: Props) {
 
   return (
     <Box>
-      <Flex align="center" bg="#FFFFFF" h="58px" justify="center">
+      <Flex
+        align="center"
+        bg="#FFFFFF"
+        borderBottom="1px solid #000000"
+        h="58px"
+        justify="center"
+      >
         <AbloText />
       </Flex>
       <Flex
         align="center"
-        bg="#F9F9F7"
+        bg="#FFFFFF"
         height="63px"
-        justify={onNext ? 'space-between' : 'flex-start'}
-        padding="14px"
+        justify="space-between"
+        padding="14px 0"
       >
-        <Flex align="center">
-          {onBack ? (
-            <Button
-              bg="transparent"
-              height="30px"
-              minWidth="none"
-              onClick={onBack}
-              padding={0}
-              w="48px"
-              _hover={{
-                bg: '#F9F9F7',
-                border: `1px solid ${abloBlue}`,
-                boxShadow: '0px 0px 8px 0px #97B9F5',
-              }}
-            >
-              <IconBack />
-            </Button>
-          ) : null}
+        {onBack ? (
+          <Button
+            bg="transparent"
+            height="30px"
+            minWidth="none"
+            onClick={onBack}
+            padding={0}
+            w="48px"
+            _hover={{
+              bg: '#F9F9F7',
+              border: `1px solid ${abloBlue}`,
+              boxShadow: '0px 0px 8px 0px #97B9F5',
+            }}
+          >
+            <IconBack />
+          </Button>
+        ) : (
+          <Box w="48px" />
+        )}
+        <Box textAlign="center">
+          <Text
+            color="#959392"
+            fontFamily="Roboto Condensed"
+            fontSize="xs"
+            fontWeight={500}
+          >
+            {step} of {TOTAL_STEPS}
+          </Text>
           <Text
             fontFamily="Roboto Condensed"
-            fontSize="24px"
-            fontWeight={700}
-            ml="2px"
-            textTransform="uppercase"
+            fontSize="19px"
+            fontWeight={500}
+            lineHeight="26pxs"
           >
             {title}
           </Text>
-        </Flex>
+        </Box>
         {onNext ? (
-          <Flex align="center" justify="flex-start">
-            <Text color="#959392" fontWeight={500} mr="12px">
-              {step}/{TOTAL_STEPS}
-            </Text>
-            <Button
-              bg="#000000"
-              borderRadius="40px"
-              disabled={isNextDisabled}
-              height="32px"
-              onClick={onNext}
-              padding="4px 14px"
-              w="52px"
-              _disabled={{ background: '#BFBEBE' }}
-              _hover={{
-                bg: '#6A6866',
-              }}
-            >
-              <IconNext />
-            </Button>
-          </Flex>
+          <Button
+            bg="transparent"
+            borderRadius="40px"
+            color={abloBlue}
+            disabled={isNextDisabled}
+            onClick={onNext}
+            padding="4px 14px"
+            pl={0}
+            textTransform="uppercase"
+            _disabled={{ color: '#BFBEBE' }}
+            _hover={{
+              color: '#6A6866',
+            }}
+          >
+            Next
+          </Button>
         ) : null}
       </Flex>
     </Box>

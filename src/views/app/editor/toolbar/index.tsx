@@ -254,17 +254,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
               }}
             />
           ) : (
-            <Button
-              bg="transparent"
-              color="#6A6866"
-              fontSize="md"
-              fontWeight={400}
-              h="30px"
-              onClick={() => onSetExpanded(true)}
-              padding={0}
-            >
-              Generate your design with AI
-            </Button>
+            <Box />
           )}
           <Button
             bg="transparent"
@@ -288,9 +278,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
               </ToolbarButton>
             ))}
           </HStack>
-          <ToolbarButton onClick={onSave}>
-            <IconSave />
-          </ToolbarButton>
         </Flex>
         <Collapse in={isExpanded} animateOpacity>
           <Box display={isExpanded ? 'block' : 'none'}>

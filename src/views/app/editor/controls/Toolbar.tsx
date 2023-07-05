@@ -1,4 +1,4 @@
-import { Box, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
 
@@ -82,17 +82,34 @@ export default function Toolbar({
             <IconToggleColorPicker isSelected={isColorPickerVisible} />
           </ToolbarButton>
         </HStack>
-        <HStack spacing="14px">
+        <HStack>
           {onUndo ? (
-            <ToolbarButton icon={<IconUndo />} onClick={onUndo} />
+            <ToolbarButton onClick={onUndo}>
+              <IconUndo />
+            </ToolbarButton>
           ) : null}
           {onRedo ? (
-            <ToolbarButton icon={<IconRedo />} onClick={onRedo} />
+            <ToolbarButton onClick={onRedo}>
+              <IconRedo />
+            </ToolbarButton>
           ) : null}
+          <Button
+            bg="transparent"
+            border="1px solid #AAA9AB"
+            borderRadius="28px"
+            color="#AAA9AB"
+            fontSize="xs"
+            fontWeight={600}
+            height="28px"
+            p="0 14px"
+            w="63px"
+          >
+            Save
+          </Button>
         </HStack>
       </HStack>
       {isSidePickerVisible ? (
-        <Box mb="20px">
+        <Box mb="20px" mt="20px">
           <MiniFilterBar
             options={SIDES}
             selectedValue={selectedSide}
@@ -101,7 +118,7 @@ export default function Toolbar({
         </Box>
       ) : null}
       {isColorPickerVisible ? (
-        <Box mb="20px">
+        <Box mb="20px" mt="20px">
           <ColorPicker
             onSelectedVariants={(values) => onSelectedVariant(values[0])}
             selectedVariants={[selectedVariant]}

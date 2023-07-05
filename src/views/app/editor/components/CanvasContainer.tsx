@@ -34,7 +34,7 @@ const CanvasContainer = ({
 }: Props) => (
   <F>
     <img
-      src={`${variantImageUrl}_${side.toUpperCase()}.png?timestamp=${Date.now()}`}
+      src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
       crossOrigin="anonymous"
       width={350}
     />

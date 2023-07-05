@@ -73,7 +73,7 @@ const ProductDetails = ({
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image h={216} src={`${urlPrefix}_${variant}_FRONT.png`} alt={name} />
+        <Image h={216} src={`${urlPrefix}_${variant}_FRONT.webp`} alt={name} />
       </Flex>
       <Box padding="24px 14px">
         <Text color="#959392" fontSize="sm" mb="13px">
@@ -198,7 +198,7 @@ const ProductsList = ({
                 >
                   <Image
                     h={160}
-                    src={`${urlPrefix}_${variant.name}_FRONT.png`}
+                    src={`${urlPrefix}_${variant.name}_FRONT.webp`}
                     alt={name}
                   />
                 </Flex>

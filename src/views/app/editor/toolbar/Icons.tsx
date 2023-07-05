@@ -364,42 +364,6 @@ export const IconLayerDown = () => (
   </Icon>
 );
 
-export const IconSave = () => (
-  <Icon
-    width="26px"
-    height="26px"
-    viewBox="0 0 26 26"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g clipPath="url(#clip0_2593_2067)">
-      <path
-        d="M6.49967 4.3335H17.333L21.6663 8.66683V19.5002C21.6663 20.0748 21.4381 20.6259 21.0317 21.0322C20.6254 21.4386 20.0743 21.6668 19.4997 21.6668H6.49967C5.92504 21.6668 5.37394 21.4386 4.96761 21.0322C4.56128 20.6259 4.33301 20.0748 4.33301 19.5002V6.50016C4.33301 5.92553 4.56128 5.37443 4.96761 4.9681C5.37394 4.56177 5.92504 4.3335 6.49967 4.3335Z"
-        stroke="black"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10.833 15.1667C10.833 15.7413 11.0613 16.2924 11.4676 16.6987C11.8739 17.1051 12.425 17.3333 12.9997 17.3333C13.5743 17.3333 14.1254 17.1051 14.5317 16.6987C14.9381 16.2924 15.1663 15.7413 15.1663 15.1667C15.1663 14.592 14.9381 14.0409 14.5317 13.6346C14.1254 13.2283 13.5743 13 12.9997 13C12.425 13 11.8739 13.2283 11.4676 13.6346C11.0613 14.0409 10.833 14.592 10.833 15.1667Z"
-        stroke="black"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15.167 4.3335V8.66683H8.66699V4.3335"
-        stroke="black"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_2593_2067">
-        <rect width="26" height="26" fill="white" />
-      </clipPath>
-    </defs>
-  </Icon>
-);
-
 export const IconRemoveBackground = () => (
   <Icon
     width="28px"

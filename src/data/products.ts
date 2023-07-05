@@ -1,4 +1,6 @@
-const BUCKET = 'https://sr-demo-products.s3.eu-central-1.amazonaws.com';
+const BUCKET =
+  'http://d9tmf2jig3une.cloudfront.net' ||
+  'https://sr-demo-products-optimized.s3.eu-central-1.amazonaws.com';
 
 export const variants = [
   {
