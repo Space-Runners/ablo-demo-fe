@@ -147,7 +147,7 @@ export default function ImageGenerator({
         setImages(images);
         setSelectedImage(images[0]);
 
-        onGeneratedImagePreview(images[0]);
+        onGeneratedImagePreview({ url: images[0], options });
       })
       .catch(() => {
         setWaiting(false);
