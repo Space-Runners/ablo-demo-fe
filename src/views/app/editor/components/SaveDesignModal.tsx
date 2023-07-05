@@ -28,10 +28,15 @@ type Props = {
   designRefBack: any;
 };
 
-const getTemplateImgFromHtml = (element) =>
-  toPng(element, { cacheBust: false })
+const getTemplateImgFromHtml = async (element) => {
+  await toPng(element, { cacheBust: false });
+  await toPng(element, { cacheBust: false });
+  await toPng(element, { cacheBust: false });
+
+  return toPng(element, { cacheBust: false })
     .then((dataUrl) => saveTemplate(`Testing-${Date.now()}`, dataUrl))
     .then(({ url }) => url);
+};
 
 function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
   const [title, setTitle] = useState('');
