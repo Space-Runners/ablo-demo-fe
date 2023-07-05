@@ -151,7 +151,9 @@ export default function OrderOrShare({ design }: { design: Design }) {
               <IconChangeOrientation />
             </Flex>
           ) : null}
-          <Image w="100%" src={getImgUrl(`${style}`)} alt={style} />
+          {style ? (
+            <Image w="100%" src={getImgUrl(`${style}`)} alt={style} />
+          ) : null}
           {style ? (
             <Image
               src={(selectedSide === 'Front' ? Front : Back).templateUrl}
