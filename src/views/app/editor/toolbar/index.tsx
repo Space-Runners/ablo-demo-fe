@@ -22,7 +22,6 @@ import {
   IconTrash,
   IconLayerDown,
   IconLayerUp,
-  IconSave,
   IconRemoveBackground,
   IconBackgroundRemoved,
 } from './Icons';
@@ -102,7 +101,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onAiImageUpdate,
     onLayerUp,
     onLayerDown,
-    onSave,
   } = props;
 
   const { text = '' } = activeObject || {};
