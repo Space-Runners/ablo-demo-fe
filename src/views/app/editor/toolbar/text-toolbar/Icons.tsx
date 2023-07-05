@@ -8,7 +8,7 @@ export const IconFontFamily = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_2688_322)">
+    <g clipPath="url(#clip0_2688_322)">
       <path
         d="M4 20H7"
         stroke="black"

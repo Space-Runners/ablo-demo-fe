@@ -155,7 +155,9 @@ export default function Navbar(props: Props) {
           >
             Next
           </Button>
-        ) : null}
+        ) : (
+          <Box w="56px" />
+        )}
       </Flex>
     </Box>
   );

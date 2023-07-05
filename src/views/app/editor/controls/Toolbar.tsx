@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import MiniFilterBar from '@/components/MiniFilterBar';
 import ColorPicker from '@/components/ColorPicker';
 import ToolbarButton from '@/components/ToolbarButton';
+import Colors from '@/theme/colors';
 
 import IconToggleSidePicker from './icons/IconToggleSide';
 import IconToggleColorPicker from './icons/IconToggleColorPicker';
@@ -19,6 +20,8 @@ import {
 import { useState } from 'react';
 
 const SIDES = ['Front', 'Back'];
+
+const { abloBlue } = Colors;
 
 type Props = {
   isDrawingAreaVisible: boolean;
@@ -103,6 +106,14 @@ export default function Toolbar({
             height="28px"
             p="0 14px"
             w="63px"
+            _focus={{
+              borderColor: abloBlue,
+              color: abloBlue,
+            }}
+            _active={{
+              borderColor: abloBlue,
+              color: abloBlue,
+            }}
           >
             Save
           </Button>

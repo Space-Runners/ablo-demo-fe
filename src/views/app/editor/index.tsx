@@ -21,7 +21,7 @@ import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
 
 import renderRotateLabel from './fabric/rotateLabel';
-
+import ObjectEditTools from './components/ObjectEditTools';
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
@@ -54,6 +54,7 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
+
   const [imagePreview, setImagePreview] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
@@ -445,6 +446,7 @@ export default function ImageEditor({
   };
 
   const handleSaveDesign = ([urlFront, urlBack]) => {
+    setDrawingAreaVisible(false);
     setSaveDesignModalVisible(false);
 
     onDesignChange({
@@ -539,6 +541,14 @@ export default function ImageEditor({
             title="Place artwork"
           />
         ) : null}
+        <ObjectEditTools
+          activeObject={activeObject}
+          aiImage={design && design.aiImage}
+          onLayerUp={handleLayerUp}
+          onLayerDown={handleLayerDown}
+          onDeleteActiveObject={handleRemoveActiveObject}
+          onAiImageUpdate={handleAiImageUpdate}
+        />
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={(isExpanded) => {
@@ -548,16 +558,11 @@ export default function ImageEditor({
           onAddText={handleAddText}
           onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
-          onDeleteActiveObject={handleRemoveActiveObject}
           aiImage={design && design.aiImage}
           onImageUploaded={handleImageUpload}
           onGeneratedImagePreview={handleGeneratedImagePreview}
           onGeneratedImageSelected={handleGeneratedImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
-          onAiImageUpdate={handleAiImageUpdate}
-          onLayerUp={handleLayerUp}
-          onLayerDown={handleLayerDown}
-          onSave={handleNext}
         />
       </Flex>
       {isSignUpModalVisible ? (
@@ -590,7 +595,9 @@ export default function ImageEditor({
       ) : null}
       {isSaveDesignModalVisible ? (
         <SaveDesignModal
-          onClose={() => setSaveDesignModalVisible(false)}
+          onClose={() => {
+            setSaveDesignModalVisible(false);
+          }}
           onSave={handleSaveDesign}
           designRef={
             !isEmpty(canvasFront.current?._objects) && clothingAndCanvasRefFront
