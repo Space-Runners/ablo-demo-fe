@@ -224,7 +224,7 @@ export default function ImageEditor({
       text: 'this is\na multiline\ntext\naligned right!',
       fontSize: 12,
       textAlign: 'left',
-      left: width / 2 - 20,
+      left: width / 2,
       top: height / 2 - 20,
       centeredScaling: true,
       ...params,
