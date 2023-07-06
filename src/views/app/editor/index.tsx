@@ -226,6 +226,7 @@ export default function ImageEditor({
       textAlign: 'left',
       left: width / 2 - 20,
       top: height / 2 - 20,
+      centeredScaling: true,
       ...params,
     };
 
