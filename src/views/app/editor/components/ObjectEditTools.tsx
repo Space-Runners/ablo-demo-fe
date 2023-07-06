@@ -4,25 +4,31 @@ import { Button as ChakraButton, HStack, Text } from '@chakra-ui/react';
 import { removeBackground } from '@/api/image-generator';
 import { AiImage } from '@/components/types';
 
-import { IconTrash, IconLayerDown, IconLayerUp } from '../toolbar/Icons';
+import {
+  IconTrash,
+  IconLayerDown,
+  IconLayerUp,
+  IconSheets,
+} from '../toolbar/Icons';
 
 const Button = (props) => (
   <ChakraButton
     bg="transparent"
     border="1px solid #D3D3D3"
     borderRadius="5px"
-    h="32px"
+    h="23px"
     minW="auto"
     padding="6px 8px"
     {...props}
   />
 );
 
-const IconButton = (props) => <Button w="32px" {...props} />;
+const IconButton = (props) => <Button w="25px" {...props} />;
 
 type ObjectEditToolsProps = {
   activeObject: { aiImageUrl?: string; text: string };
   onDeleteActiveObject: () => void;
+  hasImagePreview: boolean;
   aiImage: AiImage;
   onAiImageUpdate: (image: AiImage) => void;
   onLayerUp: () => void;
@@ -32,6 +38,7 @@ type ObjectEditToolsProps = {
 const ObjectEditTools = ({
   activeObject,
   onDeleteActiveObject,
+  hasImagePreview,
   aiImage,
   onAiImageUpdate,
   onLayerDown,
@@ -85,12 +92,13 @@ const ObjectEditTools = ({
   return (
     <HStack
       bg="#FFFFFF"
-      borderRadius="10px"
-      h="51px"
+      borderRadius="8px"
+      h="39px"
       boxShadow="0px 1px 2px 0px #0000000F"
-      p="11px 15px"
+      p="8px 11px"
       position="relative"
-      bottom="100px"
+      spacing="7px"
+      bottom={hasImagePreview ? '90px' : '40px'}
     >
       <IconButton onClick={onLayerUp}>
         <IconLayerUp />
@@ -98,12 +106,17 @@ const ObjectEditTools = ({
       <IconButton onClick={onLayerDown}>
         <IconLayerDown />
       </IconButton>
+      <IconButton onClick={onLayerDown}>
+        <IconSheets />
+      </IconButton>
       <IconButton onClick={onDeleteActiveObject} ml="14px">
         <IconTrash />
       </IconButton>
       {activeObject?.aiImageUrl && aiImage ? (
         <Button isLoading={removingBackground} onClick={handleToggleBackground}>
-          <Text>{isBackgroundRemoved ? 'Restore' : 'Remove'} background</Text>
+          <Text fontSize="11px">
+            {isBackgroundRemoved ? 'Restore' : 'Remove'} background
+          </Text>
         </Button>
       ) : null}
     </HStack>

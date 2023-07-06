@@ -99,7 +99,7 @@ export default function Navbar(props: Props) {
         bg="#FFFFFF"
         height="63px"
         justify="space-between"
-        padding="14px 0"
+        padding="0"
       >
         {onBack ? (
           <Button
@@ -120,7 +120,7 @@ export default function Navbar(props: Props) {
         ) : (
           <Box w="48px" />
         )}
-        <Box textAlign="center">
+        <Box p="14px 0" textAlign="center">
           <Text
             color="#959392"
             fontFamily="Roboto Condensed"
@@ -145,7 +145,7 @@ export default function Navbar(props: Props) {
             color={abloBlue}
             disabled={isNextDisabled}
             onClick={onNext}
-            padding="4px 14px"
+            padding="18px 14px"
             pl={0}
             textTransform="uppercase"
             _disabled={{ color: '#BFBEBE' }}

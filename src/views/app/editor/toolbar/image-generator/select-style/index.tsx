@@ -29,7 +29,8 @@ export default function SelectStyle({
 
   const styles = Object.keys(options.styles).map((key) => ({
     value: key,
-    name: options.styles[key].split(' ').join(''),
+    name: options.styles[key].split(' ').join(' '),
+    image: options.styles[key].split(' ').join(''),
   }));
 
   const chunks = chunk(styles, 2);
@@ -41,7 +42,7 @@ export default function SelectStyle({
       </Text>
       {chunks.map((chunk, index) => (
         <HStack key={index} mb="16px">
-          {chunk.map(({ value, name }, index) => {
+          {chunk.map(({ value, name, image }, index) => {
             const isSelected = value === selectedValue;
 
             return (
@@ -57,7 +58,7 @@ export default function SelectStyle({
                   h={90}
                   mb="10px"
                   w={177}
-                  src={getImgUrl(`${name}`)}
+                  src={getImgUrl(`${image}`)}
                   alt={name}
                 />
                 {isSelected ? <CheckmarkSelected /> : null}

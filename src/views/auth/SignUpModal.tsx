@@ -75,7 +75,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignSelf="flex-end">
         <ModalBody padding={0}>
           <Box position="relative">
             <ButtonClose

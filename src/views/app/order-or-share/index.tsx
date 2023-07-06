@@ -125,7 +125,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   console.log(Front, Back);
 
-  const { aiImage } = design[selectedSide];
+  const { aiImage } = design[selectedSide] || {};
 
   const { style = 'kidult' } = aiImage?.options || {};
 
@@ -133,7 +133,13 @@ export default function OrderOrShare({ design }: { design: Design }) {
     <Box>
       <Navbar onBack={() => history.goBack()} step={3} title="Share" />
       <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
-        <Box position="relative" w="100%">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          position="relative"
+          w="100%"
+        >
           {Front?.templateUrl && Back?.templateUrl ? (
             <Flex
               align="center"
@@ -156,11 +162,9 @@ export default function OrderOrShare({ design }: { design: Design }) {
           ) : null}
           {style ? (
             <Image
-              src={(selectedSide === 'Front' ? Front : Back).templateUrl}
-              left="40px"
-              mb="16px"
+              src={(selectedSide === 'Front' ? Front : Back)?.templateUrl}
+              margin="0 auto"
               position="absolute"
-              top="30px"
               width={306}
             />
           ) : null}

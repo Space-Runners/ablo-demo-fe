@@ -97,12 +97,14 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
       <Flex align="center" justify="flex-end">
-        <TextToolbar
-          onUpdate={onUpdateTextObject}
-          textObject={activeObject}
-          selectedTool={selectedTextEditTool}
-          onSelectedTool={setSelectedTextEditTool}
-        />
+        {activeObject?.text ? (
+          <TextToolbar
+            onUpdate={onUpdateTextObject}
+            textObject={activeObject}
+            selectedTool={selectedTextEditTool}
+            onSelectedTool={setSelectedTextEditTool}
+          />
+        ) : null}
       </Flex>
       <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 7px">
         <Flex

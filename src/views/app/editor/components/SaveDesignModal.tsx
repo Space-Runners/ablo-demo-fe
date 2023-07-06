@@ -97,7 +97,7 @@ function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
-      <ModalContent h="700px">
+      <ModalContent alignSelf="flex-end" h="400px">
         <ModalBody padding={0}>
           <Flex direction="column" justify="space-between" h="100%">
             <Box position="relative">

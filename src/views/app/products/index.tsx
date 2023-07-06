@@ -24,7 +24,9 @@ import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const matchesClothingType = (types, product) =>
-  !types.length || types.find((type) => type.includes(product.name));
+  !types.length ||
+  types[0] === 'All' ||
+  types.find((type) => type.includes(product.name));
 
 const matchesFit = (fits, product) =>
   !fits.length || fits.find((fit) => fit.includes(product.name));
