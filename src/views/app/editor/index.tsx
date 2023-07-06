@@ -545,6 +545,7 @@ export default function ImageEditor({
         <ObjectEditTools
           activeObject={activeObject}
           aiImage={design && design.aiImage}
+          hasImagePreview={!!imagePreview}
           onLayerUp={handleLayerUp}
           onLayerDown={handleLayerDown}
           onDeleteActiveObject={handleRemoveActiveObject}
