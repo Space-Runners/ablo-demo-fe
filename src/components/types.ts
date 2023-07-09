@@ -69,7 +69,7 @@ export interface AiImage {
 }
 
 export interface TemplateDesign {
-  aiImage?: AiImage;
+  canvas: string;
   templateUrl?: string;
 }
 

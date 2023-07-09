@@ -26,21 +26,31 @@ import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
 
+const sides = ['Front', 'Back'];
+
+const initCanvas = (side, width, height) => {
+  return new fabric.Canvas(side === 'Front' ? 'canvas-front' : 'canvas-back', {
+    width,
+    height,
+    selection: false,
+    renderOnAddRemove: true,
+  });
+};
+
+const reloadCanvasFromState = (canvas, stateAsJson) => {
+  canvas.current.clear();
+  canvas.current.loadFromJSON(stateAsJson, function () {
+    canvas.current.renderAll();
+  });
+};
+
 type ImageEditorProps = {
   design: Design;
-  canvasFront;
-  canvasBack;
   onDesignChange: (design: Design) => void;
-  onCanvasFrontChange: (canvasStateAsJson: string) => void;
-  onCanvasBackChange: (canvasStateAsJson: string) => void;
 };
 
 export default function ImageEditor({
-  design: designForFrontAndBack,
-  canvasFront: canvasStateFront,
-  canvasBack: canvasStateBack,
-  onCanvasFrontChange,
-  onCanvasBackChange,
+  design: designForSides,
   onDesignChange,
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
@@ -55,8 +65,6 @@ export default function ImageEditor({
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
   const [isModifyingObject, setIsModifyingObject] = useState(false);
-
-  const [imagePreview, setImagePreview] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -85,11 +93,7 @@ export default function ImageEditor({
     variant || PRODUCTS[0].variants[0].name
   );
 
-  const defaultSide = 'Front';
-
-  const [selectedSide, setSelectedSide] = useState(defaultSide);
-
-  const design = designForFrontAndBack[selectedSide];
+  const [selectedSide, setSelectedSide] = useState(sides[0]);
 
   const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
 
@@ -98,75 +102,88 @@ export default function ImageEditor({
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
   useEffect(() => {
-    canvas.current = initCanvas(selectedSide);
+    console.log('Use effect');
+    sides.forEach((side) => {
+      const canvas = side === 'Front' ? canvasFront : canvasBack;
 
-    const canvasState =
-      selectedSide === 'Front' ? canvasStateFront : canvasStateBack;
+      const { width, height } = printableAreas[side.toLowerCase()];
 
-    if (canvasState) {
-      // Loading an already active design if you to go another page and come back
-      state.current = canvasState;
+      canvas.current = initCanvas(side, width, height);
 
-      reloadCanvasFromState();
-    } else {
-      state.current = JSON.stringify(canvas.current);
-    }
+      const canvasState = designForSides[side]?.canvas;
 
-    canvas.current.on('object:modified', () => {
-      saveState();
-    });
+      console.log('Side', side, canvas, canvasState);
 
-    canvas.current.on('mouse:up', function (e) {
-      setActiveObject(e.target);
+      if (canvasState) {
+        // Loading an already active design if you to go another page and come back
+        state.current = canvasState;
 
-      const { isRotating } = userState.current;
-
-      if (isRotating) {
-        const newAngle = Math.round(e.target.angle);
-
-        const commonAngles = times(9, (index) => index * 45);
-
-        const nearestAngle = commonAngles.find(
-          (angle) => Math.abs(newAngle - angle) <= 3
-        );
-
-        e.target.set(
-          'angle',
-          nearestAngle !== undefined ? nearestAngle : newAngle
-        );
+        reloadCanvasFromState(canvas, canvasState);
+      } else {
+        state.current = JSON.stringify(canvas.current);
       }
 
-      userState.current.isRotating = false;
+      canvas.current.on('object:modified', () => {
+        console.log('Object modified');
+        saveState();
+      });
 
-      setIsModifyingObject(false);
-    });
+      canvas.current.on('mouse:up', function (e) {
+        setActiveObject(e.target);
 
-    canvas.current.on('mouse:down', function (e) {
-      if (e.target) {
-        userState.current.isModifying = true;
+        const { isRotating } = userState.current;
 
-        setIsModifyingObject(true);
-      }
-    });
+        if (isRotating) {
+          const newAngle = Math.round(e.target.angle);
 
-    canvas.current.on('object:rotating', function (e) {
-      userState.current.isRotating = true;
+          const commonAngles = times(9, (index) => index * 45);
 
-      userState.current.angle = e.target.angle;
-    });
+          const nearestAngle = commonAngles.find(
+            (angle) => Math.abs(newAngle - angle) <= 3
+          );
 
-    canvas.current.on('after:render', function (opt) {
-      userState.current.isRotating &&
-        renderRotateLabel(opt.ctx, userState.current);
+          e.target.set(
+            'angle',
+            nearestAngle !== undefined ? nearestAngle : newAngle
+          );
+        }
+
+        userState.current.isRotating = false;
+
+        setIsModifyingObject(false);
+      });
+
+      canvas.current.on('mouse:down', function (e) {
+        if (e.target) {
+          userState.current.isModifying = true;
+
+          setIsModifyingObject(true);
+        }
+      });
+
+      canvas.current.on('object:rotating', function (e) {
+        userState.current.isRotating = true;
+
+        userState.current.angle = e.target.angle;
+      });
+
+      canvas.current.on('after:render', function (opt) {
+        userState.current.isRotating &&
+          renderRotateLabel(opt.ctx, userState.current);
+      });
     });
 
     return () => {
-      if (canvas.current) {
-        canvas.current.dispose();
-        canvas.current = null;
-      }
+      sides.forEach((side) => {
+        const canvas = side === 'Front' ? canvasFront : canvasBack;
+
+        if (canvas.current) {
+          canvas.current.dispose();
+          canvas.current = null;
+        }
+      });
     };
-  }, [selectedSide]);
+  }, []);
 
   const saveState = () => {
     setRedoStack([]);
@@ -176,23 +193,17 @@ export default function ImageEditor({
       setUndoStack([...undoStack, state.current]);
     }
 
-    const json = canvas.current.toJSON(['aiImageUrl']);
+    const json = canvas.current.toJSON(['aiImage', 'isPreview']);
 
     state.current = JSON.stringify(json);
 
-    const canvasId = canvas.current.getElement().id;
-
-    if (canvasId === 'canvas-front') {
-      onCanvasFrontChange(state.current);
-    } else {
-      onCanvasBackChange(state.current);
-    }
+    handleDesignUpdate({ canvas: state.current });
   };
 
   const handleDesignUpdate = (updates) => {
     onDesignChange({
-      ...designForFrontAndBack,
-      [selectedSide]: { ...design, ...updates },
+      ...designForSides,
+      [selectedSide]: { ...designForSides[selectedSide], ...updates },
     });
   };
 
@@ -203,7 +214,7 @@ export default function ImageEditor({
 
     setUndoStack(undoStack);
 
-    reloadCanvasFromState();
+    // reloadCanvasFromState();
   };
 
   const handleRedo = () => {
@@ -213,35 +224,14 @@ export default function ImageEditor({
 
     setRedoStack(redoStack);
 
-    reloadCanvasFromState();
-  };
-
-  const reloadCanvasFromState = () => {
-    canvas.current.clear();
-    canvas.current.loadFromJSON(state.current, function () {
-      canvas.current.renderAll();
-    });
-  };
-
-  const initCanvas = (side) => {
-    const { width, height } = printableAreas[side.toLowerCase()];
-
-    return new fabric.Canvas(
-      side === 'Front' ? 'canvas-front' : 'canvas-back',
-      {
-        width,
-        height,
-        selection: false,
-        renderOnAddRemove: true,
-      }
-    );
+    //  reloadCanvasFromState();
   };
 
   const handleClick = (e) => {
-    /* canvas.current.discardActiveObject();
+    canvas.current.discardActiveObject();
     canvas.current.renderAll();
 
-    setActiveObject(null); */
+    setActiveObject(null);
   };
 
   const handleAddText = () => {
@@ -268,18 +258,13 @@ export default function ImageEditor({
 
     // Render the Text on Canvas
     canvas.current.add(text);
-
     canvas.current.setActiveObject(text);
 
     setActiveObject(textObject);
-
-    saveState();
   };
 
   const handleRemoveActiveObject = () => {
     const activeObject = canvas.current.getActiveObject();
-
-    const isAiImage = activeObject.aiImageUrl;
 
     canvas.current.remove(activeObject);
 
@@ -288,14 +273,6 @@ export default function ImageEditor({
     setActiveObject(null);
 
     saveState();
-
-    if (isAiImage) {
-      handleDesignUpdate({ aiImage: null });
-    }
-
-    if (imagePreview && activeObject.aiImageUrl === imagePreview.url) {
-      setImagePreview(null);
-    }
   };
 
   const handleUpdateTextObject = (updates) => {
@@ -328,72 +305,66 @@ export default function ImageEditor({
   };
 
   const handleGeneratedImagePreview = (image: AiImage) => {
-    const { url: imageUrl } = image;
-
-    const aiImagesToRemove = canvas.current._objects.filter(
-      ({ aiImageUrl }) =>
-        aiImageUrl !== imageUrl && aiImageUrl !== design?.aiImage?.url
+    const imagesToRemove = canvas.current._objects.filter(
+      ({ isPreview }) => isPreview
     );
 
-    aiImagesToRemove.forEach((aiImage) => {
-      canvas.current.remove(aiImage);
+    imagesToRemove.forEach((image) => {
+      canvas.current.remove(image);
     });
 
-    if (canvas.current._objects.find((obj) => obj.aiImageUrl === imageUrl)) {
-      return;
-    }
-
-    setImagePreview(image);
-
-    addAiImageToCanvas(imageUrl);
+    addAiImageToCanvas(image, { isPreview: true });
   };
 
-  const handleGeneratedImageSelected = (image: AiImage) => {
+  const handlePreviewImageSelected = () => {
     const aiImagesToRemove = canvas.current._objects.filter(
-      (obj) => obj.aiImageUrl && obj.aiImageUrl !== image.url
+      (obj) => obj.aiImage && !obj.isPreview
     );
 
     aiImagesToRemove.forEach((aiImage) => {
       canvas.current.remove(aiImage);
     });
+
+    const imagePreview = canvas.current._objects.find(
+      ({ isPreview }) => isPreview
+    );
+
+    imagePreview.set('isPreview', false);
 
     saveState();
 
     setActiveObject(canvas.current.getActiveObject());
-    setImagePreview(null);
-
-    handleDesignUpdate({ aiImage: image });
 
     setFooterToolbarExpanded(false);
   };
 
   const handleGeneratedImageRemoved = (imageUrl: string) => {
-    const aiImage = canvas.current._objects.filter(
-      (obj) => obj.aiImageUrl === imageUrl
+    const aiImages = canvas.current._objects.filter(
+      (obj) => obj.aiImage?.url === imageUrl
     );
 
-    canvas.current.remove(aiImage[0]);
+    canvas.current.remove(aiImages[0]);
     canvas.current.renderAll();
 
-    setImagePreview(null);
     setActiveObject(null);
 
     saveState();
-
-    handleDesignUpdate({ aiImage: null });
   };
 
-  const handleAiImageUpdate = (aiImage) => {
-    handleGeneratedImageSelected(aiImage);
+  const handleImageUpdate = (aiImage) => {
+    canvas.current.remove(canvas.current.getActiveObject());
 
-    addAiImageToCanvas(aiImage.url);
+    addAiImageToCanvas(aiImage);
+
+    saveState();
   };
 
-  const addAiImageToCanvas = (imageUrl) => {
+  const addAiImageToCanvas = (image, options = {}) => {
+    console.log('Image', image);
     fabric.Image.fromURL(
-      imageUrl,
+      image.url,
       (img) => {
-        addImageToCanvas(img, { aiImageUrl: imageUrl });
+        addImageToCanvas(img, { aiImage: image, ...options });
       },
       { crossOrigin: 'anonymous' }
     );
@@ -415,7 +386,12 @@ export default function ImageEditor({
 
     img.crossOrigin = 'anonymous';
     canvas.current.add(img);
+    canvas.current.setActiveObject(img);
     canvas.current.renderAll();
+
+    setActiveObject(img);
+
+    saveState();
   };
 
   const handleLayerUp = () => {
@@ -461,8 +437,14 @@ export default function ImageEditor({
     setSaveDesignModalVisible(false);
 
     onDesignChange({
-      Front: { ...(designForFrontAndBack.Front || {}), templateUrl: urlFront },
-      Back: { ...(designForFrontAndBack.Back || {}), templateUrl: urlBack },
+      Front: {
+        ...(designForSides.Front || { canvas: null }),
+        templateUrl: urlFront,
+      },
+      Back: {
+        ...(designForSides.Back || { canvas: null }),
+        templateUrl: urlBack,
+      },
     });
 
     history.push('/app/order-or-share');
@@ -472,14 +454,21 @@ export default function ImageEditor({
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
 
-  const canvasState =
-    selectedSide === 'Front' ? canvasStateFront : canvasStateBack;
+  const canvasState = designForSides[selectedSide]?.canvas;
 
   const canvasStateFromJson = canvasState && JSON.parse(canvasState);
 
-  console.log('State as JSON', canvasStateFromJson.objects);
-  const showHint =
-    isEmpty(canvasStateFromJson?.objects) && !activeObject && !imagePreview;
+  const objects = canvasStateFromJson?.objects || [];
+
+  console.log('Objects', objects);
+
+  const aiImage = objects.find(
+    ({ aiImage, isPreview }) => aiImage && !isPreview
+  )?.aiImage;
+
+  const imagePreview = objects.find(({ isPreview }) => isPreview);
+
+  const showHint = isEmpty(objects) && !activeObject;
 
   return (
     <Box h="100vh" w="100%">
@@ -556,31 +545,25 @@ export default function ImageEditor({
           />
         </Box>
         {imagePreview ? (
-          <Button
-            onClick={() => handleGeneratedImageSelected(imagePreview)}
-            title="Place artwork"
-          />
+          <Button onClick={handlePreviewImageSelected} title="Place artwork" />
         ) : null}
         <ObjectEditTools
           activeObject={activeObject}
-          aiImage={design && design.aiImage}
           hasImagePreview={!!imagePreview}
           onLayerUp={handleLayerUp}
           onLayerDown={handleLayerDown}
           onDeleteActiveObject={handleRemoveActiveObject}
-          onAiImageUpdate={handleAiImageUpdate}
+          onImageUpdate={handleImageUpdate}
         />
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
-          onSetExpanded={(isExpanded) => {
-            setFooterToolbarExpanded(isExpanded);
-          }}
+          onSetExpanded={setFooterToolbarExpanded}
           onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
-          aiImage={design && design.aiImage}
+          aiImage={!imagePreview && aiImage}
           onImageUploaded={handleImageUpload}
           onGeneratedImagePreview={handleGeneratedImagePreview}
-          onGeneratedImageSelected={handleGeneratedImageSelected}
+          onGeneratedImageSelected={handlePreviewImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
         />
       </Flex>

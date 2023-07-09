@@ -276,6 +276,15 @@ export default function ProductsPage({
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
+        onBack={
+          selectedProduct
+            ? () =>
+                onSelectedGarment({
+                  ...selectedGarment,
+                  productId: null,
+                })
+            : null
+        }
         onNext={() =>
           history.push(`/app/editor?productId=${productId}&variant=${variant}`)
         }

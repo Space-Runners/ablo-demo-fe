@@ -39,7 +39,7 @@ type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
   onUpdateTextObject: (updates: object) => void;
-  activeObject: { aiImageUrl?: string; text: string };
+  activeObject: { text: string };
   aiImage: AiImage;
   onImageUploaded: (image: File) => void;
   onGeneratedImagePreview: (image: AiImage) => void;

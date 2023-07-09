@@ -26,11 +26,15 @@ const Button = (props) => (
 const IconButton = (props) => <Button w="25px" {...props} />;
 
 type ObjectEditToolsProps = {
-  activeObject: { aiImageUrl?: string; text: string };
+  activeObject: {
+    aiImage: AiImage;
+    noBackgroundUrl: string;
+    text: string;
+    withBackgroundUrl: string;
+  };
   onDeleteActiveObject: () => void;
   hasImagePreview: boolean;
-  aiImage: AiImage;
-  onAiImageUpdate: (image: AiImage) => void;
+  onImageUpdate: (image: AiImage) => void;
   onLayerUp: () => void;
   onLayerDown: () => void;
 };
@@ -39,20 +43,26 @@ const ObjectEditTools = ({
   activeObject,
   onDeleteActiveObject,
   hasImagePreview,
-  aiImage,
-  onAiImageUpdate,
+  onImageUpdate,
   onLayerDown,
   onLayerUp,
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
 
-  const isBackgroundRemoved = aiImage?.url === aiImage?.noBackgroundUrl;
+  console.log('Active object', activeObject);
+
+  if (!activeObject?.aiImage) {
+    return null;
+  }
+
+  const { aiImage } = activeObject;
+  const { url, noBackgroundUrl, withBackgroundUrl } = aiImage;
+
+  const isBackgroundRemoved = url === noBackgroundUrl;
 
   const handleToggleBackground = () => {
-    const { noBackgroundUrl, withBackgroundUrl } = aiImage;
-
     if (isBackgroundRemoved) {
-      onAiImageUpdate({
+      onImageUpdate({
         ...aiImage,
         url: withBackgroundUrl,
       });
@@ -61,7 +71,7 @@ const ObjectEditTools = ({
     }
 
     if (noBackgroundUrl) {
-      onAiImageUpdate({
+      onImageUpdate({
         ...aiImage,
         url: noBackgroundUrl,
       });
@@ -74,7 +84,7 @@ const ObjectEditTools = ({
     removeBackground(aiImage.url).then((url) => {
       console.log('Removed background', url);
 
-      onAiImageUpdate({
+      onImageUpdate({
         ...aiImage,
         url,
         noBackgroundUrl: url,
@@ -112,7 +122,7 @@ const ObjectEditTools = ({
       <IconButton onClick={onDeleteActiveObject} ml="14px">
         <IconTrash />
       </IconButton>
-      {activeObject?.aiImageUrl && aiImage ? (
+      {activeObject?.aiImage ? (
         <Button isLoading={removingBackground} onClick={handleToggleBackground}>
           <Text fontSize="11px">
             {isBackgroundRemoved ? 'Restore' : 'Remove'} background
