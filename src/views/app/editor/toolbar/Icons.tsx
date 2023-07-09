@@ -255,7 +255,7 @@ export const IconLayerDown = () => (
   </Icon>
 );
 
-export const IconSheets = () => (
+export const IconCopy = () => (
   <Icon
     width="14px"
     height="14px"

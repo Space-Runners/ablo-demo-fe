@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 const { abloBlue } = Colors;
 
-const DURATION = 50;
+const DURATION = 20;
 
 const Progress = () => {
   const [progress, setProgress] = useState(0);

@@ -193,7 +193,7 @@ export default function ImageEditor({
       setUndoStack([...undoStack, state.current]);
     }
 
-    const json = canvas.current.toJSON(['aiImage', 'isPreview']);
+    const json = canvas.current.toJSON(['aiImage']);
 
     state.current = JSON.stringify(json);
 
@@ -214,7 +214,7 @@ export default function ImageEditor({
 
     setUndoStack(undoStack);
 
-    // reloadCanvasFromState();
+    reloadCanvasFromState(canvas, state.current);
   };
 
   const handleRedo = () => {
@@ -224,7 +224,7 @@ export default function ImageEditor({
 
     setRedoStack(redoStack);
 
-    //  reloadCanvasFromState();
+    reloadCanvasFromState(canvas, state.current);
   };
 
   const handleClick = (e) => {
@@ -261,6 +261,20 @@ export default function ImageEditor({
     canvas.current.setActiveObject(text);
 
     setActiveObject(textObject);
+  };
+
+  const handleCopyActiveObject = () => {
+    const activeObject = canvas.current.getActiveObject();
+
+    activeObject.clone((clone) => {
+      clone.set({
+        left: activeObject.left + 10,
+        top: activeObject.top + 10,
+      });
+      canvas.current.add(clone).renderAll();
+
+      saveState();
+    });
   };
 
   const handleRemoveActiveObject = () => {
@@ -306,19 +320,19 @@ export default function ImageEditor({
 
   const handleGeneratedImagePreview = (image: AiImage) => {
     const imagesToRemove = canvas.current._objects.filter(
-      ({ isPreview }) => isPreview
+      ({ aiImage }) => aiImage?.isPreview
     );
 
     imagesToRemove.forEach((image) => {
       canvas.current.remove(image);
     });
 
-    addAiImageToCanvas(image, { isPreview: true });
+    addAiImageToCanvas({ ...image, isPreview: true });
   };
 
   const handlePreviewImageSelected = () => {
     const aiImagesToRemove = canvas.current._objects.filter(
-      (obj) => obj.aiImage && !obj.isPreview
+      (obj) => obj.aiImage && !obj.aiImage.isPreview
     );
 
     aiImagesToRemove.forEach((aiImage) => {
@@ -326,10 +340,10 @@ export default function ImageEditor({
     });
 
     const imagePreview = canvas.current._objects.find(
-      ({ isPreview }) => isPreview
+      ({ aiImage }) => aiImage?.isPreview
     );
 
-    imagePreview.set('isPreview', false);
+    imagePreview.set('aiImage', { ...imagePreview.aiImage, isPreview: false });
 
     saveState();
 
@@ -400,6 +414,8 @@ export default function ImageEditor({
     canvas.current.bringForward(selectedObject);
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
+
+    saveState();
   };
 
   const handleLayerDown = () => {
@@ -408,11 +424,15 @@ export default function ImageEditor({
     canvas.current.sendBackwards(selectedObject);
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
+
+    saveState();
   };
 
   const handleSelectedSide = (side: string) => {
     setActiveObject(null);
     setSelectedSide(side);
+    setRedoStack([]);
+    setUndoStack([]);
   };
 
   const handleNext = () => {
@@ -463,10 +483,10 @@ export default function ImageEditor({
   console.log('Objects', objects);
 
   const aiImage = objects.find(
-    ({ aiImage, isPreview }) => aiImage && !isPreview
+    ({ aiImage }) => aiImage && !aiImage.isPreview
   )?.aiImage;
 
-  const imagePreview = objects.find(({ isPreview }) => isPreview);
+  const imagePreview = objects.find(({ aiImage }) => aiImage?.isPreview);
 
   const showHint = isEmpty(objects) && !activeObject;
 
@@ -552,6 +572,7 @@ export default function ImageEditor({
           hasImagePreview={!!imagePreview}
           onLayerUp={handleLayerUp}
           onLayerDown={handleLayerDown}
+          onCopyActiveObject={handleCopyActiveObject}
           onDeleteActiveObject={handleRemoveActiveObject}
           onImageUpdate={handleImageUpdate}
         />

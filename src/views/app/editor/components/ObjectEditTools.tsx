@@ -8,7 +8,7 @@ import {
   IconTrash,
   IconLayerDown,
   IconLayerUp,
-  IconSheets,
+  IconCopy,
 } from '../toolbar/Icons';
 
 const Button = (props) => (
@@ -32,6 +32,7 @@ type ObjectEditToolsProps = {
     text: string;
     withBackgroundUrl: string;
   };
+  onCopyActiveObject: () => void;
   onDeleteActiveObject: () => void;
   hasImagePreview: boolean;
   onImageUpdate: (image: AiImage) => void;
@@ -46,17 +47,18 @@ const ObjectEditTools = ({
   onImageUpdate,
   onLayerDown,
   onLayerUp,
+  onCopyActiveObject,
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
 
   console.log('Active object', activeObject);
 
-  if (!activeObject?.aiImage) {
+  if (!activeObject) {
     return null;
   }
 
   const { aiImage } = activeObject;
-  const { url, noBackgroundUrl, withBackgroundUrl } = aiImage;
+  const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
 
   const isBackgroundRemoved = url === noBackgroundUrl;
 
@@ -116,8 +118,8 @@ const ObjectEditTools = ({
       <IconButton onClick={onLayerDown}>
         <IconLayerDown />
       </IconButton>
-      <IconButton onClick={onLayerDown}>
-        <IconSheets />
+      <IconButton onClick={onCopyActiveObject}>
+        <IconCopy />
       </IconButton>
       <IconButton onClick={onDeleteActiveObject} ml="14px">
         <IconTrash />
