@@ -35,16 +35,9 @@ const TOOLS = [
   },
 ];
 
-type NewText = {
-  fill: string;
-  fontSize: number;
-  text: string;
-};
-
 type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
-  onAddText: (text: NewText) => void;
   onUpdateTextObject: (updates: object) => void;
   activeObject: { aiImageUrl?: string; text: string };
   aiImage: AiImage;
@@ -58,7 +51,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   const {
     isExpanded,
     onSetExpanded,
-    onAddText,
     onUpdateTextObject,
     activeObject,
     aiImage,
@@ -80,12 +72,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   };
 
   const handleTextUpdate = (text) => {
-    if (!activeObject || !activeObject.text) {
-      onAddText({ fill: '#000000', fontSize: 20, text });
-
-      return;
-    }
-
     onUpdateTextObject({ text });
   };
 

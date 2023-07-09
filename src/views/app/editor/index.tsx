@@ -7,7 +7,7 @@ import { useMe } from '@/api/auth';
 import Button from '@/components/Button';
 
 import { fabric } from 'fabric';
-import { isEmpty } from 'lodash';
+import { isEmpty, times } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
 import { AiImage, Design } from '@/components/types';
@@ -54,6 +54,7 @@ export default function ImageEditor({
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
+  const [isModifyingObject, setIsModifyingObject] = useState(false);
 
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -63,14 +64,12 @@ export default function ImageEditor({
 
   const state = useRef<string>('');
 
-  const userState = useRef({ angle: 0, isRotating: false });
+  const userState = useRef({ angle: 0, isModifying: false, isRotating: false });
 
   const { data: me } = useMe();
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
   const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
-  const [hasSeenInitialCallToAction, setHasSeenInitialCallToAction] =
-    useState(false);
 
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -101,9 +100,12 @@ export default function ImageEditor({
   useEffect(() => {
     canvas.current = initCanvas(selectedSide);
 
-    if (canvasStateFront) {
+    const canvasState =
+      selectedSide === 'Front' ? canvasStateFront : canvasStateBack;
+
+    if (canvasState) {
       // Loading an already active design if you to go another page and come back
-      state.current = canvasStateFront;
+      state.current = canvasState;
 
       reloadCanvasFromState();
     } else {
@@ -111,7 +113,6 @@ export default function ImageEditor({
     }
 
     canvas.current.on('object:modified', () => {
-      console.log('Object modified');
       saveState();
     });
 
@@ -121,10 +122,31 @@ export default function ImageEditor({
       const { isRotating } = userState.current;
 
       if (isRotating) {
-        e.target.set('angle', Math.round(e.target.angle));
+        const newAngle = Math.round(e.target.angle);
+
+        const commonAngles = times(9, (index) => index * 45);
+
+        const nearestAngle = commonAngles.find(
+          (angle) => Math.abs(newAngle - angle) <= 3
+        );
+
+        e.target.set(
+          'angle',
+          nearestAngle !== undefined ? nearestAngle : newAngle
+        );
       }
 
       userState.current.isRotating = false;
+
+      setIsModifyingObject(false);
+    });
+
+    canvas.current.on('mouse:down', function (e) {
+      if (e.target) {
+        userState.current.isModifying = true;
+
+        setIsModifyingObject(true);
+      }
     });
 
     canvas.current.on('object:rotating', function (e) {
@@ -144,7 +166,7 @@ export default function ImageEditor({
         canvas.current = null;
       }
     };
-  }, []);
+  }, [selectedSide]);
 
   const saveState = () => {
     setRedoStack([]);
@@ -215,22 +237,34 @@ export default function ImageEditor({
     );
   };
 
-  const handleAddText = (params) => {
+  const handleClick = (e) => {
+    /* canvas.current.discardActiveObject();
+    canvas.current.renderAll();
+
+    setActiveObject(null); */
+  };
+
+  const handleAddText = () => {
     const { width, height } = drawingArea;
 
     const textObject = {
-      fill: '#FFFFFF',
+      editable: true,
+      fill: '#000000',
       fontFamily: 'Poppins',
-      text: 'this is\na multiline\ntext\naligned right!',
-      fontSize: 12,
+      text: '',
+      fontSize: 20,
       textAlign: 'left',
+      originX: 'center',
+      originY: 'center',
       left: width / 2,
       top: height / 2 - 20,
       centeredScaling: true,
-      ...params,
     };
 
-    const text = new fabric.Text(textObject.text, textObject);
+    const text = new fabric.IText(textObject.text, textObject);
+
+    text.enterEditing();
+    text.hiddenTextarea.focus();
 
     // Render the Text on Canvas
     canvas.current.add(text);
@@ -301,8 +335,6 @@ export default function ImageEditor({
         aiImageUrl !== imageUrl && aiImageUrl !== design?.aiImage?.url
     );
 
-    console.log('AI image preview', imageUrl, aiImagesToRemove);
-
     aiImagesToRemove.forEach((aiImage) => {
       canvas.current.remove(aiImage);
     });
@@ -321,8 +353,6 @@ export default function ImageEditor({
       (obj) => obj.aiImageUrl && obj.aiImageUrl !== image.url
     );
 
-    console.log('AI image', image);
-
     aiImagesToRemove.forEach((aiImage) => {
       canvas.current.remove(aiImage);
     });
@@ -338,13 +368,10 @@ export default function ImageEditor({
   };
 
   const handleGeneratedImageRemoved = (imageUrl: string) => {
-    console.log('Image URL', imageUrl, canvas.current._objects);
-
     const aiImage = canvas.current._objects.filter(
       (obj) => obj.aiImageUrl === imageUrl
     );
 
-    console.log('Handle image removed', aiImage);
     canvas.current.remove(aiImage[0]);
     canvas.current.renderAll();
 
@@ -357,8 +384,6 @@ export default function ImageEditor({
   };
 
   const handleAiImageUpdate = (aiImage) => {
-    console.log('AI image update', aiImage);
-
     handleGeneratedImageSelected(aiImage);
 
     addAiImageToCanvas(aiImage.url);
@@ -396,8 +421,6 @@ export default function ImageEditor({
   const handleLayerUp = () => {
     const selectedObject = canvas.current.getActiveObject();
 
-    console.log('Up', selectedObject);
-
     canvas.current.bringForward(selectedObject);
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
@@ -406,28 +429,14 @@ export default function ImageEditor({
   const handleLayerDown = () => {
     const selectedObject = canvas.current.getActiveObject();
 
-    console.log('Down', selectedObject);
-
     canvas.current.sendBackwards(selectedObject);
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
   };
 
   const handleSelectedSide = (side: string) => {
+    setActiveObject(null);
     setSelectedSide(side);
-
-    const canvas = side === 'Front' ? canvasFront : canvasBack;
-
-    if (!canvas.current.clear) {
-      canvas.current = initCanvas(side);
-    }
-
-    state.current = side === 'Front' ? canvasStateFront : canvasStateBack;
-
-    canvas.current.clear();
-    canvas.current.loadFromJSON(state.current, function () {
-      canvas.current.renderAll();
-    });
   };
 
   const handleNext = () => {
@@ -463,7 +472,14 @@ export default function ImageEditor({
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
 
-  const showHint = !hasSeenInitialCallToAction && isEmpty(design);
+  const canvasState =
+    selectedSide === 'Front' ? canvasStateFront : canvasStateBack;
+
+  const canvasStateFromJson = canvasState && JSON.parse(canvasState);
+
+  console.log('State as JSON', canvasStateFromJson.objects);
+  const showHint =
+    isEmpty(canvasStateFromJson?.objects) && !activeObject && !imagePreview;
 
   return (
     <Box h="100vh" w="100%">
@@ -483,6 +499,7 @@ export default function ImageEditor({
       >
         <Toolbar
           isDrawingAreaVisible={isDrawingAreaVisible}
+          onAddText={handleAddText}
           onToggleDrawingArea={() =>
             setDrawingAreaVisible(!isDrawingAreaVisible)
           }
@@ -497,6 +514,7 @@ export default function ImageEditor({
           <Box
             id="#canvas-container-front"
             display={selectedSide === 'Front' ? 'block' : 'none'}
+            onClick={handleClick}
             ref={clothingAndCanvasRefFront}
             position="relative"
           >
@@ -508,9 +526,9 @@ export default function ImageEditor({
               variantImageUrl={variantImageUrl}
               selectedVariant={selectedVariant}
               showHint={showHint}
+              showCenterAxis={isModifyingObject}
               side="front"
               onHintClick={() => {
-                setHasSeenInitialCallToAction(true);
                 setFooterToolbarExpanded(true);
               }}
             />
@@ -530,9 +548,9 @@ export default function ImageEditor({
             variantImageUrl={variantImageUrl}
             selectedVariant={selectedVariant}
             showHint={showHint}
+            showCenterAxis={isModifyingObject}
             side="back"
             onHintClick={() => {
-              setHasSeenInitialCallToAction(true);
               setFooterToolbarExpanded(true);
             }}
           />
@@ -555,10 +573,8 @@ export default function ImageEditor({
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={(isExpanded) => {
-            setHasSeenInitialCallToAction(true);
             setFooterToolbarExpanded(isExpanded);
           }}
-          onAddText={handleAddText}
           onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
           aiImage={design && design.aiImage}

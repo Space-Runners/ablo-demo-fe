@@ -152,6 +152,8 @@ export default function OrderOrShare({ design }: { design: Design }) {
                 setSelectedSide(selectedSide === 'Front' ? 'Back' : 'Front')
               }
               position="absolute"
+              left={0}
+              top={0}
               w="36px"
             >
               <IconChangeOrientation />

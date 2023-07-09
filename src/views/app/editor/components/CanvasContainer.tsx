@@ -10,12 +10,15 @@ type Props = {
   id: string;
   canvasRef: any;
   drawingArea: {
+    height: number;
     left: number;
     top: number;
+    width: number;
   };
   isDrawingAreaVisible: boolean;
   onHintClick: () => void;
   selectedVariant: any;
+  showCenterAxis: boolean;
   side: string;
   showHint: boolean;
   variantImageUrl: string;
@@ -29,6 +32,7 @@ const CanvasContainer = ({
   variantImageUrl,
   onHintClick,
   selectedVariant,
+  showCenterAxis,
   side,
   showHint,
 }: Props) => (
@@ -53,6 +57,34 @@ const CanvasContainer = ({
       id="drawingArea"
       className="drawing-area"
     >
+      {showCenterAxis ? (
+        <F>
+          <Box
+            borderLeftWidth="1px"
+            style={{
+              borderImage:
+                'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 7.81%, #FFFFFF 91.67%, rgba(255, 255, 255, 0) 100%) 1',
+              boxShadow: '0px 0px 4px 0px #97B9F559',
+            }}
+            height={1.2 * drawingArea.height}
+            position="absolute"
+            bottom={`${(-0.2 * drawingArea.height) / 2}px`}
+            left={drawingArea.width / 2}
+          ></Box>
+          <Box
+            borderTopWidth="1px"
+            style={{
+              borderImage:
+                'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 8.85%, #FFFFFF 91.15%, rgba(255, 255, 255, 0) 100%) 1',
+              boxShadow: '0px 0px 4px 0px #97B9F559',
+            }}
+            width={1.2 * drawingArea.width}
+            position="absolute"
+            left={`${(-0.2 * drawingArea.width) / 2}px`}
+            top={drawingArea.height / 2}
+          ></Box>
+        </F>
+      ) : null}
       <div className="canvas-container">
         <canvas id={id} ref={canvasRef}></canvas>
       </div>

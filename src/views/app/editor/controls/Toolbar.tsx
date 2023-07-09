@@ -1,4 +1,4 @@
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Text } from '@chakra-ui/react';
 
 import { useHistory } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ import IconToggleColorPicker from './icons/IconToggleColorPicker';
 import IconOpenProductPicker from './icons/IconOpenProductPicker';
 import IconUndo from './icons/IconUndo';
 import IconRedo from './icons/IconRedo';
+import IconText from './icons/IconText';
 
 import {
   IconDrawingArea,
@@ -25,6 +26,7 @@ const { abloBlue } = Colors;
 
 type Props = {
   isDrawingAreaVisible: boolean;
+  onAddText: () => void;
   onSelectedSide: (side: string) => void;
   onSelectedVariant: (variant: string) => void;
   onToggleDrawingArea: () => void;
@@ -36,6 +38,7 @@ type Props = {
 
 export default function Toolbar({
   isDrawingAreaVisible,
+  onAddText,
   onSelectedSide,
   onSelectedVariant,
   onToggleDrawingArea,
@@ -119,6 +122,25 @@ export default function Toolbar({
           </Button>
         </HStack>
       </HStack>
+      <Button
+        alignItems="center"
+        bg="#FFFFFF"
+        border="1px solid #D3D3D3"
+        borderRadius="4px"
+        h="28px"
+        mt="7px"
+        onClick={(e) => {
+          e.stopPropagation();
+
+          onAddText();
+        }}
+        padding="5px 6px"
+      >
+        <IconText />
+        <Text fontSize="11px" fontWeight={500} lineHeight="13px" ml="6px">
+          Add Text
+        </Text>
+      </Button>
       {isSidePickerVisible ? (
         <Box mb="20px" mt="20px">
           <MiniFilterBar

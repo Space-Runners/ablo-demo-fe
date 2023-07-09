@@ -30,6 +30,8 @@ export default function DesignTool() {
   const [canvasFront, setCanvasFront] = useState('');
   const [canvasBack, setCanvasBack] = useState('');
 
+  console.log('Canvases', canvasFront, canvasBack);
+
   return (
     <Box
       height="100vh"
