@@ -227,7 +227,7 @@ export default function ImageEditor({
     reloadCanvasFromState(canvas, state.current);
   };
 
-  const handleClick = (e) => {
+  const handleClick = () => {
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
 

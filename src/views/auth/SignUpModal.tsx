@@ -133,7 +133,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
               >
                 Sign up with
               </Text>
-              {/*   <GoogleLogin
+              <GoogleLogin
                 onSuccess={(credentialResponse) => {
                   console.log(credentialResponse);
 
@@ -147,7 +147,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
                   );
                 }}
                 width="300px"
-              /> */}
+              />
               <Text
                 color="#AAA9AB"
                 fontSize="sm"
