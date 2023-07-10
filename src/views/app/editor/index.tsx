@@ -166,9 +166,7 @@ export default function ImageEditor({
 
         userState.current.isRotating = false;
 
-        if (isModifyingObject) {
-          setIsModifyingObject(false);
-        }
+        setIsModifyingObject(false);
       });
 
       canvas.current.on('mouse:down', function (e) {
@@ -250,6 +248,7 @@ export default function ImageEditor({
     canvas.current.renderAll();
 
     setActiveObject(null);
+    setIsModifyingObject(false);
   };
 
   const handleAddText = () => {
