@@ -51,8 +51,6 @@ const ObjectEditTools = ({
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
 
-  console.log('Active object', activeObject);
-
   if (!activeObject) {
     return null;
   }

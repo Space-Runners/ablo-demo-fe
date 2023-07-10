@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -47,13 +47,11 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
 type ImageEditorProps = {
   design: Design;
   onDesignChange: (design: Design) => void;
-  onCanvasChange: (side: string, canvas: string) => void;
 };
 
 export default function ImageEditor({
   design: designForSides,
   onDesignChange,
-  onCanvasChange,
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
@@ -103,6 +101,29 @@ export default function ImageEditor({
 
   const drawingArea = printableAreas[selectedSide.toLowerCase()];
 
+  const saveState = useCallback(() => {
+    const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
+
+    setRedoStack([]);
+
+    // Initial call won't have a state
+    if (state.current) {
+      setUndoStack([...undoStack, state.current]);
+    }
+
+    const json = canvas.current.toJSON(['aiImage']);
+
+    state.current = JSON.stringify(json);
+
+    onDesignChange({
+      ...designForSides,
+      [selectedSide]: {
+        ...designForSides[selectedSide],
+        canvas: state.current,
+      },
+    });
+  }, [selectedSide, designForSides, onDesignChange, undoStack]);
+
   useEffect(() => {
     console.log('Use effect');
     sides.forEach((side) => {
@@ -122,11 +143,6 @@ export default function ImageEditor({
       } else {
         state.current = JSON.stringify(canvas.current);
       }
-
-      canvas.current.on('object:modified', () => {
-        console.log('Object modified');
-        saveState(side);
-      });
 
       canvas.current.on('mouse:up', function (e) {
         setActiveObject(e.target);
@@ -186,27 +202,21 @@ export default function ImageEditor({
     };
   }, []);
 
-  const saveState = () => {
-    setRedoStack([]);
+  useEffect(() => {
+    const canvasCurrent = canvas.current;
+    console.log('Use modified effect');
 
-    // Initial call won't have a state
-    if (state.current) {
-      setUndoStack([...undoStack, state.current]);
-    }
-
-    const json = canvas.current.toJSON(['aiImage']);
-
-    state.current = JSON.stringify(json);
-
-    handleDesignUpdate({ canvas: state.current });
-  };
-
-  const handleDesignUpdate = (updates) => {
-    onDesignChange({
-      ...designForSides,
-      [selectedSide]: { ...designForSides[selectedSide], ...updates },
+    canvasCurrent.on('object:modified', () => {
+      saveState();
     });
-  };
+
+    return () => {
+      console.log('Remove modified handler');
+      if (canvasCurrent) {
+        canvasCurrent.off('object:modified');
+      }
+    };
+  }, [canvas, saveState]);
 
   const handleUndo = () => {
     setRedoStack([...redoStack, state.current]);
@@ -416,8 +426,7 @@ export default function ImageEditor({
     const selectedObject = canvas.current.getActiveObject();
 
     canvas.current.bringForward(selectedObject);
-    canvas.current.discardActiveObject();
-    canvas.current.renderAll();
+    canvas.current.discardActiveObject().renderAll();
 
     saveState();
   };
@@ -426,13 +435,14 @@ export default function ImageEditor({
     const selectedObject = canvas.current.getActiveObject();
 
     canvas.current.sendBackwards(selectedObject);
-    canvas.current.discardActiveObject();
-    canvas.current.renderAll();
+    canvas.current.discardActiveObject().renderAll();
 
     saveState();
   };
 
   const handleSelectedSide = (side: string) => {
+    canvas.current.discardActiveObject().renderAll();
+
     setActiveObject(null);
     setSelectedSide(side);
     setRedoStack([]);
@@ -440,8 +450,7 @@ export default function ImageEditor({
   };
 
   const handleNext = () => {
-    canvas.current.discardActiveObject();
-    canvas.current.renderAll();
+    canvas.current.discardActiveObject().renderAll();
 
     if (me && me.roles[0] !== 'guest') {
       handleGoToSaveDesign();
@@ -484,7 +493,7 @@ export default function ImageEditor({
 
   const objects = canvasStateFromJson?.objects || [];
 
-  console.log('Objects', objects);
+  console.log('Objects', objects, designForSides);
 
   const aiImage = objects.find(
     ({ aiImage }) => aiImage && !aiImage.isPreview
