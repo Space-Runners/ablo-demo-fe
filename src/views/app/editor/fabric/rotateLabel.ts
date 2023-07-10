@@ -14,7 +14,7 @@ export default function renderRotateLabel(ctx, state) {
   ctx.fillStyle = 'rgba(37,38,39,0.9)';
   ctx.roundRect(0, 0, rectWidth, rectHeight, borderRadius);
   ctx.fill();
-  ctx.font = '400 13px serif';
+  ctx.font = '400 13px Roboto';
   ctx.fillStyle = 'hsla(0,0%, 100%, 0.9)';
   ctx.fillText(angleText, rectWidth / 2 - textWidth / 2, rectHeight / 2 + 4);
   ctx.restore();

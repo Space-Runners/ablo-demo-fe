@@ -47,11 +47,13 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
 type ImageEditorProps = {
   design: Design;
   onDesignChange: (design: Design) => void;
+  onCanvasChange: (side: string, canvas: string) => void;
 };
 
 export default function ImageEditor({
   design: designForSides,
   onDesignChange,
+  onCanvasChange,
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
@@ -112,8 +114,6 @@ export default function ImageEditor({
 
       const canvasState = designForSides[side]?.canvas;
 
-      console.log('Side', side, canvas, canvasState);
-
       if (canvasState) {
         // Loading an already active design if you to go another page and come back
         state.current = canvasState;
@@ -125,7 +125,7 @@ export default function ImageEditor({
 
       canvas.current.on('object:modified', () => {
         console.log('Object modified');
-        saveState();
+        saveState(side);
       });
 
       canvas.current.on('mouse:up', function (e) {
@@ -139,7 +139,7 @@ export default function ImageEditor({
           const commonAngles = times(9, (index) => index * 45);
 
           const nearestAngle = commonAngles.find(
-            (angle) => Math.abs(newAngle - angle) <= 3
+            (angle) => Math.abs(newAngle - angle) <= 5
           );
 
           e.target.set(
@@ -174,6 +174,7 @@ export default function ImageEditor({
     });
 
     return () => {
+      console.log('Unmount');
       sides.forEach((side) => {
         const canvas = side === 'Front' ? canvasFront : canvasBack;
 
@@ -271,7 +272,10 @@ export default function ImageEditor({
         left: activeObject.left + 10,
         top: activeObject.top + 10,
       });
-      canvas.current.add(clone).renderAll();
+      canvas.current.add(clone);
+      canvas.current.bringForward(clone);
+      canvas.current.setActiveObject(clone);
+      canvas.current.renderAll();
 
       saveState();
     });

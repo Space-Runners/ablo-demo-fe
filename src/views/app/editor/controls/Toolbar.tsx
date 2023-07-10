@@ -9,7 +9,6 @@ import Colors from '@/theme/colors';
 
 import IconToggleSidePicker from './icons/IconToggleSide';
 import IconToggleColorPicker from './icons/IconToggleColorPicker';
-import IconOpenProductPicker from './icons/IconOpenProductPicker';
 import IconUndo from './icons/IconUndo';
 import IconRedo from './icons/IconRedo';
 import IconText from './icons/IconText';
@@ -74,9 +73,6 @@ export default function Toolbar({
             ) : (
               <IconDrawingAreaDisabled />
             )}
-          </ToolbarButton>
-          <ToolbarButton onClick={() => history.push('/app/products')}>
-            <IconOpenProductPicker />
           </ToolbarButton>
           <ToolbarButton
             isSelected={isColorPickerVisible}

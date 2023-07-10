@@ -108,60 +108,6 @@ export const IconAiGenerator = ({ isSelected }: { isSelected?: boolean }) => (
   </Icon>
 );
 
-export const IconTextEditor = ({ isSelected }: { isSelected?: boolean }) => (
-  <Icon
-    width="24px"
-    height="24px"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g clipPath="url(#clip0_1577_5048)">
-      <path
-        d="M3 7V5H16V7"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 5V19"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 19H8"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15 13V12H21V13"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M18 12V19"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M17 19H19"
-        stroke={isSelected ? '#FFFFFF' : '#959392'}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_1577_5048">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-    </defs>
-  </Icon>
-);
-
 export const IconImage = ({ isSelected }: { isSelected?: boolean }) => (
   <Icon
     width="24px"
