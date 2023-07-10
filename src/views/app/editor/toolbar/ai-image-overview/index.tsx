@@ -12,7 +12,7 @@ import Button from '@/components/Button';
 import Colors from '@/theme/colors';
 import { AiImage } from '@/components/types';
 
-import { IconMood, IconStyle, IconSubject, IconBackground } from './Icons';
+import { IconMood, IconStyle, IconSubject } from './Icons';
 
 export const IconTrash = (props) => (
   <Icon
