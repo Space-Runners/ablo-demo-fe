@@ -5,13 +5,13 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 const COLORS = [
-  '#B8CCB4',
-  '#CA6751',
   '#FFFFFF',
-  '#000000',
-  'red',
-  'blue',
-  'green',
+  '#050606',
+  '#EC212B',
+  '#019548',
+  '#3662C0',
+  '#FDDE0A',
+  '#ED227B',
 ];
 
 const Button = (props) => {
