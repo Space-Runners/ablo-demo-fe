@@ -363,7 +363,12 @@ export default function ImageEditor({
       ({ aiImage }) => aiImage?.isPreview
     );
 
-    imagePreview.set('aiImage', { ...imagePreview.aiImage, isPreview: false });
+    if (imagePreview) {
+      imagePreview.set('aiImage', {
+        ...imagePreview.aiImage,
+        isPreview: false,
+      });
+    }
 
     saveState();
 
