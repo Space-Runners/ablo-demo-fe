@@ -8,13 +8,13 @@ import '@fontsource/special-elite';
 import '@fontsource/press-start-2p';
 
 export default [
-  'Poppins',
+  'Silkscreen',
+  'Luckiest Guy',
+  'Press Start 2P',
+  'Special Elite',
+  'Bangers',
+  'Koulen',
   'Space Grotesk',
   'Karla',
-  'Bangers',
-  'Press Start 2P',
-  'Silkscreen',
-  'Koulen',
-  'Special Elite',
-  'Luckiest Guy',
+  'Poppins',
 ];

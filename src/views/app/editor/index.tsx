@@ -166,7 +166,9 @@ export default function ImageEditor({
 
         userState.current.isRotating = false;
 
-        setIsModifyingObject(false);
+        if (isModifyingObject) {
+          setIsModifyingObject(false);
+        }
       });
 
       canvas.current.on('mouse:down', function (e) {
@@ -239,7 +241,11 @@ export default function ImageEditor({
     reloadCanvasFromState(canvas, state.current);
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    if (!e.target || e.target?.className.includes('canvas')) {
+      return;
+    }
+
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
 
