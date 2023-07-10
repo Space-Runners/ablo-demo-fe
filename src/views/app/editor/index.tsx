@@ -351,13 +351,13 @@ export default function ImageEditor({
   };
 
   const handlePreviewImageSelected = () => {
-    const aiImagesToRemove = canvas.current._objects.filter(
-      (obj) => obj.aiImage && !obj.aiImage.isPreview
+    const aiImage = canvas.current._objects.find(
+      ({ aiImage }) => aiImage && !aiImage.isPreview
     );
 
-    aiImagesToRemove.forEach((aiImage) => {
-      canvas.current.remove(aiImage);
-    });
+    if (aiImage) {
+      aiImage.set('aiImage', null);
+    }
 
     const imagePreview = canvas.current._objects.find(
       ({ aiImage }) => aiImage?.isPreview
@@ -508,6 +508,8 @@ export default function ImageEditor({
   const imagePreview = objects.find(({ aiImage }) => aiImage?.isPreview);
 
   const showHint = isEmpty(objects) && !activeObject;
+
+  console.log('ai image', aiImage);
 
   return (
     <Box h="100vh" w="100%">

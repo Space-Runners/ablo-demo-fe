@@ -99,6 +99,8 @@ export default function ImageGenerator({
     setSelectedImage(null);
     setOptions(defaultParams);
 
+    setIsEditing(false);
+
     setActiveStep(1);
   };
 
