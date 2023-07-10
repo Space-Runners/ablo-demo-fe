@@ -86,7 +86,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
             {isImageGenerator ? (
               <ImageGenerator
                 aiImage={aiImage}
-                key={aiImage?.url}
                 onGeneratedImagePreview={onGeneratedImagePreview}
                 onGeneratedImageSelected={onGeneratedImageSelected}
                 onGeneratedImageRemoved={onGeneratedImageRemoved}
