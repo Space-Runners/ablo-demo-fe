@@ -82,10 +82,6 @@ const STEPS = [
     name: 'Subject',
     icon: <IconSubject />,
   },
-  {
-    name: 'Background',
-    icon: <IconBackground />,
-  },
 ];
 
 type Props = {
