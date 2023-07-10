@@ -24,7 +24,7 @@ const Button = (props) => {
 
 export default function FontPicker({ fontFamily, onUpdate }) {
   return (
-    <HStack overflow="auto" spacing="0" w="220px">
+    <HStack mt="8px" overflow="auto" spacing="0" w="220px">
       {Fonts.map((font) => (
         <Button
           isSelected={font === fontFamily}

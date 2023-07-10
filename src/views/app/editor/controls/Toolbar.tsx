@@ -1,7 +1,5 @@
 import { Box, Button, HStack, Text } from '@chakra-ui/react';
 
-import { useHistory } from 'react-router-dom';
-
 import MiniFilterBar from '@/components/MiniFilterBar';
 import ColorPicker from '@/components/ColorPicker';
 import ToolbarButton from '@/components/ToolbarButton';
@@ -48,8 +46,6 @@ export default function Toolbar({
 }: Props) {
   const [isSidePickerVisible, setSidePickerVisible] = useState(false);
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
-
-  const history = useHistory();
 
   return (
     <Box p="0px 14px" w="100%">

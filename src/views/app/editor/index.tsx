@@ -21,7 +21,7 @@ import SaveDesignModal from './components/SaveDesignModal';
 import Toolbar from './controls/Toolbar';
 
 import renderRotateLabel from './fabric/rotateLabel';
-import ObjectEditTools from './components/ObjectEditTools';
+import ObjectEditTools from './components/object-edit-tools';
 import FooterToolbar from './toolbar';
 
 import './ImageEditor.css';
@@ -207,6 +207,7 @@ export default function ImageEditor({
     console.log('Use modified effect');
 
     canvasCurrent.on('object:modified', () => {
+      console.log('Object modified');
       saveState();
     });
 
@@ -587,12 +588,12 @@ export default function ImageEditor({
           onLayerDown={handleLayerDown}
           onCopyActiveObject={handleCopyActiveObject}
           onDeleteActiveObject={handleRemoveActiveObject}
+          onUpdateTextObject={handleUpdateTextObject}
           onImageUpdate={handleImageUpdate}
         />
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={setFooterToolbarExpanded}
-          onUpdateTextObject={handleUpdateTextObject}
           activeObject={activeObject}
           aiImage={!imagePreview && aiImage}
           onImageUploaded={handleImageUpload}

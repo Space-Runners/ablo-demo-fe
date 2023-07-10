@@ -1,11 +1,21 @@
 import { Button as ChakraButton, HStack } from '@chakra-ui/react';
 
-const COLORS = ['#B8CCB4', '#CA6751', '#FFFFFF', 'red', 'blue', 'green'];
+import Colors from '@/theme/colors';
+
+const { abloBlue } = Colors;
+
+const COLORS = [
+  '#B8CCB4',
+  '#CA6751',
+  '#FFFFFF',
+  '#000000',
+  'red',
+  'blue',
+  'green',
+];
 
 const Button = (props) => {
-  const { isSelected, ...rest } = props;
-
-  const size = isSelected ? 35 : 25;
+  const size = 25;
 
   return (
     <ChakraButton
@@ -14,18 +24,24 @@ const Button = (props) => {
       width={`${size}px`}
       height={`${size}px`}
       borderRadius="50%"
-      {...rest}
+      {...props}
     />
   );
 };
 
 export default function ColorPicker({ selectedColor, onUpdate }) {
   return (
-    <HStack overflow="auto" spacing="10px" w="220px">
+    <HStack mt="8px" overflow="auto" spacing="10px">
       {COLORS.map((color) => (
         <Button
           bg={color}
-          border={color === '#FFFFFF' ? '1px solid #EAE9E9' : 'none'}
+          border={
+            color === selectedColor
+              ? `1px solid ${abloBlue}`
+              : color === '#FFFFFF'
+              ? '1px solid #EAE9E9'
+              : 'none'
+          }
           isSelected={color === selectedColor}
           key={color}
           onClick={() => onUpdate(color)}
