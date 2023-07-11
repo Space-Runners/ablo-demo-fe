@@ -6,7 +6,7 @@ export interface ImageGenerationOptions {
 
 export interface TextToImageRequest {
   style: string;
-  mood: string;
+  mood?: string;
   freeText: string;
   subjectSuggestions: string[];
   background: boolean;

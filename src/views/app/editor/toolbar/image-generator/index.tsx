@@ -11,7 +11,11 @@ import { useState } from 'react';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
-import { AiImage, AiImageOptions } from '@/components/types';
+import {
+  AiImage,
+  AiImageOptions,
+  TextToImageRequest,
+} from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectMood from './select-mood';
@@ -135,10 +139,13 @@ export default function ImageGenerator({
     const requestParams = {
       background,
       style,
-      mood,
       subjectSuggestions: keywords,
       freeText: subject,
-    };
+    } as TextToImageRequest;
+
+    if (mood !== 'noMood') {
+      requestParams.mood = mood;
+    }
 
     generateImage(requestParams)
       .then((images) => {

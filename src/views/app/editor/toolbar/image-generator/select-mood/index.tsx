@@ -7,7 +7,8 @@ import { useOptions } from '@/api/image-generator';
 import CheckmarkSelected from '../components/CheckmarkSelected';
 
 function getImgUrl(name) {
-  return new URL(`./images/${name}.png`, import.meta.url).href;
+  return new URL(`./images/${name.split(' ').join('')}.png`, import.meta.url)
+    .href;
 }
 
 type Props = {
@@ -29,6 +30,11 @@ export default function SelectMood({
     return null;
   }
 
+  const noMood = {
+    value: 'noMood',
+    name: 'No Mood',
+  };
+
   const moods = Object.keys(options.moods).map((key) => {
     const fullName = options.moods[key];
 
@@ -39,6 +45,8 @@ export default function SelectMood({
       name,
     };
   });
+
+  moods.push(noMood);
 
   const chunks = chunk(moods, 2);
 
