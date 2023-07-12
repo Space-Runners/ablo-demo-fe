@@ -77,7 +77,6 @@ type ObjectEditToolsProps = {
   };
   onCopyActiveObject: () => void;
   onDeleteActiveObject: () => void;
-  hasImagePreview: boolean;
   onImageUpdate: (image: AiImage) => void;
   onUpdateTextObject: (updates: object) => void;
   onLayerUp: () => void;
@@ -87,7 +86,6 @@ type ObjectEditToolsProps = {
 const ObjectEditTools = ({
   activeObject,
   onDeleteActiveObject,
-  hasImagePreview,
   onImageUpdate,
   onLayerDown,
   onLayerUp,
@@ -156,7 +154,6 @@ const ObjectEditTools = ({
     <Box
       bg="#FFFFFF"
       borderRadius="8px"
-      bottom={hasImagePreview ? '90px' : '40px'}
       boxShadow="0px 1px 2px 0px #0000000F"
       p="8px 11px"
     >

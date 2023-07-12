@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, VStack } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import Button from '@/components/Button';
 
@@ -590,19 +590,26 @@ export default function ImageEditor({
             }}
           />
         </Box>
-        {imagePreview ? (
-          <Button onClick={handlePreviewImageSelected} title="Place artwork" />
-        ) : null}
-        <ObjectEditTools
-          activeObject={activeObject}
-          hasImagePreview={!!imagePreview}
-          onLayerUp={handleLayerUp}
-          onLayerDown={handleLayerDown}
-          onCopyActiveObject={handleCopyActiveObject}
-          onDeleteActiveObject={handleRemoveActiveObject}
-          onUpdateTextObject={handleUpdateTextObject}
-          onImageUpdate={handleImageUpdate}
-        />
+        <VStack
+          position="absolute"
+          top={`${92 + drawingArea.height + drawingArea.top + 10}px`}
+        >
+          <ObjectEditTools
+            activeObject={activeObject}
+            onLayerUp={handleLayerUp}
+            onLayerDown={handleLayerDown}
+            onCopyActiveObject={handleCopyActiveObject}
+            onDeleteActiveObject={handleRemoveActiveObject}
+            onUpdateTextObject={handleUpdateTextObject}
+            onImageUpdate={handleImageUpdate}
+          />
+          {imagePreview ? (
+            <Button
+              onClick={handlePreviewImageSelected}
+              title="Place artwork"
+            />
+          ) : null}
+        </VStack>
         <FooterToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={setFooterToolbarExpanded}
