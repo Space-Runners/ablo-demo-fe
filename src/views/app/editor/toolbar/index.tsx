@@ -58,8 +58,8 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   return (
     <Box bottom={0} position="fixed" w="100%" zIndex={3}>
-      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 7px">
-        <Flex align="center" justify="space-between" padding="10px 0">
+      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto">
+        <Flex align="center" justify="space-between" padding="10px 7px">
           <HStack spacing="8px">
             {TOOLS.map(({ name, icon, iconActive }) => (
               <ToolbarButton

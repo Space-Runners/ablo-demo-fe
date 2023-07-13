@@ -1,11 +1,8 @@
-import { Box, Flex, HStack, Switch, Text } from '@chakra-ui/react';
-import { isEmpty } from 'lodash';
+import { Box, Flex, HStack, Input, Switch, Text } from '@chakra-ui/react';
 
-import ButtonCTA from '@/components/Button';
 import { useOptions } from '@/api/image-generator';
 import Colors from '@/theme/colors';
 
-import Input from '../components/Input';
 import Keywords from '../components/Keywords';
 
 const { abloBlue } = Colors;
@@ -14,8 +11,6 @@ type Props = {
   background: boolean;
   onChangeBackground: (value: boolean) => void;
   onChange: (value: string) => void;
-  onNext: () => void;
-  onBack: () => void;
   style: string;
   value: string;
   keywords: string[];
@@ -27,8 +22,6 @@ export default function AddSubject({
   background,
   onChangeBackground,
   onChange,
-  onNext,
-  onBack,
   onUpdateKeywords,
   style,
   value,
@@ -42,13 +35,13 @@ export default function AddSubject({
   const suggestions = options.suggestions[style] || [];
 
   return (
-    <Box>
-      <Flex align="center" justify="space-between" mb="16px">
-        <Text fontWeight={500} textTransform="uppercase">
-          Add subject
+    <Box padding="8px 18px">
+      <Flex align="center" justify="space-between" mb="8px">
+        <Text as="b" color="#1A1A1A">
+          Subject
         </Text>
         <HStack>
-          <Text fontSize="sm" mr="8px" textTransform="uppercase">
+          <Text color="#1A1A1A" fontSize="sm" mr="8px">
             Solid background
           </Text>
           <Switch
@@ -72,10 +65,13 @@ export default function AddSubject({
         </HStack>
       </Flex>
       <Input
-        mb="30px"
+        bg="#F5F5F5"
+        border="none"
+        borderRadius="11px"
+        h="42px"
         onChange={(e) => onChange(e.target.value)}
         value={value}
-        placeholder="No more than 4-5 words"
+        placeholder="Write subject..."
       />
       {suggestions ? (
         <Keywords
@@ -84,16 +80,6 @@ export default function AddSubject({
           onChange={onUpdateKeywords}
         />
       ) : null}
-      <Flex align="center" padding="14px 0">
-        <ButtonCTA flex={1} onClick={onBack} outlined title="Back" />
-        <ButtonCTA
-          disabled={!value && isEmpty(keywords)}
-          flex={1}
-          ml="10px"
-          onClick={onNext}
-          title="Next"
-        />
-      </Flex>
     </Box>
   );
 }
