@@ -16,8 +16,17 @@ jobs:
       - name: Install dependencies
         run: npm install --force
 
-      - name: Build app
+      - name: Build app for production
         run: npm run build
+        if: github.ref == 'refs/heads/master'
+        env:
+          VITE_API_URL: dev.ablo.ai
+
+      - name: Build app for staging
+        run: npm run build
+        if: github.ref == 'refs/heads/develop'
+        env:
+          VITE_API_URL: api.ablo.ai
 
       - name: Deploy to S3 production
         uses: jakejarvis/s3-sync-action@master
