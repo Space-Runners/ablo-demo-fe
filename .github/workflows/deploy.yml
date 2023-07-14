@@ -20,13 +20,13 @@ jobs:
         run: npm run build
         if: github.ref == 'refs/heads/master'
         env:
-          VITE_API_URL: https://dev.ablo.ai
+          VITE_API_URL: https://api.ablo.ai
 
       - name: Build app for staging
         run: npm run build
         if: github.ref == 'refs/heads/develop'
         env:
-          VITE_API_URL: https://api.ablo.ai
+          VITE_API_URL: https://dev.ablo.ai
 
       - name: Deploy to S3 production
         uses: jakejarvis/s3-sync-action@master
