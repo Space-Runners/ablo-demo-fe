@@ -5,6 +5,7 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 const disabledStyles = {
+  bg: '#FFFFFF',
   border: `1px solid #AAA9AB`,
   color: '#AAA9AB',
   _hover: {
@@ -59,10 +60,10 @@ const Button = ({
 }) => {
   return (
     <ChakraButton
-      bg="#FFFFFF"
+      bg={outlined ? '#FFFFFF' : abloBlue}
       border={`1px solid ${outlined ? '#000000' : abloBlue}`}
       borderRadius="100px"
-      color={outlined ? '#000000' : abloBlue}
+      color={outlined ? '#000000' : '#FFFFFF'}
       height="50px"
       padding="0 14px"
       fontWeight={600}

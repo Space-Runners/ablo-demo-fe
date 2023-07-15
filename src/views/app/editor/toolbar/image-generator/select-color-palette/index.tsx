@@ -1,82 +1,80 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { chunk } from 'lodash';
 
 import { useOptions } from '@/api/image-generator';
 
-function getImgUrl(name) {
-  return new URL(`./images/${name.split(' ').join('')}.png`, import.meta.url)
-    .href;
+import Colors from '@/theme/colors';
+
+const { abloBlue } = Colors;
+
+function getImgUrl(tone, style) {
+  let url = `./images/${tone}_${style
+    .split('_')
+    .map((word) => word.toUpperCase())
+    .join('')}.png`;
+
+  if (tone === 'noMood') {
+    url = `./images/NoFilters.png`;
+  }
+
+  return new URL(url, import.meta.url).href;
 }
 
 type Props = {
   onChange: (value: string) => void;
   selectedValue: string;
+  style: string;
 };
 
-export default function SelectMood({ onChange, selectedValue }: Props) {
+export default function SelectColorPalette({
+  onChange,
+  selectedValue,
+  style,
+}: Props) {
   const { data: options } = useOptions();
 
   if (!options) {
     return null;
   }
 
-  const noMood = {
-    value: 'noMood',
-    name: 'No Mood',
-  };
+  const tones = [...options.tones[style.toLowerCase()], 'noMood'];
 
-  const moods = Object.keys(options.moods).map((key) => {
-    const fullName = options.moods[key];
+  if (!tones) {
+    return;
+  }
 
-    const name = fullName.replace(' Mood', '').split(' ').join('');
-
-    return {
-      value: key,
-      name,
-    };
-  });
-
-  moods.push(noMood);
-
-  const chunks = chunk(moods, 2);
+  const chunks = chunk(tones, 4);
 
   return (
-    <Box>
+    <VStack align="flex-start" spacing="20px">
       {chunks.map((chunk, index) => (
-        <Flex key={index} mb="16px" w="100%">
-          {chunk.map(({ value, name }, index) => {
-            const isSelected = value === selectedValue;
+        <HStack key={index} spacing="12px" w="100%">
+          {chunk.map((name: string, index) => {
+            const isSelected = name === selectedValue;
+
+            const tone = name.replace(' Tones', '').replace('B/W', 'BW');
 
             return (
-              <Box
-                border={isSelected ? '4px solid #000000' : ''}
-                borderRadius="4px"
-                flex={1}
-                maxW="50%"
-                mr={index === 0 ? '16px' : 0}
-                onClick={() => onChange(value)}
-                key={value}
-                position="relative"
-                textAlign="left"
-              >
+              <Box borderRadius="4px" onClick={() => onChange(name)} key={name}>
                 <Image
-                  borderRadius="4px"
+                  border={isSelected ? `3px solid ${abloBlue}` : ''}
+                  borderRadius="50%"
                   key={index}
                   mb="8px"
-                  h="21px"
-                  src={getImgUrl(`${name}`)}
+                  h="80px"
+                  src={getImgUrl(tone, style)}
                   alt={name}
-                  w="100%"
+                  w="73px"
                 />
 
-                <Text color="#1A1A1A" fontSize="12px">
+                <Text color="#1A1A1A" fontSize="12px" align="center">
                   {name}
                 </Text>
               </Box>
             );
           })}
-        </Flex>
+        </HStack>
       ))}
-    </Box>
+    </VStack>
   );
 }

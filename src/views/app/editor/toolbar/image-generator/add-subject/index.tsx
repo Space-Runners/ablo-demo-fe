@@ -35,7 +35,7 @@ export default function AddSubject({
   const suggestions = options.suggestions[style] || [];
 
   return (
-    <Box padding="8px 18px">
+    <Box padding="8px 14px">
       <Flex align="center" justify="space-between" mb="8px">
         <Text as="b" color="#1A1A1A">
           Subject

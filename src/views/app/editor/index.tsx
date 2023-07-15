@@ -125,7 +125,6 @@ export default function ImageEditor({
   }, [selectedSide, designForSides, onDesignChange, undoStack]);
 
   useEffect(() => {
-    console.log('Use effect');
     sides.forEach((side) => {
       const canvas = side === 'Front' ? canvasFront : canvasBack;
 
@@ -190,7 +189,6 @@ export default function ImageEditor({
     });
 
     return () => {
-      console.log('Unmount');
       sides.forEach((side) => {
         const canvas = side === 'Front' ? canvasFront : canvasBack;
 
@@ -204,15 +202,12 @@ export default function ImageEditor({
 
   useEffect(() => {
     const canvasCurrent = canvas.current;
-    console.log('Use modified effect');
 
     canvasCurrent.on('object:modified', () => {
-      console.log('Object modified');
       saveState();
     });
 
     return () => {
-      console.log('Remove modified handler');
       if (canvasCurrent) {
         canvasCurrent.off('object:modified');
       }
@@ -399,7 +394,6 @@ export default function ImageEditor({
   };
 
   const addAiImageToCanvas = (image, options = {}) => {
-    console.log('Image', image);
     fabric.Image.fromURL(
       image.url,
       (img) => {
@@ -504,8 +498,6 @@ export default function ImageEditor({
 
   const objects = canvasStateFromJson?.objects || [];
 
-  console.log('Objects', objects, designForSides);
-
   const aiImage = objects.find(
     ({ aiImage }) => aiImage && !aiImage.isPreview
   )?.aiImage;
@@ -513,8 +505,6 @@ export default function ImageEditor({
   const imagePreview = objects.find(({ aiImage }) => aiImage?.isPreview);
 
   const showHint = isEmpty(objects) && !activeObject;
-
-  console.log('ai image', aiImage);
 
   return (
     <Box h="100vh" w="100%">

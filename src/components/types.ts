@@ -1,6 +1,8 @@
 export interface ImageGenerationOptions {
   styles: object;
-  moods: object;
+  tones: {
+    string: string[];
+  };
   suggestions: object;
 }
 

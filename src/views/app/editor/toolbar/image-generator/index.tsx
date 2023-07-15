@@ -5,7 +5,6 @@ import {
   AccordionPanel,
   AccordionIcon,
   Box,
-  Button as ChakraButton,
   Flex,
   HStack,
   Image,
@@ -29,14 +28,12 @@ import SelectStyle from './select-style';
 import SelectColorPalette from './select-color-palette';
 import AddSubject from './add-subject';
 
-import IconSpark from './components/IconSpark';
-import IconShuffle from './components/IconShuffle';
 import Progress from './components/Progress';
 
 import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
-  style: '',
+  style: 'Botanical',
   mood: '',
   subject: '',
   keywords: [],
@@ -46,27 +43,11 @@ const defaultParams = {
 const accordionButtonStyles = {
   borderRadius: 0,
   color: '#1A1A1A',
-  padding: '8px 18px',
+  padding: '8px 14px',
   _focus: {
     boxShadow: 'none',
   },
 };
-
-const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
-  <ChakraButton
-    bg="transparent"
-    border="1px solid #555251"
-    color="#555251"
-    justifyContent="center"
-    padding="12px 20px"
-    {...rest}
-  >
-    {icon}
-    <Text as="b" color="#555251" fontSize="sm" ml="10px">
-      {title}
-    </Text>
-  </ChakraButton>
-);
 
 type ImageGeneratorProps = {
   aiImage: AiImage;
@@ -90,12 +71,6 @@ export default function ImageGenerator({
   const [images, setImages] = useState([]);
 
   const { background, keywords, style, mood, subject } = options;
-
-  const handleEditPrompts = () => {
-    setImages([]);
-
-    onGeneratedImageRemoved(selectedImage);
-  };
 
   const handleNewArtwork = () => {
     handleReset();
@@ -185,23 +160,10 @@ export default function ImageGenerator({
 
   if (images.length) {
     return (
-      <Box>
-        <Text fontSize="md" mb="22px">
+      <Box padding="8px 14px">
+        <Text mb="22px" textTransform="uppercase">
           Select image
         </Text>
-        <Flex align="center" mb="22px">
-          <ButtonGenerateAgain
-            icon={<IconShuffle />}
-            onClick={handleGenerate}
-            title="Generate similar"
-          />
-          <ButtonGenerateAgain
-            icon={<IconSpark />}
-            onClick={handleNewArtwork}
-            ml="20px"
-            title="Generate New"
-          />
-        </Flex>
         <HStack justify="center" mb="20px">
           {images.map((imageUrl) => (
             <Image
@@ -223,15 +185,16 @@ export default function ImageGenerator({
         <Flex align="center" mt="14px" pb="14px">
           <Button
             flex={1}
-            onClick={handleEditPrompts}
+            onClick={handleGenerate}
             outlined
-            title="Edit prompts"
+            title="Generate similar"
           />
           <Button
             flex={1}
             ml="10px"
             onClick={handleNewArtwork}
-            title="New Artwork"
+            outlined
+            title="New"
           />
         </Flex>
       </Box>
@@ -240,7 +203,7 @@ export default function ImageGenerator({
 
   return (
     <Box pb="26px">
-      <Accordion defaultIndex={[0]} allowMultiple>
+      <Accordion defaultIndex={[0, 1]} allowMultiple>
         <AccordionItem borderTopWidth={0}>
           <h2>
             <AccordionButton {...accordionButtonStyles}>
@@ -270,6 +233,7 @@ export default function ImageGenerator({
             <SelectColorPalette
               onChange={(mood) => handleUpdate({ mood })}
               selectedValue={mood}
+              style={style}
             />
           </AccordionPanel>
         </AccordionItem>
@@ -283,7 +247,7 @@ export default function ImageGenerator({
         style={style}
         value={subject}
       />
-      <Box padding="0 18px" mt="22px">
+      <Box padding="0 14px" mt="22px">
         <Button
           disabled={!subject && isEmpty(keywords)}
           onClick={handleGenerate}

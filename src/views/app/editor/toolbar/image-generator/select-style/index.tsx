@@ -43,7 +43,6 @@ export default function SelectStyle({ onChange, selectedValue }: Props) {
                 key={index}
                 onClick={() => onChange(value)}
                 borderRadius="4px"
-                position="relative"
               >
                 <Image
                   border={isSelected ? `3px solid ${abloBlue}` : ''}
