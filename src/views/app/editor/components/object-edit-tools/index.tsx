@@ -1,10 +1,13 @@
-import { useState, Fragment as F } from 'react';
+import { useState, Fragment as F, useEffect } from 'react';
+
+import { fabric } from 'fabric';
+
 import {
   Box,
   Button as ChakraButton,
   Flex,
   HStack,
-  Image,
+  Image as ChakraImage,
   Slider,
   SliderTrack,
   SliderFilledTrack,
@@ -26,6 +29,7 @@ import {
   IconLayerDown,
   IconLayerUp,
   IconCopy,
+  IconCrop,
   IconFontSize,
   IconFontFamily,
   IconTextAlign,
@@ -35,6 +39,28 @@ import {
 } from './Icons';
 
 const { abloBlue } = Colors;
+
+const CropMaskProps = {
+  fill: 'rgba(0,0,0,0.3)',
+  originX: 'left',
+  originY: 'top',
+  stroke: 'black',
+  left: 0,
+  top: 0,
+  opacity: 1,
+  width: 150,
+  height: 150,
+  hasRotatingPoint: false,
+  transparentCorners: false,
+  cornerColor: 'white',
+  cornerStrokeColor: 'black',
+  borderColor: 'black',
+  cornerSize: 12,
+  padding: 0,
+  cornerStyle: 'circle',
+  borderDashArray: [5, 5],
+  borderScaleFactor: 1.3,
+};
 
 const Button = ({ isSelected = false, ...rest }) => (
   <ChakraButton
@@ -67,6 +93,7 @@ const TEXT_ALIGN_OPTIONS = [
 type ObjectEditToolsProps = {
   activeObject: {
     aiImage: AiImage;
+    clipPath?: object;
     noBackgroundUrl: string;
     text: string;
     withBackgroundUrl: string;
@@ -75,7 +102,9 @@ type ObjectEditToolsProps = {
     fontSize: number;
     textAlign: string;
   };
+  canvas: any;
   onCopyActiveObject: () => void;
+  onCrop: (image: object) => void;
   onDeleteActiveObject: () => void;
   onImageUpdate: (image: AiImage) => void;
   onUpdateTextObject: (updates: object) => void;
@@ -85,6 +114,8 @@ type ObjectEditToolsProps = {
 
 const ObjectEditTools = ({
   activeObject,
+  canvas,
+  onCrop,
   onDeleteActiveObject,
   onImageUpdate,
   onLayerDown,
@@ -95,12 +126,20 @@ const ObjectEditTools = ({
   const [removingBackground, setRemovingBackground] = useState(false);
 
   const [selectedTool, setSelectedTool] = useState(null);
+  const [croppingMask, setCroppingMask] = useState(null);
+  const [imageToCrop, setImageToCrop] = useState(null);
+
+  useEffect(() => {
+    if (!activeObject && croppingMask) {
+      canvas.remove(croppingMask);
+
+      setCroppingMask(null);
+    }
+  }, [activeObject, canvas, croppingMask, setCroppingMask]);
 
   if (!activeObject) {
     return null;
   }
-
-  console.log('Active object', activeObject);
 
   const { aiImage, fill, fontFamily, fontSize, textAlign, text } = activeObject;
   const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
@@ -142,6 +181,62 @@ const ObjectEditTools = ({
     });
   };
 
+  const handleCrop = () => {
+    if (croppingMask) {
+      const rect = new fabric.Rect({
+        left: croppingMask.left,
+        top: croppingMask.top,
+        width: croppingMask.getScaledWidth(),
+        height: croppingMask.getScaledHeight(),
+        absolutePositioned: true,
+      });
+
+      // add to the current image clipPath property
+      activeObject.clipPath = rect;
+
+      canvas.remove(croppingMask);
+
+      const cropped = new Image();
+
+      cropped.src = canvas.toDataURL({
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      });
+
+      cropped.onload = function () {
+        const image = new fabric.Image(cropped);
+        image.left = rect.left;
+        image.top = rect.top;
+        image.aiImage = activeObject.aiImage;
+        image.setCoords();
+
+        canvas.add(image);
+        canvas.remove(imageToCrop);
+
+        onCrop(image);
+      };
+
+      setCroppingMask(null);
+      setImageToCrop(null);
+
+      return;
+    }
+
+    const selectionRect = new fabric.Rect(CropMaskProps);
+
+    setCroppingMask(selectionRect);
+    setImageToCrop(activeObject);
+
+    //  selectionRect.scaleToWidth(300);
+
+    canvas.centerObject(selectionRect);
+    canvas.add(selectionRect);
+    canvas.setActiveObject(selectionRect);
+    canvas.renderAll();
+  };
+
   const isText = !!text;
 
   const isColorActive = selectedTool === 'color';
@@ -166,7 +261,7 @@ const ObjectEditTools = ({
               isSelected={isColorActive}
               onClick={() => setSelectedTool(isColorActive ? null : 'color')}
             >
-              <Image
+              <ChakraImage
                 maxWidth="none"
                 w="28px"
                 h="28px"
@@ -209,6 +304,9 @@ const ObjectEditTools = ({
         </IconButton>
         <IconButton onClick={onCopyActiveObject}>
           <IconCopy />
+        </IconButton>
+        <IconButton onClick={handleCrop}>
+          {croppingMask ? <Text>C</Text> : <IconCrop />}
         </IconButton>
         <IconButton onClick={onDeleteActiveObject} ml="14px">
           <IconTrash />

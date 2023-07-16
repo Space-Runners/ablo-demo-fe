@@ -51,23 +51,27 @@ const accordionButtonStyles = {
 
 type ImageGeneratorProps = {
   aiImage: AiImage;
+  isEditingAiImage: boolean;
   onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
+  onSetIsEditingAiImage: (isEditing: boolean) => void;
 };
 
 export default function ImageGenerator({
   aiImage,
+  isEditingAiImage,
   onGeneratedImagePreview,
   onGeneratedImageSelected,
   onGeneratedImageRemoved,
+  onSetIsEditingAiImage,
 }: ImageGeneratorProps) {
   const [waiting, setWaiting] = useState(false);
 
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+
   const [images, setImages] = useState([]);
 
   const { background, keywords, style, mood, subject } = options;
@@ -92,7 +96,7 @@ export default function ImageGenerator({
     setSelectedImage(null);
     setOptions(defaultParams);
 
-    setIsEditing(false);
+    onSetIsEditingAiImage(false);
   };
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
@@ -104,7 +108,7 @@ export default function ImageGenerator({
     setImages([]);
     setSelectedImage(null);
 
-    setIsEditing(true);
+    onSetIsEditingAiImage(true);
   };
 
   const handleRemove = () => {
@@ -142,21 +146,25 @@ export default function ImageGenerator({
       });
   };
 
-  if (aiImage && !isEditing) {
+  if (aiImage && !isEditingAiImage) {
     return (
-      <ImageOverview
-        aiImage={aiImage}
-        onEdit={handleEdit}
-        onRemove={handleRemove}
-      />
+      <Box padding="8px 14px">
+        <ImageOverview
+          aiImage={aiImage}
+          onEdit={handleEdit}
+          onRemove={handleRemove}
+        />
+      </Box>
     );
   }
 
   if (waiting) {
-    return <Progress />;
+    return (
+      <Box padding="8px 14px">
+        <Progress />
+      </Box>
+    );
   }
-
-  console.log('Images', images);
 
   if (images.length) {
     return (

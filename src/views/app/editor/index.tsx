@@ -235,7 +235,7 @@ export default function ImageEditor({
   };
 
   const handleClick = (e) => {
-    if (!e.target || e.target?.className.includes('canvas')) {
+    if (!e.target || e.target.className.includes('canvas')) {
       return;
     }
 
@@ -290,6 +290,15 @@ export default function ImageEditor({
 
       saveState();
     });
+  };
+
+  const handleCrop = (image) => {
+    canvas.current.setActiveObject(image);
+    canvas.current.renderAll();
+
+    setActiveObject(image);
+
+    saveState();
   };
 
   const handleRemoveActiveObject = () => {
@@ -506,6 +515,8 @@ export default function ImageEditor({
 
   const showHint = isEmpty(objects) && !activeObject;
 
+  console.log('Canvas', canvas.current?._objects);
+
   return (
     <Box h="100vh" w="100%">
       <Navbar
@@ -586,9 +597,11 @@ export default function ImageEditor({
         >
           <ObjectEditTools
             activeObject={activeObject}
+            canvas={canvas.current}
             onLayerUp={handleLayerUp}
             onLayerDown={handleLayerDown}
             onCopyActiveObject={handleCopyActiveObject}
+            onCrop={handleCrop}
             onDeleteActiveObject={handleRemoveActiveObject}
             onUpdateTextObject={handleUpdateTextObject}
             onImageUpdate={handleImageUpdate}
