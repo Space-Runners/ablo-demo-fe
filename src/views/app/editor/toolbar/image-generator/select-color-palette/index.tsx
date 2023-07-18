@@ -1,5 +1,5 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
-import { chunk } from 'lodash';
+import { capitalize, chunk } from 'lodash';
 
 import { useOptions } from '@/api/image-generator';
 
@@ -8,16 +8,16 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 function getImgUrl(tone, style) {
-  let url = `./images/${tone}_${style
+  let filename = `${tone}_${style
     .split('_')
-    .map((word) => word.toUpperCase())
+    .map((word) => capitalize(word))
     .join('')}.png`;
 
   if (tone === 'noMood') {
-    url = `./images/NoFilters.png`;
+    filename = `NoFilters.png`;
   }
 
-  return new URL(url, import.meta.url).href;
+  return new URL(`./images/${filename}`, import.meta.url).href;
 }
 
 type Props = {
@@ -61,7 +61,7 @@ export default function SelectColorPalette({
                   borderRadius="50%"
                   key={index}
                   mb="8px"
-                  h="80px"
+                  h="73px"
                   src={getImgUrl(tone, style)}
                   alt={name}
                   w="73px"

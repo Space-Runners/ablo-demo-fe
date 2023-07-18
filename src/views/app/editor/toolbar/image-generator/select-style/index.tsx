@@ -47,7 +47,7 @@ export default function SelectStyle({ onChange, selectedValue }: Props) {
                 <Image
                   border={isSelected ? `3px solid ${abloBlue}` : ''}
                   borderRadius="50%"
-                  h="80px"
+                  h="73px"
                   mb="8px"
                   w="73px"
                   src={getImgUrl(`${image}`)}
