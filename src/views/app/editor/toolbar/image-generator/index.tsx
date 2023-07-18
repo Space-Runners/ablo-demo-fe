@@ -244,7 +244,7 @@ export default function ImageGenerator({
           <h2>
             <AccordionButton {...accordionButtonStyles}>
               <Box as="span" flex="1" textAlign="left" ref={tonesRef}>
-                Color Palette
+                Color Filter
               </Box>
               <AccordionIcon />
             </AccordionButton>
