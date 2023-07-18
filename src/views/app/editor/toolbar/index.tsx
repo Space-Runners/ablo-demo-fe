@@ -1,4 +1,4 @@
-import { Box, Flex, HStack } from '@chakra-ui/react';
+import { Box, Flex, HStack, Icon } from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
@@ -9,6 +9,27 @@ import { IconAiGenerator, IconImage } from './Icons';
 
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
+
+const IconDragHandle = ({ rotate }) => (
+  <Icon
+    position="relative"
+    top="5px"
+    width="28px"
+    height="11px"
+    viewBox="0 0 28 11"
+    fill="none"
+    {...(rotate ? { transform: 'rotate(180deg)' } : {})}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M2 2L14 9L26 2"
+      stroke="#D4D4D3"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Icon>
+);
 
 const TOOLS = [
   {
@@ -158,6 +179,8 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isImagePicker = selectedTool === 'image';
 
+  const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
+
   return (
     <Box
       borderRadius="8px 8px 0 0"
@@ -189,7 +212,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
           padding="8px"
           w="100%"
         >
-          <Box bg="#D4D4D3" height="4px" width="32px" borderRadius="8px" />
+          <IconDragHandle rotate={!isFullHeight} />
         </Flex>
         <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
