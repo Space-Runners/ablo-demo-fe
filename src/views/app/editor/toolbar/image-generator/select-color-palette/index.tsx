@@ -8,10 +8,13 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 function getImgUrl(tone, style) {
+  console.log('Tone style', tone, style);
   let filename = `${tone}_${style
     .split('_')
     .map((word) => capitalize(word))
     .join('')}.png`;
+
+  console.log('Filename', filename);
 
   if (tone === 'noMood') {
     filename = `NoFilters.png`;
@@ -54,6 +57,16 @@ export default function SelectColorPalette({
 
             const tone = name.replace(' Tones', '').replace('B/W', 'BW');
 
+            console.log('Tones', tone, getImgUrl(tone, style));
+
+            let label = tone;
+
+            if (tone === 'BW') {
+              label = 'Black/White';
+            } else if (tone === 'noMood') {
+              label = 'Random tone';
+            }
+
             return (
               <Box borderRadius="4px" onClick={() => onChange(name)} key={name}>
                 <Image
@@ -66,9 +79,8 @@ export default function SelectColorPalette({
                   alt={name}
                   w="73px"
                 />
-
                 <Text color="#1A1A1A" fontSize="12px" align="center">
-                  {name}
+                  {label}
                 </Text>
               </Box>
             );

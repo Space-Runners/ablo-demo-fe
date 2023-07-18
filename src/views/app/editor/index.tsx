@@ -34,6 +34,7 @@ const initCanvas = (side, width, height) => {
     height,
     selection: false,
     renderOnAddRemove: true,
+    preserveObjectStacking: true,
   });
 };
 

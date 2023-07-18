@@ -55,7 +55,7 @@ const CropMaskProps = {
   cornerColor: 'white',
   cornerStrokeColor: 'black',
   borderColor: 'black',
-  cornerSize: 12,
+  cornerSize: 20,
   padding: 0,
   cornerStyle: 'circle',
   borderDashArray: [5, 5],
@@ -312,9 +312,11 @@ const ObjectEditTools = ({
         <IconButton onClick={onCopyActiveObject}>
           <IconCopy />
         </IconButton>
-        <IconButton onClick={handleCrop}>
-          <IconCrop />
-        </IconButton>
+        {!isText ? (
+          <IconButton onClick={handleCrop}>
+            <IconCrop />
+          </IconButton>
+        ) : null}
         <IconButton onClick={onDeleteActiveObject} ml="14px">
           <IconTrash />
         </IconButton>

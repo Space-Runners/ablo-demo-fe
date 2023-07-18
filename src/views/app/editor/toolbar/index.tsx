@@ -160,6 +160,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   return (
     <Box
+      borderRadius="8px 8px 0 0"
       bottom={0}
       id="toolbarOverlay"
       bg="#FFFFFF"
@@ -169,38 +170,41 @@ export default function FooterToolbar(props: FooterToolbarProps) {
       w="100%"
       zIndex={3}
     >
-      <Flex
-        align="center"
-        height="20px"
-        justify="center"
+      <Box
         onMouseDown={startResize}
         onMouseMove={resize}
         onMouseUp={endResize}
         onTouchStart={startResize}
         onTouchMove={resize}
         onTouchEnd={endResize}
-        style={{
-          cursor: active ? 'grabbing' : 'grab',
-          touchAction: 'none',
-        }}
-        padding="8px"
-        w="100%"
       >
-        <Box bg="#D4D4D3" height="4px" width="32px" borderRadius="8px" />
-      </Flex>
-      <Flex align="center" justify="space-between" padding="10px 14px">
-        <HStack spacing="8px">
-          {TOOLS.map(({ name, icon, iconActive }) => (
-            <ToolbarButton
-              isSelected={selectedTool === name}
-              key={name}
-              onClick={() => handleToolChange(name)}
-            >
-              {selectedTool === name ? iconActive : icon}
-            </ToolbarButton>
-          ))}
-        </HStack>
-      </Flex>
+        <Flex
+          align="center"
+          height="20px"
+          justify="center"
+          style={{
+            cursor: active ? 'grabbing' : 'grab',
+            touchAction: 'none',
+          }}
+          padding="8px"
+          w="100%"
+        >
+          <Box bg="#D4D4D3" height="4px" width="32px" borderRadius="8px" />
+        </Flex>
+        <Flex align="center" justify="space-between" padding="10px 14px">
+          <HStack spacing="8px">
+            {TOOLS.map(({ name, icon, iconActive }) => (
+              <ToolbarButton
+                isSelected={selectedTool === name}
+                key={name}
+                onClick={() => handleToolChange(name)}
+              >
+                {selectedTool === name ? iconActive : icon}
+              </ToolbarButton>
+            ))}
+          </HStack>
+        </Flex>
+      </Box>
       <Box>
         {isImageGenerator ? (
           <ImageGenerator
