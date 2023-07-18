@@ -226,6 +226,13 @@ const ObjectEditTools = ({
 
     const selectionRect = new fabric.Rect(CropMaskProps);
 
+    selectionRect.setControlsVisibility({
+      mt: true,
+      mb: true,
+      ml: true,
+      mr: true,
+    });
+
     setCroppingMask(selectionRect);
     setImageToCrop(activeObject);
 
@@ -306,7 +313,7 @@ const ObjectEditTools = ({
           <IconCopy />
         </IconButton>
         <IconButton onClick={handleCrop}>
-          {croppingMask ? <Text>C</Text> : <IconCrop />}
+          <IconCrop />
         </IconButton>
         <IconButton onClick={onDeleteActiveObject} ml="14px">
           <IconTrash />

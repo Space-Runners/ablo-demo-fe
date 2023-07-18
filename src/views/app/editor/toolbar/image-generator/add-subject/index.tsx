@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Input, Switch, Text } from '@chakra-ui/react';
+import { Box, Flex, HStack, Switch, Text } from '@chakra-ui/react';
 
 import { useOptions } from '@/api/image-generator';
 import Colors from '@/theme/colors';
@@ -9,22 +9,20 @@ const { abloBlue } = Colors;
 
 type Props = {
   background: boolean;
+  children: React.ReactNode;
   onChangeBackground: (value: boolean) => void;
-  onChange: (value: string) => void;
   style: string;
-  value: string;
   keywords: string[];
   onUpdateKeywords: (keywords: string[]) => void;
 };
 
 export default function AddSubject({
+  children,
   keywords,
   background,
   onChangeBackground,
-  onChange,
   onUpdateKeywords,
   style,
-  value,
 }: Props) {
   const { data: options } = useOptions();
 
@@ -64,15 +62,7 @@ export default function AddSubject({
           </Switch>
         </HStack>
       </Flex>
-      <Input
-        bg="#F5F5F5"
-        border="none"
-        borderRadius="11px"
-        h="42px"
-        onChange={(e) => onChange(e.target.value)}
-        value={value}
-        placeholder="Write subject..."
-      />
+      {children}
       {suggestions ? (
         <Keywords
           keywords={suggestions}

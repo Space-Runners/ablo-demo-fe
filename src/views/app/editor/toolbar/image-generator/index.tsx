@@ -8,10 +8,11 @@ import {
   Flex,
   HStack,
   Image,
+  Input,
   Text,
 } from '@chakra-ui/react';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { isEmpty } from 'lodash';
 
@@ -43,7 +44,7 @@ const defaultParams = {
 const accordionButtonStyles = {
   borderRadius: 0,
   color: '#1A1A1A',
-  padding: '8px 14px',
+  padding: '12px 14px',
   _focus: {
     boxShadow: 'none',
   },
@@ -66,6 +67,9 @@ export default function ImageGenerator({
   onGeneratedImageRemoved,
   onSetIsEditingAiImage,
 }: ImageGeneratorProps) {
+  const tonesRef = useRef(null);
+  const subjectInputRef = useRef(null);
+
   const [waiting, setWaiting] = useState(false);
 
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
@@ -212,7 +216,7 @@ export default function ImageGenerator({
   return (
     <Box pb="26px">
       <Accordion defaultIndex={[0, 1]} allowMultiple>
-        <AccordionItem borderTopWidth={0}>
+        <AccordionItem borderTopWidth={0} paddingBottom="8px">
           <h2>
             <AccordionButton {...accordionButtonStyles}>
               <Box as="span" flex="1" textAlign="left">
@@ -223,15 +227,23 @@ export default function ImageGenerator({
           </h2>
           <AccordionPanel pb={4}>
             <SelectStyle
-              onChange={(style) => handleUpdate({ style })}
+              onChange={(style) => {
+                tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+                handleUpdate({ style });
+              }}
               selectedValue={style}
             />
           </AccordionPanel>
         </AccordionItem>
-        <AccordionItem borderColor="transparent" borderTopWidth={0}>
+        <AccordionItem
+          borderColor="transparent"
+          borderTopWidth={0}
+          paddingBottom="10px"
+        >
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" textAlign="left">
+              <Box as="span" flex="1" textAlign="left" ref={tonesRef}>
                 Color Palette
               </Box>
               <AccordionIcon />
@@ -239,7 +251,11 @@ export default function ImageGenerator({
           </h2>
           <AccordionPanel pb={4}>
             <SelectColorPalette
-              onChange={(mood) => handleUpdate({ mood })}
+              onChange={(mood) => {
+                subjectInputRef.current?.focus();
+
+                handleUpdate({ mood });
+              }}
               selectedValue={mood}
               style={style}
             />
@@ -249,12 +265,21 @@ export default function ImageGenerator({
       <AddSubject
         background={background}
         onChangeBackground={(background) => handleUpdate({ background })}
-        onChange={(subject) => handleUpdate({ subject })}
         keywords={keywords}
         onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
         style={style}
-        value={subject}
-      />
+      >
+        <Input
+          bg="#F5F5F5"
+          border="none"
+          borderRadius="11px"
+          h="42px"
+          onChange={(e) => handleUpdate({ subject: e.target.value })}
+          ref={subjectInputRef}
+          value={subject}
+          placeholder="Write subject..."
+        />
+      </AddSubject>
       <Box padding="0 14px" mt="22px">
         <Button
           disabled={!subject && isEmpty(keywords)}
