@@ -183,7 +183,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   return (
     <Box
-      borderRadius="8px 8px 0 0"
+      borderRadius="24px 24px 0 0"
       bottom={0}
       id="toolbarOverlay"
       bg="#FFFFFF"
