@@ -30,6 +30,7 @@ import {
   IconLayerUp,
   IconCopy,
   IconCrop,
+  IconEraser,
   IconFontSize,
   IconFontFamily,
   IconTextAlign,
@@ -70,14 +71,18 @@ const Button = ({ isSelected = false, ...rest }) => (
     border={`1px solid ${isSelected ? abloBlue : '#D3D3D3'}`}
     padding="4px 6px"
     minWidth="auto"
-    _focus={{
-      border: `1px solid ${abloBlue}`,
-      boxShadow: '0px 0px 8px 0px #97B9F5',
-    }}
-    _hover={{
-      border: `1px solid ${abloBlue}`,
-      boxShadow: '0px 0px 8px 0px #97B9F5',
-    }}
+    _focus={
+      {
+        // border: `1px solid ${abloBlue}`,
+        //  boxShadow: '0px 0px 8px 0px #97B9F5',
+      }
+    }
+    _hover={
+      {
+        /*    border: `1px solid ${abloBlue}`,
+      boxShadow: '0px 0px 8px 0px #97B9F5', */
+      }
+    }
     {...rest}
   />
 );
@@ -128,6 +133,7 @@ const ObjectEditTools = ({
   const [selectedTool, setSelectedTool] = useState(null);
   const [croppingMask, setCroppingMask] = useState(null);
   const [imageToCrop, setImageToCrop] = useState(null);
+  const [isErasing, setErasing] = useState(false);
 
   useEffect(() => {
     if (!activeObject && croppingMask) {
@@ -182,6 +188,12 @@ const ObjectEditTools = ({
   };
 
   const handleCrop = () => {
+    if (isErasing) {
+      canvas.isDrawingMode = false;
+
+      setErasing(false);
+    }
+
     if (croppingMask) {
       const rect = new fabric.Rect({
         left: croppingMask.left,
@@ -242,6 +254,23 @@ const ObjectEditTools = ({
     canvas.add(selectionRect);
     canvas.setActiveObject(selectionRect);
     canvas.renderAll();
+  };
+
+  const handleErase = () => {
+    if (canvas.isDrawingMode) {
+      canvas.isDrawingMode = false;
+
+      setErasing(false);
+
+      return;
+    }
+
+    canvas.freeDrawingBrush = new fabric.EraserBrush(canvas);
+    canvas.isDrawingMode = true;
+
+    canvas.freeDrawingBrush.width = 10;
+
+    setErasing(true);
   };
 
   const isText = !!text;
@@ -317,6 +346,9 @@ const ObjectEditTools = ({
             <IconCrop />
           </IconButton>
         ) : null}
+        <IconButton isSelected={isErasing} onClick={handleErase}>
+          <IconEraser />
+        </IconButton>
         <IconButton onClick={onDeleteActiveObject} ml="14px">
           <IconTrash />
         </IconButton>

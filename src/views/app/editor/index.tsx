@@ -208,9 +208,14 @@ export default function ImageEditor({
       saveState();
     });
 
+    canvasCurrent.on('erasing:end', () => {
+      saveState();
+    });
+
     return () => {
       if (canvasCurrent) {
         canvasCurrent.off('object:modified');
+        canvasCurrent.off('erasing:end');
       }
     };
   }, [canvas, saveState]);
@@ -242,6 +247,7 @@ export default function ImageEditor({
 
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
+    canvas.current.isDrawingMode = false;
 
     setActiveObject(null);
     setIsModifyingObject(false);
