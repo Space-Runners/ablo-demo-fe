@@ -215,6 +215,9 @@ const ObjectEditTools = ({
         top: rect.top,
         width: rect.width,
         height: rect.height,
+        multiplier: 5,
+        format: 'png',
+        quality: 0.99,
       });
 
       cropped.onload = function () {
@@ -223,6 +226,7 @@ const ObjectEditTools = ({
         image.top = rect.top;
         image.aiImage = activeObject.aiImage;
         image.setCoords();
+        image.scaleToWidth(rect.width);
 
         canvas.add(image);
         canvas.remove(imageToCrop);
