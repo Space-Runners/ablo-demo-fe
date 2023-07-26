@@ -16,7 +16,7 @@ function getImgUrl(tone, style) {
 
   console.log('Filename', filename);
 
-  if (tone === 'noMood') {
+  if (tone === 'noTone') {
     filename = `NoFilters.png`;
   }
 
@@ -40,7 +40,7 @@ export default function SelectColorPalette({
     return null;
   }
 
-  const tones = [...options.tones[style.toLowerCase()], 'noMood'];
+  const tones = [...options.tones[style.toLowerCase()], 'noTone'];
 
   if (!tones) {
     return;
@@ -63,7 +63,7 @@ export default function SelectColorPalette({
 
             if (tone === 'BW') {
               label = 'Black/White';
-            } else if (tone === 'noMood') {
+            } else if (tone === 'noTone') {
               label = 'Random tone';
             }
 

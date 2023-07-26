@@ -8,7 +8,7 @@ export interface ImageGenerationOptions {
 
 export interface TextToImageRequest {
   style: string;
-  mood?: string;
+  tone?: string;
   freeText: string;
   subjectSuggestions: string[];
   background: boolean;
@@ -57,7 +57,7 @@ export interface Product {
 
 export interface AiImageOptions {
   style: string;
-  mood: string;
+  tone: string;
   keywords?: string[];
   subject?: string;
   background: boolean;
