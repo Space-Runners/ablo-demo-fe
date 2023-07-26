@@ -20,25 +20,26 @@ const Keywords = ({ keywords, onChange, selectedValues }: Props) => {
   };
 
   return (
-    <Box>
-      <Text fontWeight={500} mb="6px">
-        Keyword Suggestions
-      </Text>
-      <HStack overflowX="auto" spacing="16px" w="100%">
+    <Box mt="8px">
+      <HStack overflowX="auto" w="100%">
+        <Text color="#2D3748" fontSize="sm" fontWeight={500}>
+          Trending:
+        </Text>
         {keywords.map((value) => {
           const isSelected = selectedValues.includes(value);
 
           return (
             <Button
-              bg={isSelected ? '#000000' : '#F9F9F7'}
-              color={isSelected ? '#FFFFFF' : '#6A6866'}
-              h="30px"
+              bg={isSelected ? '#000000' : '#EDF2F7'}
+              borderRadius="5px"
+              color={isSelected ? '#FFFFFF' : '#1A202C'}
+              h="18px"
               flexShrink={0}
-              fontSize="sm"
-              fontWeight={isSelected ? '600' : '400'}
+              fontSize="xs"
+              fontWeight={isSelected ? '600' : '500'}
               key={value}
               onClick={() => handleKeywordsChange(value)}
-              padding="4px 12px"
+              padding="0 7px"
             >
               {value}
             </Button>

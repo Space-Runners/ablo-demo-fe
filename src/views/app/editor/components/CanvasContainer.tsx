@@ -94,7 +94,11 @@ const CanvasContainer = ({
           as="button"
           direction="column"
           justify="center"
-          onClick={onHintClick}
+          onClick={(e) => {
+            e.stopPropagation();
+
+            onHintClick();
+          }}
           position="absolute"
           top="20%"
           w="100%"

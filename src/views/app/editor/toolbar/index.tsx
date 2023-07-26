@@ -1,14 +1,35 @@
-import { Box, Button, Flex, HStack, Collapse } from '@chakra-ui/react';
+import { Box, Flex, HStack, Icon } from '@chakra-ui/react';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ToolbarButton from '@/components/ToolbarButton';
 import { AiImage } from '@/components/types';
 
-import { IconAiGenerator, IconImage, IconExpand, IconShrink } from './Icons';
+import { IconAiGenerator, IconImage } from './Icons';
 
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
+
+const IconDragHandle = ({ rotate }) => (
+  <Icon
+    position="relative"
+    top="5px"
+    width="28px"
+    height="11px"
+    viewBox="0 0 28 11"
+    fill="none"
+    {...(rotate ? { transform: 'rotate(180deg)' } : {})}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M2 2L14 9L26 2"
+      stroke="#D4D4D3"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Icon>
+);
 
 const TOOLS = [
   {
@@ -23,6 +44,9 @@ const TOOLS = [
   },
 ];
 
+const MIN_OVERLAY_HEIGHT = 80;
+const MAX_OVERLAY_HEIGHT = 400;
+
 type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
@@ -36,16 +60,113 @@ type FooterToolbarProps = {
 
 export default function FooterToolbar(props: FooterToolbarProps) {
   const {
+    aiImage,
     isExpanded,
     onSetExpanded,
-    aiImage,
     onImageUploaded,
     onGeneratedImagePreview,
     onGeneratedImageSelected,
     onGeneratedImageRemoved,
   } = props;
 
+  // const resizable = document.getElementById('toolbarOverlay');
+
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
+
+  const [isEditingAiImage, setIsEditingAiImage] = useState(false);
+
+  const isFullScreen = aiImage && !isEditingAiImage;
+
+  const [drag, setDrag] = useState({
+    active: false,
+  });
+
+  useEffect(() => {
+    console.log('Use effect', isExpanded, aiImage);
+    if (isExpanded && aiImage) {
+      setHeight(window.innerHeight);
+    } else if (isExpanded || isEditingAiImage) {
+      setHeight(MAX_OVERLAY_HEIGHT);
+    } else {
+      setHeight(MIN_OVERLAY_HEIGHT);
+    }
+  }, [aiImage, isExpanded, isEditingAiImage]);
+
+  const startResize = () => {
+    setDrag({
+      active: true,
+    });
+  };
+
+  const endResize = () => {
+    let newHeight =
+      document.getElementById('toolbarOverlay')?.clientHeight || 0;
+
+    const containerHeight = window.innerHeight || 0;
+
+    const maxHeight = isFullScreen ? containerHeight : MAX_OVERLAY_HEIGHT;
+
+    if (newHeight > MIN_OVERLAY_HEIGHT + (maxHeight - MIN_OVERLAY_HEIGHT) / 2) {
+      newHeight = maxHeight;
+    } else {
+      newHeight = MIN_OVERLAY_HEIGHT;
+    }
+
+    console.log('End resize', containerHeight, MIN_OVERLAY_HEIGHT, newHeight);
+
+    // resizable.style.height = `${newHeight}px`;
+
+    setHeight(newHeight);
+
+    setDrag({
+      active: false,
+    });
+  };
+
+  const resize = (
+    e:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>
+  ) => {
+    const { active } = drag;
+
+    if (!active) {
+      return;
+    }
+
+    // const resizable = document.getElementById('toolbarOverlay');
+
+    e.stopPropagation();
+
+    const containerHeight = window.innerHeight || 0;
+
+    let clientY = 0;
+
+    if (e.type === 'touchmove' || e.type === 'touchstart') {
+      const { touches, changedTouches } = e as React.TouchEvent;
+
+      const touch = touches[0] || changedTouches[0];
+
+      clientY = touch.pageY;
+    } else {
+      clientY = (e as React.MouseEvent).clientY;
+    }
+
+    let newHeight = containerHeight - clientY;
+
+    const maxHeight = isFullScreen ? containerHeight : MAX_OVERLAY_HEIGHT;
+
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+    } else if (newHeight < MIN_OVERLAY_HEIGHT) {
+      newHeight = MIN_OVERLAY_HEIGHT;
+    }
+
+    // resizable.style.height = `${newHeight}px`;
+
+    setHeight(newHeight);
+  };
 
   const handleToolChange = (name) => {
     setSelectedTool(name);
@@ -53,13 +174,47 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onSetExpanded(true);
   };
 
+  const { active } = drag;
+
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isImagePicker = selectedTool === 'image';
 
+  const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
+
   return (
-    <Box bottom={0} position="fixed" w="100%" zIndex={3}>
-      <Box bg="#FFFFFF" maxHeight="400px" overflow="auto" padding="0 7px">
-        <Flex align="center" justify="space-between" padding="10px 0">
+    <Box
+      borderRadius="24px 24px 0 0"
+      bottom={0}
+      id="toolbarOverlay"
+      bg="#FFFFFF"
+      height={`${height}px`}
+      overflow={height === MIN_OVERLAY_HEIGHT ? 'none' : 'auto'}
+      position="fixed"
+      w="100%"
+      zIndex={3}
+    >
+      <Box
+        onMouseDown={startResize}
+        onMouseMove={resize}
+        onMouseUp={endResize}
+        onTouchStart={startResize}
+        onTouchMove={resize}
+        onTouchEnd={endResize}
+      >
+        <Flex
+          align="center"
+          height="20px"
+          justify="center"
+          style={{
+            cursor: active ? 'grabbing' : 'grab',
+            touchAction: 'none',
+          }}
+          padding="8px"
+          w="100%"
+        >
+          <IconDragHandle rotate={!isFullHeight} />
+        </Flex>
+        <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
             {TOOLS.map(({ name, icon, iconActive }) => (
               <ToolbarButton
@@ -71,31 +226,22 @@ export default function FooterToolbar(props: FooterToolbarProps) {
               </ToolbarButton>
             ))}
           </HStack>
-          <Button
-            bg="transparent"
-            h="24px"
-            minWidth="auto"
-            onClick={() => onSetExpanded(!isExpanded)}
-            padding={0}
-          >
-            {isExpanded ? <IconShrink /> : <IconExpand />}
-          </Button>
         </Flex>
-        <Collapse in={isExpanded} animateOpacity>
-          <Box display={isExpanded ? 'block' : 'none'}>
-            {isImageGenerator ? (
-              <ImageGenerator
-                aiImage={aiImage}
-                onGeneratedImagePreview={onGeneratedImagePreview}
-                onGeneratedImageSelected={onGeneratedImageSelected}
-                onGeneratedImageRemoved={onGeneratedImageRemoved}
-              />
-            ) : null}
-            {isImagePicker ? (
-              <ImagePicker onImageUploaded={onImageUploaded} />
-            ) : null}
-          </Box>
-        </Collapse>
+      </Box>
+      <Box>
+        {isImageGenerator ? (
+          <ImageGenerator
+            aiImage={aiImage}
+            isEditingAiImage={isEditingAiImage}
+            onGeneratedImagePreview={onGeneratedImagePreview}
+            onGeneratedImageSelected={onGeneratedImageSelected}
+            onGeneratedImageRemoved={onGeneratedImageRemoved}
+            onSetIsEditingAiImage={setIsEditingAiImage}
+          />
+        ) : null}
+        {isImagePicker ? (
+          <ImagePicker onImageUploaded={onImageUploaded} />
+        ) : null}
       </Box>
     </Box>
   );

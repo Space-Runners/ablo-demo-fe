@@ -34,6 +34,7 @@ const initCanvas = (side, width, height) => {
     height,
     selection: false,
     renderOnAddRemove: true,
+    preserveObjectStacking: true,
   });
 };
 
@@ -125,7 +126,6 @@ export default function ImageEditor({
   }, [selectedSide, designForSides, onDesignChange, undoStack]);
 
   useEffect(() => {
-    console.log('Use effect');
     sides.forEach((side) => {
       const canvas = side === 'Front' ? canvasFront : canvasBack;
 
@@ -190,7 +190,6 @@ export default function ImageEditor({
     });
 
     return () => {
-      console.log('Unmount');
       sides.forEach((side) => {
         const canvas = side === 'Front' ? canvasFront : canvasBack;
 
@@ -204,17 +203,19 @@ export default function ImageEditor({
 
   useEffect(() => {
     const canvasCurrent = canvas.current;
-    console.log('Use modified effect');
 
     canvasCurrent.on('object:modified', () => {
-      console.log('Object modified');
+      saveState();
+    });
+
+    canvasCurrent.on('erasing:end', () => {
       saveState();
     });
 
     return () => {
-      console.log('Remove modified handler');
       if (canvasCurrent) {
         canvasCurrent.off('object:modified');
+        canvasCurrent.off('erasing:end');
       }
     };
   }, [canvas, saveState]);
@@ -240,12 +241,13 @@ export default function ImageEditor({
   };
 
   const handleClick = (e) => {
-    if (!e.target || e.target?.className.includes('canvas')) {
+    if (!e.target || e.target.className.includes('canvas')) {
       return;
     }
 
     canvas.current.discardActiveObject();
     canvas.current.renderAll();
+    canvas.current.isDrawingMode = false;
 
     setActiveObject(null);
     setIsModifyingObject(false);
@@ -295,6 +297,15 @@ export default function ImageEditor({
 
       saveState();
     });
+  };
+
+  const handleCrop = (image) => {
+    canvas.current.setActiveObject(image);
+    canvas.current.renderAll();
+
+    setActiveObject(image);
+
+    saveState();
   };
 
   const handleRemoveActiveObject = () => {
@@ -399,7 +410,6 @@ export default function ImageEditor({
   };
 
   const addAiImageToCanvas = (image, options = {}) => {
-    console.log('Image', image);
     fabric.Image.fromURL(
       image.url,
       (img) => {
@@ -504,8 +514,6 @@ export default function ImageEditor({
 
   const objects = canvasStateFromJson?.objects || [];
 
-  console.log('Objects', objects, designForSides);
-
   const aiImage = objects.find(
     ({ aiImage }) => aiImage && !aiImage.isPreview
   )?.aiImage;
@@ -514,7 +522,7 @@ export default function ImageEditor({
 
   const showHint = isEmpty(objects) && !activeObject;
 
-  console.log('ai image', aiImage);
+  console.log('Canvas', canvas.current?._objects);
 
   return (
     <Box h="100vh" w="100%">
@@ -596,9 +604,11 @@ export default function ImageEditor({
         >
           <ObjectEditTools
             activeObject={activeObject}
+            canvas={canvas.current}
             onLayerUp={handleLayerUp}
             onLayerDown={handleLayerDown}
             onCopyActiveObject={handleCopyActiveObject}
+            onCrop={handleCrop}
             onDeleteActiveObject={handleRemoveActiveObject}
             onUpdateTextObject={handleUpdateTextObject}
             onImageUpdate={handleImageUpdate}

@@ -1,10 +1,11 @@
-import { Box, HStack, Image, Text } from '@chakra-ui/react';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { chunk } from 'lodash';
 
-import Button from '@/components/Button';
 import { useOptions } from '@/api/image-generator';
 
-import CheckmarkSelected from '../components/CheckmarkSelected';
+import Colors from '@/theme/colors';
+
+const { abloBlue } = Colors;
 
 function getImgUrl(name) {
   return new URL(`./images/${name}.png`, import.meta.url).href;
@@ -12,15 +13,10 @@ function getImgUrl(name) {
 
 type Props = {
   onChange: (value: string) => void;
-  onNext: () => void;
   selectedValue: string;
 };
 
-export default function SelectStyle({
-  onChange,
-  onNext,
-  selectedValue,
-}: Props) {
+export default function SelectStyle({ onChange, selectedValue }: Props) {
   const { data: options } = useOptions();
 
   if (!options) {
@@ -33,15 +29,12 @@ export default function SelectStyle({
     image: options.styles[key].split(' ').join(''),
   }));
 
-  const chunks = chunk(styles, 2);
+  const chunks = chunk(styles, 4);
 
   return (
-    <Box paddingBottom="100px">
-      <Text fontWeight={500} mb="16px" textTransform="uppercase">
-        Select art style
-      </Text>
+    <VStack align="flex-start" spacing="20px">
       {chunks.map((chunk, index) => (
-        <HStack key={index} mb="16px">
+        <HStack align="start" key={index} spacing="12px">
           {chunk.map(({ value, name, image }, index) => {
             const isSelected = value === selectedValue;
 
@@ -50,39 +43,24 @@ export default function SelectStyle({
                 key={index}
                 onClick={() => onChange(value)}
                 borderRadius="4px"
-                position="relative"
               >
                 <Image
-                  border={isSelected ? '4px solid #000000' : ''}
-                  borderRadius="4px"
-                  h={90}
-                  mb="10px"
-                  w={177}
+                  border={isSelected ? `3px solid ${abloBlue}` : ''}
+                  borderRadius="50%"
+                  h="73px"
+                  mb="8px"
+                  w="73px"
                   src={getImgUrl(`${image}`)}
                   alt={name}
                 />
-                {isSelected ? <CheckmarkSelected /> : null}
-                <Text>{name}</Text>
+                <Text color="#1A1A1A" fontSize="11px" align="center">
+                  {name}
+                </Text>
               </Box>
             );
           })}
         </HStack>
       ))}
-      <Box
-        bg="#FFFFFF"
-        ml="-14px"
-        padding="14px"
-        position="fixed"
-        bottom={0}
-        w="100%"
-      >
-        <Button
-          disabled={!selectedValue}
-          onClick={onNext}
-          title="Next"
-          w="100%"
-        />
-      </Box>
-    </Box>
+    </VStack>
   );
 }

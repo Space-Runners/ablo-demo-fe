@@ -1,16 +1,24 @@
 import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
   Box,
-  Button as ChakraButton,
   Flex,
   HStack,
   Image,
+  Input,
   Text,
 } from '@chakra-ui/react';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+
+import { isEmpty } from 'lodash';
 
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
+
 import {
   AiImage,
   AiImageOptions,
@@ -18,70 +26,59 @@ import {
 } from '@/components/types';
 
 import SelectStyle from './select-style';
-import SelectMood from './select-mood';
+import SelectColorPalette from './select-color-palette';
 import AddSubject from './add-subject';
 
-import IconSpark from './components/IconSpark';
-import IconShuffle from './components/IconShuffle';
 import Progress from './components/Progress';
 
 import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
-  style: '',
+  style: 'Botanical',
   mood: '',
   subject: '',
   keywords: [],
   background: true,
 };
 
-const ButtonGenerateAgain = ({ icon, title, ...rest }) => (
-  <ChakraButton
-    bg="transparent"
-    border="1px solid #555251"
-    color="#555251"
-    justifyContent="center"
-    padding="12px 20px"
-    {...rest}
-  >
-    {icon}
-    <Text as="b" color="#555251" fontSize="sm" ml="10px">
-      {title}
-    </Text>
-  </ChakraButton>
-);
+const accordionButtonStyles = {
+  borderRadius: 0,
+  color: '#1A1A1A',
+  padding: '12px 14px',
+  _focus: {
+    boxShadow: 'none',
+  },
+};
 
 type ImageGeneratorProps = {
   aiImage: AiImage;
+  isEditingAiImage: boolean;
   onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
+  onSetIsEditingAiImage: (isEditing: boolean) => void;
 };
 
 export default function ImageGenerator({
   aiImage,
+  isEditingAiImage,
   onGeneratedImagePreview,
   onGeneratedImageSelected,
   onGeneratedImageRemoved,
+  onSetIsEditingAiImage,
 }: ImageGeneratorProps) {
+  const tonesRef = useRef(null);
+  const subjectInputRef = useRef(null);
+
   const [waiting, setWaiting] = useState(false);
 
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+
   const [images, setImages] = useState([]);
 
-  const [activeStep, setActiveStep] = useState(1);
-
   const { background, keywords, style, mood, subject } = options;
-
-  const handleEditPrompts = () => {
-    setActiveStep(3);
-    setImages([]);
-
-    onGeneratedImageRemoved(selectedImage);
-  };
 
   const handleNewArtwork = () => {
     handleReset();
@@ -103,31 +100,23 @@ export default function ImageGenerator({
     setSelectedImage(null);
     setOptions(defaultParams);
 
-    setIsEditing(false);
-
-    setActiveStep(1);
+    onSetIsEditingAiImage(false);
   };
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
 
-  const handleEdit = (index) => {
+  const handleEdit = () => {
     const { options } = aiImage;
 
     setOptions(options);
     setImages([]);
     setSelectedImage(null);
 
-    setActiveStep(index);
-
-    setIsEditing(true);
+    onSetIsEditingAiImage(true);
   };
 
   const handleRemove = () => {
-    setActiveStep(1);
-
     handleReset();
-
-    console.log('Handle remove', aiImage);
 
     onGeneratedImageRemoved(aiImage.url);
   };
@@ -151,8 +140,6 @@ export default function ImageGenerator({
       .then((images) => {
         setWaiting(false);
 
-        setActiveStep(null);
-
         setImages(images);
         setSelectedImage(images[0]);
 
@@ -163,101 +150,144 @@ export default function ImageGenerator({
       });
   };
 
-  if (aiImage && !isEditing) {
+  if (aiImage && !isEditingAiImage) {
     return (
-      <ImageOverview
-        aiImage={aiImage}
-        onEdit={handleEdit}
-        onRemove={handleRemove}
-      />
+      <Box padding="8px 14px">
+        <ImageOverview
+          aiImage={aiImage}
+          onEdit={handleEdit}
+          onRemove={handleRemove}
+        />
+      </Box>
+    );
+  }
+
+  if (waiting) {
+    return (
+      <Box padding="8px 14px">
+        <Progress />
+      </Box>
+    );
+  }
+
+  if (images.length) {
+    return (
+      <Box padding="8px 14px">
+        <Text mb="22px" textTransform="uppercase">
+          Select image
+        </Text>
+        <HStack justify="center" mb="20px">
+          {images.map((imageUrl) => (
+            <Image
+              border={imageUrl === selectedImage ? '4px solid #000000' : 'none'}
+              borderRadius="5px"
+              h={117}
+              key={imageUrl}
+              w="108px"
+              src={imageUrl}
+              alt="Generated image"
+              onClick={() => {
+                setSelectedImage(imageUrl);
+                onGeneratedImagePreview({ url: imageUrl, options });
+              }}
+            />
+          ))}
+        </HStack>
+        <Button onClick={handlePlaceArtwork} title="Place artwork" w="100%" />
+        <Flex align="center" mt="14px" pb="14px">
+          <Button
+            flex={1}
+            onClick={handleGenerate}
+            outlined
+            title="Generate similar"
+          />
+          <Button
+            flex={1}
+            ml="10px"
+            onClick={handleNewArtwork}
+            outlined
+            title="New"
+          />
+        </Flex>
+      </Box>
     );
   }
 
   return (
-    <Box pt="20px">
-      {activeStep === 1 ? (
-        <SelectStyle
-          onChange={(style) => handleUpdate({ style })}
-          onNext={() => setActiveStep(activeStep + 1)}
-          selectedValue={style}
-        />
-      ) : null}
-      {activeStep === 2 ? (
-        <SelectMood
-          onChange={(mood) => handleUpdate({ mood })}
-          onBack={() => setActiveStep(activeStep - 1)}
-          onNext={() => setActiveStep(activeStep + 1)}
-          selectedValue={mood}
-        />
-      ) : null}
-      {activeStep === 3 && !waiting ? (
-        <AddSubject
-          background={background}
-          onChangeBackground={(background) => handleUpdate({ background })}
-          onChange={(subject) => handleUpdate({ subject })}
-          onBack={() => setActiveStep(activeStep - 1)}
-          onNext={handleGenerate}
-          keywords={keywords}
-          onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
-          style={style}
+    <Box pb="26px">
+      <Accordion defaultIndex={[0, 1]} allowMultiple>
+        <AccordionItem borderTopWidth={0} paddingBottom="8px">
+          <h2>
+            <AccordionButton {...accordionButtonStyles}>
+              <Box as="span" flex="1" textAlign="left">
+                Style
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <SelectStyle
+              onChange={(style) => {
+                tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+                handleUpdate({ style });
+              }}
+              selectedValue={style}
+            />
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem
+          borderColor="transparent"
+          borderTopWidth={0}
+          paddingBottom="10px"
+        >
+          <h2>
+            <AccordionButton {...accordionButtonStyles}>
+              <Box as="span" flex="1" textAlign="left" ref={tonesRef}>
+                Color Filter
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            <SelectColorPalette
+              onChange={(mood) => {
+                subjectInputRef.current?.focus();
+
+                handleUpdate({ mood });
+              }}
+              selectedValue={mood}
+              style={style}
+            />
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+      <AddSubject
+        background={background}
+        onChangeBackground={(background) => handleUpdate({ background })}
+        keywords={keywords}
+        onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
+        style={style}
+      >
+        <Input
+          bg="#F5F5F5"
+          border="none"
+          borderRadius="11px"
+          h="42px"
+          onChange={(e) => handleUpdate({ subject: e.target.value })}
+          ref={subjectInputRef}
           value={subject}
+          placeholder="Write subject..."
         />
-      ) : null}
-      {waiting ? <Progress /> : null}
-      {images.length ? (
-        <Box>
-          <Text fontSize="md" mb="22px">
-            Select image
-          </Text>
-          <Flex align="center" mb="22px">
-            <ButtonGenerateAgain
-              icon={<IconShuffle />}
-              onClick={handleGenerate}
-              title="Generate similar"
-            />
-            <ButtonGenerateAgain
-              icon={<IconSpark />}
-              onClick={handleNewArtwork}
-              ml="20px"
-              title="Generate New"
-            />
-          </Flex>
-          <HStack justify="center" mb="20px">
-            {images.map((imageUrl) => (
-              <Image
-                border={
-                  imageUrl === selectedImage ? '4px solid #000000' : 'none'
-                }
-                borderRadius="5px"
-                h={117}
-                key={imageUrl}
-                w="108px"
-                src={imageUrl}
-                alt="Generated image"
-                onClick={() => {
-                  setSelectedImage(imageUrl);
-                  onGeneratedImagePreview({ url: imageUrl, options });
-                }}
-              />
-            ))}
-          </HStack>
-          <Button onClick={handlePlaceArtwork} title="Place artwork" w="100%" />
-          <Flex align="center" mt="14px" pb="14px">
-            <Button
-              flex={1}
-              onClick={handleEditPrompts}
-              outlined
-              title="Edit prompts"
-            />
-            <Button
-              flex={1}
-              ml="10px"
-              onClick={handleNewArtwork}
-              title="New Artwork"
-            />
-          </Flex>
-        </Box>
-      ) : null}
+      </AddSubject>
+      <Box padding="0 14px" mt="22px">
+        <Button
+          disabled={!subject && isEmpty(keywords)}
+          onClick={handleGenerate}
+          title="Generate"
+          w="100%"
+        />
+      </Box>
     </Box>
   );
 }
