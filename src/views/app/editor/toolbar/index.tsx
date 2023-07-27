@@ -1,14 +1,46 @@
-import { Box, Flex, HStack, Icon } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
-import ToolbarButton from '@/components/ToolbarButton';
 import { AiImage } from '@/components/types';
 
-import { IconAiGenerator, IconImage } from './Icons';
+import Colors from '@/theme/colors';
 
+import {
+  IconProductPicker,
+  IconProductPickerSelected,
+  IconTextToImage,
+  IconTextToImageSelected,
+  IconUploadImage,
+  IconUploadImageSelected,
+} from './Icons';
+
+import ProductPicker from './product-picker';
 import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
+
+const { abloBlue } = Colors;
+
+const ToolbarButton = ({ isSelected, ...rest }) => {
+  return (
+    <Button
+      background={isSelected ? '#E2E8F0' : 'transparent'}
+      borderRadius="12px"
+      height="40px"
+      padding="8px"
+      width="40px"
+      _focus={{
+        border: `1px solid ${abloBlue}`,
+        boxShadow: '0px 0px 8px 0px #97B9F5',
+      }}
+      _hover={{
+        border: `1px solid ${abloBlue}`,
+        boxShadow: '0px 0px 8px 0px #97B9F5',
+      }}
+      {...rest}
+    />
+  );
+};
 
 const IconDragHandle = ({ rotate }) => (
   <Icon
@@ -31,16 +63,21 @@ const IconDragHandle = ({ rotate }) => (
   </Icon>
 );
 
-const TOOLS = [
+const VIEWS = [
   {
-    name: 'imageGenerator',
-    icon: <IconAiGenerator />,
-    iconActive: <IconAiGenerator isSelected />,
+    name: 'productPicker',
+    icon: <IconProductPicker />,
+    iconActive: <IconProductPickerSelected />,
   },
   {
-    name: 'image',
-    icon: <IconImage />,
-    iconActive: <IconImage isSelected />,
+    name: 'textToImage',
+    icon: <IconTextToImage />,
+    iconActive: <IconTextToImageSelected />,
+  },
+  {
+    name: 'imageUpload',
+    icon: <IconUploadImage />,
+    iconActive: <IconUploadImageSelected />,
   },
 ];
 
@@ -83,7 +120,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   });
 
   useEffect(() => {
-    console.log('Use effect', isExpanded, aiImage);
     if (isExpanded && aiImage) {
       setHeight(window.innerHeight);
     } else if (isExpanded || isEditingAiImage) {
@@ -176,6 +212,8 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
+  const isProductPicker = selectedTool === 'productPicker';
+
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isImagePicker = selectedTool === 'image';
 
@@ -216,7 +254,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         </Flex>
         <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
-            {TOOLS.map(({ name, icon, iconActive }) => (
+            {VIEWS.map(({ name, icon, iconActive }) => (
               <ToolbarButton
                 isSelected={selectedTool === name}
                 key={name}
@@ -229,6 +267,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         </Flex>
       </Box>
       <Box>
+        {isProductPicker ? <ProductPicker /> : null}
         {isImageGenerator ? (
           <ImageGenerator
             aiImage={aiImage}
