@@ -7,7 +7,6 @@ import VerifyEmailPage from '@/views/auth/VerifyEmail';
 import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/theme/theme';
-import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -37,15 +36,13 @@ root.render(
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
-          <ThemeEditorProvider>
-            <BrowserRouter>
-              <Switch>
-                <Route path={`/verify-email`} component={VerifyEmailPage} />
-                <Route path={`/app`} component={Dashboard} />
-                <Redirect from="/" to="/app" />
-              </Switch>
-            </BrowserRouter>
-          </ThemeEditorProvider>
+          <BrowserRouter>
+            <Switch>
+              <Route path={`/verify-email`} component={VerifyEmailPage} />
+              <Route path={`/app`} component={Dashboard} />
+              <Redirect from="/" to="/app" />
+            </Switch>
+          </BrowserRouter>
         </ChakraProvider>
       </QueryClientProvider>
     </GoogleOAuthProvider>
