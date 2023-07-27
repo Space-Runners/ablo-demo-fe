@@ -353,7 +353,7 @@ const ObjectEditTools = ({
         <IconButton isSelected={isErasing} onClick={handleErase}>
           <IconEraser />
         </IconButton>
-        <IconButton onClick={onDeleteActiveObject} ml="14px">
+        <IconButton onClick={onDeleteActiveObject}>
           <IconTrash />
         </IconButton>
         {activeObject?.aiImage ? (
