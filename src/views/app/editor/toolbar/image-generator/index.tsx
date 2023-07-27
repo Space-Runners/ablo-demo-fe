@@ -35,7 +35,7 @@ import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
   style: 'Botanical',
-  mood: '',
+  tone: '',
   subject: '',
   keywords: [],
   background: true,
@@ -78,7 +78,7 @@ export default function ImageGenerator({
 
   const [images, setImages] = useState([]);
 
-  const { background, keywords, style, mood, subject } = options;
+  const { background, keywords, style, tone, subject } = options;
 
   const handleNewArtwork = () => {
     handleReset();
@@ -132,8 +132,8 @@ export default function ImageGenerator({
       freeText: subject,
     } as TextToImageRequest;
 
-    if (mood !== 'noMood') {
-      requestParams.mood = mood;
+    if (tone !== 'noTone') {
+      requestParams.tone = tone;
     }
 
     generateImage(requestParams)
@@ -251,12 +251,12 @@ export default function ImageGenerator({
           </h2>
           <AccordionPanel pb={4}>
             <SelectColorPalette
-              onChange={(mood) => {
+              onChange={(tone) => {
                 subjectInputRef.current?.focus();
 
-                handleUpdate({ mood });
+                handleUpdate({ tone });
               }}
-              selectedValue={mood}
+              selectedValue={tone}
               style={style}
             />
           </AccordionPanel>
