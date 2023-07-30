@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
+import { Box, Button, Flex, Hide, HStack, Icon } from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
@@ -228,14 +228,18 @@ export default function FooterToolbar(props: FooterToolbarProps) {
 
   return (
     <Box
-      borderRadius="24px 24px 0 0"
+      borderRadius={{ base: '24px 24px 0 0', md: 0 }}
       bottom={0}
       id="toolbarOverlay"
       bg="#FFFFFF"
-      height={`${height}px`}
-      overflow={height === MIN_OVERLAY_HEIGHT ? 'none' : 'auto'}
-      position="fixed"
-      w="100%"
+      h={{ base: `${height}px`, md: '100%' }}
+      overflow={{
+        base: height === MIN_OVERLAY_HEIGHT ? 'none' : 'auto',
+        md: 'auto',
+      }}
+      pb={{ base: 0, md: '14px' }}
+      position={{ base: 'fixed', sm: 'relative' }}
+      w={{ base: '100%', md: '393px' }}
       zIndex={3}
     >
       <Box
@@ -246,19 +250,21 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         onTouchMove={resize}
         onTouchEnd={endResize}
       >
-        <Flex
-          align="center"
-          height="20px"
-          justify="center"
-          style={{
-            cursor: active ? 'grabbing' : 'grab',
-            touchAction: 'none',
-          }}
-          padding="8px"
-          w="100%"
-        >
-          <IconDragHandle rotate={!isFullHeight} />
-        </Flex>
+        <Hide above="md">
+          <Flex
+            align="center"
+            height="20px"
+            justify="center"
+            style={{
+              cursor: active ? 'grabbing' : 'grab',
+              touchAction: 'none',
+            }}
+            padding="8px"
+            w="100%"
+          >
+            <IconDragHandle rotate={!isFullHeight} />
+          </Flex>
+        </Hide>
         <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
             {VIEWS.map(({ name, icon, iconActive }) => (

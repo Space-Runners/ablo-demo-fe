@@ -214,12 +214,15 @@ export default function ImageGenerator({
   }
 
   return (
-    <Box pb="26px">
+    <Box mt="20px" pb="26px">
+      <Text as="b" fontSize="md" mb="5px" ml="14px">
+        Text to Image
+      </Text>
       <Accordion defaultIndex={[0, 1]} allowMultiple>
         <AccordionItem borderTopWidth={0} paddingBottom="8px">
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" textAlign="left">
+              <Box as="span" flex="1" fontSize="sm" textAlign="left">
                 Style
               </Box>
               <AccordionIcon />
@@ -243,7 +246,13 @@ export default function ImageGenerator({
         >
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" textAlign="left" ref={tonesRef}>
+              <Box
+                as="span"
+                flex="1"
+                fontSize="sm"
+                textAlign="left"
+                ref={tonesRef}
+              >
                 Color Filter
               </Box>
               <AccordionIcon />

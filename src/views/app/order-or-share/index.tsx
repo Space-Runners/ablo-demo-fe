@@ -131,7 +131,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   return (
     <Box>
-      <Navbar onBack={() => history.goBack()} step={3} title="Share" />
+      <Navbar onBack={() => history.goBack()} title="Share" />
       <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
         <Box
           display="flex"

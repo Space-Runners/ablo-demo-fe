@@ -1,6 +1,6 @@
 import { Fragment as F } from 'react';
 
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Text } from '@chakra-ui/react';
 
 import IconEmptyState from '../icons/EmptyState';
 
@@ -37,10 +37,10 @@ const CanvasContainer = ({
   showHint,
 }: Props) => (
   <F>
-    <img
+    <Image
       src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
       crossOrigin="anonymous"
-      width={350}
+      width={{ base: 350, md: 546 }}
     />
     <Box
       border={
