@@ -1,8 +1,4 @@
-import { Box, Button, HStack } from '@chakra-ui/react';
-
-import Colors from '@/theme/colors';
-
-const { abloBlue } = Colors;
+import { Button, HStack } from '@chakra-ui/react';
 
 type MiniFilterBarProps = {
   selectedValue: string;
@@ -15,7 +11,7 @@ const MiniFilterBar = ({
   onChange,
   options,
 }: MiniFilterBarProps) => (
-  <HStack mt="20px" overflowX="auto" spacing="16px" w="100%">
+  <HStack overflowX="auto" pl="6px" spacing="16px" w="100%">
     {options.map((value) => (
       <Button
         bg="transparent"
@@ -27,15 +23,6 @@ const MiniFilterBar = ({
         onClick={() => onChange(value)}
         padding={0}
       >
-        {selectedValue === value ? (
-          <Box
-            bg={abloBlue}
-            borderRadius="50%"
-            mr="8px"
-            h="11px"
-            w="11px"
-          ></Box>
-        ) : null}
         {value}
       </Button>
     ))}

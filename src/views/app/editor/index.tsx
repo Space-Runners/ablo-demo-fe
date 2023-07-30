@@ -10,7 +10,7 @@ import { fabric } from 'fabric';
 import { isEmpty, times } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
-import { AiImage, Design } from '@/components/types';
+import { AiImage, Design, Garment } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
@@ -79,6 +79,8 @@ export default function ImageEditor({
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
   const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
+
+  const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
 
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -629,6 +631,8 @@ export default function ImageEditor({
           onGeneratedImagePreview={handleGeneratedImagePreview}
           onGeneratedImageSelected={handlePreviewImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
+          selectedGarment={selectedGarment}
+          onSelectedGarment={setSelectedGarment}
         />
       </Flex>
       {isSignUpModalVisible ? (

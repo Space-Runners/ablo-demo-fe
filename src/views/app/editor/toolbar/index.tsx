@@ -2,7 +2,7 @@ import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
-import { AiImage } from '@/components/types';
+import { AiImage, Filters, Garment } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
@@ -106,14 +106,18 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onGeneratedImageRemoved,
   } = props;
 
-  // const resizable = document.getElementById('toolbarOverlay');
+  const [selectedFilters, setSelectedFilters] = useState<Filters>({
+    clothingTypes: [],
+    price: [20, 90],
+  });
 
   const [selectedTool, setSelectedTool] = useState('imageGenerator');
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
   const [isEditingAiImage, setIsEditingAiImage] = useState(false);
 
-  const isFullScreen = aiImage && !isEditingAiImage;
+  const isFullScreen =
+    (aiImage && !isEditingAiImage) || selectedTool === 'productPicker';
 
   const [drag, setDrag] = useState({
     active: false,
@@ -122,12 +126,16 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   useEffect(() => {
     if (isExpanded && aiImage) {
       setHeight(window.innerHeight);
-    } else if (isExpanded || isEditingAiImage) {
+    } else if (
+      isExpanded ||
+      isEditingAiImage ||
+      selectedTool === 'productPicker'
+    ) {
       setHeight(MAX_OVERLAY_HEIGHT);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
     }
-  }, [aiImage, isExpanded, isEditingAiImage]);
+  }, [aiImage, isExpanded, isEditingAiImage, selectedTool]);
 
   const startResize = () => {
     setDrag({
@@ -213,7 +221,6 @@ export default function FooterToolbar(props: FooterToolbarProps) {
   const { active } = drag;
 
   const isProductPicker = selectedTool === 'productPicker';
-
   const isImageGenerator = selectedTool === 'imageGenerator';
   const isImagePicker = selectedTool === 'image';
 
@@ -267,7 +274,14 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         </Flex>
       </Box>
       <Box>
-        {isProductPicker ? <ProductPicker /> : null}
+        {isProductPicker ? (
+          <ProductPicker
+            filters={selectedFilters}
+            onFiltersChange={setSelectedFilters}
+            selectedGarment={selectedGarment}
+            onSelectedGarment={setSelectedGarment}
+          />
+        ) : null}
         {isImageGenerator ? (
           <ImageGenerator
             aiImage={aiImage}

@@ -1,13 +1,11 @@
-import { useState } from 'react';
+import { Fragment as F, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
-
-import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon, Image, Text } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
 import MiniFilterBar from '@/components/MiniFilterBar';
-import Navbar from '@/components/navbar/Navbar';
+
 import Panel from '@/components/Panel';
 import { Filters, Garment, Product } from '@/components/types';
 
@@ -22,6 +20,45 @@ import ProductFilters from './Filters';
 import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
 
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+const IconBack = () => (
+  <Icon
+    width="24px"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_2455_20036)">
+      <path
+        d="M5 12H19"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 12L9 16"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 12L9 8"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_2455_20036">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
+  </Icon>
+);
 
 const matchesClothingType = (types, product) =>
   !types.length ||
@@ -261,54 +298,69 @@ export default function ProductsPage({
   selectedGarment,
   onSelectedGarment,
 }: ProductPageProps) {
-  const history = useHistory();
-
   const [areFiltersVisible, setFiltersVisible] = useState(false);
 
   const { clothingTypes } = filters;
 
   const products = getProductsMatchingFilters(filters);
 
-  const { productId, variant } = selectedGarment || {};
+  const { productId } = selectedGarment || {};
 
   const selectedProduct = PRODUCTS.find(({ id }) => id === productId);
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
-      <Navbar
-        onBack={
-          selectedProduct
-            ? () =>
-                onSelectedGarment({
-                  ...selectedGarment,
-                  productId: null,
-                })
-            : null
-        }
-        onNext={() =>
-          history.push(`/app/editor?productId=${productId}&variant=${variant}`)
-        }
-        isNextDisabled={!selectedProduct}
-        step={1}
-        title="Pick your garment"
-      />
-      <Button
-        alignItems="center"
-        bg="#FFFFFF"
-        borderBottom="1px solid #D4D4D3"
-        borderRadius={0}
-        display="flex"
-        height="50px"
-        justifyContent="space-between"
-        onClick={() => setFiltersVisible(!areFiltersVisible)}
-        padding="10px 14px"
-        w="100%"
-      >
-        <Text color="#212121" fontWeight={400}>
-          FILTERS
+      <Flex align="center" height="63px" pl="17px">
+        {selectedProduct ? (
+          <Button
+            bg="transparent"
+            height="30px"
+            minWidth="none"
+            mr="10px"
+            onClick={() => {
+              onSelectedGarment({
+                ...selectedGarment,
+                productId: null,
+              });
+            }}
+            padding={0}
+            _hover={{
+              bg: '#F9F9F7',
+              border: `1px solid ${abloBlue}`,
+              boxShadow: '0px 0px 8px 0px #97B9F5',
+            }}
+          >
+            <IconBack />
+          </Button>
+        ) : null}
+        <Text
+          fontFamily="Roboto Condensed"
+          fontSize="18px"
+          fontWeight={600}
+          lineHeight="18px"
+        >
+          Pick your clothe
         </Text>
-        {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
-      </Button>
+      </Flex>
+      {!selectedProduct ? (
+        <Button
+          alignItems="center"
+          bg="#FFFFFF"
+          borderRadius={0}
+          boxShadow="none"
+          display="flex"
+          height="50px"
+          justifyContent="space-between"
+          onClick={() => setFiltersVisible(!areFiltersVisible)}
+          padding="10px 14px"
+          w="100%"
+        >
+          <Text color="#212121" fontWeight={400}>
+            FILTERS
+          </Text>
+          {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
+        </Button>
+      ) : null}
       {areFiltersVisible ? (
         <ProductFilters
           filters={filters}
@@ -331,7 +383,7 @@ export default function ProductsPage({
             />
           ) : null}
           {!selectedProduct && (
-            <Box pl="14px">
+            <F>
               <MiniFilterBar
                 options={['All', ...CLOTHING_TYPES]}
                 selectedValue={clothingTypes[0] || 'All'}
@@ -339,19 +391,21 @@ export default function ProductsPage({
                   onFiltersChange({ ...filters, clothingTypes: [value] })
                 }
               />
-            </Box>
+              <ProductsList
+                onSelectedProduct={({ id }) =>
+                  onSelectedGarment({
+                    productId: id,
+                    variant: selectedGarment
+                      ? selectedGarment.variant
+                      : 'OatMilk',
+                    size: 'S',
+                  })
+                }
+                products={products}
+                selectedGarment={selectedGarment}
+              />
+            </F>
           )}
-          <ProductsList
-            onSelectedProduct={({ id }) =>
-              onSelectedGarment({
-                productId: id,
-                variant: selectedGarment ? selectedGarment.variant : 'OatMilk',
-                size: 'S',
-              })
-            }
-            products={products}
-            selectedGarment={selectedGarment}
-          />
         </Box>
       )}
     </Box>
