@@ -99,7 +99,7 @@ type FooterToolbarProps = {
   onSelectedProduct: (product: Product) => void;
 };
 
-export default function FooterToolbar(props: FooterToolbarProps) {
+export default function EditorToolbar(props: FooterToolbarProps) {
   const {
     aiImage,
     isExpanded,

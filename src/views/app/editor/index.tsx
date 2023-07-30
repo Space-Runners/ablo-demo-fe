@@ -22,7 +22,7 @@ import Toolbar from './controls/Toolbar';
 
 import renderRotateLabel from './fabric/rotateLabel';
 import ObjectEditTools from './components/object-edit-tools';
-import FooterToolbar from './toolbar';
+import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
 
 import './ImageEditor.css';
@@ -546,7 +546,7 @@ export default function ImageEditor({
         position="relative"
         w="100%"
       >
-        <FooterToolbar
+        <EditorToolbar
           isExpanded={isFooterToolbarExpanded}
           onSetExpanded={setFooterToolbarExpanded}
           activeObject={activeObject}
