@@ -50,7 +50,7 @@ export default function Toolbar({
   return (
     <Box
       bg={{ base: 'transparent', md: '#FFFFFF' }}
-      borderLeft="1px solid rgba(26, 26, 26, 0.10)"
+      borderLeft={{ base: 'none', md: '1px solid rgba(26, 26, 26, 0.10)' }}
       h={{ base: 'auto', md: '80px ' }}
       p="0px 14px"
       w="100%"

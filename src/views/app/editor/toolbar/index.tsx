@@ -2,7 +2,7 @@ import { Box, Button, Flex, Hide, HStack, Icon } from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
-import { AiImage, Filters, Garment } from '@/components/types';
+import { AiImage, Filters, Garment, Product } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
@@ -93,6 +93,10 @@ type FooterToolbarProps = {
   onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (url: string) => void;
+  selectedGarment: Garment;
+  onSelectedGarment: (garment: Garment) => void;
+  selectedProduct: Product;
+  onSelectedProduct: (product: Product) => void;
 };
 
 export default function FooterToolbar(props: FooterToolbarProps) {
@@ -104,6 +108,10 @@ export default function FooterToolbar(props: FooterToolbarProps) {
     onGeneratedImagePreview,
     onGeneratedImageSelected,
     onGeneratedImageRemoved,
+    selectedGarment,
+    onSelectedGarment,
+    selectedProduct,
+    onSelectedProduct,
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
@@ -238,7 +246,7 @@ export default function FooterToolbar(props: FooterToolbarProps) {
         md: 'auto',
       }}
       pb={{ base: 0, md: '14px' }}
-      position={{ base: 'fixed', sm: 'relative' }}
+      position={{ base: 'fixed', md: 'relative' }}
       w={{ base: '100%', md: '393px' }}
       zIndex={3}
     >
@@ -285,7 +293,9 @@ export default function FooterToolbar(props: FooterToolbarProps) {
             filters={selectedFilters}
             onFiltersChange={setSelectedFilters}
             selectedGarment={selectedGarment}
-            onSelectedGarment={setSelectedGarment}
+            onSelectedGarment={onSelectedGarment}
+            selectedProduct={selectedProduct}
+            onSelectedProduct={onSelectedProduct}
           />
         ) : null}
         {isImageGenerator ? (

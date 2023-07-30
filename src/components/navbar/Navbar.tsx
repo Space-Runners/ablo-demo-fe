@@ -92,7 +92,7 @@ export default function Navbar(props: Props) {
       >
         <AbloText />
       </Flex>
-      <Hide above="sm">
+      <Hide above="md">
         <Flex
           align="center"
           bg="#FFFFFF"

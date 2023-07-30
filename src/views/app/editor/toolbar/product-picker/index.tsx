@@ -1,25 +1,35 @@
 import { Fragment as F, useState } from 'react';
 
-import { Box, Button, Flex, HStack, Icon, Image, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Image,
+  Text,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
 import MiniFilterBar from '@/components/MiniFilterBar';
 
-import Panel from '@/components/Panel';
 import { Filters, Garment, Product } from '@/components/types';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
-import ColorPicker from '@/components/ColorPicker';
 import Colors from '@/theme/colors';
 
-const { abloBlue } = Colors;
-
+import ProductDetails from './ProductDetails';
 import ProductFilters from './Filters';
 
-import { IconFilters, IconCloseFilters, IconSustainable } from './Icons';
+import {
+  IconFilters,
+  IconCloseFilters,
+  IconSustainable,
+  IconSelected,
+} from './Icons';
 
-const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const { abloBlue } = Colors;
 
 const IconBack = () => (
   <Icon
@@ -85,103 +95,6 @@ const getProductsMatchingFilters = (filters) =>
     );
   });
 
-const ProductDetails = ({
-  garment,
-  onGarmentUpdate,
-  product,
-}: {
-  garment: Garment;
-  onGarmentUpdate: (updates: any) => void;
-  product: Product;
-}) => {
-  const { variant, size: selectedSize } = garment;
-
-  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } =
-    product;
-
-  return (
-    <Box borderBottom="1px solid #D9D9D9">
-      <Flex
-        align="center"
-        bg="#F9F9F7"
-        direction="column"
-        justify="center"
-        position="relative"
-        margin="0 auto"
-        h="271px"
-        w="100%"
-      >
-        <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image h={216} src={`${urlPrefix}_${variant}_FRONT.webp`} alt={name} />
-      </Flex>
-      <Box padding="24px 14px">
-        <Text color="#959392" fontSize="sm" mb="13px">
-          SPAARKD
-        </Text>
-        <Flex color="#000000" justify="space-between" mb="16px">
-          <Text fontSize="md">
-            {fit} {name}
-          </Text>
-          <Text fontSize="md" fontWeight={700}>
-            ${price}.00
-          </Text>
-        </Flex>
-        <Flex color="#959392" justify="space-between" mb="23px">
-          <Text color="#959392" fontSize="sm">
-            {fabric}
-          </Text>
-          <Box bg="#F9F9F7" borderRadius="4px" padding="0 8px">
-            <Text color="#959392" bg="#F9F9F7" fontSize="xs" padding="4px 6px">
-              Min. Order #: 1
-            </Text>
-          </Box>
-        </Flex>
-        <Text color="#000000" fontSize="sm" mb="20px">
-          {tags.join(' / ')}
-        </Text>
-        <HStack mb="20px" spacing="10px">
-          {SIZES.map((size) => {
-            const isSelected = size === selectedSize;
-
-            return (
-              <Flex
-                align="center"
-                as="button"
-                border={
-                  isSelected ? `1px solid ${abloBlue}` : '1px solid #6A6866'
-                }
-                borderRadius="4px"
-                fontWeight={isSelected ? 600 : 400}
-                onClick={() => onGarmentUpdate({ size })}
-                h="34px"
-                key={size}
-                justify="center"
-                w="34px"
-              >
-                <Text color={isSelected ? abloBlue : '#6A6866'} fontSize="sm">
-                  {size}
-                </Text>
-              </Flex>
-            );
-          })}
-        </HStack>
-        <ColorPicker
-          onSelectedVariants={([variant]) => onGarmentUpdate({ variant })}
-          selectedVariants={[variant]}
-        />
-      </Box>
-      <Panel title="More Info">
-        <Box color="#000000" fontSize="md" padding="0 15px 22px 0">
-          <Text as="b">Made in {madeIn}</Text>
-          <Text fontWeight={300} mt="8px">
-            {description}
-          </Text>
-        </Box>
-      </Panel>
-    </Box>
-  );
-};
-
 type ProductsListProps = {
   products: Product[];
   onSelectedProduct: (product: Product) => void;
@@ -212,10 +125,12 @@ const ProductsList = ({
                   )
                 : variants.find((variant) => variant.name === 'OatMilk');
 
-            const selectedProps =
-              selectedGarment && selectedGarment.productId === id
-                ? { border: '2px solid #000000', borderRadius: '10px' }
-                : {};
+            const isSelected =
+              selectedGarment && selectedGarment.productId === id;
+
+            const selectedProps = isSelected
+              ? { border: '2px solid #000000', borderRadius: '10px' }
+              : {};
 
             return (
               <Box
@@ -226,7 +141,11 @@ const ProductsList = ({
                 position="relative"
                 {...selectedProps}
               >
-                <IconSustainable position="absolute" top="8px" right="8px" />
+                {isSelected ? (
+                  <IconSelected position="absolute" top="8px" right="8px" />
+                ) : (
+                  <IconSustainable position="absolute" top="8px" right="8px" />
+                )}
                 <Flex
                   align="center"
                   bg="#F9F9F7"
@@ -285,44 +204,41 @@ const ProductsList = ({
   );
 };
 
-type ProductPageProps = {
+type ProductPickerProps = {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
+  selectedProduct: Product;
+  onSelectedProduct: (garment: Product) => void;
 };
 
-export default function ProductsPage({
+export default function ProductPicker({
   filters,
   onFiltersChange,
   selectedGarment,
   onSelectedGarment,
-}: ProductPageProps) {
+  selectedProduct,
+  onSelectedProduct,
+}: ProductPickerProps) {
   const [areFiltersVisible, setFiltersVisible] = useState(false);
 
   const { clothingTypes } = filters;
 
   const products = getProductsMatchingFilters(filters);
 
-  const { productId } = selectedGarment || {};
-
-  const selectedProduct = PRODUCTS.find(({ id }) => id === productId);
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Flex align="center" height="63px" pl="17px">
-        {selectedProduct ? (
+        {selectedProduct && isMobile ? (
           <Button
             bg="transparent"
             height="30px"
             minWidth="none"
             mr="10px"
-            onClick={() => {
-              onSelectedGarment({
-                ...selectedGarment,
-                productId: null,
-              });
-            }}
+            onClick={() => onSelectedProduct(null)}
             padding={0}
             _hover={{
               bg: '#F9F9F7',
@@ -342,7 +258,7 @@ export default function ProductsPage({
           Pick your clothe
         </Text>
       </Flex>
-      {!selectedProduct ? (
+      {!selectedProduct || !isMobile ? (
         <Button
           alignItems="center"
           bg="#FFFFFF"
@@ -373,16 +289,13 @@ export default function ProductsPage({
         />
       ) : (
         <Box>
-          {selectedProduct ? (
+          {selectedProduct && isMobile ? (
             <ProductDetails
               garment={selectedGarment}
-              onGarmentUpdate={(updates) =>
-                onSelectedGarment({ ...selectedGarment, ...updates })
-              }
+              onGarmentUpdate={onSelectedGarment}
               product={selectedProduct}
             />
-          ) : null}
-          {!selectedProduct && (
+          ) : (
             <F>
               <MiniFilterBar
                 options={['All', ...CLOTHING_TYPES]}
@@ -392,15 +305,7 @@ export default function ProductsPage({
                 }
               />
               <ProductsList
-                onSelectedProduct={({ id }) =>
-                  onSelectedGarment({
-                    productId: id,
-                    variant: selectedGarment
-                      ? selectedGarment.variant
-                      : 'OatMilk',
-                    size: 'S',
-                  })
-                }
+                onSelectedProduct={onSelectedProduct}
                 products={products}
                 selectedGarment={selectedGarment}
               />

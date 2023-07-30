@@ -4,12 +4,19 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { Design } from '@/components/types';
+import { Design, Garment } from '@/components/types';
+import PRODUCTS from '@/data/products';
 
 import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 
 import { useState } from 'react';
+
+const DEFAULT_SELECTED_GARMENT = {
+  productId: PRODUCTS[0].id,
+  variant: 'OatMilk',
+  size: 'S',
+};
 
 export default function DesignTool() {
   const location = useLocation();
@@ -18,6 +25,10 @@ export default function DesignTool() {
     Front: null,
     Back: null,
   });
+
+  const [selectedGarment, setSelectedGarment] = useState<Garment>(
+    DEFAULT_SELECTED_GARMENT
+  );
 
   return (
     <Box
@@ -40,6 +51,8 @@ export default function DesignTool() {
                   <Editor
                     design={activeDesign}
                     onDesignChange={setActiveDesign}
+                    selectedGarment={selectedGarment}
+                    onSelectedGarment={setSelectedGarment}
                   />
                 )}
               />

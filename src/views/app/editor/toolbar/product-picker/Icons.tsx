@@ -8,8 +8,8 @@ export const IconFilters = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_354_236)">
-      <g clip-path="url(#clip1_354_236)">
+    <g clipPath="url(#clip0_354_236)">
+      <g clipPath="url(#clip1_354_236)">
         <path
           d="M4 8.66313H8V12.6631H4V8.66313Z"
           stroke="black"
@@ -144,5 +144,22 @@ export const IconSustainable = (props) => (
         <rect width="24" height="24" fill="white" />
       </clipPath>
     </defs>
+  </Icon>
+);
+
+export const IconSelected = (props) => (
+  <Icon
+    width="22px"
+    height="23px"
+    viewBox="0 0 22 23"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle cx="11" cy="11.3369" r="8.90476" fill="white" />
+    <path
+      d="M11.0002 2.17041C5.94016 2.17041 1.8335 6.27708 1.8335 11.3371C1.8335 16.3971 5.94016 20.5037 11.0002 20.5037C16.0602 20.5037 20.1668 16.3971 20.1668 11.3371C20.1668 6.27708 16.0602 2.17041 11.0002 2.17041ZM9.16683 15.9204L4.5835 11.3371L5.876 10.0446L9.16683 13.3262L16.1243 6.36874L17.4168 7.67041L9.16683 15.9204Z"
+      fill="#064AC4"
+    />
   </Icon>
 );
