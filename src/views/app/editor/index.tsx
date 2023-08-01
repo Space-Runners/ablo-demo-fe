@@ -83,7 +83,7 @@ export default function ImageEditor({
   const { data: me } = useMe();
 
   const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
-  const [isFooterToolbarExpanded, setFooterToolbarExpanded] = useState(false);
+  const [isEditorToolbarExpanded, setEditorToolbarExpanded] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<Product>(null);
 
@@ -99,12 +99,14 @@ export default function ImageEditor({
 
   const { printableAreas } = product;
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue(
+    { base: true, md: false },
+    { ssr: false }
+  );
 
   const drawingAreaForSide = printableAreas[selectedSide.toLowerCase()];
 
-  const drawingArea =
-    drawingAreaForSide[isMobile ? 'base' : 'md'] || drawingAreaForSide;
+  const drawingArea = drawingAreaForSide[isMobile ? 'base' : 'md'];
 
   const saveState = useCallback(() => {
     const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
@@ -135,8 +137,7 @@ export default function ImageEditor({
 
       const drawingAreaForSide = printableAreas[side.toLowerCase()];
 
-      const { width, height } =
-        drawingAreaForSide[isMobile ? 'base' : 'md'] || drawingAreaForSide;
+      const { width, height } = drawingAreaForSide[isMobile ? 'base' : 'md'];
 
       canvas.current = initCanvas(side, width, height);
 
@@ -226,6 +227,26 @@ export default function ImageEditor({
       }
     };
   }, [canvas, saveState]);
+
+  const handleSelectedGarment = (garment) => {
+    onSelectedGarment(garment);
+
+    setSelectedProduct(null);
+
+    sides.forEach((side) => {
+      const canvas = side === 'Front' ? canvasFront : canvasBack;
+
+      const product = PRODUCTS.find(
+        (product) => product.id === garment.productId
+      );
+
+      const drawingAreaForSide = product.printableAreas[side.toLowerCase()];
+
+      const { width, height } = drawingAreaForSide[isMobile ? 'base' : 'md'];
+
+      canvas.current.setDimensions({ width, height });
+    });
+  };
 
   const handleUndo = () => {
     setRedoStack([...redoStack, state.current]);
@@ -392,7 +413,7 @@ export default function ImageEditor({
 
     setActiveObject(canvas.current.getActiveObject());
 
-    setFooterToolbarExpanded(false);
+    setEditorToolbarExpanded(false);
   };
 
   const handleGeneratedImageRemoved = (imageUrl: string) => {
@@ -529,8 +550,6 @@ export default function ImageEditor({
 
   const showHint = isEmpty(objects) && !activeObject;
 
-  console.log('Variant', selectedVariant);
-
   return (
     <Box h="100vh" w="100%">
       <Navbar
@@ -542,13 +561,13 @@ export default function ImageEditor({
         align="center"
         bg="#F9F9F7"
         flexDirection={{ base: 'column', md: 'row' }}
-        h={{ base: 'calc(100% - 163px)', md: 'calc(100% - 65px)' }}
+        h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
         position="relative"
         w="100%"
       >
         <EditorToolbar
-          isExpanded={isFooterToolbarExpanded}
-          onSetExpanded={setFooterToolbarExpanded}
+          isExpanded={isEditorToolbarExpanded}
+          onSetExpanded={setEditorToolbarExpanded}
           activeObject={activeObject}
           aiImage={!imagePreview && aiImage}
           onImageUploaded={handleImageUpload}
@@ -556,11 +575,7 @@ export default function ImageEditor({
           onGeneratedImageSelected={handlePreviewImageSelected}
           onGeneratedImageRemoved={handleGeneratedImageRemoved}
           selectedGarment={selectedGarment}
-          onSelectedGarment={(garment) => {
-            onSelectedGarment(garment);
-
-            setSelectedProduct(null);
-          }}
+          onSelectedGarment={handleSelectedGarment}
           selectedProduct={selectedProduct}
           onSelectedProduct={setSelectedProduct}
         />
@@ -569,111 +584,114 @@ export default function ImageEditor({
             <Box bg="#FFFFFF" borderRadius="10px" height="100%" overflow="auto">
               <ProductDetails
                 garment={selectedGarment}
-                onGarmentUpdate={(garment) => {
-                  onSelectedGarment(garment);
-
-                  setSelectedProduct(null);
-                }}
+                onGarmentUpdate={handleSelectedGarment}
                 product={selectedProduct}
               />
             </Box>
           </Box>
-        ) : (
+        ) : null}
+        <Box
+          display={{ base: 'block', md: selectedProduct ? 'none' : 'flex' }}
+          flex={1}
+          flexDirection="column"
+          h={{ base: 'auto', md: '100%' }}
+          position="relative"
+          w="100%"
+        >
+          <Toolbar
+            isDrawingAreaVisible={isDrawingAreaVisible}
+            onAddText={handleAddText}
+            onToggleDrawingArea={() =>
+              setDrawingAreaVisible(!isDrawingAreaVisible)
+            }
+            onSelectedSide={handleSelectedSide}
+            onSelectedVariant={(variant) =>
+              onSelectedGarment({ ...selectedGarment, variant })
+            }
+            onUndo={isEmpty(undoStack) ? null : handleUndo}
+            onRedo={isEmpty(redoStack) ? null : handleRedo}
+            onSave={handleNext}
+            selectedSide={selectedSide}
+            selectedVariant={selectedVariant}
+          />
           <Box
-            display={{ base: 'block', md: 'flex' }}
+            alignItems="center"
+            display="flex"
             flex={1}
             flexDirection="column"
-            h={{ base: 'auto', md: '100%' }}
+            justifyContent="center"
+            position="relative"
+            top={{ base: '40px', md: 0 }}
           >
-            <Toolbar
-              isDrawingAreaVisible={isDrawingAreaVisible}
-              onAddText={handleAddText}
-              onToggleDrawingArea={() =>
-                setDrawingAreaVisible(!isDrawingAreaVisible)
-              }
-              onSelectedSide={handleSelectedSide}
-              onSelectedVariant={(variant) =>
-                onSelectedGarment({ ...selectedGarment, variant })
-              }
-              onUndo={isEmpty(undoStack) ? null : handleUndo}
-              onRedo={isEmpty(redoStack) ? null : handleRedo}
-              selectedSide={selectedSide}
-              selectedVariant={selectedVariant}
-            />
             <Box
-              alignItems="center"
-              display={{ base: 'relative', md: 'flex' }}
-              flex={1}
-              justifyContent="center"
+              id="#canvas-container-front"
+              display={selectedSide === 'Front' ? 'block' : 'none'}
+              onClick={handleClick}
+              ref={clothingAndCanvasRefFront}
+              position="relative"
             >
-              <Box
-                id="#canvas-container-front"
-                display={selectedSide === 'Front' ? 'block' : 'none'}
-                onClick={handleClick}
-                ref={clothingAndCanvasRefFront}
-                position="relative"
-              >
-                <CanvasContainer
-                  canvasRef={canvasFront}
-                  drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
-                  id="canvas-front"
-                  isDrawingAreaVisible={isDrawingAreaVisible}
-                  variantImageUrl={variantImageUrl}
-                  selectedVariant={selectedVariant}
-                  showHint={showHint}
-                  showCenterAxis={isModifyingObject}
-                  side="front"
-                  onHintClick={() => {
-                    setFooterToolbarExpanded(true);
-                  }}
-                />
-              </Box>
-              <Box
-                id="#canvas-container-back"
-                display={selectedSide === 'Back' ? 'block' : 'none'}
-                ref={clothingAndCanvasRefBack}
-                position="relative"
-              >
-                <CanvasContainer
-                  canvasRef={canvasBack}
-                  drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
-                  id="canvas-back"
-                  isDrawingAreaVisible={isDrawingAreaVisible}
-                  variantImageUrl={variantImageUrl}
-                  selectedVariant={selectedVariant}
-                  showHint={showHint}
-                  showCenterAxis={isModifyingObject}
-                  side="back"
-                  onHintClick={() => {
-                    setFooterToolbarExpanded(true);
-                  }}
-                />
-              </Box>
-            </Box>
-            <VStack
-              position="absolute"
-              top={`${92 + drawingArea.height + drawingArea.top + 10}px`}
-            >
-              <ObjectEditTools
-                activeObject={activeObject}
-                canvas={canvas.current}
-                onLayerUp={handleLayerUp}
-                onLayerDown={handleLayerDown}
-                onCopyActiveObject={handleCopyActiveObject}
-                onCrop={handleCrop}
-                onDeleteActiveObject={handleRemoveActiveObject}
-                onUpdateTextObject={handleUpdateTextObject}
-                onImageUpdate={handleImageUpdate}
+              <CanvasContainer
+                canvasRef={canvasFront}
+                drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
+                id="canvas-front"
+                isDrawingAreaVisible={isDrawingAreaVisible}
+                variantImageUrl={variantImageUrl}
+                selectedVariant={selectedVariant}
+                showHint={showHint}
+                showCenterAxis={isModifyingObject}
+                side="front"
+                onHintClick={() => {
+                  setEditorToolbarExpanded(true);
+                }}
               />
-              {imagePreview ? (
-                <Button
-                  onClick={handlePreviewImageSelected}
-                  title="Place artwork"
-                />
-              ) : null}
-            </VStack>
+            </Box>
+            <Box
+              id="#canvas-container-back"
+              display={selectedSide === 'Back' ? 'block' : 'none'}
+              ref={clothingAndCanvasRefBack}
+              position="relative"
+            >
+              <CanvasContainer
+                canvasRef={canvasBack}
+                drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
+                id="canvas-back"
+                isDrawingAreaVisible={isDrawingAreaVisible}
+                variantImageUrl={variantImageUrl}
+                selectedVariant={selectedVariant}
+                showHint={showHint}
+                showCenterAxis={isModifyingObject}
+                side="back"
+                onHintClick={() => {
+                  setEditorToolbarExpanded(true);
+                }}
+              />
+            </Box>
           </Box>
-        )}
+          <VStack
+            left={0}
+            right={0}
+            position="absolute"
+            top={`${92 + 20 + drawingArea.height + drawingArea.top + 10}px`}
+          >
+            <ObjectEditTools
+              activeObject={activeObject}
+              canvas={canvas.current}
+              onLayerUp={handleLayerUp}
+              onLayerDown={handleLayerDown}
+              onCopyActiveObject={handleCopyActiveObject}
+              onCrop={handleCrop}
+              onDeleteActiveObject={handleRemoveActiveObject}
+              onUpdateTextObject={handleUpdateTextObject}
+              onImageUpdate={handleImageUpdate}
+            />
+            {imagePreview ? (
+              <Button
+                onClick={handlePreviewImageSelected}
+                title="Place artwork"
+              />
+            ) : null}
+          </VStack>
+        </Box>
       </Flex>
       {isSignUpModalVisible ? (
         <SignUpModal

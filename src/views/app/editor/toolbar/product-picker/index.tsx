@@ -108,8 +108,6 @@ const ProductsList = ({
 }: ProductsListProps) => {
   const chunks = chunk(products, 2);
 
-  console.log('Product list selected garment', selectedGarment);
-
   return (
     <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
       {chunks.map((chunk, index) => (

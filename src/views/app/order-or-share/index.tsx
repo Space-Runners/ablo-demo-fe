@@ -123,8 +123,6 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   const history = useHistory();
 
-  console.log(Front, Back);
-
   const { aiImage } = design[selectedSide] || {};
 
   const { style = 'kidult' } = aiImage?.options || {};

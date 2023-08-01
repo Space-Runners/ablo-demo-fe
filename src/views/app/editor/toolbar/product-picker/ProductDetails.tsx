@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import {
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react';
 
 import ButtonCTA from '@/components/Button';
 import Panel from '@/components/Panel';

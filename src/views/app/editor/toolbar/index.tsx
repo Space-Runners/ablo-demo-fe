@@ -119,7 +119,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     price: [20, 90],
   });
 
-  const [selectedTool, setSelectedTool] = useState('imageGenerator');
+  const [selectedTool, setSelectedTool] = useState('textToImage');
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
   const [isEditingAiImage, setIsEditingAiImage] = useState(false);
@@ -132,13 +132,9 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   });
 
   useEffect(() => {
-    if (isExpanded && aiImage) {
+    if ((isExpanded && aiImage) || selectedTool === 'productPicker') {
       setHeight(window.innerHeight);
-    } else if (
-      isExpanded ||
-      isEditingAiImage ||
-      selectedTool === 'productPicker'
-    ) {
+    } else if (isExpanded || isEditingAiImage) {
       setHeight(MAX_OVERLAY_HEIGHT);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
@@ -164,10 +160,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
     }
-
-    console.log('End resize', containerHeight, MIN_OVERLAY_HEIGHT, newHeight);
-
-    // resizable.style.height = `${newHeight}px`;
 
     setHeight(newHeight);
 
@@ -215,8 +207,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
       newHeight = MIN_OVERLAY_HEIGHT;
     }
 
-    // resizable.style.height = `${newHeight}px`;
-
     setHeight(newHeight);
   };
 
@@ -229,8 +219,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const { active } = drag;
 
   const isProductPicker = selectedTool === 'productPicker';
-  const isImageGenerator = selectedTool === 'imageGenerator';
-  const isImagePicker = selectedTool === 'image';
+  const isTextToImage = selectedTool === 'textToImage';
+  const isImagePicker = selectedTool === 'imageUpload';
 
   const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
 
@@ -298,7 +288,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSelectedProduct={onSelectedProduct}
           />
         ) : null}
-        {isImageGenerator ? (
+        {isTextToImage ? (
           <ImageGenerator
             aiImage={aiImage}
             isEditingAiImage={isEditingAiImage}

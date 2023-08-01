@@ -63,6 +63,10 @@ const PRODUCTS = [
     madeIn: 'Portugal',
     printableAreas: {
       front: {
+        left: 90,
+        top: 70,
+        height: 200,
+        width: 168,
         base: {
           left: 90,
           top: 70,
@@ -70,8 +74,8 @@ const PRODUCTS = [
           width: 168,
         },
         md: {
-          left: 90,
-          top: 70,
+          left: 130,
+          top: 100,
           height: 277,
           width: 233,
         },
@@ -146,10 +150,10 @@ const PRODUCTS = [
           width: 175,
         },
         md: {
-          left: 87,
-          top: 70,
-          height: 220,
-          width: 175,
+          left: 161,
+          top: 185,
+          height: 245,
+          width: 178,
         },
       },
       back: {
@@ -362,10 +366,10 @@ const PRODUCTS = [
           width: 190,
         },
         md: {
-          left: 80,
-          top: 185,
-          height: 180,
-          width: 190,
+          left: 100,
+          top: 285,
+          height: 200,
+          width: 300,
         },
       },
       back: {

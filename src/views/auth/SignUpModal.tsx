@@ -63,14 +63,11 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
 
         onClose();
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setError('Error signing up');
         setWaiting(false);
       });
   };
-
-  console.log('Error', error, waiting, success);
 
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
@@ -135,8 +132,6 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
               </Text>
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse);
-
                   googleLogin(credentialResponse.credential).then(
                     ({ access_token: accessToken }) => {
                       localStorage.setItem('access-token', accessToken);

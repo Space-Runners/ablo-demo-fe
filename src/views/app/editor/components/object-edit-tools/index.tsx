@@ -174,8 +174,6 @@ const ObjectEditTools = ({
     setRemovingBackground(true);
 
     removeBackground(aiImage.url).then((url) => {
-      console.log('Removed background', url);
-
       onImageUpdate({
         ...aiImage,
         url,

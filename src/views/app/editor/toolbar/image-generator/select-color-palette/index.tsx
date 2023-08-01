@@ -8,13 +8,10 @@ import Colors from '@/theme/colors';
 const { abloBlue } = Colors;
 
 function getImgUrl(tone, style) {
-  console.log('Tone style', tone, style);
   let filename = `${tone}_${style
     .split('_')
     .map((word) => capitalize(word))
     .join('')}.png`;
-
-  console.log('Filename', filename);
 
   if (tone === 'noTone') {
     filename = `NoFilters.png`;
@@ -56,8 +53,6 @@ export default function SelectColorPalette({
             const isSelected = name === selectedValue;
 
             const tone = name.replace(' Tones', '').replace('B/W', 'BW');
-
-            console.log('Tones', tone, getImgUrl(tone, style));
 
             let label = tone;
 

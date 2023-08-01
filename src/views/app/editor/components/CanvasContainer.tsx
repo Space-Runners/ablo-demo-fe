@@ -40,7 +40,7 @@ const CanvasContainer = ({
     <Image
       src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
       crossOrigin="anonymous"
-      width={{ base: 350, md: 546 }}
+      width={{ base: 350, md: 500 }}
     />
     <Box
       border={

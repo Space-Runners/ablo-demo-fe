@@ -114,8 +114,6 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
               </Text>
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse);
-
                   googleLogin(credentialResponse.credential).then(
                     ({ access_token: accessToken }) => {
                       localStorage.setItem('access-token', accessToken);
