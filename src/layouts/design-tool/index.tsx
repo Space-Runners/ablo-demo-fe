@@ -4,27 +4,31 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { Design, Filters, Garment } from '@/components/types';
+import { Design, Garment } from '@/components/types';
+import PRODUCTS from '@/data/products';
 
-import ProductsPage from '@/views/app/products';
 import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 
 import { useState } from 'react';
 
+const DEFAULT_SELECTED_GARMENT = {
+  productId: PRODUCTS[0].id,
+  variant: 'OatMilk',
+  size: 'S',
+};
+
 export default function DesignTool() {
   const location = useLocation();
-
-  const [selectedFilters, setSelectedFilters] = useState<Filters>({
-    clothingTypes: [],
-    price: [20, 90],
-  });
-  const [selectedGarment, setSelectedGarment] = useState<Garment>(null);
 
   const [activeDesign, setActiveDesign] = useState<Design>({
     Front: null,
     Back: null,
   });
+
+  const [selectedGarment, setSelectedGarment] = useState<Garment>(
+    DEFAULT_SELECTED_GARMENT
+  );
 
   return (
     <Box
@@ -42,22 +46,13 @@ export default function DesignTool() {
           >
             <Switch location={location}>
               <Route
-                path={`/app/products`}
-                render={() => (
-                  <ProductsPage
-                    filters={selectedFilters}
-                    onFiltersChange={setSelectedFilters}
-                    selectedGarment={selectedGarment}
-                    onSelectedGarment={setSelectedGarment}
-                  />
-                )}
-              />
-              <Route
                 path={`/app/editor`}
                 render={() => (
                   <Editor
                     design={activeDesign}
                     onDesignChange={setActiveDesign}
+                    selectedGarment={selectedGarment}
+                    onSelectedGarment={setSelectedGarment}
                   />
                 )}
               />
@@ -65,7 +60,7 @@ export default function DesignTool() {
                 path={`/app/order-or-share`}
                 render={() => <OrderOrSharePage design={activeDesign} />}
               />
-              <Redirect from="/" to="/app/products" />
+              <Redirect from="/" to="/app/editor" />
             </Switch>
           </CSSTransition>
         </TransitionGroup>

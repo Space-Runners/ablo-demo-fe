@@ -123,15 +123,13 @@ export default function OrderOrShare({ design }: { design: Design }) {
 
   const history = useHistory();
 
-  console.log(Front, Back);
-
   const { aiImage } = design[selectedSide] || {};
 
   const { style = 'kidult' } = aiImage?.options || {};
 
   return (
     <Box>
-      <Navbar onBack={() => history.goBack()} step={3} title="Share" />
+      <Navbar onBack={() => history.goBack()} title="Share" />
       <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
         <Box
           display="flex"

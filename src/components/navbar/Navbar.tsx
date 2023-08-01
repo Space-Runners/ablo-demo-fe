@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Hide, Text } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
 
@@ -70,95 +70,87 @@ const AbloText = () => (
   </Icon>
 );
 
-const TOTAL_STEPS = 3;
-
 type Props = {
   onBack?: () => void;
   onNext?: () => void;
   isNextDisabled?: boolean;
-  step: number;
   title: string;
 };
 
 export default function Navbar(props: Props) {
-  const { onBack, onNext, isNextDisabled, step, title } = props;
+  const { onBack, onNext, isNextDisabled, title } = props;
 
   return (
     <Box>
       <Flex
         align="center"
         bg="#FFFFFF"
-        borderBottom="1px solid #000000"
+        borderBottom="1px solid #E7E7E7"
         h="58px"
-        justify="center"
+        justify={{ base: 'center', md: 'flex-start' }}
+        p={{ base: 0, md: '32px' }}
       >
         <AbloText />
       </Flex>
-      <Flex
-        align="center"
-        bg="#FFFFFF"
-        height="63px"
-        justify="space-between"
-        padding="0"
-      >
-        {onBack ? (
-          <Button
-            bg="transparent"
-            height="30px"
-            minWidth="none"
-            onClick={onBack}
-            padding={0}
-            w="48px"
-            _hover={{
-              bg: '#F9F9F7',
-              border: `1px solid ${abloBlue}`,
-              boxShadow: '0px 0px 8px 0px #97B9F5',
-            }}
-          >
-            <IconBack />
-          </Button>
-        ) : (
-          <Box w="48px" />
-        )}
-        <Box p="14px 0" textAlign="center">
-          <Text
-            color="#959392"
-            fontFamily="Roboto Condensed"
-            fontSize="xs"
-            fontWeight={500}
-          >
-            {step} of {TOTAL_STEPS}
-          </Text>
-          <Text
-            fontFamily="Roboto Condensed"
-            fontSize="19px"
-            fontWeight={500}
-            lineHeight="26pxs"
-          >
-            {title}
-          </Text>
-        </Box>
-        {onNext ? (
-          <Button
-            bg="transparent"
-            borderRadius="40px"
-            color={abloBlue}
-            disabled={isNextDisabled}
-            onClick={onNext}
-            padding="18px 14px"
-            pl={0}
-            textTransform="uppercase"
-            _disabled={{ color: '#BFBEBE' }}
-            _hover={{
-              color: '#6A6866',
-            }}
-          >
-            Next
-          </Button>
-        ) : (
-          <Box w="56px" />
-        )}
-      </Flex>
+      <Hide above="md">
+        <Flex
+          align="center"
+          bg="#FFFFFF"
+          height="63px"
+          justify="space-between"
+          padding={0}
+        >
+          {onBack ? (
+            <Button
+              bg="transparent"
+              height="30px"
+              minWidth="none"
+              onClick={onBack}
+              padding={0}
+              w="48px"
+              _hover={{
+                bg: '#F9F9F7',
+                border: `1px solid ${abloBlue}`,
+                boxShadow: '0px 0px 8px 0px #97B9F5',
+              }}
+            >
+              <IconBack />
+            </Button>
+          ) : (
+            <Box w="48px" />
+          )}
+          <Box p="14px 0" textAlign="center">
+            <Text
+              fontFamily="Roboto Condensed"
+              fontSize="19px"
+              fontWeight={500}
+              lineHeight="26pxs"
+            >
+              {title}
+            </Text>
+          </Box>
+          {onNext ? (
+            <Button
+              bg="transparent"
+              borderRadius="40px"
+              color={abloBlue}
+              disabled={isNextDisabled}
+              onClick={onNext}
+              padding="18px 14px"
+              pl={0}
+              textTransform="uppercase"
+              _disabled={{ color: '#BFBEBE' }}
+              _hover={{
+                color: '#6A6866',
+              }}
+            >
+              Next
+            </Button>
+          ) : (
+            <Box w="56px" />
+          )}
+        </Flex>
+      </Hide>
     </Box>
   );
 }

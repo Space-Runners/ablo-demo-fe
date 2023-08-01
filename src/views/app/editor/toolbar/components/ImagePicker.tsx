@@ -66,13 +66,6 @@ export default function ImagePicker(props) {
 
     // 👇️ reset file input
     event.target.value = null;
-
-    // 👇️ is now empty
-    console.log(event.target.files);
-
-    // 👇️ can still access file object here
-    console.log(fileObj);
-    console.log(fileObj.name);
   };
 
   return (

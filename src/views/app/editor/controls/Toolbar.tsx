@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, HStack } from '@chakra-ui/react';
 
 import MiniFilterBar from '@/components/MiniFilterBar';
 import ColorPicker from '@/components/ColorPicker';
@@ -29,6 +29,7 @@ type Props = {
   onToggleDrawingArea: () => void;
   onUndo?: () => void;
   onRedo?: () => void;
+  onSave: () => void;
   selectedSide: string;
   selectedVariant: string;
 };
@@ -41,6 +42,7 @@ export default function Toolbar({
   onToggleDrawingArea,
   onUndo,
   onRedo,
+  onSave,
   selectedSide,
   selectedVariant,
 }: Props) {
@@ -48,9 +50,23 @@ export default function Toolbar({
   const [isColorPickerVisible, setColorPickerVisible] = useState(false);
 
   return (
-    <Box p="0px 14px" w="100%">
-      <HStack justify="space-between" pt="17px" spacing="20px" w="100%">
+    <Box
+      bg="#FFFFFF"
+      borderLeft={{ base: 'none', md: '1px solid rgba(26, 26, 26, 0.10)' }}
+      h={{ base: '70px', md: 'auto' }}
+      p={{ base: '20px 14px 10px 14px', md: '20px 14px' }}
+      w="100%"
+    >
+      <HStack justify="space-between" spacing="20px" w="100%">
         <HStack spacing="4px">
+          <ToolbarButton
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddText();
+            }}
+          >
+            <IconText />
+          </ToolbarButton>
           <ToolbarButton
             isSelected={isSidePickerVisible}
             onClick={() => {
@@ -93,12 +109,13 @@ export default function Toolbar({
           ) : null}
           <Button
             bg="transparent"
-            border="1px solid #AAA9AB"
+            border={`1px solid ${abloBlue}`}
             borderRadius="28px"
-            color="#AAA9AB"
+            color={abloBlue}
             fontSize="xs"
             fontWeight={600}
             height="28px"
+            onClick={onSave}
             p="0 14px"
             w="63px"
             _focus={{
@@ -114,27 +131,8 @@ export default function Toolbar({
           </Button>
         </HStack>
       </HStack>
-      <Button
-        alignItems="center"
-        bg="#FFFFFF"
-        border="1px solid #D3D3D3"
-        borderRadius="4px"
-        h="28px"
-        mt="7px"
-        onClick={(e) => {
-          e.stopPropagation();
-
-          onAddText();
-        }}
-        padding="5px 6px"
-      >
-        <IconText />
-        <Text fontSize="11px" fontWeight={500} lineHeight="13px" ml="6px">
-          Add Text
-        </Text>
-      </Button>
       {isSidePickerVisible ? (
-        <Box mb="20px" mt="20px">
+        <Box mt="20px">
           <MiniFilterBar
             options={SIDES}
             selectedValue={selectedSide}
@@ -143,7 +141,7 @@ export default function Toolbar({
         </Box>
       ) : null}
       {isColorPickerVisible ? (
-        <Box mb="20px" mt="20px">
+        <Box mt="20px">
           <ColorPicker
             onSelectedVariants={(values) => onSelectedVariant(values[0])}
             selectedVariants={[selectedVariant]}

@@ -79,7 +79,6 @@ function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
 
     Promise.all(promises)
       .then(([urlFront, urlBack]) => {
-        console.log('URLS for templates', urlFront, urlBack);
         reset();
 
         onSave([urlFront, urlBack]);
@@ -88,8 +87,6 @@ function SaveDesignModal({ onClose, onSave, designRef, designRefBack }: Props) {
         setSaving(false);
 
         reset();
-
-        console.log(err.message, err.response);
 
         setError(err.message);
       });
