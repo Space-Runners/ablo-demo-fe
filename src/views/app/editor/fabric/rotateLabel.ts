@@ -2,8 +2,8 @@
 export default function renderRotateLabel(ctx, state) {
   const angleText = `${state.angle.toFixed(0)}°`,
     borderRadius = 5,
-    rectWidth = 32,
-    rectHeight = 19,
+    rectWidth = 64,
+    rectHeight = 38,
     textWidth = 6.01 * angleText.length - 2.317;
 
   const pos = new fabric.Point(20, 20);

@@ -49,16 +49,17 @@ const CropMaskProps = {
   left: 0,
   top: 0,
   opacity: 1,
-  width: 150,
-  height: 150,
+  width: 300,
+  height: 300,
   hasRotatingPoint: false,
   transparentCorners: false,
   cornerColor: 'white',
   cornerStrokeColor: 'black',
   borderColor: 'black',
-  cornerSize: 20,
+  cornerSize: 40,
   padding: 0,
   cornerStyle: 'circle',
+  cropMask: true,
   borderDashArray: [5, 5],
   borderScaleFactor: 1.3,
 };
@@ -106,6 +107,8 @@ type ObjectEditToolsProps = {
     fontFamily: string;
     fontSize: number;
     textAlign: string;
+    scaleX: number;
+    width: number;
   };
   canvas: any;
   onCopyActiveObject: () => void;

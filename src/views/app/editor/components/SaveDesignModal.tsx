@@ -33,7 +33,11 @@ const getTemplateImgFromHtml = async (element) => {
   await toPng(element, { cacheBust: false });
   await toPng(element, { cacheBust: false });
 
-  return toPng(element, { cacheBust: false })
+  return toPng(document.getElementById('canvas-front'), {
+    cacheBust: false,
+    height: 500,
+    width: 500,
+  })
     .then((dataUrl) => saveTemplate(`Testing-${Date.now()}`, dataUrl))
     .then(({ url }) => url);
 };

@@ -30,13 +30,23 @@ import './ImageEditor.css';
 const sides = ['Front', 'Back'];
 
 const initCanvas = (side, width, height) => {
-  return new fabric.Canvas(side === 'Front' ? 'canvas-front' : 'canvas-back', {
-    width,
-    height,
-    selection: false,
-    renderOnAddRemove: true,
-    preserveObjectStacking: true,
-  });
+  const canvas = new fabric.Canvas(
+    side === 'Front' ? 'canvas-front' : 'canvas-back',
+    {
+      width: width * 2,
+      height: height * 2,
+      selection: false,
+      renderOnAddRemove: true,
+      preserveObjectStacking: true,
+    }
+  );
+
+  canvas.setDimensions(
+    { height: `${height}px`, width: `${width}px` },
+    { cssOnly: true }
+  );
+
+  return canvas;
 };
 
 const reloadCanvasFromState = (canvas, stateAsJson) => {
@@ -153,7 +163,9 @@ export default function ImageEditor({
       }
 
       canvas.current.on('mouse:up', function (e) {
-        setActiveObject(e.target);
+        if (!e.target?.cropMask) {
+          setActiveObject(e.target);
+        }
 
         const { isRotating } = userState.current;
 
@@ -450,7 +462,7 @@ export default function ImageEditor({
   const addImageToCanvas = (img, options = {}) => {
     const { width, height } = drawingArea;
 
-    img.scaleToWidth(150);
+    img.scaleToWidth(300);
 
     img.set({
       left: width / 2,

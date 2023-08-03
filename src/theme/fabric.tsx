@@ -8,7 +8,7 @@ fabric.Object.prototype.set({
   borderColor: abloBlue,
   borderRadius: '1px',
   cornerColor: abloBlue,
-  cornerSize: 15,
+  cornerSize: 30,
 });
 
 fabric.Object.prototype.setControlsVisibility({
@@ -55,7 +55,7 @@ fabric.Object.prototype.controls.mtr = new fabric.Control({
   actionHandler: fabric.controlsUtils.rotationWithSnapping,
   actionName: 'rotate',
   render: renderIcon,
-  cornerSize: 38,
+  cornerSize: 76,
   withConnection: true,
 });
 
