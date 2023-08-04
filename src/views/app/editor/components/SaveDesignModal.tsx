@@ -29,14 +29,17 @@ type Props = {
 };
 
 const getTemplateImgFromHtml = async (element) => {
+  /*  await toPng(element, { cacheBust: false });
   await toPng(element, { cacheBust: false });
-  await toPng(element, { cacheBust: false });
-  await toPng(element, { cacheBust: false });
+  await toPng(element, { cacheBust: false }); */
+
+  console.log('DPR', window.devicePixelRatio);
 
   return toPng(document.getElementById('canvas-front'), {
+    backgroundColor: 'transparent',
     cacheBust: false,
-    height: 500,
-    width: 500,
+    height: (1.5 * 490) / window.devicePixelRatio,
+    width: (1.5 * 356) / window.devicePixelRatio,
   })
     .then((dataUrl) => saveTemplate(`Testing-${Date.now()}`, dataUrl))
     .then(({ url }) => url);

@@ -33,8 +33,8 @@ const initCanvas = (side, width, height) => {
   const canvas = new fabric.Canvas(
     side === 'Front' ? 'canvas-front' : 'canvas-back',
     {
-      width: width * 2,
-      height: height * 2,
+      width: width * 3,
+      height: height * 3,
       selection: false,
       renderOnAddRemove: true,
       preserveObjectStacking: true,
@@ -97,9 +97,9 @@ export default function ImageEditor({
 
   const [selectedProduct, setSelectedProduct] = useState<Product>(null);
 
-  const product = PRODUCTS.find(
-    (product) => product.id === selectedGarment.productId
-  );
+  const product =
+    PRODUCTS[2] ||
+    PRODUCTS.find((product) => product.id === selectedGarment.productId);
 
   const selectedVariant = selectedGarment.variant;
 
