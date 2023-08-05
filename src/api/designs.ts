@@ -26,16 +26,8 @@ const updateDesign = (design: Design) => {
     .then(({ data }) => data);
 };
 
-const saveDesign = (design: Design) => {
+export const saveDesign = (design: Design) => {
   const method = design.id ? updateDesign : createDesign;
 
   return method(design);
-};
-
-export const useSaveDesign = () => {
-  const client = useQueryClient();
-
-  return useMutation(saveDesign, {
-    onSuccess: () => client.invalidateQueries(['designs']),
-  });
 };

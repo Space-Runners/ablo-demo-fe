@@ -54,7 +54,6 @@ const IconCreateNew = (props) => (
 
 type DesignsListProps = {
   designs: Design[];
-  selectedDesign: Design;
   onSelectedDesign: (design: Design) => void;
 };
 
@@ -121,11 +120,7 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
   );
 };
 
-type DesignsPageProps = {
-  selectedDesign: Design;
-};
-
-export default function DesignsPage({ selectedDesign }: DesignsPageProps) {
+export default function DesignsPage() {
   const history = useHistory();
 
   const { data: designs, isLoading } = useDesigns();
@@ -159,11 +154,7 @@ export default function DesignsPage({ selectedDesign }: DesignsPageProps) {
         </Center>
       ) : (
         designs && (
-          <DesignsList
-            selectedDesign={selectedDesign}
-            onSelectedDesign={onSelectedDesign}
-            designs={designs}
-          />
+          <DesignsList onSelectedDesign={onSelectedDesign} designs={designs} />
         )
       )}
     </Box>

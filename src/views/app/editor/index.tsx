@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { Box, Flex, VStack, useBreakpointValue } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
-import { useSaveDesign } from '@/api/designs';
+import { saveDesign } from '@/api/designs';
 
 import Button from '@/components/Button';
 
@@ -25,6 +25,7 @@ import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
 import CanvasContainer from './components/CanvasContainer';
+import FeedbackAlert from './components/FeedbackAlert';
 import SaveDesignDrawer from './components/SaveDesignDrawer';
 import Toolbar from './controls';
 
@@ -83,9 +84,9 @@ export default function ImageEditor({
 
   const [isModifyingObject, setIsModifyingObject] = useState(false);
 
-  const { isError, isLoading, isSuccess, mutate } = useSaveDesign();
-
   const [isSavingDesign, setSavingDesign] = useState(false);
+  const [errorSavingDesign, setErrorSavingDesign] = useState(null);
+  const [isDesignSaved, setIsDesignSaved] = useState(null);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -529,15 +530,15 @@ export default function ImageEditor({
     setSaveDesignDrawerVisible(true);
   };
 
-  const handleSaveDesign = (name) => {
-    setSaveDesignDrawerVisible(false);
+  const handleSaveDesign = async (name) => {
+    setSavingDesign(true);
 
-    console.log(clothingAndCanvasRefFront, clothingAndCanvasRefBack);
+    try {
+      const [urlFront, urlBack] = await getEditorStateAsImageUrls([
+        clothingAndCanvasRefFront,
+        clothingAndCanvasRefBack,
+      ]);
 
-    getEditorStateAsImageUrls([
-      clothingAndCanvasRefFront,
-      clothingAndCanvasRefBack,
-    ]).then(([urlFront, urlBack]) => {
       const editorState = {
         front: {
           ...(designForSides.front || { canvas: null }),
@@ -558,8 +559,20 @@ export default function ImageEditor({
         editorState,
       };
 
-      mutate(design);
-    });
+      await saveDesign(design);
+
+      setIsDesignSaved(true);
+
+      setTimeout(() => {
+        setIsDesignSaved(false);
+      }, 3000);
+    } catch (err) {
+      setErrorSavingDesign(err.response?.data2?.message || err.message);
+    } finally {
+      setSaveDesignDrawerVisible(false);
+      setSavingDesign(false);
+      // onDesignChange(editorState);
+    }
 
     /* onDesignChange({
       front: {
@@ -649,6 +662,9 @@ export default function ImageEditor({
             onSave={handleNext}
             selectedSide={selectedSide}
           />
+          {(errorSavingDesign || isDesignSaved) && (
+            <FeedbackAlert error={errorSavingDesign} />
+          )}
           <Box
             alignItems="center"
             display="flex"

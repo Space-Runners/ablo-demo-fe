@@ -14,7 +14,7 @@ import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
 import Colors from '@/theme/colors';
 
-import { Design } from '@/components/types';
+import { EditorState } from '@/components/types';
 
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
 import { useState } from 'react';
@@ -116,7 +116,7 @@ const IconCopy = () => (
   </Icon>
 );
 
-export default function OrderOrShare({ design }: { design: Design }) {
+export default function OrderOrShare({ design }: { design: EditorState }) {
   const { front, back } = design || {};
 
   const [selectedSide, setSelectedSide] = useState(front ? 'front' : 'back');

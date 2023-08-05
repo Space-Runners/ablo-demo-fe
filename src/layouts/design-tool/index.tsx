@@ -22,9 +22,7 @@ const DEFAULT_SELECTED_GARMENT = {
 export default function DesignTool() {
   const location = useLocation();
 
-  const [selectedDesign, setSelectedDesign] = useState<Design>(null);
-
-  const [activeDesign, setActiveDesign] = useState<EditorState>({
+  const [activeEditorState, setActiveEditorState] = useState<EditorState>({
     front: null,
     back: null,
   });
@@ -48,16 +46,13 @@ export default function DesignTool() {
             timeout={300}
           >
             <Switch location={location}>
-              <Route
-                path={`/app/designs`}
-                render={() => <DesignsPage selectedDesign={selectedDesign} />}
-              />
+              <Route path={`/app/designs`} render={() => <DesignsPage />} />
               <Route
                 path={`/app/editor`}
                 render={() => (
                   <Editor
-                    design={activeDesign}
-                    onDesignChange={setActiveDesign}
+                    design={activeEditorState}
+                    onDesignChange={setActiveEditorState}
                     selectedGarment={selectedGarment}
                     onSelectedGarment={setSelectedGarment}
                   />
@@ -65,7 +60,7 @@ export default function DesignTool() {
               />
               <Route
                 path={`/app/order-or-share`}
-                render={() => <OrderOrSharePage design={activeDesign} />}
+                render={() => <OrderOrSharePage design={activeEditorState} />}
               />
               <Redirect from="/" to="/app/designs" />
             </Switch>
