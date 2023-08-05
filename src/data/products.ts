@@ -63,10 +63,6 @@ const PRODUCTS = [
     madeIn: 'Portugal',
     printableAreas: {
       front: {
-        left: 90,
-        top: 70,
-        height: 200,
-        width: 168,
         base: {
           left: 90,
           top: 70,

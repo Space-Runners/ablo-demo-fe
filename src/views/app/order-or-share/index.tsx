@@ -117,9 +117,9 @@ const IconCopy = () => (
 );
 
 export default function OrderOrShare({ design }: { design: Design }) {
-  const { Front, Back } = design || {};
+  const { front, back } = design || {};
 
-  const [selectedSide, setSelectedSide] = useState(Front ? 'Front' : 'Back');
+  const [selectedSide, setSelectedSide] = useState(front ? 'front' : 'back');
 
   const history = useHistory();
 
@@ -138,7 +138,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
           position="relative"
           w="100%"
         >
-          {Front?.templateUrl && Back?.templateUrl ? (
+          {front?.templateUrl && back?.templateUrl ? (
             <Flex
               align="center"
               as="button"
@@ -147,7 +147,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
               h="36px"
               justify="center"
               onClick={() =>
-                setSelectedSide(selectedSide === 'Front' ? 'Back' : 'Front')
+                setSelectedSide(selectedSide === 'front' ? 'back' : 'front')
               }
               position="absolute"
               left={0}
@@ -162,7 +162,7 @@ export default function OrderOrShare({ design }: { design: Design }) {
           ) : null}
           {style ? (
             <Image
-              src={(selectedSide === 'Front' ? Front : Back)?.templateUrl}
+              src={(selectedSide === 'front' ? front : back)?.templateUrl}
               margin="0 auto"
               position="absolute"
               width={306}

@@ -4,21 +4,29 @@ import { useHistory } from 'react-router-dom';
 
 import { Box, Flex, VStack, useBreakpointValue } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
+import { useSaveDesign } from '@/api/designs';
+
 import Button from '@/components/Button';
 
 import { fabric } from 'fabric';
 import { isEmpty, times } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
-import { AiImage, Design, Garment, Product } from '@/components/types';
+import {
+  AiImage,
+  Design,
+  EditorState,
+  Garment,
+  Product,
+} from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
 import CanvasContainer from './components/CanvasContainer';
-import SaveDesignModal from './components/SaveDesignModal';
-import Toolbar from './controls/Toolbar';
+import SaveDesignDrawer from './components/SaveDesignDrawer';
+import Toolbar from './controls';
 
 import renderRotateLabel from './fabric/rotateLabel';
 import ObjectEditTools from './components/object-edit-tools';
@@ -26,11 +34,12 @@ import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
 
 import './ImageEditor.css';
+import getEditorStateAsImageUrls from './utils/template-export';
 
-const sides = ['Front', 'Back'];
+const sides = ['front', 'back'];
 
 const initCanvas = (side, width, height) => {
-  return new fabric.Canvas(side === 'Front' ? 'canvas-front' : 'canvas-back', {
+  return new fabric.Canvas(side === 'front' ? 'canvas-front' : 'canvas-back', {
     width,
     height,
     selection: false,
@@ -47,7 +56,7 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
 };
 
 type ImageEditorProps = {
-  design: Design;
+  design: EditorState;
   onDesignChange: (design: Design) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
@@ -69,8 +78,14 @@ export default function ImageEditor({
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
-  const [isSaveDesignModalVisible, setSaveDesignModalVisible] = useState(false);
+  const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] =
+    useState(false);
+
   const [isModifyingObject, setIsModifyingObject] = useState(false);
+
+  const { isError, isLoading, isSuccess, mutate } = useSaveDesign();
+
+  const [isSavingDesign, setSavingDesign] = useState(false);
 
   const [activeObject, setActiveObject] = useState(null);
 
@@ -95,7 +110,7 @@ export default function ImageEditor({
 
   const [selectedSide, setSelectedSide] = useState(sides[0]);
 
-  const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
+  const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
   const { printableAreas } = product;
 
@@ -109,7 +124,7 @@ export default function ImageEditor({
   const drawingArea = drawingAreaForSide[isMobile ? 'base' : 'md'];
 
   const saveState = useCallback(() => {
-    const canvas = selectedSide === 'Front' ? canvasFront : canvasBack;
+    const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
     setRedoStack([]);
 
@@ -133,7 +148,7 @@ export default function ImageEditor({
 
   useEffect(() => {
     sides.forEach((side) => {
-      const canvas = side === 'Front' ? canvasFront : canvasBack;
+      const canvas = side === 'front' ? canvasFront : canvasBack;
 
       const drawingAreaForSide = printableAreas[side.toLowerCase()];
 
@@ -199,7 +214,7 @@ export default function ImageEditor({
 
     return () => {
       sides.forEach((side) => {
-        const canvas = side === 'Front' ? canvasFront : canvasBack;
+        const canvas = side === 'front' ? canvasFront : canvasBack;
 
         if (canvas.current) {
           canvas.current.dispose();
@@ -234,7 +249,7 @@ export default function ImageEditor({
     setSelectedProduct(null);
 
     sides.forEach((side) => {
-      const canvas = side === 'Front' ? canvasFront : canvasBack;
+      const canvas = side === 'front' ? canvasFront : canvasBack;
 
       const product = PRODUCTS.find(
         (product) => product.id === garment.productId
@@ -511,25 +526,53 @@ export default function ImageEditor({
   };
 
   const handleGoToSaveDesign = () => {
-    setSaveDesignModalVisible(true);
+    setSaveDesignDrawerVisible(true);
   };
 
-  const handleSaveDesign = ([urlFront, urlBack]) => {
-    setDrawingAreaVisible(false);
-    setSaveDesignModalVisible(false);
+  const handleSaveDesign = (name) => {
+    setSaveDesignDrawerVisible(false);
 
-    onDesignChange({
-      Front: {
-        ...(designForSides.Front || { canvas: null }),
-        templateUrl: urlFront,
-      },
-      Back: {
-        ...(designForSides.Back || { canvas: null }),
-        templateUrl: urlBack,
-      },
+    console.log(clothingAndCanvasRefFront, clothingAndCanvasRefBack);
+
+    getEditorStateAsImageUrls([
+      clothingAndCanvasRefFront,
+      clothingAndCanvasRefBack,
+    ]).then(([urlFront, urlBack]) => {
+      const editorState = {
+        front: {
+          ...(designForSides.front || { canvas: null }),
+          templateUrl: urlFront,
+        },
+        back: {
+          ...(designForSides.back || { canvas: null }),
+          templateUrl: urlBack,
+        },
+      };
+
+      const { productId, variant } = selectedGarment;
+
+      const design = {
+        name,
+        garmentId: productId,
+        garmentColor: variant,
+        editorState,
+      };
+
+      mutate(design);
     });
 
-    history.push('/app/order-or-share');
+    /* onDesignChange({
+      front: {
+        ...(designForSides.front || { canvas: null }),
+        templateUrl: urlFront,
+      },
+      back: {
+        ...(designForSides.back || { canvas: null }),
+        templateUrl: urlBack,
+      },
+    }); */
+
+    // history.push('/app/order-or-share');
   };
 
   const { urlPrefix } = product;
@@ -599,20 +642,12 @@ export default function ImageEditor({
           w="100%"
         >
           <Toolbar
-            isDrawingAreaVisible={isDrawingAreaVisible}
             onAddText={handleAddText}
-            onToggleDrawingArea={() =>
-              setDrawingAreaVisible(!isDrawingAreaVisible)
-            }
             onSelectedSide={handleSelectedSide}
-            onSelectedVariant={(variant) =>
-              onSelectedGarment({ ...selectedGarment, variant })
-            }
             onUndo={isEmpty(undoStack) ? null : handleUndo}
             onRedo={isEmpty(redoStack) ? null : handleRedo}
             onSave={handleNext}
             selectedSide={selectedSide}
-            selectedVariant={selectedVariant}
           />
           <Box
             alignItems="center"
@@ -625,7 +660,7 @@ export default function ImageEditor({
           >
             <Box
               id="#canvas-container-front"
-              display={selectedSide === 'Front' ? 'block' : 'none'}
+              display={selectedSide === 'front' ? 'block' : 'none'}
               onClick={handleClick}
               ref={clothingAndCanvasRefFront}
               position="relative"
@@ -647,7 +682,7 @@ export default function ImageEditor({
             </Box>
             <Box
               id="#canvas-container-back"
-              display={selectedSide === 'Back' ? 'block' : 'none'}
+              display={selectedSide === 'back' ? 'block' : 'none'}
               ref={clothingAndCanvasRefBack}
               position="relative"
             >
@@ -721,18 +756,13 @@ export default function ImageEditor({
           }}
         />
       ) : null}
-      {isSaveDesignModalVisible ? (
-        <SaveDesignModal
+      {isSaveDesignDrawerVisible ? (
+        <SaveDesignDrawer
+          isSaving={isSavingDesign}
           onClose={() => {
-            setSaveDesignModalVisible(false);
+            setSaveDesignDrawerVisible(false);
           }}
           onSave={handleSaveDesign}
-          designRef={
-            !isEmpty(canvasFront.current?._objects) && clothingAndCanvasRefFront
-          }
-          designRefBack={
-            !isEmpty(canvasBack.current?._objects) && clothingAndCanvasRefBack
-          }
         />
       ) : null}
     </Box>

@@ -70,12 +70,22 @@ export interface AiImage {
   withBackgroundUrl?: string;
 }
 
-export interface TemplateDesign {
-  canvas: string;
+export interface CanvasState {
+  canvas?: string;
+  canvasUrl?: string;
   templateUrl?: string;
 }
 
+export interface EditorState {
+  front: CanvasState;
+  back: CanvasState;
+}
+
 export interface Design {
-  Front: TemplateDesign;
-  Back: TemplateDesign;
+  id?: string;
+  name: string;
+  garmentId: number;
+  garmentColor: string;
+  editorState: EditorState;
+  updatedAt?: string;
 }

@@ -71,6 +71,7 @@ const AbloText = () => (
 );
 
 type Props = {
+  callToActionContent?: React.ReactNode;
   onBack?: () => void;
   onNext?: () => void;
   isNextDisabled?: boolean;
@@ -78,10 +79,10 @@ type Props = {
 };
 
 export default function Navbar(props: Props) {
-  const { onBack, onNext, isNextDisabled, title } = props;
+  const { callToActionContent, onBack, onNext, isNextDisabled, title } = props;
 
   return (
-    <Box>
+    <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)">
       <Flex
         align="center"
         bg="#FFFFFF"
@@ -99,6 +100,7 @@ export default function Navbar(props: Props) {
           height="63px"
           justify="space-between"
           padding={0}
+          pl={onBack ? 0 : '20px'}
         >
           {onBack ? (
             <Button
@@ -116,15 +118,13 @@ export default function Navbar(props: Props) {
             >
               <IconBack />
             </Button>
-          ) : (
-            <Box w="48px" />
-          )}
+          ) : null}
           <Box p="14px 0" textAlign="center">
             <Text
               fontFamily="Roboto Condensed"
               fontSize="19px"
               fontWeight={500}
-              lineHeight="26pxs"
+              lineHeight="26px"
             >
               {title}
             </Text>
@@ -135,6 +135,7 @@ export default function Navbar(props: Props) {
               borderRadius="40px"
               color={abloBlue}
               disabled={isNextDisabled}
+              fontSize="sm"
               onClick={onNext}
               padding="18px 14px"
               pl={0}
@@ -144,7 +145,7 @@ export default function Navbar(props: Props) {
                 color: '#6A6866',
               }}
             >
-              Next
+              {callToActionContent || 'Next'}
             </Button>
           ) : (
             <Box w="56px" />

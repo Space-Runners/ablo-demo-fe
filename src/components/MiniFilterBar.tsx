@@ -1,5 +1,7 @@
 import { Button, HStack } from '@chakra-ui/react';
 
+import { capitalize } from 'lodash';
+
 type MiniFilterBarProps = {
   selectedValue: string;
   onChange: (value: string) => void;
@@ -23,7 +25,7 @@ const MiniFilterBar = ({
         onClick={() => onChange(value)}
         padding={0}
       >
-        {value}
+        {capitalize(value)}
       </Button>
     ))}
   </HStack>

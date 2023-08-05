@@ -4,9 +4,10 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { Design, Garment } from '@/components/types';
+import { Design, EditorState, Garment } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
+import DesignsPage from '@/views/app/designs';
 import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 
@@ -21,9 +22,11 @@ const DEFAULT_SELECTED_GARMENT = {
 export default function DesignTool() {
   const location = useLocation();
 
-  const [activeDesign, setActiveDesign] = useState<Design>({
-    Front: null,
-    Back: null,
+  const [selectedDesign, setSelectedDesign] = useState<Design>(null);
+
+  const [activeDesign, setActiveDesign] = useState<EditorState>({
+    front: null,
+    back: null,
   });
 
   const [selectedGarment, setSelectedGarment] = useState<Garment>(
@@ -46,6 +49,10 @@ export default function DesignTool() {
           >
             <Switch location={location}>
               <Route
+                path={`/app/designs`}
+                render={() => <DesignsPage selectedDesign={selectedDesign} />}
+              />
+              <Route
                 path={`/app/editor`}
                 render={() => (
                   <Editor
@@ -60,7 +67,7 @@ export default function DesignTool() {
                 path={`/app/order-or-share`}
                 render={() => <OrderOrSharePage design={activeDesign} />}
               />
-              <Redirect from="/" to="/app/editor" />
+              <Redirect from="/" to="/app/designs" />
             </Switch>
           </CSSTransition>
         </TransitionGroup>

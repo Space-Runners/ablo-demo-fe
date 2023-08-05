@@ -17,28 +17,14 @@ export const generateImage = (params: TextToImageRequest) => {
 const getOptions = () =>
   axios.get<ImageGenerationOptions>(`${URL}/options`).then(({ data }) => data);
 
-export const saveTemplate = (name, image) => {
-  /*  const formData = new FormData();
+export const saveTemplate = (name, image) =>
+  axios.post('/templates', { filename: name, image }).then(({ data }) => data);
 
-  formData.append('filename', name);
-  formData.append('image', image);
- */
-  return axios
-    .post('/templates', { filename: name, image })
-    .then(({ data }) => data);
-};
-
-export const removeBackground = (imageUrl) => {
-  /*  const formData = new FormData();
-
-  formData.append('filename', name);
-  formData.append('image', image);
- */
-  return axios
+export const removeBackground = (imageUrl) =>
+  axios
     .post('/generate/remove-background', {
       imageUrl,
     })
     .then(({ data }) => {
       return data.image;
     });
-};
