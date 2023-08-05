@@ -13,6 +13,14 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import { removeBackground } from '@/api/image-generator';
@@ -134,6 +142,8 @@ const ObjectEditTools = ({
   const [croppingMask, setCroppingMask] = useState(null);
   const [imageToCrop, setImageToCrop] = useState(null);
   const [isErasing, setErasing] = useState(false);
+  const [error, setError] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (!activeObject && croppingMask) {
@@ -152,7 +162,7 @@ const ObjectEditTools = ({
 
   const isBackgroundRemoved = url === noBackgroundUrl;
 
-  const handleToggleBackground = () => {
+  const handleToggleBackground = async () => {
     if (isBackgroundRemoved) {
       onImageUpdate({
         ...aiImage,
@@ -173,16 +183,31 @@ const ObjectEditTools = ({
 
     setRemovingBackground(true);
 
-    removeBackground(aiImage.url).then((url) => {
+    try {
+      const url = await removeBackground(aiImage.url);
       onImageUpdate({
         ...aiImage,
         url,
         noBackgroundUrl: url,
         withBackgroundUrl: aiImage.url,
       });
-
+    } catch (errResponse) {
+      const err = errResponse?.response?.data;
+      let errMessage = '';
+      let errCode = '';
+      if (Array.isArray(err.message)) {
+        errMessage = err.message[0]?.title;
+        errCode = err.message[0]?.code;
+      }
+      if (errCode === "unknown_foreground") {
+        errMessage = "Background could not be removed due to unclear image foreground. Please try another image."
+      }
+      errMessage = errMessage || err.message;
+      setError(errMessage);
+      onOpen();
+    } finally {
       setRemovingBackground(false);
-    });
+    }
   };
 
   const handleCrop = () => {
@@ -430,6 +455,19 @@ const ObjectEditTools = ({
           </IconButton>
         </HStack>
       ) : null}
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent p={2} pb={5} m={4}>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {error}
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
