@@ -95,38 +95,34 @@ const TEXT_ALIGN_OPTIONS = [
   { name: 'right', icon: <IconTextRightAlign /> },
 ];
 
+type ActiveObject = {
+  aiImage: AiImage;
+  clipPath?: object;
+  noBackgroundUrl: string;
+  text: string;
+  withBackgroundUrl: string;
+  fill: string;
+  fontFamily: string;
+  fontSize: number;
+  textAlign: string;
+};
+
 type ObjectEditToolsProps = {
-  activeObject: {
-    aiImage: AiImage;
-    clipPath?: object;
-    noBackgroundUrl: string;
-    text: string;
-    withBackgroundUrl: string;
-    fill: string;
-    fontFamily: string;
-    fontSize: number;
-    textAlign: string;
-  };
+  activeObject: ActiveObject;
   canvas: any;
-  onCopyActiveObject: () => void;
   onCrop: (image: object) => void;
-  onDeleteActiveObject: () => void;
   onImageUpdate: (image: AiImage) => void;
-  onUpdateTextObject: (updates: object) => void;
-  onLayerUp: () => void;
-  onLayerDown: () => void;
+  onSetActiveObject: (activeObject: ActiveObject) => void;
+  onStateChange: () => void;
 };
 
 const ObjectEditTools = ({
   activeObject,
   canvas,
   onCrop,
-  onDeleteActiveObject,
   onImageUpdate,
-  onLayerDown,
-  onLayerUp,
-  onCopyActiveObject,
-  onUpdateTextObject,
+  onSetActiveObject,
+  onStateChange,
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
 
@@ -275,6 +271,65 @@ const ObjectEditTools = ({
     setErasing(true);
   };
 
+  const handleLayerDown = () => {
+    const selectedObject = canvas.getActiveObject();
+
+    canvas.sendBackwards(selectedObject);
+    canvas.discardActiveObject().renderAll();
+
+    onStateChange();
+  };
+
+  const handleLayerUp = () => {
+    const selectedObject = canvas.getActiveObject();
+
+    canvas.bringForward(selectedObject);
+    canvas.discardActiveObject().renderAll();
+
+    onStateChange();
+  };
+
+  const handleCopyActiveObject = () => {
+    const activeObject = canvas.getActiveObject();
+
+    activeObject.clone((clone) => {
+      clone.set({
+        left: activeObject.left + 10,
+        top: activeObject.top + 10,
+      });
+      canvas.add(clone);
+      canvas.bringForward(clone);
+      canvas.setActiveObject(clone);
+      canvas.renderAll();
+
+      onStateChange();
+    });
+  };
+
+  const handleUpdateTextObject = (updates) => {
+    Object.keys(updates).forEach((key) => {
+      canvas.getActiveObject().set(key, updates[key]);
+
+      canvas.renderAll();
+    });
+
+    onSetActiveObject({ ...activeObject, ...updates });
+
+    onStateChange();
+  };
+
+  const handleRemoveActiveObject = () => {
+    const activeObject = canvas.getActiveObject();
+
+    canvas.remove(activeObject);
+
+    canvas.renderAll();
+
+    onSetActiveObject(null);
+
+    onStateChange();
+  };
+
   const isText = !!text;
 
   const isColorActive = selectedTool === 'color';
@@ -340,7 +395,7 @@ const ObjectEditTools = ({
         >
           <IconLayerUp />
         </IconButton>
-        <IconButton onClick={onCopyActiveObject}>
+        <IconButton onClick={handleCopyActiveObject}>
           <IconCopy />
         </IconButton>
         {!isText ? (
@@ -351,7 +406,7 @@ const ObjectEditTools = ({
         <IconButton isSelected={isErasing} onClick={handleErase}>
           <IconEraser />
         </IconButton>
-        <IconButton onClick={onDeleteActiveObject}>
+        <IconButton onClick={handleRemoveActiveObject}>
           <IconTrash />
         </IconButton>
         {activeObject?.aiImage ? (
@@ -370,7 +425,7 @@ const ObjectEditTools = ({
           {isColorActive ? (
             <ColorPicker
               selectedColor={fill}
-              onUpdate={(color) => onUpdateTextObject({ fill: color })}
+              onUpdate={(color) => handleUpdateTextObject({ fill: color })}
             />
           ) : null}
           {isFontSizeActive ? (
@@ -383,7 +438,7 @@ const ObjectEditTools = ({
                 step={1}
                 margin="0 12px"
                 height="2px"
-                onChange={(val) => onUpdateTextObject({ fontSize: val })}
+                onChange={(val) => handleUpdateTextObject({ fontSize: val })}
                 value={fontSize}
                 width="180px"
               >
@@ -399,7 +454,7 @@ const ObjectEditTools = ({
           {isFontFamilyActive ? (
             <FontPicker
               fontFamily={fontFamily}
-              onUpdate={(fontFamily) => onUpdateTextObject({ fontFamily })}
+              onUpdate={(fontFamily) => handleUpdateTextObject({ fontFamily })}
             />
           ) : null}
           {isTextAlignActive ? (
@@ -409,7 +464,7 @@ const ObjectEditTools = ({
 
                 return (
                   <IconButton
-                    onClick={() => onUpdateTextObject({ textAlign: name })}
+                    onClick={() => handleUpdateTextObject({ textAlign: name })}
                     isSelected={name === textAlign}
                   >
                     {icon}
@@ -422,10 +477,10 @@ const ObjectEditTools = ({
       ) : null}
       {isLayeringActive ? (
         <HStack mt="8px">
-          <IconButton isSelected={null} onClick={onLayerUp}>
+          <IconButton isSelected={null} onClick={handleLayerUp}>
             <IconLayerUp />
           </IconButton>
-          <IconButton onClick={onLayerDown}>
+          <IconButton onClick={handleLayerDown}>
             <IconLayerDown />
           </IconButton>
         </HStack>

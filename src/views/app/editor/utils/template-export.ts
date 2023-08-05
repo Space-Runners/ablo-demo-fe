@@ -12,7 +12,7 @@ const getTemplateImgFromHtml = async (element) => {
   return toPng(element, { cacheBust: false });
 };
 
-const getEditorStateAsImages = (designRefs) => {
+const getEditorStateAsImages = () => {
   /*
    * The exporting library requires both sides of the template to be visible in the DOM.
    * We have to make them temporarily visible and then hide them.
@@ -32,10 +32,8 @@ const getEditorStateAsImages = (designRefs) => {
     (element as HTMLElement).style.border = 'none';
   });
 
-  console.log('Design refs', designRefs);
-
-  const promises = designRefs.map((ref) =>
-    ref ? getTemplateImgFromHtml(ref.current) : Promise.resolve(null)
+  const promises = [front, back].map((element) =>
+    getTemplateImgFromHtml(element)
   );
 
   const reset = () => {
@@ -54,8 +52,8 @@ const getEditorStateAsImages = (designRefs) => {
   });
 };
 
-const getEditorStateAsImageUrls = (designRefs) => {
-  return getEditorStateAsImages(designRefs).then((dataUrls) =>
+const getEditorStateAsImageUrls = () => {
+  return getEditorStateAsImages().then((dataUrls) =>
     Promise.all(
       dataUrls.map((dataUrl) =>
         saveTemplate(`Template-${Date.now()}-${random(10e9)}`, dataUrl).then(

@@ -9,16 +9,10 @@ import { saveDesign } from '@/api/designs';
 import Button from '@/components/Button';
 
 import { fabric } from 'fabric';
-import { isEmpty, times } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import Navbar from '@/components/navbar/Navbar';
-import {
-  AiImage,
-  Design,
-  EditorState,
-  Garment,
-  Product,
-} from '@/components/types';
+import { AiImage, EditorState, Garment, Product } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import SignInModal from '@/views/auth/SignInModal';
@@ -29,7 +23,6 @@ import FeedbackAlert from './components/FeedbackAlert';
 import SaveDesignDrawer from './components/SaveDesignDrawer';
 import Toolbar from './controls';
 
-import renderRotateLabel from './fabric/rotateLabel';
 import ObjectEditTools from './components/object-edit-tools';
 import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
@@ -58,7 +51,7 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
 
 type ImageEditorProps = {
   design: EditorState;
-  onDesignChange: (design: Design) => void;
+  onDesignChange: (design: EditorState) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
 };
@@ -71,8 +64,6 @@ export default function ImageEditor({
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
-  const clothingAndCanvasRefFront = useRef(null);
-  const clothingAndCanvasRefBack = useRef(null);
 
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
@@ -81,8 +72,6 @@ export default function ImageEditor({
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
   const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] =
     useState(false);
-
-  const [isModifyingObject, setIsModifyingObject] = useState(false);
 
   const [isSavingDesign, setSavingDesign] = useState(false);
   const [errorSavingDesign, setErrorSavingDesign] = useState(null);
@@ -94,11 +83,8 @@ export default function ImageEditor({
 
   const state = useRef<string>('');
 
-  const userState = useRef({ angle: 0, isModifying: false, isRotating: false });
-
   const { data: me } = useMe();
 
-  const [isDrawingAreaVisible, setDrawingAreaVisible] = useState(true);
   const [isEditorToolbarExpanded, setEditorToolbarExpanded] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<Product>(null);
@@ -120,9 +106,8 @@ export default function ImageEditor({
     { ssr: false }
   );
 
-  const drawingAreaForSide = printableAreas[selectedSide.toLowerCase()];
-
-  const drawingArea = drawingAreaForSide[isMobile ? 'base' : 'md'];
+  const drawingArea =
+    printableAreas[selectedSide.toLowerCase()][isMobile ? 'base' : 'md'];
 
   const saveState = useCallback(() => {
     const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
@@ -170,46 +155,6 @@ export default function ImageEditor({
 
       canvas.current.on('mouse:up', function (e) {
         setActiveObject(e.target);
-
-        const { isRotating } = userState.current;
-
-        if (isRotating) {
-          const newAngle = Math.round(e.target.angle);
-
-          const commonAngles = times(9, (index) => index * 45);
-
-          const nearestAngle = commonAngles.find(
-            (angle) => Math.abs(newAngle - angle) <= 5
-          );
-
-          e.target.set(
-            'angle',
-            nearestAngle !== undefined ? nearestAngle : newAngle
-          );
-        }
-
-        userState.current.isRotating = false;
-
-        setIsModifyingObject(false);
-      });
-
-      canvas.current.on('mouse:down', function (e) {
-        if (e.target) {
-          userState.current.isModifying = true;
-
-          setIsModifyingObject(true);
-        }
-      });
-
-      canvas.current.on('object:rotating', function (e) {
-        userState.current.isRotating = true;
-
-        userState.current.angle = e.target.angle;
-      });
-
-      canvas.current.on('after:render', function (opt) {
-        userState.current.isRotating &&
-          renderRotateLabel(opt.ctx, userState.current);
       });
     });
 
@@ -294,24 +239,15 @@ export default function ImageEditor({
     canvas.current.isDrawingMode = false;
 
     setActiveObject(null);
-    setIsModifyingObject(false);
   };
 
-  const handleAddText = () => {
+  const handleAddText = (defaultProps) => {
     const { width, height } = drawingArea;
 
     const textObject = {
-      editable: true,
-      fill: '#000000',
-      fontFamily: 'Poppins',
-      text: '',
-      fontSize: 20,
-      textAlign: 'left',
-      originX: 'center',
-      originY: 'center',
+      ...defaultProps,
       left: width / 2,
       top: height / 2 - 20,
-      centeredScaling: true,
     };
 
     const text = new fabric.IText(textObject.text, textObject);
@@ -319,28 +255,10 @@ export default function ImageEditor({
     text.enterEditing();
     text.hiddenTextarea.focus();
 
-    // Render the Text on Canvas
     canvas.current.add(text);
     canvas.current.setActiveObject(text);
 
     setActiveObject(textObject);
-  };
-
-  const handleCopyActiveObject = () => {
-    const activeObject = canvas.current.getActiveObject();
-
-    activeObject.clone((clone) => {
-      clone.set({
-        left: activeObject.left + 10,
-        top: activeObject.top + 10,
-      });
-      canvas.current.add(clone);
-      canvas.current.bringForward(clone);
-      canvas.current.setActiveObject(clone);
-      canvas.current.renderAll();
-
-      saveState();
-    });
   };
 
   const handleCrop = (image) => {
@@ -348,30 +266,6 @@ export default function ImageEditor({
     canvas.current.renderAll();
 
     setActiveObject(image);
-
-    saveState();
-  };
-
-  const handleRemoveActiveObject = () => {
-    const activeObject = canvas.current.getActiveObject();
-
-    canvas.current.remove(activeObject);
-
-    canvas.current.renderAll();
-
-    setActiveObject(null);
-
-    saveState();
-  };
-
-  const handleUpdateTextObject = (updates) => {
-    Object.keys(updates).forEach((key) => {
-      canvas.current.getActiveObject().set(key, updates[key]);
-
-      canvas.current.renderAll();
-    });
-
-    setActiveObject({ ...activeObject, ...updates });
 
     saveState();
   };
@@ -487,24 +381,6 @@ export default function ImageEditor({
     saveState();
   };
 
-  const handleLayerUp = () => {
-    const selectedObject = canvas.current.getActiveObject();
-
-    canvas.current.bringForward(selectedObject);
-    canvas.current.discardActiveObject().renderAll();
-
-    saveState();
-  };
-
-  const handleLayerDown = () => {
-    const selectedObject = canvas.current.getActiveObject();
-
-    canvas.current.sendBackwards(selectedObject);
-    canvas.current.discardActiveObject().renderAll();
-
-    saveState();
-  };
-
   const handleSelectedSide = (side: string) => {
     canvas.current.discardActiveObject().renderAll();
 
@@ -534,10 +410,7 @@ export default function ImageEditor({
     setSavingDesign(true);
 
     try {
-      const [urlFront, urlBack] = await getEditorStateAsImageUrls([
-        clothingAndCanvasRefFront,
-        clothingAndCanvasRefBack,
-      ]);
+      const [urlFront, urlBack] = await getEditorStateAsImageUrls();
 
       const editorState = {
         front: {
@@ -588,10 +461,6 @@ export default function ImageEditor({
     // history.push('/app/order-or-share');
   };
 
-  const { urlPrefix } = product;
-
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
-
   const canvasState = designForSides[selectedSide]?.canvas;
 
   const canvasStateFromJson = canvasState && JSON.parse(canvasState);
@@ -608,11 +477,7 @@ export default function ImageEditor({
 
   return (
     <Box h="100vh" w="100%">
-      <Navbar
-        onBack={() => history.push('/app/products')}
-        onNext={() => handleNext()}
-        title="Create design"
-      />
+      <Navbar onNext={() => handleNext()} title="Create design" />
       <Flex
         align="center"
         bg="#F9F9F7"
@@ -670,6 +535,7 @@ export default function ImageEditor({
             display="flex"
             flex={1}
             flexDirection="column"
+            onClick={handleClick}
             justifyContent="center"
             position="relative"
             top={{ base: '40px', md: 0 }}
@@ -677,19 +543,13 @@ export default function ImageEditor({
             <Box
               id="#canvas-container-front"
               display={selectedSide === 'front' ? 'block' : 'none'}
-              onClick={handleClick}
-              ref={clothingAndCanvasRefFront}
               position="relative"
             >
               <CanvasContainer
-                canvasRef={canvasFront}
-                drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
-                id="canvas-front"
-                isDrawingAreaVisible={isDrawingAreaVisible}
-                variantImageUrl={variantImageUrl}
+                canvas={canvasFront.current}
+                product={product}
                 selectedVariant={selectedVariant}
                 showHint={showHint}
-                showCenterAxis={isModifyingObject}
                 side="front"
                 onHintClick={() => {
                   setEditorToolbarExpanded(true);
@@ -699,18 +559,13 @@ export default function ImageEditor({
             <Box
               id="#canvas-container-back"
               display={selectedSide === 'back' ? 'block' : 'none'}
-              ref={clothingAndCanvasRefBack}
               position="relative"
             >
               <CanvasContainer
-                canvasRef={canvasBack}
-                drawingArea={printableAreas.front[isMobile ? 'base' : 'md']}
-                id="canvas-back"
-                isDrawingAreaVisible={isDrawingAreaVisible}
-                variantImageUrl={variantImageUrl}
+                canvas={canvasBack.current}
+                product={product}
                 selectedVariant={selectedVariant}
                 showHint={showHint}
-                showCenterAxis={isModifyingObject}
                 side="back"
                 onHintClick={() => {
                   setEditorToolbarExpanded(true);
@@ -727,12 +582,9 @@ export default function ImageEditor({
             <ObjectEditTools
               activeObject={activeObject}
               canvas={canvas.current}
-              onLayerUp={handleLayerUp}
-              onLayerDown={handleLayerDown}
-              onCopyActiveObject={handleCopyActiveObject}
+              onStateChange={saveState}
               onCrop={handleCrop}
-              onDeleteActiveObject={handleRemoveActiveObject}
-              onUpdateTextObject={handleUpdateTextObject}
+              onSetActiveObject={setActiveObject}
               onImageUpdate={handleImageUpdate}
             />
             {imagePreview ? (

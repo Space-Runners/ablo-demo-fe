@@ -42,6 +42,13 @@ export interface Variant {
   color: string;
 }
 
+type PrintableAreaDimensions = {
+  left: number;
+  top: number;
+  height: number;
+  width: number;
+};
+
 export interface Product {
   fabric: string;
   id: number;
@@ -51,6 +58,16 @@ export interface Product {
   price: number;
   urlPrefix: string;
   description: string;
+  printableAreas: {
+    front: {
+      base: PrintableAreaDimensions;
+      md: PrintableAreaDimensions;
+    };
+    back: {
+      base: PrintableAreaDimensions;
+      md: PrintableAreaDimensions;
+    };
+  };
   variants: Variant[];
   tags: string[];
 }

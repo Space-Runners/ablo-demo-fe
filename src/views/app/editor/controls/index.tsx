@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Text, TextProps, VStack } from '@chakra-ui/react';
 
 const ToolbarButton = ({
   icon,
@@ -42,8 +42,20 @@ import {
 
 const SIDES = ['front', 'back'];
 
+const textProps = {
+  editable: true,
+  fill: '#000000',
+  fontFamily: 'Poppins',
+  text: '',
+  fontSize: 20,
+  textAlign: 'left',
+  originX: 'center',
+  originY: 'center',
+  centeredScaling: true,
+};
+
 type Props = {
-  onAddText: () => void;
+  onAddText: (props: object) => void;
   onSelectedSide: (side: string) => void;
   onUndo?: () => void;
   onRedo?: () => void;
@@ -73,7 +85,7 @@ export default function Toolbar({
           <ToolbarButton
             onClick={(e) => {
               e.stopPropagation();
-              onAddText();
+              onAddText(textProps);
             }}
             icon={<IconAddText />}
             text="Add Text"
