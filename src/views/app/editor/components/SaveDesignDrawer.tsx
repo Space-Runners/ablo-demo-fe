@@ -12,7 +12,6 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 
-import { saveTemplate } from '@/api/image-generator';
 import Button from '@/components/Button';
 
 import Colors from '@/theme/colors';
@@ -26,17 +25,13 @@ type Props = {
   isSaving: boolean;
 };
 
-const getTemplateImgFromHtml = async (element) => {
-  return saveTemplate(`Testing-${Date.now()}`, '').then(({ url }) => url);
-};
-
 function SaveDesignDrawer({ isSaving, onClose, onSave, designName }: Props) {
   const [name, setName] = useState(designName);
 
   return (
     <Drawer isOpen onClose={onClose} size={'md'} placement={'bottom'}>
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent borderRadius={{ base: '24px 24px 0 0', md: 0 }}>
         <DrawerCloseButton />
         <DrawerHeader></DrawerHeader>
         <DrawerBody>

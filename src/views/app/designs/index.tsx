@@ -150,7 +150,6 @@ export default function DesignsPage() {
             color={abloBlue}
             size="md"
           />
-          ;
         </Center>
       ) : (
         designs && (

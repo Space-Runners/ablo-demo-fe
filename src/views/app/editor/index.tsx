@@ -59,6 +59,8 @@ export default function ImageEditorPage() {
 
   const { data: me } = useMe();
 
+  const isGuest = !me || me.roles[0] === 'guest';
+
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
 
@@ -80,9 +82,7 @@ export default function ImageEditorPage() {
   }, []);
 
   const handleNext = () => {
-    // canvas.current.discardActiveObject().renderAll();
-
-    if (me && me.roles[0] !== 'guest') {
+    if (!isGuest) {
       handleGoToSaveDesign();
 
       return;
@@ -134,6 +134,7 @@ export default function ImageEditorPage() {
           setIsDesignSaved(false);
         }, 3000);
       } else {
+        history.replace(`/app/editor?designId=${newDesign.id}`);
         history.push(`/app/order-or-share?designId=${newDesign.id}`);
       }
     } catch (err) {
@@ -148,7 +149,7 @@ export default function ImageEditorPage() {
     <Box bg="#FFFFFF" h="100vh" w="100%">
       <Navbar
         onBack={
-          me &&
+          !isGuest &&
           (() => {
             if (hasChanges) {
               setModalConfirmExitModalVisible(true);
