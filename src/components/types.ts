@@ -104,5 +104,6 @@ export interface Design {
   garmentId: number;
   garmentColor: string;
   editorState: EditorState;
+  size?: string;
   updatedAt?: string;
 }

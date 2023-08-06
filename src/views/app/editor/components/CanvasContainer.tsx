@@ -133,7 +133,10 @@ const CanvasContainer = ({
             ></Box>
           </F>
         ) : null}
-        <canvas id={`canvas-${side}`}></canvas>
+        <div className="canvas-container">
+          <canvas id={`canvas-${side}`}></canvas>
+        </div>
+
         {showHint && (
           <Flex
             align="center"

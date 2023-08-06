@@ -274,8 +274,10 @@ const ObjectEditTools = ({
   const handleLayerDown = () => {
     const selectedObject = canvas.getActiveObject();
 
+    console.log('sld', selectedObject);
+
     canvas.sendBackwards(selectedObject);
-    canvas.discardActiveObject().renderAll();
+    canvas.renderAll();
 
     onStateChange();
   };
@@ -283,8 +285,10 @@ const ObjectEditTools = ({
   const handleLayerUp = () => {
     const selectedObject = canvas.getActiveObject();
 
+    console.log('s', selectedObject);
+
     canvas.bringForward(selectedObject);
-    canvas.discardActiveObject().renderAll();
+    canvas.renderAll();
 
     onStateChange();
   };
@@ -343,6 +347,10 @@ const ObjectEditTools = ({
       bg="#FFFFFF"
       borderRadius="8px"
       boxShadow="0px 1px 2px 0px #0000000F"
+      id="object-edit-tools"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       p="8px 11px"
     >
       <HStack position="relative" spacing="6px">

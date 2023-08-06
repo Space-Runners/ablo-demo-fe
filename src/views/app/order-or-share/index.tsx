@@ -1,6 +1,8 @@
 import {
   Box,
   Button as ChakraButton,
+  Center,
+  Spinner,
   Flex,
   HStack,
   Icon,
@@ -8,13 +10,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
+
+import { useDesign } from '@/api/designs';
 
 import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
 import Colors from '@/theme/colors';
-
-import { EditorState } from '@/components/types';
 
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
 import { useState } from 'react';
@@ -116,99 +118,112 @@ const IconCopy = () => (
   </Icon>
 );
 
-export default function OrderOrShare({ design }: { design: EditorState }) {
-  const { front, back } = design || {};
+export default function OrderOrShare() {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
 
-  const [selectedSide, setSelectedSide] = useState(front ? 'front' : 'back');
+  const designId = searchParams.get('designId');
+
+  const { data: design, isLoading } = useDesign(designId);
+
+  const { front, back } = design?.editorState || {};
+
+  const [selectedSide, setSelectedSide] = useState('front');
 
   const history = useHistory();
 
-  const { aiImage } = design[selectedSide] || {};
+  const style = 'kidult';
 
-  const { style = 'kidult' } = aiImage?.options || {};
+  console.log('Editor state', front, back, selectedSide);
 
   return (
     <Box>
       <Navbar onBack={() => history.goBack()} title="Share" />
-      <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          position="relative"
-          w="100%"
-        >
-          {front?.templateUrl && back?.templateUrl ? (
-            <Flex
-              align="center"
-              as="button"
-              bg="#000000"
-              borderRadius={0}
-              h="36px"
-              justify="center"
-              onClick={() =>
-                setSelectedSide(selectedSide === 'front' ? 'back' : 'front')
-              }
-              position="absolute"
-              left={0}
-              top={0}
-              w="36px"
-            >
-              <IconChangeOrientation />
-            </Flex>
-          ) : null}
-          {style ? (
-            <Image w="100%" src={getImgUrl(`${style}`)} alt={style} />
-          ) : null}
-          {style ? (
-            <Image
-              src={(selectedSide === 'front' ? front : back)?.templateUrl}
-              margin="0 auto"
-              position="absolute"
-              width={306}
-            />
-          ) : null}
-        </Box>
-        <Box p="0 10px">
-          <Button
-            icon={<IconCopy />}
-            mb="16px"
-            mt="16px"
-            title="Copy share link"
+      {isLoading ? (
+        <Center bg="#FFFFFF" h={{ base: '300px', md: 'calc(100% - 65px)' }}>
+          <Spinner thickness="1px" speed="0.65s" emptyColor="gray" size="md" />
+        </Center>
+      ) : (
+        <Box bg="#FFFFFF" h="100%" overflow="auto" w="100%" padding="10px 0">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            position="relative"
             w="100%"
-          />
-          <Text mb="24px" textAlign="center">
-            Share on your socials
-          </Text>
-          {SHARE_OPTIONS.map(({ name, icon }, index) => (
-            <Flex
-              align="center"
-              borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
-              justify="space-between"
-              key={index}
-              padding="13px 0"
-              w="100%"
-            >
-              <HStack>
-                {icon}
-                <Text fontSize="sm" ml="12px">
-                  {name}
-                </Text>
-              </HStack>
-              <ChakraButton
-                bg="transparent"
-                color={abloBlue}
-                fontSize="xs"
-                fontWeight={600}
-                padding={0}
-                textTransform="uppercase"
+          >
+            {front?.templateUrl && back?.templateUrl ? (
+              <Flex
+                align="center"
+                as="button"
+                bg="#000000"
+                borderRadius={0}
+                h="36px"
+                justify="center"
+                onClick={() =>
+                  setSelectedSide(selectedSide === 'front' ? 'back' : 'front')
+                }
+                position="absolute"
+                left={0}
+                top={0}
+                w="36px"
               >
-                Share
-              </ChakraButton>
-            </Flex>
-          ))}
+                <IconChangeOrientation />
+              </Flex>
+            ) : null}
+            {style ? (
+              <Image w="100%" src={getImgUrl(`${style}`)} alt={style} />
+            ) : null}
+            {style ? (
+              <Image
+                src={(selectedSide === 'front' ? front : back)?.templateUrl}
+                margin="0 auto"
+                position="absolute"
+                width={306}
+              />
+            ) : null}
+          </Box>
+          <Box p="0 10px">
+            <Button
+              icon={<IconCopy />}
+              mb="16px"
+              mt="16px"
+              title="Copy share link"
+              w="100%"
+            />
+            <Text mb="24px" textAlign="center">
+              Share on your socials
+            </Text>
+            {SHARE_OPTIONS.map(({ name, icon }, index) => (
+              <Flex
+                align="center"
+                borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
+                justify="space-between"
+                key={index}
+                padding="13px 0"
+                w="100%"
+              >
+                <HStack>
+                  {icon}
+                  <Text fontSize="sm" ml="12px">
+                    {name}
+                  </Text>
+                </HStack>
+                <ChakraButton
+                  bg="transparent"
+                  color={abloBlue}
+                  fontSize="xs"
+                  fontWeight={600}
+                  padding={0}
+                  textTransform="uppercase"
+                >
+                  Share
+                </ChakraButton>
+              </Flex>
+            ))}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 }

@@ -4,32 +4,12 @@ import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { Design, EditorState, Garment } from '@/components/types';
-import PRODUCTS from '@/data/products';
-
 import DesignsPage from '@/views/app/designs';
 import Editor from '@/views/app/editor';
 import OrderOrSharePage from '@/views/app/order-or-share';
 
-import { useState } from 'react';
-
-const DEFAULT_SELECTED_GARMENT = {
-  productId: PRODUCTS[0].id,
-  variant: 'OatMilk',
-  size: 'S',
-};
-
 export default function DesignTool() {
   const location = useLocation();
-
-  const [activeEditorState, setActiveEditorState] = useState<EditorState>({
-    front: null,
-    back: null,
-  });
-
-  const [selectedGarment, setSelectedGarment] = useState<Garment>(
-    DEFAULT_SELECTED_GARMENT
-  );
 
   return (
     <Box
@@ -47,20 +27,10 @@ export default function DesignTool() {
           >
             <Switch location={location}>
               <Route path={`/app/designs`} render={() => <DesignsPage />} />
-              <Route
-                path={`/app/editor`}
-                render={() => (
-                  <Editor
-                    design={activeEditorState}
-                    onDesignChange={setActiveEditorState}
-                    selectedGarment={selectedGarment}
-                    onSelectedGarment={setSelectedGarment}
-                  />
-                )}
-              />
+              <Route path={`/app/editor`} render={() => <Editor />} />
               <Route
                 path={`/app/order-or-share`}
-                render={() => <OrderOrSharePage design={activeEditorState} />}
+                render={() => <OrderOrSharePage />}
               />
               <Redirect from="/" to="/app/designs" />
             </Switch>

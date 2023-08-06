@@ -10,7 +10,7 @@ const getDesigns = () => axios.get<Design[]>(URL).then(({ data }) => data);
 
 export const useDesigns = () => useQuery(['designs'], () => getDesigns());
 
-const getDesign = (id: string) =>
+export const getDesign = (id: string) =>
   axios.get<Design>(`${URL}/${id}`).then(({ data }) => data);
 
 export const useDesign = (id: string) =>
@@ -31,3 +31,5 @@ export const saveDesign = (design: Design) => {
 
   return method(design);
 };
+
+export const deleteDesign = (id: string) => axios.delete(`${URL}/${id}`);

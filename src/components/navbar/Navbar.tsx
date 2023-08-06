@@ -82,7 +82,7 @@ export default function Navbar(props: Props) {
   const { callToActionContent, onBack, onNext, isNextDisabled, title } = props;
 
   return (
-    <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)">
+    <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)" id="ablo-navbar">
       <Flex
         align="center"
         bg="#FFFFFF"

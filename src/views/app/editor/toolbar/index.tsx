@@ -159,6 +159,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
       newHeight = maxHeight;
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
+
+      onSetExpanded(false);
     }
 
     setHeight(newHeight);

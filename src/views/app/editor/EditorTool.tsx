@@ -1,33 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
-
 import { Box, Flex, VStack, useBreakpointValue } from '@chakra-ui/react';
-import { useMe } from '@/api/auth';
-import { saveDesign } from '@/api/designs';
 
 import Button from '@/components/Button';
 
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
-import Navbar from '@/components/navbar/Navbar';
-import { AiImage, EditorState, Garment, Product } from '@/components/types';
+import { AiImage, Design, Garment, Product } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
-import SignInModal from '@/views/auth/SignInModal';
-import SignUpModal from '@/views/auth/SignUpModal';
-
 import CanvasContainer from './components/CanvasContainer';
-import FeedbackAlert from './components/FeedbackAlert';
-import SaveDesignDrawer from './components/SaveDesignDrawer';
 import Toolbar from './controls';
 
 import ObjectEditTools from './components/object-edit-tools';
 import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
-
-import getEditorStateAsImageUrls from './utils/template-export';
 
 const sides = ['front', 'back'];
 
@@ -49,56 +37,42 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
 };
 
 type ImageEditorProps = {
-  design: EditorState;
-  onDesignChange: (design: EditorState) => void;
-  selectedGarment: Garment;
-  onSelectedGarment: (garment: Garment) => void;
+  design: Design;
+  onDesignChange: (design: Design) => void;
+  onSave: () => void;
 };
 
 export default function ImageEditorTool({
-  design: designForSides,
+  design,
   onDesignChange,
-  selectedGarment,
-  onSelectedGarment,
+  onSave,
 }: ImageEditorProps) {
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
 
+  const state = useRef<string>('');
+
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
 
-  const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
-  const [isSignInModalVisible, setSignInModalVisible] = useState(false);
-  const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] =
-    useState(false);
-
-  const [isSavingDesign, setSavingDesign] = useState(false);
-  const [errorSavingDesign, setErrorSavingDesign] = useState(null);
-  const [isDesignSaved, setIsDesignSaved] = useState(null);
-
   const [activeObject, setActiveObject] = useState(null);
-
-  const history = useHistory();
-
-  const state = useRef<string>('');
-
-  const { data: me } = useMe();
-
+  const [selectedSide, setSelectedSide] = useState(sides[0]);
   const [isEditorToolbarExpanded, setEditorToolbarExpanded] = useState(false);
 
-  const [selectedProduct, setSelectedProduct] = useState<Product>(null);
+  const [selectedProductPreview, setSelectedProductPreview] =
+    useState<Product>(null);
+
+  const { editorState, garmentId, garmentColor, size } = design;
+
+  const selectedGarment = { productId: garmentId, size, variant: garmentColor };
 
   const product = PRODUCTS.find(
     (product) => product.id === selectedGarment.productId
   );
 
-  const selectedVariant = selectedGarment.variant;
-
-  const [selectedSide, setSelectedSide] = useState(sides[0]);
+  const { printableAreas } = product;
 
   const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
-
-  const { printableAreas } = product;
 
   const isMobile = useBreakpointValue(
     { base: true, md: false },
@@ -109,8 +83,6 @@ export default function ImageEditorTool({
     printableAreas[selectedSide.toLowerCase()][isMobile ? 'base' : 'md'];
 
   const saveState = useCallback(() => {
-    const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
-
     setRedoStack([]);
 
     // Initial call won't have a state
@@ -123,15 +95,19 @@ export default function ImageEditorTool({
     state.current = JSON.stringify(json);
 
     onDesignChange({
-      ...designForSides,
-      [selectedSide]: {
-        ...designForSides[selectedSide],
-        canvas: state.current,
+      ...design,
+      editorState: {
+        ...editorState,
+        [selectedSide]: {
+          ...editorState[selectedSide],
+          canvas: state.current,
+        },
       },
     });
-  }, [selectedSide, designForSides, onDesignChange, undoStack]);
+  }, [canvas, design, editorState, onDesignChange, selectedSide, undoStack]);
 
   useEffect(() => {
+    console.log('Use effect');
     sides.forEach((side) => {
       const canvas = side === 'front' ? canvasFront : canvasBack;
 
@@ -141,7 +117,7 @@ export default function ImageEditorTool({
 
       canvas.current = initCanvas(side, width, height);
 
-      const canvasState = designForSides[side]?.canvas;
+      const canvasState = editorState[side]?.canvas;
 
       if (canvasState) {
         // Loading an already active design if you to go another page and come back
@@ -172,6 +148,17 @@ export default function ImageEditorTool({
   useEffect(() => {
     const canvasCurrent = canvas.current;
 
+    function handleClickOutside(e) {
+      // On pressing "Next" in the navbar we have to deselect the active object or its handles are seen in the export
+      const navbar = document.getElementById('ablo-navbar');
+
+      if (navbar.contains(e.target)) {
+        canvasCurrent.discardActiveObject().renderAll();
+      }
+    }
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
     canvasCurrent.on('object:modified', () => {
       saveState();
     });
@@ -181,6 +168,8 @@ export default function ImageEditorTool({
     });
 
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+
       if (canvasCurrent) {
         canvasCurrent.off('object:modified');
         canvasCurrent.off('erasing:end');
@@ -188,10 +177,16 @@ export default function ImageEditorTool({
     };
   }, [canvas, saveState]);
 
-  const handleSelectedGarment = (garment) => {
-    onSelectedGarment(garment);
+  const handleSelectedGarment = (garment: Garment) => {
+    const { productId, variant } = garment;
 
-    setSelectedProduct(null);
+    onDesignChange({
+      ...design,
+      garmentId: productId,
+      garmentColor: variant,
+    });
+
+    setSelectedProductPreview(null);
 
     sides.forEach((side) => {
       const canvas = side === 'front' ? canvasFront : canvasBack;
@@ -205,6 +200,12 @@ export default function ImageEditorTool({
 
       canvas.current.setDimensions({ width, height });
     });
+  };
+
+  const handleSave = () => {
+    canvas.current.discardActiveObject().renderAll();
+
+    onSave();
   };
 
   const handleUndo = () => {
@@ -377,84 +378,10 @@ export default function ImageEditorTool({
     setUndoStack([]);
   };
 
-  const handleNext = () => {
-    canvas.current.discardActiveObject().renderAll();
-
-    if (me && me.roles[0] !== 'guest') {
-      handleGoToSaveDesign();
-
-      return;
-    }
-
-    setSignInModalVisible(true);
-  };
-
-  const handleGoToSaveDesign = () => {
-    setSaveDesignDrawerVisible(true);
-  };
-
-  const handleSaveDesign = async (name) => {
-    setSavingDesign(true);
-
-    try {
-      const [urlFront, urlBack] = await getEditorStateAsImageUrls();
-
-      const editorState = {
-        front: {
-          ...(designForSides.front || { canvas: null }),
-          templateUrl: urlFront,
-        },
-        back: {
-          ...(designForSides.back || { canvas: null }),
-          templateUrl: urlBack,
-        },
-      };
-
-      const { productId, variant } = selectedGarment;
-
-      const design = {
-        name,
-        garmentId: productId,
-        garmentColor: variant,
-        editorState,
-      };
-
-      await saveDesign(design);
-
-      setIsDesignSaved(true);
-
-      setTimeout(() => {
-        setIsDesignSaved(false);
-      }, 3000);
-    } catch (err) {
-      setErrorSavingDesign(err.response?.data2?.message || err.message);
-    } finally {
-      setSaveDesignDrawerVisible(false);
-      setSavingDesign(false);
-      // onDesignChange(editorState);
-    }
-
-    /* onDesignChange({
-      front: {
-        ...(designForSides.front || { canvas: null }),
-        templateUrl: urlFront,
-      },
-      back: {
-        ...(designForSides.back || { canvas: null }),
-        templateUrl: urlBack,
-      },
-    }); */
-
-    // history.push('/app/order-or-share');
-  };
-
-  const canvasState = designForSides[selectedSide]?.canvas;
-
+  const canvasState = editorState[selectedSide]?.canvas;
   const canvasStateFromJson = canvasState && JSON.parse(canvasState);
 
   const objects = canvasStateFromJson?.objects || [];
-
-  console.log(canvas.current._objects);
 
   const aiImage = objects.find(
     ({ aiImage }) => aiImage && !aiImage.isPreview
@@ -465,164 +392,124 @@ export default function ImageEditorTool({
   const showHint = isEmpty(objects) && !activeObject;
 
   return (
-    <Box h="100vh" w="100%">
-      <Navbar onNext={() => handleNext()} title="Create design" />
-      <Flex
-        align="center"
-        bg="#F9F9F7"
-        flexDirection={{ base: 'column', md: 'row' }}
-        h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
+    <Flex
+      align="center"
+      bg="#F9F9F7"
+      flexDirection={{ base: 'column', md: 'row' }}
+      h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
+      position="relative"
+      w="100%"
+    >
+      <EditorToolbar
+        isExpanded={isEditorToolbarExpanded}
+        onSetExpanded={setEditorToolbarExpanded}
+        activeObject={activeObject}
+        aiImage={!imagePreview && aiImage}
+        onImageUploaded={handleImageUpload}
+        onGeneratedImagePreview={handleGeneratedImagePreview}
+        onGeneratedImageSelected={handlePreviewImageSelected}
+        onGeneratedImageRemoved={handleGeneratedImageRemoved}
+        selectedGarment={selectedGarment}
+        onSelectedGarment={handleSelectedGarment}
+        selectedProduct={selectedProductPreview}
+        onSelectedProduct={setSelectedProductPreview}
+      />
+      {!isMobile && selectedProductPreview ? (
+        <Box flex={1} height="100%" p="20px">
+          <Box bg="#FFFFFF" borderRadius="10px" height="100%" overflow="auto">
+            <ProductDetails
+              garment={selectedGarment}
+              onGarmentUpdate={handleSelectedGarment}
+              product={selectedProductPreview}
+            />
+          </Box>
+        </Box>
+      ) : null}
+      <Box
+        display={{
+          base: 'block',
+          md: selectedProductPreview ? 'none' : 'flex',
+        }}
+        flex={1}
+        flexDirection="column"
+        h={{ base: 'auto', md: '100%' }}
         position="relative"
         w="100%"
       >
-        <EditorToolbar
-          isExpanded={isEditorToolbarExpanded}
-          onSetExpanded={setEditorToolbarExpanded}
-          activeObject={activeObject}
-          aiImage={!imagePreview && aiImage}
-          onImageUploaded={handleImageUpload}
-          onGeneratedImagePreview={handleGeneratedImagePreview}
-          onGeneratedImageSelected={handlePreviewImageSelected}
-          onGeneratedImageRemoved={handleGeneratedImageRemoved}
-          selectedGarment={selectedGarment}
-          onSelectedGarment={handleSelectedGarment}
-          selectedProduct={selectedProduct}
-          onSelectedProduct={setSelectedProduct}
+        <Toolbar
+          onAddText={handleAddText}
+          onSelectedSide={handleSelectedSide}
+          onUndo={isEmpty(undoStack) ? null : handleUndo}
+          onRedo={isEmpty(redoStack) ? null : handleRedo}
+          onSave={handleSave}
+          selectedSide={selectedSide}
         />
-        {!isMobile && selectedProduct ? (
-          <Box flex={1} height="100%" p="20px">
-            <Box bg="#FFFFFF" borderRadius="10px" height="100%" overflow="auto">
-              <ProductDetails
-                garment={selectedGarment}
-                onGarmentUpdate={handleSelectedGarment}
-                product={selectedProduct}
-              />
-            </Box>
-          </Box>
-        ) : null}
         <Box
-          display={{ base: 'block', md: selectedProduct ? 'none' : 'flex' }}
+          alignItems="center"
+          display="flex"
           flex={1}
           flexDirection="column"
-          h={{ base: 'auto', md: '100%' }}
+          onClick={handleClick}
+          justifyContent="center"
           position="relative"
-          w="100%"
+          top={{ base: '40px', md: 0 }}
         >
-          <Toolbar
-            onAddText={handleAddText}
-            onSelectedSide={handleSelectedSide}
-            onUndo={isEmpty(undoStack) ? null : handleUndo}
-            onRedo={isEmpty(redoStack) ? null : handleRedo}
-            onSave={handleNext}
-            selectedSide={selectedSide}
-          />
-          {(errorSavingDesign || isDesignSaved) && (
-            <FeedbackAlert error={errorSavingDesign} />
-          )}
           <Box
-            alignItems="center"
-            display="flex"
-            flex={1}
-            flexDirection="column"
-            onClick={handleClick}
-            justifyContent="center"
+            id="#canvas-container-front"
+            display={selectedSide === 'front' ? 'block' : 'none'}
             position="relative"
-            top={{ base: '40px', md: 0 }}
+            userSelect="none"
           >
-            <Box
-              id="#canvas-container-front"
-              display={selectedSide === 'front' ? 'block' : 'none'}
-              position="relative"
-              userSelect="none"
-            >
-              <CanvasContainer
-                canvas={canvasFront.current}
-                product={product}
-                selectedVariant={selectedVariant}
-                showHint={showHint}
-                side="front"
-                onHintClick={() => {
-                  setEditorToolbarExpanded(true);
-                }}
-              />
-            </Box>
-            <Box
-              id="#canvas-container-back"
-              display={selectedSide === 'back' ? 'block' : 'none'}
-              position="relative"
-            >
-              <CanvasContainer
-                canvas={canvasBack.current}
-                product={product}
-                selectedVariant={selectedVariant}
-                showHint={showHint}
-                side="back"
-                onHintClick={() => {
-                  setEditorToolbarExpanded(true);
-                }}
-              />
-            </Box>
-          </Box>
-          <VStack
-            left={0}
-            right={0}
-            position="absolute"
-            top={`${92 + 20 + drawingArea.height + drawingArea.top + 10}px`}
-          >
-            <ObjectEditTools
-              activeObject={activeObject}
-              canvas={canvas.current}
-              onStateChange={saveState}
-              onCrop={handleCrop}
-              onSetActiveObject={setActiveObject}
-              onImageUpdate={handleImageUpdate}
+            <CanvasContainer
+              canvas={canvasFront.current}
+              product={product}
+              selectedVariant={selectedGarment.variant}
+              showHint={showHint}
+              side="front"
+              onHintClick={() => {
+                setEditorToolbarExpanded(true);
+              }}
             />
-            {imagePreview ? (
-              <Button
-                onClick={handlePreviewImageSelected}
-                title="Place artwork"
-              />
-            ) : null}
-          </VStack>
+          </Box>
+          <Box
+            id="#canvas-container-back"
+            display={selectedSide === 'back' ? 'block' : 'none'}
+            position="relative"
+          >
+            <CanvasContainer
+              canvas={canvasBack.current}
+              product={product}
+              selectedVariant={selectedGarment.variant}
+              showHint={showHint}
+              side="back"
+              onHintClick={() => {
+                setEditorToolbarExpanded(true);
+              }}
+            />
+          </Box>
         </Box>
-      </Flex>
-      {isSignUpModalVisible ? (
-        <SignUpModal
-          onClose={() => setSignUpModalVisible(false)}
-          onGoToSignin={() => {
-            setSignInModalVisible(true);
-            setSignUpModalVisible(false);
-          }}
-          onSignUp={() => {
-            setSignUpModalVisible(false);
-
-            handleGoToSaveDesign();
-          }}
-        />
-      ) : null}
-      {isSignInModalVisible ? (
-        <SignInModal
-          onClose={() => setSignInModalVisible(false)}
-          onGoToSignup={() => {
-            setSignInModalVisible(false);
-            setSignUpModalVisible(true);
-          }}
-          onSignIn={() => {
-            setSignInModalVisible(false);
-
-            handleGoToSaveDesign();
-          }}
-        />
-      ) : null}
-      {isSaveDesignDrawerVisible ? (
-        <SaveDesignDrawer
-          isSaving={isSavingDesign}
-          onClose={() => {
-            setSaveDesignDrawerVisible(false);
-          }}
-          onSave={handleSaveDesign}
-        />
-      ) : null}
-    </Box>
+        <VStack
+          left={0}
+          right={0}
+          position="absolute"
+          top={`${92 + 10 + drawingArea.height + drawingArea.top + 10}px`}
+        >
+          <ObjectEditTools
+            activeObject={activeObject}
+            canvas={canvas.current}
+            onStateChange={saveState}
+            onCrop={handleCrop}
+            onSetActiveObject={setActiveObject}
+            onImageUpdate={handleImageUpdate}
+          />
+          {imagePreview ? (
+            <Button
+              onClick={handlePreviewImageSelected}
+              title="Place artwork"
+            />
+          ) : null}
+        </VStack>
+      </Box>
+    </Flex>
   );
 }

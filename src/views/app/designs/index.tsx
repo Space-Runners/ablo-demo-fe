@@ -16,7 +16,7 @@ import {
 import { chunk } from 'lodash';
 import Navbar from '@/components/navbar/Navbar';
 import { Design } from '@/components/types';
-import { useDesigns } from '@/api/designs';
+import { deleteDesign, useDesigns } from '@/api/designs';
 import Colors from '@/theme/colors';
 import { timeAgo } from '@/utils/time';
 
@@ -144,11 +144,11 @@ export default function DesignsPage() {
       {isLoading ? (
         <Center h="300px">
           <Spinner
-            thickness="4px"
+            thickness="1px"
             speed="0.65s"
             emptyColor="gray"
             color={abloBlue}
-            size="xl"
+            size="md"
           />
           ;
         </Center>
