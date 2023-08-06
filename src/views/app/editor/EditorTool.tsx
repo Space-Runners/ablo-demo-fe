@@ -27,11 +27,9 @@ import ObjectEditTools from './components/object-edit-tools';
 import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
 
-import EditorTool from './EditorTool';
+import getEditorStateAsImageUrls from './utils/template-export';
 
 const sides = ['front', 'back'];
-
-import getEditorStateAsImageUrls from './utils/template-export';
 
 const initCanvas = (side, width, height) => {
   return new fabric.Canvas(side === 'front' ? 'canvas-front' : 'canvas-back', {
@@ -57,7 +55,7 @@ type ImageEditorProps = {
   onSelectedGarment: (garment: Garment) => void;
 };
 
-export default function ImageEditor({
+export default function ImageEditorTool({
   design: designForSides,
   onDesignChange,
   selectedGarment,
@@ -456,6 +454,8 @@ export default function ImageEditor({
 
   const objects = canvasStateFromJson?.objects || [];
 
+  console.log(canvas.current._objects);
+
   const aiImage = objects.find(
     ({ aiImage }) => aiImage && !aiImage.isPreview
   )?.aiImage;
@@ -466,11 +466,7 @@ export default function ImageEditor({
 
   return (
     <Box h="100vh" w="100%">
-      <Navbar
-        onBack={() => history.goBack()}
-        onNext={() => handleNext()}
-        title="Create design"
-      />
+      <Navbar onNext={() => handleNext()} title="Create design" />
       <Flex
         align="center"
         bg="#F9F9F7"
@@ -537,6 +533,7 @@ export default function ImageEditor({
               id="#canvas-container-front"
               display={selectedSide === 'front' ? 'block' : 'none'}
               position="relative"
+              userSelect="none"
             >
               <CanvasContainer
                 canvas={canvasFront.current}

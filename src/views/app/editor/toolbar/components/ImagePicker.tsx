@@ -62,6 +62,19 @@ export default function ImagePicker(props) {
       return;
     }
 
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const image = new Image();
+
+      image.src = e.target.result as string;
+
+      image.onload = function () {
+        onImageUploaded(image);
+      };
+    };
+    reader.readAsDataURL(fileObj);
+
     onImageUploaded(fileObj);
 
     // 👇️ reset file input
