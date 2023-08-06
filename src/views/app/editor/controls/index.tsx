@@ -99,6 +99,8 @@ export default function Toolbar({
             }}
             text="Flip Product"
           />
+        </HStack>
+        <HStack>
           <ToolbarButton
             isDisabled={!onUndo}
             icon={<IconUndo isDisabled={!onUndo} />}

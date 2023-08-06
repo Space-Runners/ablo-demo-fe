@@ -1,6 +1,7 @@
-import { Box, Button, Flex, Icon, Hide, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon, Hide, Text } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
+import React from 'react';
 
 const { abloBlue } = Colors;
 
@@ -74,12 +75,20 @@ type Props = {
   callToActionContent?: React.ReactNode;
   onBack?: () => void;
   onNext?: () => void;
+  rightSideContent?: React.ReactNode;
   isNextDisabled?: boolean;
   title: string;
 };
 
 export default function Navbar(props: Props) {
-  const { callToActionContent, onBack, onNext, isNextDisabled, title } = props;
+  const {
+    callToActionContent,
+    onBack,
+    onNext,
+    rightSideContent,
+    isNextDisabled,
+    title,
+  } = props;
 
   return (
     <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)" id="ablo-navbar">
@@ -88,10 +97,11 @@ export default function Navbar(props: Props) {
         bg="#FFFFFF"
         borderBottom="1px solid #E7E7E7"
         h="58px"
-        justify={{ base: 'center', md: 'flex-start' }}
+        justify={{ base: 'center', md: 'space-between' }}
         p={{ base: 0, md: '32px' }}
       >
         <AbloText />
+        <Box display={{ base: 'none', md: 'block' }}>{rightSideContent}</Box>
       </Flex>
       <Hide above="md">
         <Flex

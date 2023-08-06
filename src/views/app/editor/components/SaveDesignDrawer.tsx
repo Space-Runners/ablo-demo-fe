@@ -31,7 +31,10 @@ function SaveDesignDrawer({ isSaving, onClose, onSave, designName }: Props) {
   return (
     <Drawer isOpen onClose={onClose} size={'md'} placement={'bottom'}>
       <DrawerOverlay />
-      <DrawerContent borderRadius={{ base: '24px 24px 0 0', md: 0 }}>
+      <DrawerContent
+        borderRadius={{ base: '24px 24px 0 0', md: 0 }}
+        w={{ base: 'auto', md: '393px' }}
+      >
         <DrawerCloseButton />
         <DrawerHeader></DrawerHeader>
         <DrawerBody>

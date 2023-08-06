@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { useLocation, useHistory } from 'react-router-dom';
 
-import { Box, Center, Spinner } from '@chakra-ui/react';
+import { Box, Center, Flex, HStack, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
 
+import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
 import { Design } from '@/components/types';
 
@@ -15,6 +16,7 @@ import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
 
 import FeedbackAlert from './components/FeedbackAlert';
+import { IconBack } from './components/Icons';
 import SaveDesignDrawer from './components/SaveDesignDrawer';
 import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
 
@@ -145,20 +147,37 @@ export default function ImageEditorPage() {
     }
   };
 
+  const handleGoBack = () => {
+    if (hasChanges) {
+      setModalConfirmExitModalVisible(true);
+    } else {
+      history.goBack();
+    }
+  };
+
   return (
     <Box bg="#FFFFFF" h="100vh" w="100%">
       <Navbar
-        onBack={
-          !isGuest &&
-          (() => {
-            if (hasChanges) {
-              setModalConfirmExitModalVisible(true);
-            } else {
-              history.goBack();
-            }
-          })
+        onBack={!isGuest && handleGoBack}
+        onNext={handleNext}
+        rightSideContent={
+          <HStack>
+            <Button
+              h="40px"
+              icon={<IconBack />}
+              onClick={handleGoBack}
+              outlined
+              textTransform="none"
+              title="Back To Designs"
+            />
+            <Button
+              h="40px"
+              onClick={handleNext}
+              textTransform="none"
+              title="Finish & Share"
+            />
+          </HStack>
         }
-        onNext={() => handleNext()}
         title="Create design"
       />
       {isLoading ? (
