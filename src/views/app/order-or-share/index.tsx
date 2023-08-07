@@ -179,7 +179,7 @@ export default function OrderOrShare() {
                 src={(selectedSide === 'front' ? front : back)?.templateUrl}
                 margin="0 auto"
                 position="absolute"
-                width={306}
+                width={250}
               />
             ) : null}
           </Box>

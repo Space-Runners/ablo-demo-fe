@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertIcon, Icon } from '@chakra-ui/react';
+import { Alert, AlertDescription, Icon } from '@chakra-ui/react';
 
 const IconSaved = (props) => (
   <Icon

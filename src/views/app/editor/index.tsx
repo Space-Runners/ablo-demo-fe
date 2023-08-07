@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useLocation, useHistory } from 'react-router-dom';
 
-import { Box, Center, Flex, HStack, Spinner } from '@chakra-ui/react';
+import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
 
@@ -249,7 +249,11 @@ export default function ImageEditorPage() {
           onSave={() => {
             setModalConfirmExitModalVisible(false);
 
-            handleGoToSaveDesign();
+            if (activeDesign.id) {
+              handleSaveDesign();
+            } else {
+              handleGoToSaveDesign();
+            }
           }}
         />
       )}

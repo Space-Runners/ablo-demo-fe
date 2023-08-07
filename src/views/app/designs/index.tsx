@@ -12,14 +12,13 @@ import {
   Spinner,
   Stack,
   Text,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 
 import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
 
 import { Design } from '@/components/types';
-import { deleteDesign, useDesigns } from '@/api/designs';
+import { useDesigns } from '@/api/designs';
 import Colors from '@/theme/colors';
 import { timeAgo } from '@/utils/time';
 
@@ -123,8 +122,6 @@ export default function DesignsPage() {
   const history = useHistory();
 
   const { data: designs, isLoading } = useDesigns();
-
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const onSelectedDesign = (design: Design) => {
     history.push(`/app/editor?designId=${design.id}`);

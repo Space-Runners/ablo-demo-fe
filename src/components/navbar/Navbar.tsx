@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Icon, Hide, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, Hide, Show, Text } from '@chakra-ui/react';
 
 import Colors from '@/theme/colors';
 import React from 'react';
@@ -101,7 +101,7 @@ export default function Navbar(props: Props) {
         p={{ base: 0, md: '32px' }}
       >
         <AbloText />
-        <Box display={{ base: 'none', md: 'block' }}>{rightSideContent}</Box>
+        <Show above="md">{rightSideContent}</Show>
       </Flex>
       <Hide above="md">
         <Flex

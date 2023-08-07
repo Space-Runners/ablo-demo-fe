@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Text, TextProps, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
 
 const ToolbarButton = ({
   icon,
@@ -51,6 +51,8 @@ const textProps = {
   textAlign: 'left',
   originX: 'center',
   originY: 'center',
+  scaleX: 3,
+  scaleY: 3,
   centeredScaling: true,
 };
 

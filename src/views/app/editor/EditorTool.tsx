@@ -20,13 +20,23 @@ import ProductDetails from './toolbar/product-picker/ProductDetails';
 const sides = ['front', 'back'];
 
 const initCanvas = (side, width, height) => {
-  return new fabric.Canvas(side === 'front' ? 'canvas-front' : 'canvas-back', {
-    width,
-    height,
-    selection: false,
-    renderOnAddRemove: true,
-    preserveObjectStacking: true,
-  });
+  const canvas = new fabric.Canvas(
+    side === 'front' ? 'canvas-front' : 'canvas-back',
+    {
+      width: width * 3,
+      height: height * 3,
+      selection: false,
+      renderOnAddRemove: true,
+      preserveObjectStacking: true,
+    }
+  );
+
+  canvas.setDimensions(
+    { height: `${height}px`, width: `${width}px` },
+    { cssOnly: true }
+  );
+
+  return canvas;
 };
 
 const reloadCanvasFromState = (canvas, stateAsJson) => {
@@ -245,8 +255,8 @@ export default function ImageEditorTool({
 
     const textObject = {
       ...defaultProps,
-      left: width / 2,
-      top: height / 2 - 20,
+      left: (width * 3) / 2,
+      top: (height * 3) / 2 - 20,
     };
 
     const text = new fabric.IText(textObject.text, textObject);
@@ -348,11 +358,11 @@ export default function ImageEditorTool({
   const addImageToCanvas = (img, options = {}) => {
     const { width, height } = drawingArea;
 
-    img.scaleToWidth(150);
+    img.scaleToWidth(450);
 
     img.set({
-      left: width / 2,
-      top: height / 2,
+      left: (width * 3) / 2,
+      top: (height * 3) / 2,
       originX: 'center',
       originY: 'center',
       centeredScaling: true,

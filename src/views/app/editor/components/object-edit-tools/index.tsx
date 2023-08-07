@@ -24,6 +24,8 @@ import ColorPalette from './ColorPalette.png';
 import ColorPicker from './ColorPicker';
 import FontPicker from './FontPicker';
 
+import ErrorModal from './ErrorModal';
+
 import {
   IconTrash,
   IconLayerDown,
@@ -56,8 +58,10 @@ const CropMaskProps = {
   cornerColor: 'white',
   cornerStrokeColor: 'black',
   borderColor: 'black',
-  cornerSize: 20,
+  cornerSize: 20 * 3,
   padding: 0,
+  scaleX: 3,
+  scaleY: 3,
   cornerStyle: 'circle',
   borderDashArray: [5, 5],
   borderScaleFactor: 1.3,
@@ -125,6 +129,7 @@ const ObjectEditTools = ({
   onStateChange,
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
+  const [errorRemovingBackground, setErrorRemovingBackground] = useState(null);
 
   const [selectedTool, setSelectedTool] = useState(null);
   const [croppingMask, setCroppingMask] = useState(null);
@@ -148,7 +153,7 @@ const ObjectEditTools = ({
 
   const isBackgroundRemoved = url === noBackgroundUrl;
 
-  const handleToggleBackground = () => {
+  const handleToggleBackground = async () => {
     if (isBackgroundRemoved) {
       onImageUpdate({
         ...aiImage,
@@ -169,16 +174,22 @@ const ObjectEditTools = ({
 
     setRemovingBackground(true);
 
-    removeBackground(aiImage.url).then((url) => {
+    try {
+      const url = await removeBackground(aiImage.url);
+
       onImageUpdate({
         ...aiImage,
         url,
         noBackgroundUrl: url,
         withBackgroundUrl: aiImage.url,
       });
+    } catch (errResponse) {
+      const err = errResponse?.response?.data;
 
+      setErrorRemovingBackground(err);
+    } finally {
       setRemovingBackground(false);
-    });
+    }
   };
 
   const handleCrop = () => {
@@ -492,6 +503,12 @@ const ObjectEditTools = ({
             <IconLayerDown />
           </IconButton>
         </HStack>
+      ) : null}
+      {errorRemovingBackground ? (
+        <ErrorModal
+          error={errorRemovingBackground}
+          onClose={() => setErrorRemovingBackground(null)}
+        />
       ) : null}
     </Box>
   );
