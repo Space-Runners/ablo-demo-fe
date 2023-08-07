@@ -56,7 +56,11 @@ const ColorPicker = ({
             w="24px"
             borderRadius="50%"
             minWidth="auto"
-            onClick={() => toggleSelected(name)}
+            onClick={(e) => {
+              e.stopPropagation();
+
+              toggleSelected(name);
+            }}
           />
         );
       })}

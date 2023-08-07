@@ -4,11 +4,11 @@ import Colors from './colors';
 const { abloBlue } = Colors;
 
 fabric.Object.prototype.set({
-  transparentCorners: true,
+  transparentCorners: false,
   borderColor: abloBlue,
   borderRadius: '1px',
   cornerColor: abloBlue,
-  cornerSize: 15,
+  cornerSize: 45,
 });
 
 fabric.Object.prototype.setControlsVisibility({
@@ -50,12 +50,12 @@ fabric.Object.prototype.controls.mtr = new fabric.Control({
   x: 0,
   y: -0.5,
   offsetX: 0,
-  offsetY: -40,
+  offsetY: -90,
   cursorStyle: 'crosshair',
   actionHandler: fabric.controlsUtils.rotationWithSnapping,
   actionName: 'rotate',
   render: renderIcon,
-  cornerSize: 38,
+  cornerSize: 38 * 3,
   withConnection: true,
 });
 

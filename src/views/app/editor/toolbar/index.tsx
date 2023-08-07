@@ -1,10 +1,10 @@
-import { Box, Button, Flex, Hide, HStack, Icon } from '@chakra-ui/react';
+import { Box, Button, Flex, Hide, HStack, Icon } from "@chakra-ui/react";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { AiImage, Filters, Garment, Product } from '@/components/types';
+import { AiImage, Filters, Garment, Product } from "@/components/types";
 
-import Colors from '@/theme/colors';
+import Colors from "@/theme/colors";
 
 import {
   IconProductPicker,
@@ -13,29 +13,29 @@ import {
   IconTextToImageSelected,
   IconUploadImage,
   IconUploadImageSelected,
-} from './Icons';
+} from "./Icons";
 
-import ProductPicker from './product-picker';
-import ImageGenerator from './image-generator';
-import ImagePicker from './components/ImagePicker';
+import ProductPicker from "./product-picker";
+import ImageGenerator from "./image-generator";
+import ImagePicker from "./components/ImagePicker";
 
 const { abloBlue } = Colors;
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
     <Button
-      background={isSelected ? '#E2E8F0' : 'transparent'}
+      background={isSelected ? "#E2E8F0" : "transparent"}
       borderRadius="12px"
       height="40px"
       padding="8px"
       width="40px"
       _focus={{
         border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
+        boxShadow: "0px 0px 8px 0px #97B9F5",
       }}
       _hover={{
         border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
+        boxShadow: "0px 0px 8px 0px #97B9F5",
       }}
       {...rest}
     />
@@ -50,7 +50,7 @@ const IconDragHandle = ({ rotate }) => (
     height="11px"
     viewBox="0 0 28 11"
     fill="none"
-    {...(rotate ? { transform: 'rotate(180deg)' } : {})}
+    {...(rotate ? { transform: "rotate(180deg)" } : {})}
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
@@ -65,17 +65,17 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: 'productPicker',
+    name: "productPicker",
     icon: <IconProductPicker />,
     iconActive: <IconProductPickerSelected />,
   },
   {
-    name: 'textToImage',
+    name: "textToImage",
     icon: <IconTextToImage />,
     iconActive: <IconTextToImageSelected />,
   },
   {
-    name: 'imageUpload',
+    name: "imageUpload",
     icon: <IconUploadImage />,
     iconActive: <IconUploadImageSelected />,
   },
@@ -119,20 +119,19 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     price: [20, 90],
   });
 
-  const [selectedTool, setSelectedTool] = useState('textToImage');
+  const [selectedTool, setSelectedTool] = useState("textToImage");
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
   const [isEditingAiImage, setIsEditingAiImage] = useState(false);
 
-  const isFullScreen =
-    (aiImage && !isEditingAiImage) || selectedTool === 'productPicker';
+  const isFullScreen = (aiImage && !isEditingAiImage) || selectedTool === "productPicker";
 
   const [drag, setDrag] = useState({
     active: false,
   });
 
   useEffect(() => {
-    if ((isExpanded && aiImage) || selectedTool === 'productPicker') {
+    if ((isExpanded && aiImage) || selectedTool === "productPicker") {
       setHeight(window.innerHeight);
     } else if (isExpanded || isEditingAiImage) {
       setHeight(MAX_OVERLAY_HEIGHT);
@@ -148,8 +147,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   };
 
   const endResize = () => {
-    let newHeight =
-      document.getElementById('toolbarOverlay')?.clientHeight || 0;
+    let newHeight = document.getElementById("toolbarOverlay")?.clientHeight || 0;
 
     const containerHeight = window.innerHeight || 0;
 
@@ -159,6 +157,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
       newHeight = maxHeight;
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
+
+      onSetExpanded(false);
     }
 
     setHeight(newHeight);
@@ -169,9 +169,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   };
 
   const resize = (
-    e:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.TouchEvent<HTMLDivElement>
+    e: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>
   ) => {
     const { active } = drag;
 
@@ -187,7 +185,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let clientY = 0;
 
-    if (e.type === 'touchmove' || e.type === 'touchstart') {
+    if (e.type === "touchmove" || e.type === "touchstart") {
       const { touches, changedTouches } = e as React.TouchEvent;
 
       const touch = touches[0] || changedTouches[0];
@@ -218,26 +216,26 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
-  const isProductPicker = selectedTool === 'productPicker';
-  const isTextToImage = selectedTool === 'textToImage';
-  const isImagePicker = selectedTool === 'imageUpload';
+  const isProductPicker = selectedTool === "productPicker";
+  const isTextToImage = selectedTool === "textToImage";
+  const isImagePicker = selectedTool === "imageUpload";
 
   const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
 
   return (
     <Box
-      borderRadius={{ base: '24px 24px 0 0', md: 0 }}
+      borderRadius={{ base: "24px 24px 0 0", md: 0 }}
       bottom={0}
       id="toolbarOverlay"
       bg="#FFFFFF"
-      h={{ base: `${height}px`, md: '100%' }}
+      h={{ base: `${height}px`, md: "100%" }}
       overflow={{
-        base: height === MIN_OVERLAY_HEIGHT ? 'none' : 'auto',
-        md: 'auto',
+        base: height === MIN_OVERLAY_HEIGHT ? "none" : "auto",
+        md: "auto",
       }}
-      pb={{ base: 0, md: '14px' }}
-      position={{ base: 'fixed', md: 'relative' }}
-      w={{ base: '100%', md: '393px' }}
+      pb={{ base: 0, md: "14px" }}
+      position={{ base: "fixed", md: "relative" }}
+      w={{ base: "100%", md: "393px" }}
       zIndex={3}
     >
       <Box
@@ -254,8 +252,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             height="20px"
             justify="center"
             style={{
-              cursor: active ? 'grabbing' : 'grab',
-              touchAction: 'none',
+              cursor: active ? "grabbing" : "grab",
+              touchAction: "none",
             }}
             padding="8px"
             w="100%"
@@ -298,9 +296,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSetIsEditingAiImage={setIsEditingAiImage}
           />
         ) : null}
-        {isImagePicker ? (
-          <ImagePicker onImageUploaded={onImageUploaded} />
-        ) : null}
+        {isImagePicker ? <ImagePicker onImageUploaded={onImageUploaded} /> : null}
       </Box>
     </Box>
   );
