@@ -1,6 +1,6 @@
-import { useState, Fragment as F, useEffect } from 'react';
+import { useState, Fragment as F, useEffect } from "react";
 
-import { fabric } from 'fabric';
+import { fabric } from "fabric";
 
 import {
   Box,
@@ -13,18 +13,18 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Text,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { removeBackground } from '@/api/image-generator';
-import { AiImage } from '@/components/types';
+import { removeBackground } from "@/api/image-generator";
+import { AiImage } from "@/components/types";
 
-import Colors from '@/theme/colors';
+import Colors from "@/theme/colors";
 
-import ColorPalette from './ColorPalette.png';
-import ColorPicker from './ColorPicker';
-import FontPicker from './FontPicker';
+import ColorPalette from "./ColorPalette.png";
+import ColorPicker from "./ColorPicker";
+import FontPicker from "./FontPicker";
 
-import ErrorModal from './ErrorModal';
+import ErrorModal from "./ErrorModal";
 
 import {
   IconTrash,
@@ -39,15 +39,15 @@ import {
   IconTextLeftAlign,
   IconTextCenter,
   IconTextRightAlign,
-} from './Icons';
+} from "./Icons";
 
 const { abloBlue } = Colors;
 
 const CropMaskProps = {
-  fill: 'rgba(0,0,0,0.3)',
-  originX: 'left',
-  originY: 'top',
-  stroke: 'black',
+  fill: "rgba(0,0,0,0.3)",
+  originX: "left",
+  originY: "top",
+  stroke: "black",
   left: 0,
   top: 0,
   opacity: 1,
@@ -55,14 +55,14 @@ const CropMaskProps = {
   height: 150,
   hasRotatingPoint: false,
   transparentCorners: false,
-  cornerColor: 'white',
-  cornerStrokeColor: 'black',
-  borderColor: 'black',
+  cornerColor: "white",
+  cornerStrokeColor: "black",
+  borderColor: "black",
   cornerSize: 20 * 3,
   padding: 0,
   scaleX: 3,
   scaleY: 3,
-  cornerStyle: 'circle',
+  cornerStyle: "circle",
   borderDashArray: [5, 5],
   borderScaleFactor: 1.3,
 };
@@ -72,7 +72,7 @@ const Button = ({ isSelected = false, ...rest }) => (
     height="28px"
     bg="#FFFFFF"
     borderRadius="4px"
-    border={`1px solid ${isSelected ? abloBlue : '#D3D3D3'}`}
+    border={`1px solid ${isSelected ? abloBlue : "#D3D3D3"}`}
     padding="4px 6px"
     minWidth="auto"
     _focus={
@@ -94,9 +94,9 @@ const Button = ({ isSelected = false, ...rest }) => (
 const IconButton = (props) => <Button width="28px" {...props} />;
 
 const TEXT_ALIGN_OPTIONS = [
-  { name: 'left', icon: <IconTextLeftAlign /> },
-  { name: 'center', icon: <IconTextCenter /> },
-  { name: 'right', icon: <IconTextRightAlign /> },
+  { name: "left", icon: <IconTextLeftAlign /> },
+  { name: "center", icon: <IconTextCenter /> },
+  { name: "right", icon: <IconTextRightAlign /> },
 ];
 
 type ActiveObject = {
@@ -176,7 +176,6 @@ const ObjectEditTools = ({
 
     try {
       const url = await removeBackground(aiImage.url);
-
       onImageUpdate({
         ...aiImage,
         url,
@@ -221,7 +220,7 @@ const ObjectEditTools = ({
         width: rect.width,
         height: rect.height,
         multiplier: 5,
-        format: 'png',
+        format: "png",
         quality: 0.99,
       });
 
@@ -285,7 +284,7 @@ const ObjectEditTools = ({
   const handleLayerDown = () => {
     const selectedObject = canvas.getActiveObject();
 
-    console.log('sld', selectedObject);
+    console.log("sld", selectedObject);
 
     canvas.sendBackwards(selectedObject);
     canvas.renderAll();
@@ -296,7 +295,7 @@ const ObjectEditTools = ({
   const handleLayerUp = () => {
     const selectedObject = canvas.getActiveObject();
 
-    console.log('s', selectedObject);
+    console.log("s", selectedObject);
 
     canvas.bringForward(selectedObject);
     canvas.renderAll();
@@ -347,11 +346,11 @@ const ObjectEditTools = ({
 
   const isText = !!text;
 
-  const isColorActive = selectedTool === 'color';
-  const isFontSizeActive = selectedTool === 'fontSize';
-  const isFontFamilyActive = selectedTool === 'fontFamily';
-  const isTextAlignActive = selectedTool === 'textAlign';
-  const isLayeringActive = selectedTool === 'layering';
+  const isColorActive = selectedTool === "color";
+  const isFontSizeActive = selectedTool === "fontSize";
+  const isFontFamilyActive = selectedTool === "fontFamily";
+  const isTextAlignActive = selectedTool === "textAlign";
+  const isLayeringActive = selectedTool === "layering";
 
   return (
     <Box
@@ -371,7 +370,7 @@ const ObjectEditTools = ({
               bg="transparent"
               borderRadius="14px"
               isSelected={isColorActive}
-              onClick={() => setSelectedTool(isColorActive ? null : 'color')}
+              onClick={() => setSelectedTool(isColorActive ? null : "color")}
             >
               <ChakraImage
                 maxWidth="none"
@@ -379,30 +378,24 @@ const ObjectEditTools = ({
                 h="28px"
                 src={ColorPalette}
                 borderRadius="14px"
-                border={isColorActive ? `2px solid ${abloBlue}` : ''}
+                border={isColorActive ? `2px solid ${abloBlue}` : ""}
               />
             </IconButton>
             <IconButton
               isSelected={isFontSizeActive}
-              onClick={() =>
-                setSelectedTool(isFontSizeActive ? null : 'fontSize')
-              }
+              onClick={() => setSelectedTool(isFontSizeActive ? null : "fontSize")}
             >
               <IconFontSize />
             </IconButton>
             <IconButton
               isSelected={isFontFamilyActive}
-              onClick={() =>
-                setSelectedTool(isFontFamilyActive ? null : 'fontFamily')
-              }
+              onClick={() => setSelectedTool(isFontFamilyActive ? null : "fontFamily")}
             >
               <IconFontFamily />
             </IconButton>
             <IconButton
               isSelected={isTextAlignActive}
-              onClick={() =>
-                setSelectedTool(isTextAlignActive ? null : 'textAlign')
-              }
+              onClick={() => setSelectedTool(isTextAlignActive ? null : "textAlign")}
             >
               <IconTextAlign />
             </IconButton>
@@ -410,7 +403,7 @@ const ObjectEditTools = ({
         ) : null}
         <IconButton
           isSelected={isLayeringActive}
-          onClick={() => setSelectedTool(isLayeringActive ? null : 'layering')}
+          onClick={() => setSelectedTool(isLayeringActive ? null : "layering")}
         >
           <IconLayerUp />
         </IconButton>
@@ -429,13 +422,8 @@ const ObjectEditTools = ({
           <IconTrash />
         </IconButton>
         {activeObject?.aiImage ? (
-          <Button
-            isLoading={removingBackground}
-            onClick={handleToggleBackground}
-          >
-            <Text fontSize="11px">
-              {isBackgroundRemoved ? 'Restore' : 'Remove'} background
-            </Text>
+          <Button isLoading={removingBackground} onClick={handleToggleBackground}>
+            <Text fontSize="11px">{isBackgroundRemoved ? "Restore" : "Remove"} background</Text>
           </Button>
         ) : null}
       </HStack>

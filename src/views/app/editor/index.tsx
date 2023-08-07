@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from "react-router-dom";
 
-import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
-import { useMe } from '@/api/auth';
-import { getDesign, saveDesign } from '@/api/designs';
+import { Box, Center, HStack, Spinner } from "@chakra-ui/react";
+import { useMe } from "@/api/auth";
+import { getDesign, saveDesign } from "@/api/designs";
 
-import Button from '@/components/Button';
-import Navbar from '@/components/navbar/Navbar';
-import { Design } from '@/components/types';
+import Button from "@/components/Button";
+import Navbar from "@/components/navbar/Navbar";
+import { Design } from "@/components/types";
 
-import PRODUCTS from '@/data/products';
+import PRODUCTS from "@/data/products";
 
-import SignInModal from '@/views/auth/SignInModal';
-import SignUpModal from '@/views/auth/SignUpModal';
+import SignInModal from "@/views/auth/SignInModal";
+import SignUpModal from "@/views/auth/SignUpModal";
 
-import FeedbackAlert from './components/FeedbackAlert';
-import { IconBack } from './components/Icons';
-import SaveDesignDrawer from './components/SaveDesignDrawer';
-import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
+import FeedbackAlert from "./components/FeedbackAlert";
+import { IconBack } from "./components/Icons";
+import SaveDesignDrawer from "./components/SaveDesignDrawer";
+import ConfirmEditorExitModal from "./components/ConfirmEditorExitModal";
 
-import EditorTool from './EditorTool';
+import EditorTool from "./EditorTool";
 
-import getEditorStateAsImageUrls from './utils/template-export';
+import getEditorStateAsImageUrls from "./utils/template-export";
 
 const DEFAULT_DESIGN = {
   garmentId: PRODUCTS[0].id,
-  garmentColor: 'OatMilk',
-  name: '',
-  size: 'S',
+  garmentColor: "OatMilk",
+  name: "",
+  size: "S",
   editorState: {
     front: {
       canvas: null,
@@ -45,8 +45,7 @@ export default function ImageEditorPage() {
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
-  const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] =
-    useState(false);
+  const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] = useState(false);
 
   const [isSavingDesign, setSavingDesign] = useState(false);
   const [errorSavingDesign, setErrorSavingDesign] = useState(null);
@@ -54,20 +53,18 @@ export default function ImageEditorPage() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isConfirmExitModalVisible, setModalConfirmExitModalVisible] =
-    useState(false);
+  const [isConfirmExitModalVisible, setModalConfirmExitModalVisible] = useState(false);
 
   const history = useHistory();
 
   const { data: me } = useMe();
 
-  const isGuest = !me || me.roles[0] === 'guest';
+  const isGuest = !me || me.roles[0] === "guest";
 
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
+  const [selectedProduct, setSelectedProduct] = useState<Product>(null);
 
   useEffect(() => {
-    const designId = searchParams.get('designId');
+    const designId = searchParams.get("designId");
 
     if (!designId) {
       setIsLoading(false);
@@ -170,21 +167,13 @@ export default function ImageEditorPage() {
               textTransform="none"
               title="Back To Designs"
             />
-            <Button
-              h="40px"
-              onClick={handleNext}
-              textTransform="none"
-              title="Finish & Share"
-            />
+            <Button h="40px" onClick={handleNext} textTransform="none" title="Finish & Share" />
           </HStack>
         }
         title="Create design"
       />
       {isLoading ? (
-        <Center
-          bg="#FFFFFF"
-          h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
-        >
+        <Center bg="#FFFFFF" h={{ base: "calc(100% - 121px)", md: "calc(100% - 65px)" }}>
           <Spinner thickness="1px" speed="0.65s" emptyColor="gray" size="md" />
         </Center>
       ) : (

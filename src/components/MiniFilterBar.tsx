@@ -1,6 +1,6 @@
-import { Button, HStack } from '@chakra-ui/react';
+import { Button, HStack } from "@chakra-ui/react";
 
-import { capitalize } from 'lodash';
+import { capitalize } from "lodash";
 
 type MiniFilterBarProps = {
   selectedValue: string;
@@ -8,19 +8,15 @@ type MiniFilterBarProps = {
   options: string[];
 };
 
-const MiniFilterBar = ({
-  selectedValue,
-  onChange,
-  options,
-}: MiniFilterBarProps) => (
+const MiniFilterBar = ({ selectedValue, onChange, options }: MiniFilterBarProps) => (
   <HStack overflowX="auto" pl="6px" spacing="16px" w="100%">
     {options.map((value) => (
       <Button
         bg="transparent"
-        color={selectedValue === value ? '#000000' : '#6A6866'}
+        color={selectedValue === value ? "#000000" : "#6A6866"}
         h="30px"
         flexShrink={0}
-        fontWeight={selectedValue === value ? '600' : '400'}
+        fontWeight={selectedValue === value ? "600" : "400"}
         key={value}
         onClick={() => onChange(value)}
         padding={0}
