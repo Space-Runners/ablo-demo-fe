@@ -17,8 +17,6 @@ export default function DesignTool() {
 
   console.log("Me", me);
 
-  const [selectedGarment, setSelectedGarment] = useState<Garment>(DEFAULT_SELECTED_GARMENT);
-
   return (
     <Box height="100vh" display="flex" flexDirection="column" w={{ base: "100%" }}>
       <Box backgroundColor="#FFFFFF" h="100%" mx="auto" flex={1} w="100%">

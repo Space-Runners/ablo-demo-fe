@@ -59,11 +59,13 @@ export default function ImageEditorPage() {
 
   const { data: me } = useMe();
 
+  const { search } = useLocation();
+
   const isGuest = !me || me.roles[0] === "guest";
 
-  const [selectedProduct, setSelectedProduct] = useState<Product>(null);
-
   useEffect(() => {
+    const searchParams = new URLSearchParams(search);
+
     const designId = searchParams.get("designId");
 
     if (!designId) {
@@ -148,7 +150,7 @@ export default function ImageEditorPage() {
     if (hasChanges) {
       setModalConfirmExitModalVisible(true);
     } else {
-      history.goBack();
+      history.push("/designs");
     }
   };
 
