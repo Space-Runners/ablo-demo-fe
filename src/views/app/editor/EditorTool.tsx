@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Box, Flex, VStack, useBreakpointValue } from "@chakra-ui/react";
-
-import Button from "@/components/Button";
+import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 
 import { fabric } from "fabric";
 import { isEmpty } from "lodash";
@@ -13,7 +11,7 @@ import PRODUCTS from "@/data/products";
 import CanvasContainer from "./components/CanvasContainer";
 import Toolbar from "./controls";
 
-import ObjectEditTools from "./components/object-edit-tools";
+import ObjectEditTools from "./object-edit-tools";
 import EditorToolbar from "./toolbar";
 import ProductDetails from "./toolbar/product-picker/ProductDetails";
 
@@ -417,14 +415,25 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
         position="relative"
         w="100%"
       >
-        <Toolbar
-          onAddText={handleAddText}
-          onSelectedSide={handleSelectedSide}
-          onUndo={isEmpty(undoStack) ? null : handleUndo}
-          onRedo={isEmpty(redoStack) ? null : handleRedo}
-          onSave={handleSave}
-          selectedSide={selectedSide}
-        />
+        {activeObject ? (
+          <ObjectEditTools
+            activeObject={activeObject}
+            canvas={canvas.current}
+            onStateChange={saveState}
+            onCrop={handleCrop}
+            onSetActiveObject={setActiveObject}
+            onImageUpdate={handleImageUpdate}
+          />
+        ) : (
+          <Toolbar
+            onAddText={handleAddText}
+            onSelectedSide={handleSelectedSide}
+            onUndo={isEmpty(undoStack) ? null : handleUndo}
+            onRedo={isEmpty(redoStack) ? null : handleRedo}
+            onSave={handleSave}
+            selectedSide={selectedSide}
+          />
+        )}
         <Box
           alignItems="center"
           display="flex"
@@ -469,24 +478,6 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
             />
           </Box>
         </Box>
-        <VStack
-          left={0}
-          right={0}
-          position="absolute"
-          top={`${92 + 10 + drawingArea.height + drawingArea.top + 10}px`}
-        >
-          <ObjectEditTools
-            activeObject={activeObject}
-            canvas={canvas.current}
-            onStateChange={saveState}
-            onCrop={handleCrop}
-            onSetActiveObject={setActiveObject}
-            onImageUpdate={handleImageUpdate}
-          />
-          {imagePreview ? (
-            <Button onClick={handlePreviewImageSelected} title="Place artwork" />
-          ) : null}
-        </VStack>
       </Box>
     </Flex>
   );
