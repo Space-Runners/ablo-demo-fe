@@ -89,7 +89,11 @@ const CanvasContainer = ({
         width={{ base: 350, md: 500 }}
       />
       <Box
-        border={`2px dashed ${DARK_VARIANTS.includes(selectedVariant) ? "#FFFFFF" : "#a8a8a8"}`}
+        border={
+          isModifyingObject
+            ? `2px dashed ${DARK_VARIANTS.includes(selectedVariant) ? "#FFFFFF" : "#a8a8a8"}`
+            : "none"
+        }
         borderRadius="4px"
         left={`${drawingArea.left}px`}
         position="absolute"
