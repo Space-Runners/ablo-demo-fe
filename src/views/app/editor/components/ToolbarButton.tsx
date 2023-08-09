@@ -9,14 +9,6 @@ const ToolbarButton = ({ icon, isDisabled = false, isSelected = null, text, ...r
       h="47px"
       padding="4px 4px 8px 4px"
       width="auto"
-      /*  _focus={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
-      }} */
-      /*  _hover={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
-      }} */
       {...rest}
     >
       <VStack>
