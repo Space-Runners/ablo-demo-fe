@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, Icon } from '@chakra-ui/react';
+import { Alert, AlertDescription, CloseButton, Icon } from "@chakra-ui/react";
 
 const IconSaved = (props) => (
   <Icon
@@ -18,25 +18,21 @@ const IconSaved = (props) => (
 
 type FeedbackAlertProps = {
   error: string;
+  onClose: () => void;
 };
 
-const FeedbackAlert = ({ error }: FeedbackAlertProps) => {
+const FeedbackAlert = ({ error, onClose }: FeedbackAlertProps) => {
   if (error) {
     return (
-      <Alert status="error">
+      <Alert status="error" justifyContent="space-between">
         <AlertDescription>{error}</AlertDescription>
+        <CloseButton onClick={onClose} />
       </Alert>
     );
   }
 
   return (
-    <Alert
-      bg="#000000"
-      color="#FFFFFF"
-      fontSize="xs"
-      fontWeight={600}
-      justifyContent="center"
-    >
+    <Alert bg="#000000" color="#FFFFFF" fontSize="xs" fontWeight={600} justifyContent="center">
       <IconSaved mr="6px" />
       Design Saved
     </Alert>

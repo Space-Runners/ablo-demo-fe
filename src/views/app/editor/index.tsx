@@ -140,6 +140,10 @@ export default function ImageEditorPage() {
       }
     } catch (err) {
       setErrorSavingDesign(err.response?.data2?.message || err.message);
+
+      setTimeout(() => {
+        setErrorSavingDesign(null);
+      }, 3000);
     } finally {
       setSaveDesignDrawerVisible(false);
       setSavingDesign(false);
@@ -190,7 +194,7 @@ export default function ImageEditorPage() {
       )}
       {(errorSavingDesign || isDesignSaved) && (
         <Box position="absolute" left={0} right={0} top="191px">
-          <FeedbackAlert error={errorSavingDesign} />
+          <FeedbackAlert error={errorSavingDesign} onClose={() => setErrorSavingDesign(null)} />
         </Box>
       )}
       {isSignUpModalVisible ? (
