@@ -7,7 +7,6 @@ import {
   Button as ChakraButton,
   Flex,
   HStack,
-  Image as ChakraImage,
   Slider,
   SliderTrack,
   SliderFilledTrack,
@@ -20,13 +19,13 @@ import { AiImage } from "@/components/types";
 
 import Colors from "@/theme/colors";
 
-import ColorPalette from "./ColorPalette.png";
 import ColorPicker from "./ColorPicker";
 import FontPicker from "./FontPicker";
 
 import ErrorModal from "./ErrorModal";
 
 import {
+  IconColorPicker,
   IconTrash,
   IconLayerDown,
   IconLayerUp,
@@ -39,7 +38,10 @@ import {
   IconTextLeftAlign,
   IconTextCenter,
   IconTextRightAlign,
+  IconRemoveBackground,
 } from "./Icons";
+
+import ToolbarButton from "../components/ToolbarButton";
 
 const { abloBlue } = Colors;
 
@@ -67,14 +69,15 @@ const CropMaskProps = {
   borderScaleFactor: 1.3,
 };
 
-const Button = ({ isSelected = false, ...rest }) => (
+const IconButton = ({ isSelected = false, ...rest }) => (
   <ChakraButton
     height="28px"
-    bg="#FFFFFF"
-    borderRadius="4px"
+    bg={isSelected ? "#EDF2F7" : "#FFFFFF"}
+    borderRadius="7px"
     border={`1px solid ${isSelected ? abloBlue : "#D3D3D3"}`}
     padding="4px 6px"
     minWidth="auto"
+    width="25px"
     _focus={
       {
         // border: `1px solid ${abloBlue}`,
@@ -91,12 +94,10 @@ const Button = ({ isSelected = false, ...rest }) => (
   />
 );
 
-const IconButton = (props) => <Button width="28px" {...props} />;
-
 const TEXT_ALIGN_OPTIONS = [
-  { name: "left", icon: <IconTextLeftAlign /> },
-  { name: "center", icon: <IconTextCenter /> },
-  { name: "right", icon: <IconTextRightAlign /> },
+  { name: "left", icon: <IconTextLeftAlign />, iconActive: <IconTextLeftAlign isSelected /> },
+  { name: "center", icon: <IconTextCenter />, iconActive: <IconTextCenter isSelected /> },
+  { name: "right", icon: <IconTextRightAlign />, iconActive: <IconTextRightAlign isSelected /> },
 ];
 
 type ActiveObject = {
@@ -148,7 +149,7 @@ const ObjectEditTools = ({
     return null;
   }
 
-  const { aiImage, fill, fontFamily, fontSize, textAlign, text } = activeObject;
+  const { aiImage, fill, fontFamily, fontSize, textAlign, text } = activeObject || {};
   const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
 
   const isBackgroundRemoved = url === noBackgroundUrl;
@@ -350,82 +351,59 @@ const ObjectEditTools = ({
   const isFontSizeActive = selectedTool === "fontSize";
   const isFontFamilyActive = selectedTool === "fontFamily";
   const isTextAlignActive = selectedTool === "textAlign";
-  const isLayeringActive = selectedTool === "layering";
 
   return (
     <Box
       bg="#FFFFFF"
-      borderRadius="8px"
       boxShadow="0px 1px 2px 0px #0000000F"
       id="object-edit-tools"
       onClick={(e) => {
         e.stopPropagation();
       }}
-      p="8px 11px"
+      p="12px 11px 8px 11px"
     >
       <HStack position="relative" spacing="6px">
         {isText ? (
           <F>
-            <IconButton
-              bg="transparent"
-              borderRadius="14px"
-              isSelected={isColorActive}
+            <ToolbarButton
               onClick={() => setSelectedTool(isColorActive ? null : "color")}
-            >
-              <ChakraImage
-                maxWidth="none"
-                w="28px"
-                h="28px"
-                src={ColorPalette}
-                borderRadius="14px"
-                border={isColorActive ? `2px solid ${abloBlue}` : ""}
-              />
-            </IconButton>
-            <IconButton
-              isSelected={isFontSizeActive}
-              onClick={() => setSelectedTool(isFontSizeActive ? null : "fontSize")}
-            >
-              <IconFontSize />
-            </IconButton>
-            <IconButton
-              isSelected={isFontFamilyActive}
+              icon={<IconColorPicker />}
+              isSelected={isColorActive}
+              text="Font Color"
+            />
+            <ToolbarButton
               onClick={() => setSelectedTool(isFontFamilyActive ? null : "fontFamily")}
-            >
-              <IconFontFamily />
-            </IconButton>
-            <IconButton
-              isSelected={isTextAlignActive}
+              icon={<IconFontFamily />}
+              isSelected={isFontFamilyActive}
+              text="Font Style"
+            />
+            <ToolbarButton
+              onClick={() => setSelectedTool(isFontSizeActive ? null : "fontSize")}
+              icon={<IconFontSize />}
+              isSelected={isFontSizeActive}
+              text="Font Size"
+            />
+            <ToolbarButton
               onClick={() => setSelectedTool(isTextAlignActive ? null : "textAlign")}
-            >
-              <IconTextAlign />
-            </IconButton>
+              icon={<IconTextAlign />}
+              text="Alignment"
+            />
           </F>
         ) : null}
-        <IconButton
-          isSelected={isLayeringActive}
-          onClick={() => setSelectedTool(isLayeringActive ? null : "layering")}
-        >
-          <IconLayerUp />
-        </IconButton>
-        <IconButton onClick={handleCopyActiveObject}>
-          <IconCopy />
-        </IconButton>
-        {!isText ? (
-          <IconButton onClick={handleCrop}>
-            <IconCrop />
-          </IconButton>
-        ) : null}
-        <IconButton isSelected={isErasing} onClick={handleErase}>
-          <IconEraser />
-        </IconButton>
-        <IconButton onClick={handleRemoveActiveObject}>
-          <IconTrash />
-        </IconButton>
         {activeObject?.aiImage ? (
-          <Button isLoading={removingBackground} onClick={handleToggleBackground}>
-            <Text fontSize="11px">{isBackgroundRemoved ? "Restore" : "Remove"} background</Text>
-          </Button>
+          <ToolbarButton
+            isLoading={removingBackground}
+            onClick={handleToggleBackground}
+            icon={<IconRemoveBackground />}
+            text={`${isBackgroundRemoved ? "Restore" : "Remove"} Bg`}
+          />
         ) : null}
+        <ToolbarButton onClick={handleLayerUp} icon={<IconLayerUp />} text="Bring it Front" />
+        <ToolbarButton onClick={handleLayerDown} icon={<IconLayerDown />} text="Bring it Back" />
+        {!isText && <ToolbarButton onClick={handleErase} icon={<IconEraser />} text="Eraser" />}
+        <ToolbarButton onClick={handleCopyActiveObject} icon={<IconCopy />} text="Duplicate" />
+        <ToolbarButton onClick={handleRemoveActiveObject} icon={<IconTrash />} text="Delete" />
+        {!isText ? <ToolbarButton onClick={handleCrop} icon={<IconCrop />} text="Crop" /> : null}
       </HStack>
       {isText ? (
         <F>
@@ -436,7 +414,7 @@ const ObjectEditTools = ({
             />
           ) : null}
           {isFontSizeActive ? (
-            <Flex align="center" justify="center" mt="8px">
+            <Flex align="center" mt="8px">
               <Text fontSize="12px">A</Text>
               <Slider
                 defaultValue={12}
@@ -467,30 +445,22 @@ const ObjectEditTools = ({
           {isTextAlignActive ? (
             <HStack mt="8px">
               {TEXT_ALIGN_OPTIONS.map((option) => {
-                const { name, icon } = option;
+                const { name, icon, iconActive } = option;
+
+                const isSelected = name === textAlign;
 
                 return (
                   <IconButton
                     onClick={() => handleUpdateTextObject({ textAlign: name })}
-                    isSelected={name === textAlign}
+                    isSelected={isSelected}
                   >
-                    {icon}
+                    {isSelected ? iconActive : icon}
                   </IconButton>
                 );
               })}
             </HStack>
           ) : null}
         </F>
-      ) : null}
-      {isLayeringActive ? (
-        <HStack mt="8px">
-          <IconButton isSelected={null} onClick={handleLayerUp}>
-            <IconLayerUp />
-          </IconButton>
-          <IconButton onClick={handleLayerDown}>
-            <IconLayerDown />
-          </IconButton>
-        </HStack>
       ) : null}
       {errorRemovingBackground ? (
         <ErrorModal

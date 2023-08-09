@@ -1,56 +1,20 @@
-import { Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack } from "@chakra-ui/react";
 
-const ToolbarButton = ({
-  icon,
-  isDisabled = false,
-  isSelected = null,
-  text,
-  ...rest
-}) => {
-  return (
-    <Button
-      background={isSelected ? '#000000' : 'transparent'}
-      disabled={isDisabled}
-      padding="4px 4px 8px 4px"
-      /*  _focus={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
-      }} */
-      /*  _hover={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: '0px 0px 8px 0px #97B9F5',
-      }} */
-      {...rest}
-    >
-      <VStack>
-        {icon}
-        <Text as="b" fontSize="9px" color={isDisabled ? '#848484' : '#000000'}>
-          {text}
-        </Text>
-      </VStack>
-    </Button>
-  );
-};
+import ToolbarButton from "../components/ToolbarButton";
 
-import {
-  IconAddText,
-  IconFlipProduct,
-  IconUndo,
-  IconRedo,
-  IconSave,
-} from './Icons';
+import { IconAddText, IconFlipProduct, IconUndo, IconRedo, IconSave } from "./Icons";
 
-const SIDES = ['front', 'back'];
+const SIDES = ["front", "back"];
 
 const textProps = {
   editable: true,
-  fill: '#000000',
-  fontFamily: 'Poppins',
-  text: '',
+  fill: "#000000",
+  fontFamily: "Poppins",
+  text: "",
   fontSize: 20,
-  textAlign: 'left',
-  originX: 'center',
-  originY: 'center',
+  textAlign: "left",
+  originX: "center",
+  originY: "center",
   scaleX: 3,
   scaleY: 3,
   centeredScaling: true,
@@ -76,10 +40,10 @@ export default function Toolbar({
   return (
     <Box
       bg="#FFFFFF"
-      borderLeft={{ base: 'none', md: '1px solid rgba(26, 26, 26, 0.10)' }}
+      borderLeft={{ base: "none", md: "1px solid rgba(26, 26, 26, 0.10)" }}
       boxShadow="0px 0.7647058963775635px 1.529411792755127px 0px rgba(0, 0, 0, 0.06), 0px 0.7647058963775635px 2.2941176891326904px 0px rgba(0, 0, 0, 0.10)"
-      h={{ base: '70px', md: 'auto' }}
-      p={{ base: '20px 14px 10px 14px', md: '20px 14px' }}
+      h={{ base: "70px", md: "auto" }}
+      p={{ base: "20px 14px 10px 14px", md: "20px 14px" }}
       w="100%"
     >
       <HStack justify="space-between" spacing="20px" w="100%">
