@@ -34,7 +34,7 @@ import Progress from './components/Progress';
 import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
-  style: 'Botanical',
+  style: 'botanical',
   tone: '',
   subject: '',
   keywords: [],
