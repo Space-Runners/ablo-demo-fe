@@ -3,10 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { ImageGenerationOptions, TextToImageRequest } from '@/components/types';
 
-const URL = `/generate`;
-
-export const useOptions = () =>
-  useQuery(['image-generation-options'], () => getOptions());
+export const useOptions = () => useQuery(['image-generation-options'], () => getOptions());
 
 export const generateImage = (params: TextToImageRequest) => {
   return axios.post('/generate/image', params).then(({ data }) => {
@@ -15,7 +12,7 @@ export const generateImage = (params: TextToImageRequest) => {
 };
 
 const getOptions = () =>
-  axios.get<ImageGenerationOptions>(`${URL}/options`).then(({ data }) => data);
+  axios.get<ImageGenerationOptions>(`generate/options`).then(({ data }) => data);
 
 export const saveTemplate = (name, image) =>
   axios.post('/templates', { filename: name, image }).then(({ data }) => data);
