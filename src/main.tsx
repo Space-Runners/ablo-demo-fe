@@ -16,9 +16,9 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto-condensed/700.css';
 
-import config from './config';
+import Config from './config';
 
-const { GOOGLE_CLIENT_ID } = config;
+const { GOOGLE_CLIENT_ID } = Config;
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container!);
