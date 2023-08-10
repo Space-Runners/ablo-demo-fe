@@ -369,24 +369,24 @@ const ObjectEditTools = ({
               onClick={() => setSelectedTool(isColorActive ? null : "color")}
               icon={<IconColorPicker />}
               isSelected={isColorActive}
-              text="Font Color"
+              text="Color"
             />
             <ToolbarButton
               onClick={() => setSelectedTool(isFontFamilyActive ? null : "fontFamily")}
               icon={<IconFontFamily />}
               isSelected={isFontFamilyActive}
-              text="Font Style"
+              text="Style"
             />
             <ToolbarButton
               onClick={() => setSelectedTool(isFontSizeActive ? null : "fontSize")}
               icon={<IconFontSize />}
               isSelected={isFontSizeActive}
-              text="Font Size"
+              text="Size"
             />
             <ToolbarButton
               onClick={() => setSelectedTool(isTextAlignActive ? null : "textAlign")}
               icon={<IconTextAlign />}
-              text="Alignment"
+              text="Align"
             />
           </F>
         ) : null}
@@ -398,12 +398,12 @@ const ObjectEditTools = ({
             text={`${isBackgroundRemoved ? "Restore" : "Remove"} Bg`}
           />
         ) : null}
-        <ToolbarButton onClick={handleLayerUp} icon={<IconLayerUp />} text="Bring it Front" />
-        <ToolbarButton onClick={handleLayerDown} icon={<IconLayerDown />} text="Bring it Back" />
+        <ToolbarButton onClick={handleLayerUp} icon={<IconLayerUp />} text="To Front" />
+        <ToolbarButton onClick={handleLayerDown} icon={<IconLayerDown />} text="To Back" />
         {!isText && <ToolbarButton onClick={handleErase} icon={<IconEraser />} text="Eraser" />}
         <ToolbarButton onClick={handleCopyActiveObject} icon={<IconCopy />} text="Duplicate" />
-        <ToolbarButton onClick={handleRemoveActiveObject} icon={<IconTrash />} text="Delete" />
         {!isText ? <ToolbarButton onClick={handleCrop} icon={<IconCrop />} text="Crop" /> : null}
+        <ToolbarButton onClick={handleRemoveActiveObject} icon={<IconTrash />} text="Delete" />
       </HStack>
       {isText ? (
         <F>

@@ -4,22 +4,19 @@ import { useEffect, useState } from "react";
 
 import { AiImage, Filters, Garment, Product } from "@/components/types";
 
-import Colors from "@/theme/colors";
-
 import {
   IconProductPicker,
-  IconProductPickerSelected,
+  IconFontToImage,
   IconTextToImage,
-  IconTextToImageSelected,
+  IconImageToImage,
   IconUploadImage,
-  IconUploadImageSelected,
 } from "./Icons";
 
 import ProductPicker from "./product-picker";
 import ImageGenerator from "./image-generator";
 import ImagePicker from "./components/ImagePicker";
 
-const { abloBlue } = Colors;
+import ComingSoon from "./components/coming-soon";
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -29,14 +26,6 @@ const ToolbarButton = ({ isSelected, ...rest }) => {
       height="40px"
       padding="8px"
       width="40px"
-      _focus={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: "0px 0px 8px 0px #97B9F5",
-      }}
-      _hover={{
-        border: `1px solid ${abloBlue}`,
-        boxShadow: "0px 0px 8px 0px #97B9F5",
-      }}
       {...rest}
     />
   );
@@ -67,17 +56,27 @@ const VIEWS = [
   {
     name: "productPicker",
     icon: <IconProductPicker />,
-    iconActive: <IconProductPickerSelected />,
+    iconActive: <IconProductPicker isSelected />,
   },
   {
     name: "textToImage",
     icon: <IconTextToImage />,
-    iconActive: <IconTextToImageSelected />,
+    iconActive: <IconTextToImage isSelected />,
+  },
+  {
+    name: "fontToImage",
+    icon: <IconFontToImage />,
+    iconActive: <IconFontToImage isSelected />,
+  },
+  {
+    name: "imageToImage",
+    icon: <IconImageToImage />,
+    iconActive: <IconImageToImage isSelected />,
   },
   {
     name: "imageUpload",
     icon: <IconUploadImage />,
-    iconActive: <IconUploadImageSelected />,
+    iconActive: <IconUploadImage isSelected />,
   },
 ];
 
@@ -216,10 +215,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
-  const isProductPicker = selectedTool === "productPicker";
-  const isTextToImage = selectedTool === "textToImage";
-  const isImagePicker = selectedTool === "imageUpload";
-
   const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
 
   return (
@@ -276,7 +271,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
         </Flex>
       </Box>
       <Box>
-        {isProductPicker ? (
+        {selectedTool === "productPicker" ? (
           <ProductPicker
             filters={selectedFilters}
             onFiltersChange={setSelectedFilters}
@@ -286,7 +281,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSelectedProduct={onSelectedProduct}
           />
         ) : null}
-        {isTextToImage ? (
+        {selectedTool === "textToImage" ? (
           <ImageGenerator
             aiImage={aiImage}
             isEditingAiImage={isEditingAiImage}
@@ -296,7 +291,10 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSetIsEditingAiImage={setIsEditingAiImage}
           />
         ) : null}
-        {isImagePicker ? <ImagePicker onImageUploaded={onImageUploaded} /> : null}
+        {["fontToImage", "imageToImage"].includes(selectedTool) ? (
+          <ComingSoon feature={selectedTool} />
+        ) : null}
+        {selectedTool === "imageUpload" ? <ImagePicker onImageUploaded={onImageUploaded} /> : null}
       </Box>
     </Box>
   );

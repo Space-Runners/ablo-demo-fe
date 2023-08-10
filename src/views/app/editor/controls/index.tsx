@@ -63,7 +63,7 @@ export default function Toolbar({
 
               onSelectedSide(SIDES[(currentIndex + 1) % SIDES.length]);
             }}
-            text="Flip Product"
+            text="Flip"
           />
         </HStack>
         <HStack>
