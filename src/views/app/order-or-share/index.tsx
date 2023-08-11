@@ -8,18 +8,18 @@ import {
   Icon,
   Image,
   Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory } from 'react-router-dom';
 
-import { useDesign } from "@/api/designs";
+import { useDesign } from '@/api/designs';
 
-import Button from "@/components/Button";
-import Navbar from "@/components/navbar/Navbar";
-import Colors from "@/theme/colors";
+import Button from '@/components/Button';
+import Navbar from '@/components/navbar/Navbar';
+import Colors from '@/theme/colors';
 
-import { IconInstagram, IconTikTok, IconFacebook } from "./Icons";
-import { useState } from "react";
+import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
+import { useState } from 'react';
 
 function getImgUrl(name) {
   return new URL(`./images/${name}.webp`, import.meta.url).href;
@@ -29,15 +29,15 @@ const { abloBlue } = Colors;
 
 const SHARE_OPTIONS = [
   {
-    name: "Instagram",
+    name: 'Instagram',
     icon: <IconInstagram />,
   },
   {
-    name: "TikTok",
+    name: 'TikTok',
     icon: <IconTikTok />,
   },
   {
-    name: "Facebook",
+    name: 'Facebook',
     icon: <IconFacebook />,
   },
 ];
@@ -117,25 +117,34 @@ export default function OrderOrShare() {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
 
-  const designId = searchParams.get("designId");
+  const designId = searchParams.get('designId');
 
   const { data: design, isLoading } = useDesign(designId);
 
   const { front, back } = design?.editorState || {};
 
-  const [selectedSide, setSelectedSide] = useState("front");
+  const [selectedSide, setSelectedSide] = useState('front');
 
   const history = useHistory();
 
-  const style = "kidult";
+  const style = 'kidult';
 
-  console.log("Editor state", front, back, selectedSide);
+  console.log('Editor state', front, back, selectedSide);
 
   return (
     <Box>
-      <Navbar onBack={() => history.goBack()} title="Share" />
+      <Navbar
+        callToActionContent={
+          <Text color={abloBlue} textTransform="none">
+            My Designs
+          </Text>
+        }
+        onBack={() => history.goBack()}
+        onNext={() => history.push('/app/designs')}
+        title="Share"
+      />
       {isLoading ? (
-        <Center bg="#FFFFFF" h={{ base: "300px", md: "calc(100% - 65px)" }}>
+        <Center bg="#FFFFFF" h={{ base: '300px', md: 'calc(100% - 65px)' }}>
           <Spinner thickness="1px" speed="0.65s" emptyColor="gray" size="md" />
         </Center>
       ) : (
@@ -155,7 +164,7 @@ export default function OrderOrShare() {
                 borderRadius={0}
                 h="36px"
                 justify="center"
-                onClick={() => setSelectedSide(selectedSide === "front" ? "back" : "front")}
+                onClick={() => setSelectedSide(selectedSide === 'front' ? 'back' : 'front')}
                 position="absolute"
                 left={0}
                 top={0}
@@ -167,7 +176,7 @@ export default function OrderOrShare() {
             {style ? <Image w="100%" src={getImgUrl(`${style}`)} alt={style} /> : null}
             {style ? (
               <Image
-                src={(selectedSide === "front" ? front : back)?.templateUrl}
+                src={(selectedSide === 'front' ? front : back)?.templateUrl}
                 margin="0 auto"
                 position="absolute"
                 width={250}
@@ -182,7 +191,7 @@ export default function OrderOrShare() {
             {SHARE_OPTIONS.map(({ name, icon }, index) => (
               <Flex
                 align="center"
-                borderTop={index === 0 ? "none" : "1px solid #D4D4D3"}
+                borderTop={index === 0 ? 'none' : '1px solid #D4D4D3'}
                 justify="space-between"
                 key={index}
                 padding="13px 0"
