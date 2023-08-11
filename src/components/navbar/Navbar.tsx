@@ -1,43 +1,11 @@
-import { Box, Button, Flex, Icon, Hide, Show, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Hide, Show, Text } from '@chakra-ui/react';
 
-import IconAblo from "@/components/icons/IconAblo";
-import Colors from "@/theme/colors";
-import React from "react";
+import IconAblo from '@/components/icons/IconAblo';
+import IconBack from '@/components/icons/IconBack';
+import Colors from '@/theme/colors';
+import React from 'react';
 
 const { abloBlue } = Colors;
-
-const IconBack = () => (
-  <Icon width="24px" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clipPath="url(#clip0_2455_20036)">
-      <path
-        d="M5 12H19"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5 12L9 16"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5 12L9 8"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_2455_20036">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-    </defs>
-  </Icon>
-);
 
 type Props = {
   callToActionContent?: React.ReactNode;
@@ -58,8 +26,8 @@ export default function Navbar(props: Props) {
         bg="#FFFFFF"
         borderBottom="1px solid #E7E7E7"
         h="58px"
-        justify={{ base: "center", md: "space-between" }}
-        p={{ base: 0, md: "32px" }}
+        justify={{ base: 'center', md: 'space-between' }}
+        p={{ base: 0, md: '32px' }}
       >
         <IconAblo />
         <Show above="md">{rightSideContent}</Show>
@@ -71,7 +39,7 @@ export default function Navbar(props: Props) {
           height="63px"
           justify="space-between"
           padding={0}
-          pl={onBack ? 0 : "20px"}
+          pl={onBack ? 0 : '20px'}
         >
           {onBack ? (
             <Button
@@ -82,9 +50,9 @@ export default function Navbar(props: Props) {
               padding={0}
               w="48px"
               _hover={{
-                bg: "#F9F9F7",
+                bg: '#F9F9F7',
                 border: `1px solid ${abloBlue}`,
-                boxShadow: "0px 0px 8px 0px #97B9F5",
+                boxShadow: '0px 0px 8px 0px #97B9F5',
               }}
             >
               <IconBack />
@@ -106,12 +74,12 @@ export default function Navbar(props: Props) {
               padding="18px 14px"
               pl={0}
               textTransform="uppercase"
-              _disabled={{ color: "#BFBEBE" }}
+              _disabled={{ color: '#BFBEBE' }}
               _hover={{
-                color: "#6A6866",
+                color: '#6A6866',
               }}
             >
-              {callToActionContent || "Next"}
+              {callToActionContent || 'Next'}
             </Button>
           ) : (
             <Box w="56px" />

@@ -1,14 +1,8 @@
-import { Icon } from "@chakra-ui/react";
+import { Icon } from '@chakra-ui/react';
 
-export const IconBack = () => (
-  <Icon
-    width="24px"
-    height="24px"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g clipPath="url(#clip0_795_22544)">
+const IconBack = () => (
+  <Icon width="24px" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_2455_20036)">
       <path
         d="M5 12H19"
         stroke="black"
@@ -32,9 +26,11 @@ export const IconBack = () => (
       />
     </g>
     <defs>
-      <clipPath id="clip0_795_22544">
+      <clipPath id="clip0_2455_20036">
         <rect width="24" height="24" fill="white" />
       </clipPath>
     </defs>
   </Icon>
 );
+
+export default IconBack;

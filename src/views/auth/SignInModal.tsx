@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 import {
   Button as ChakraButton,
@@ -7,15 +7,15 @@ import {
   FormErrorMessage,
   Text,
   VStack,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from '@react-oauth/google';
 
-import { googleLogin, login } from "@/api/auth";
-import FormInput from "@/components/modal/FormInput";
+import { googleLogin, login } from '@/api/auth';
+import FormInput from '@/components/modal/FormInput';
 
-import Button from "./components/ButtonCTA";
-import ModalContainer from "./components/ModalContainer";
+import Button from './components/ButtonCTA';
+import ModalContainer from './components/ModalContainer';
 
 type Props = {
   onClose: () => void;
@@ -26,10 +26,10 @@ type Props = {
 function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
   // Chakra color mode
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
 
   const handleSubmit = () => {
@@ -37,15 +37,15 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
 
     login(email, password)
       .then(({ access_token: accessToken }) => {
-        localStorage.setItem("access-token", accessToken);
-        localStorage.removeItem("client-token");
+        localStorage.setItem('access-token', accessToken);
+        localStorage.removeItem('client-token');
 
         setWaiting(false);
 
         onSignIn();
       })
       .catch(() => {
-        setError("Error signing in");
+        setError('Error signing in');
 
         setWaiting(false);
       });
@@ -81,8 +81,8 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             googleLogin(credentialResponse.credential).then(({ access_token: accessToken }) => {
-              localStorage.setItem("access-token", accessToken);
-              localStorage.removeItem("client-token");
+              localStorage.setItem('access-token', accessToken);
+              localStorage.removeItem('client-token');
 
               onSignIn();
             });
