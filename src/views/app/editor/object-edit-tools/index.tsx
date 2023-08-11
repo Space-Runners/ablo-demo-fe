@@ -1,6 +1,6 @@
-import { useState, Fragment as F, useEffect } from "react";
+import { useState, Fragment as F, useEffect } from 'react';
 
-import { fabric } from "fabric";
+import { fabric } from 'fabric';
 
 import {
   Box,
@@ -12,17 +12,17 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { removeBackground } from "@/api/image-generator";
-import { AiImage } from "@/components/types";
+import { removeBackground } from '@/api/image-generator';
+import { AiImage } from '@/components/types';
 
-import Colors from "@/theme/colors";
+import Colors from '@/theme/colors';
 
-import ColorPicker from "./ColorPicker";
-import FontPicker from "./FontPicker";
+import ColorPicker from './ColorPicker';
+import FontPicker from './FontPicker';
 
-import ErrorModal from "./ErrorModal";
+import ErrorModal from './ErrorModal';
 
 import {
   IconColorPicker,
@@ -39,17 +39,17 @@ import {
   IconTextCenter,
   IconTextRightAlign,
   IconRemoveBackground,
-} from "./Icons";
+} from './Icons';
 
-import ToolbarButton from "../components/ToolbarButton";
+import ToolbarButton from '../components/ToolbarButton';
 
 const { abloBlue } = Colors;
 
 const CropMaskProps = {
-  fill: "rgba(0,0,0,0.3)",
-  originX: "left",
-  originY: "top",
-  stroke: "black",
+  fill: 'rgba(0,0,0,0.3)',
+  originX: 'left',
+  originY: 'top',
+  stroke: 'black',
   left: 0,
   top: 0,
   opacity: 1,
@@ -57,14 +57,14 @@ const CropMaskProps = {
   height: 150,
   hasRotatingPoint: false,
   transparentCorners: false,
-  cornerColor: "white",
-  cornerStrokeColor: "black",
-  borderColor: "black",
+  cornerColor: 'white',
+  cornerStrokeColor: 'black',
+  borderColor: 'black',
   cornerSize: 20 * 3,
   padding: 0,
   scaleX: 3,
   scaleY: 3,
-  cornerStyle: "circle",
+  cornerStyle: 'circle',
   borderDashArray: [5, 5],
   borderScaleFactor: 1.3,
 };
@@ -72,9 +72,9 @@ const CropMaskProps = {
 const IconButton = ({ isSelected = false, ...rest }) => (
   <ChakraButton
     height="28px"
-    bg={isSelected ? "#EDF2F7" : "#FFFFFF"}
+    bg={isSelected ? '#EDF2F7' : '#FFFFFF'}
     borderRadius="7px"
-    border={`1px solid ${isSelected ? abloBlue : "#D3D3D3"}`}
+    border={`1px solid ${isSelected ? abloBlue : '#D3D3D3'}`}
     padding="4px 6px"
     minWidth="auto"
     width="25px"
@@ -95,9 +95,9 @@ const IconButton = ({ isSelected = false, ...rest }) => (
 );
 
 const TEXT_ALIGN_OPTIONS = [
-  { name: "left", icon: <IconTextLeftAlign />, iconActive: <IconTextLeftAlign isSelected /> },
-  { name: "center", icon: <IconTextCenter />, iconActive: <IconTextCenter isSelected /> },
-  { name: "right", icon: <IconTextRightAlign />, iconActive: <IconTextRightAlign isSelected /> },
+  { name: 'left', icon: <IconTextLeftAlign />, iconActive: <IconTextLeftAlign isSelected /> },
+  { name: 'center', icon: <IconTextCenter />, iconActive: <IconTextCenter isSelected /> },
+  { name: 'right', icon: <IconTextRightAlign />, iconActive: <IconTextRightAlign isSelected /> },
 ];
 
 type ActiveObject = {
@@ -221,7 +221,7 @@ const ObjectEditTools = ({
         width: rect.width,
         height: rect.height,
         multiplier: 5,
-        format: "png",
+        format: 'png',
         quality: 0.99,
       });
 
@@ -285,7 +285,7 @@ const ObjectEditTools = ({
   const handleLayerDown = () => {
     const selectedObject = canvas.getActiveObject();
 
-    console.log("sld", selectedObject);
+    console.log('sld', selectedObject);
 
     canvas.sendBackwards(selectedObject);
     canvas.renderAll();
@@ -296,7 +296,7 @@ const ObjectEditTools = ({
   const handleLayerUp = () => {
     const selectedObject = canvas.getActiveObject();
 
-    console.log("s", selectedObject);
+    console.log('s', selectedObject);
 
     canvas.bringForward(selectedObject);
     canvas.renderAll();
@@ -347,10 +347,12 @@ const ObjectEditTools = ({
 
   const isText = !!text;
 
-  const isColorActive = selectedTool === "color";
-  const isFontSizeActive = selectedTool === "fontSize";
-  const isFontFamilyActive = selectedTool === "fontFamily";
-  const isTextAlignActive = selectedTool === "textAlign";
+  const isColorActive = selectedTool === 'color';
+  const isFontSizeActive = selectedTool === 'fontSize';
+  const isFontFamilyActive = selectedTool === 'fontFamily';
+  const isTextAlignActive = selectedTool === 'textAlign';
+
+  const mainAiImage = canvas._objects.find(({ aiImage }) => !!aiImage)?.aiImage;
 
   return (
     <Box
@@ -366,25 +368,25 @@ const ObjectEditTools = ({
         {isText ? (
           <F>
             <ToolbarButton
-              onClick={() => setSelectedTool(isColorActive ? null : "color")}
+              onClick={() => setSelectedTool(isColorActive ? null : 'color')}
               icon={<IconColorPicker />}
               isSelected={isColorActive}
               text="Color"
             />
             <ToolbarButton
-              onClick={() => setSelectedTool(isFontFamilyActive ? null : "fontFamily")}
+              onClick={() => setSelectedTool(isFontFamilyActive ? null : 'fontFamily')}
               icon={<IconFontFamily />}
               isSelected={isFontFamilyActive}
               text="Style"
             />
             <ToolbarButton
-              onClick={() => setSelectedTool(isFontSizeActive ? null : "fontSize")}
+              onClick={() => setSelectedTool(isFontSizeActive ? null : 'fontSize')}
               icon={<IconFontSize />}
               isSelected={isFontSizeActive}
               text="Size"
             />
             <ToolbarButton
-              onClick={() => setSelectedTool(isTextAlignActive ? null : "textAlign")}
+              onClick={() => setSelectedTool(isTextAlignActive ? null : 'textAlign')}
               icon={<IconTextAlign />}
               text="Align"
             />
@@ -395,7 +397,7 @@ const ObjectEditTools = ({
             isLoading={removingBackground}
             onClick={handleToggleBackground}
             icon={<IconRemoveBackground />}
-            text={`${isBackgroundRemoved ? "Restore" : "Remove"} Bg`}
+            text={`${isBackgroundRemoved ? 'Restore' : 'Remove'} Bg`}
           />
         ) : null}
         <ToolbarButton onClick={handleLayerUp} icon={<IconLayerUp />} text="To Front" />
@@ -409,6 +411,7 @@ const ObjectEditTools = ({
         <F>
           {isColorActive ? (
             <ColorPicker
+              aiImage={mainAiImage}
               selectedColor={fill}
               onUpdate={(color) => handleUpdateTextObject({ fill: color })}
             />
