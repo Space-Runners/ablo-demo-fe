@@ -115,7 +115,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          //  type="password"
+          type="password"
         />
         <Button isLoading={waiting} onClick={handleSubmit} title="Get started" />
         <GoogleLogin
