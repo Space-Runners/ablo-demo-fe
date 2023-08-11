@@ -1,9 +1,12 @@
 import { Box, Button, Flex, Hide, Show, Text } from '@chakra-ui/react';
 
+import { useMe } from '@/api/auth';
 import IconAblo from '@/components/icons/IconAblo';
 import IconBack from '@/components/icons/IconBack';
 import Colors from '@/theme/colors';
 import React from 'react';
+
+import { useHistory } from 'react-router-dom';
 
 const { abloBlue } = Colors;
 
@@ -19,6 +22,12 @@ type Props = {
 export default function Navbar(props: Props) {
   const { callToActionContent, onBack, onNext, rightSideContent, isNextDisabled, title } = props;
 
+  const history = useHistory();
+
+  const { data: me } = useMe();
+
+  const isGuest = !me || me.roles[0] === 'guest';
+
   return (
     <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)" id="ablo-navbar">
       <Flex
@@ -29,7 +38,12 @@ export default function Navbar(props: Props) {
         justify={{ base: 'center', md: 'space-between' }}
         p={{ base: 0, md: '32px' }}
       >
-        <IconAblo />
+        <Button
+          bg="transparent"
+          onClick={() => history.push(`/app/${isGuest ? 'editor' : 'designs'}`)}
+        >
+          <IconAblo />
+        </Button>
         <Show above="md">{rightSideContent}</Show>
       </Flex>
       <Hide above="md">
