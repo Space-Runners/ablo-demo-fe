@@ -1,60 +1,63 @@
+import { useState } from 'react';
+
 import {
+  Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input as ChakraInput,
+  InputGroup,
+  InputRightElement,
+  Text,
 } from '@chakra-ui/react';
+
+import IconEyeClosed from '@/components/icons/IconEyeClosed';
 
 const Input = (props) => (
   <ChakraInput
-    padding="5px 0"
-    height="30px"
+    padding="7px 12px"
+    height="36px"
     bg="#FFFFFF"
-    border="none"
-    borderBottom="1px solid #404040"
-    borderRadius={0}
+    border="1px solid #CED4DA"
+    borderRadius="4px"
     variant="auth"
     fontSize="md"
-    mb="20px"
     fontWeight="400"
     _placeholder={{
-      fontSize: 'sm',
+      color: '#6C757D',
     }}
     {...props}
   />
 );
 
-/* const PasswordInput = (props) => {
+const PasswordInput = (props) => {
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
+
   return (
     <InputGroup size="md">
-      <Input type="text" {...props} />
-      {<InputRightElement display="flex" alignItems="center" mt="4px">
-          <Icon
-            color="gray.400"
-            _hover={{ cursor: 'pointer' }}
-            as={showPassword ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-            onClick={() => setShowPassword(!showPassword)}
-          />
-        </InputRightElement>}
+      <Input type={show ? 'text' : 'password'} placeholder="Enter password" {...props} />
+      <InputRightElement>
+        <Button bg="transparent" minW="none" size="sm" onClick={handleClick} w="20px">
+          {show ? <IconEyeClosed /> : 'Show'}
+        </Button>
+      </InputRightElement>
     </InputGroup>
   );
-}; */
+};
 
 function FormInput(props) {
-  const { error, name, ...rest } = props;
+  const { error, isPassword, name, ...rest } = props;
 
   return (
     <FormControl w="100%">
-      <FormLabel
-        display="flex"
-        fontSize="11px"
-        fontWeight={400}
-        color="#959595"
-        mb="8px"
-      >
+      <FormLabel display="flex" fontSize="14px" fontWeight={400} color="#212529" mb="4px">
         {name}
+        <Text color="#DC3545" ml="4px">
+          *
+        </Text>
       </FormLabel>
-      <Input {...rest} />
+      {isPassword ? <PasswordInput {...rest} /> : <Input {...rest} />}
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   );

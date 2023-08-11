@@ -1,19 +1,12 @@
 import { Fragment as F, useState } from 'react';
 
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Image,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
 import MiniFilterBar from '@/components/MiniFilterBar';
 
+import IconBack from '@/components/icons/IconBack';
 import { Filters, Garment, Product } from '@/components/types';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
@@ -22,58 +15,12 @@ import Colors from '@/theme/colors';
 import ProductDetails from './ProductDetails';
 import ProductFilters from './Filters';
 
-import {
-  IconFilters,
-  IconCloseFilters,
-  IconSustainable,
-  IconSelected,
-} from './Icons';
+import { IconFilters, IconCloseFilters, IconSustainable, IconSelected } from './Icons';
 
 const { abloBlue } = Colors;
 
-const IconBack = () => (
-  <Icon
-    width="24px"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g clipPath="url(#clip0_2455_20036)">
-      <path
-        d="M5 12H19"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5 12L9 16"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M5 12L9 8"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_2455_20036">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-    </defs>
-  </Icon>
-);
-
 const matchesClothingType = (types, product) =>
-  !types.length ||
-  types[0] === 'All' ||
-  types.find((type) => type.includes(product.name));
+  !types.length || types[0] === 'All' || types.find((type) => type.includes(product.name));
 
 const matchesFit = (fits, product) =>
   !fits.length || fits.find((fit) => fit.includes(product.name));
@@ -101,11 +48,7 @@ type ProductsListProps = {
   selectedGarment: Garment;
 };
 
-const ProductsList = ({
-  products,
-  onSelectedProduct,
-  selectedGarment,
-}: ProductsListProps) => {
+const ProductsList = ({ products, onSelectedProduct, selectedGarment }: ProductsListProps) => {
   const chunks = chunk(products, 2);
 
   return (
@@ -113,18 +56,14 @@ const ProductsList = ({
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="24px">
           {chunk.map((product, index) => {
-            const { fabric, fit, id, name, price, variants, urlPrefix } =
-              product;
+            const { fabric, fit, id, name, price, variants, urlPrefix } = product;
 
             const variant =
               selectedGarment && selectedGarment.variant
-                ? variants.find(
-                    (variant) => variant.name === selectedGarment.variant
-                  )
+                ? variants.find((variant) => variant.name === selectedGarment.variant)
                 : variants.find((variant) => variant.name === 'OatMilk');
 
-            const isSelected =
-              selectedGarment && selectedGarment.productId === id;
+            const isSelected = selectedGarment && selectedGarment.productId === id;
 
             const selectedProps = isSelected
               ? { border: '2px solid #000000', borderRadius: '10px' }
@@ -152,27 +91,13 @@ const ProductsList = ({
                   justify="center"
                   padding="16px 8px"
                 >
-                  <Image
-                    h={160}
-                    src={`${urlPrefix}_${variant.name}_FRONT.webp`}
-                    alt={name}
-                  />
+                  <Image h={160} src={`${urlPrefix}_${variant.name}_FRONT.webp`} alt={name} />
                 </Flex>
                 <Box padding="8px">
-                  <Text
-                    color="#6A6866"
-                    display="block"
-                    fontSize="xs"
-                    textTransform="uppercase"
-                  >
+                  <Text color="#6A6866" display="block" fontSize="xs" textTransform="uppercase">
                     Spaarkd
                   </Text>
-                  <Text
-                    color="#000000"
-                    fontSize="md"
-                    fontWeight={500}
-                    lineHeight="20px"
-                  >
+                  <Text color="#000000" fontSize="md" fontWeight={500} lineHeight="20px">
                     {fit} {name}
                   </Text>
                   <Text color="#6A6866" fontSize="xs">
@@ -247,12 +172,7 @@ export default function ProductPicker({
             <IconBack />
           </Button>
         ) : null}
-        <Text
-          fontFamily="Roboto Condensed"
-          fontSize="18px"
-          fontWeight={600}
-          lineHeight="18px"
-        >
+        <Text fontFamily="Roboto Condensed" fontSize="18px" fontWeight={600} lineHeight="18px">
           Pick your clothe
         </Text>
       </Flex>
@@ -298,9 +218,7 @@ export default function ProductPicker({
               <MiniFilterBar
                 options={['All', ...CLOTHING_TYPES]}
                 selectedValue={clothingTypes[0] || 'All'}
-                onChange={(value) =>
-                  onFiltersChange({ ...filters, clothingTypes: [value] })
-                }
+                onChange={(value) => onFiltersChange({ ...filters, clothingTypes: [value] })}
               />
               <ProductsList
                 onSelectedProduct={onSelectedProduct}
