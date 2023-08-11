@@ -1,5 +1,6 @@
 import { Button as ChakraButton, HStack } from '@chakra-ui/react';
 
+import { AiImage } from '@/components/types';
 import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
@@ -18,8 +19,6 @@ const COLORS_FOR_STYLES = {
   vintage_poster: ['#FFFFFF', '#050606', '#D22700', '#366140', '#107988', '#DAC190', '#776655'],
 };
 
-const COLORS = ['#FFFFFF', '#050606', '#EC212B', '#019548', '#3662C0', '#FDDE0A', '#ED227B'];
-
 const Button = ({ isSelected = false, ...rest }) => {
   const size = 25;
 
@@ -36,10 +35,18 @@ const Button = ({ isSelected = false, ...rest }) => {
   );
 };
 
-export default function ColorPicker({ selectedColor, onUpdate }) {
+type ColorPickerProps = {
+  aiImage: AiImage;
+  selectedColor: string;
+  onUpdate: (color: string) => void;
+};
+
+export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorPickerProps) {
+  const style = aiImage ? aiImage.options.style : 'basic';
+
   return (
     <HStack mt="8px" overflow="auto" spacing="10px">
-      {COLORS.map((color) => (
+      {COLORS_FOR_STYLES[style].map((color) => (
         <Button
           bg={color}
           border={
