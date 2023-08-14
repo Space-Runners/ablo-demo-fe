@@ -1,4 +1,4 @@
-import { Button, Icon } from "@chakra-ui/react";
+import { Button, Icon } from '@chakra-ui/react';
 
 const IconClose = () => (
   <Icon
@@ -32,8 +32,8 @@ const ButtonCloseModal = (props) => (
     {...props}
     bg="none"
     border="none"
-    _focus={{ border: "none", boxShadow: "none" }}
-    _hover={{ border: "none", boxShadow: "none" }}
+    _focus={{ border: 'none', boxShadow: 'none' }}
+    _hover={{ border: 'none', boxShadow: 'none' }}
   >
     <IconClose />
   </Button>

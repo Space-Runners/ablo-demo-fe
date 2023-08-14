@@ -104,6 +104,7 @@ type ActiveObject = {
   aiImage: AiImage;
   clipPath?: object;
   noBackgroundUrl: string;
+  opacity: number;
   text: string;
   withBackgroundUrl: string;
   fill: string;
@@ -149,8 +150,10 @@ const ObjectEditTools = ({
     return null;
   }
 
-  const { aiImage, fill, fontFamily, fontSize, textAlign, text } = activeObject || {};
+  const { aiImage, fill, fontFamily, fontSize, opacity, textAlign, text } = activeObject || {};
   const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
+
+  console.log('Active object', activeObject);
 
   const isBackgroundRemoved = url === noBackgroundUrl;
 
@@ -413,7 +416,9 @@ const ObjectEditTools = ({
             <ColorPicker
               aiImage={mainAiImage}
               selectedColor={fill}
-              onUpdate={(color) => handleUpdateTextObject({ fill: color })}
+              onUpdateColor={(color) => handleUpdateTextObject({ fill: color })}
+              selectedOpacity={opacity}
+              onUpdateOpacity={(opacity) => handleUpdateTextObject({ opacity })}
             />
           ) : null}
           {isFontSizeActive ? (

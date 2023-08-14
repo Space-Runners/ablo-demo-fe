@@ -1,10 +1,10 @@
-import { ReactElement } from "react";
+import { ReactElement } from 'react';
 
-import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalBody, Show } from "@chakra-ui/react";
+import { Box, Flex, Modal, ModalOverlay, ModalContent, ModalBody, Show } from '@chakra-ui/react';
 
-import ButtonBack from "./ButtonBack";
-import ButtonCloseModal from "./ButtonCloseModal";
-import Header from "./Header";
+import ButtonBack from './ButtonBack';
+import ButtonCloseModal from './ButtonCloseModal';
+import Header from './Header';
 
 type Props = {
   children: ReactElement;
@@ -19,9 +19,9 @@ const ModalContainer = ({ children, onClose, title, subtitle }: Props) => {
       <ModalOverlay />
       <ModalContent
         alignSelf="center"
-        borderRadius={{ base: 0, md: "10px" }}
-        margin={{ base: 0, md: "0 17px" }}
-        height={{ base: "100vh", md: "calc(100vh - 34px)" }}
+        borderRadius={{ base: 0, md: '10px' }}
+        margin={{ base: 0, md: '0 17px' }}
+        height={{ base: '100vh', md: 'calc(100vh - 34px)' }}
         minHeight="none"
       >
         <ModalBody padding={0}>
@@ -31,9 +31,9 @@ const ModalContainer = ({ children, onClose, title, subtitle }: Props) => {
                 <video
                   autoPlay
                   style={{
-                    height: "calc(100vh - 34px)",
-                    borderBottomLeftRadius: "10px",
-                    borderTopLeftRadius: "10px",
+                    height: 'calc(100vh - 34px)',
+                    borderBottomLeftRadius: '10px',
+                    borderTopLeftRadius: '10px',
                   }}
                   loop
                   muted
@@ -46,7 +46,7 @@ const ModalContainer = ({ children, onClose, title, subtitle }: Props) => {
               alignItems="center"
               justifyContent="center"
               flexDirection="column"
-              height={{ base: "100vh", md: "calc(100vh - 34px)" }}
+              height={{ base: '100vh', md: 'calc(100vh - 34px)' }}
               overflow="auto"
               padding="50px 14px 14px 14px"
               position="relative"

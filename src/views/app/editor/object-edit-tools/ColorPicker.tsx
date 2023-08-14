@@ -1,7 +1,10 @@
 import { Button as ChakraButton, HStack } from '@chakra-ui/react';
 
+import IconColorPicker from '@/components/icons/IconColorPicker';
+import ColorPickerModal from '@/components/ColorPickerModal';
 import { AiImage } from '@/components/types';
 import Colors from '@/theme/colors';
+import { useState } from 'react';
 
 const { abloBlue } = Colors;
 
@@ -38,11 +41,21 @@ const Button = ({ isSelected = false, ...rest }) => {
 type ColorPickerProps = {
   aiImage: AiImage;
   selectedColor: string;
-  onUpdate: (color: string) => void;
+  onUpdateColor: (color: string) => void;
+  selectedOpacity: number;
+  onUpdateOpacity: (opacity: number) => void;
 };
 
-export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorPickerProps) {
+export default function ColorPicker({
+  aiImage,
+  selectedColor,
+  onUpdateColor,
+  selectedOpacity,
+  onUpdateOpacity,
+}: ColorPickerProps) {
   const style = aiImage ? aiImage.options.style : 'basic';
+
+  const [isColorPickerModalVisible, setColorPickerModalVisible] = useState(false);
 
   return (
     <HStack mt="8px" overflow="auto" spacing="10px">
@@ -58,9 +71,24 @@ export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorP
           }
           isSelected={color === selectedColor}
           key={color}
-          onClick={() => onUpdate(color)}
+          onClick={() => onUpdateColor(color)}
         />
       ))}
+      <Button onClick={() => setColorPickerModalVisible(true)}>
+        <IconColorPicker />
+      </Button>
+      {isColorPickerModalVisible ? (
+        <ColorPickerModal
+          onClose={() => setColorPickerModalVisible(false)}
+          onSelectedColor={(color) => {
+            console.log('Color', color);
+            onUpdateColor(color);
+          }}
+          selectedColor={selectedColor}
+          selectedOpacity={selectedOpacity}
+          onSelectedOpacity={onUpdateOpacity}
+        />
+      ) : null}
     </HStack>
   );
 }
