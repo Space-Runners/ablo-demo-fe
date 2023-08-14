@@ -41,10 +41,18 @@ const Button = ({ isSelected = false, ...rest }) => {
 type ColorPickerProps = {
   aiImage: AiImage;
   selectedColor: string;
-  onUpdate: (color: string) => void;
+  onUpdateColor: (color: string) => void;
+  selectedOpacity: number;
+  onUpdateOpacity: (opacity: number) => void;
 };
 
-export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorPickerProps) {
+export default function ColorPicker({
+  aiImage,
+  selectedColor,
+  onUpdateColor,
+  selectedOpacity,
+  onUpdateOpacity,
+}: ColorPickerProps) {
   const style = aiImage ? aiImage.options.style : 'basic';
 
   const [isColorPickerModalVisible, setColorPickerModalVisible] = useState(false);
@@ -63,7 +71,7 @@ export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorP
           }
           isSelected={color === selectedColor}
           key={color}
-          onClick={() => onUpdate(color)}
+          onClick={() => onUpdateColor(color)}
         />
       ))}
       <Button onClick={() => setColorPickerModalVisible(true)}>
@@ -74,9 +82,11 @@ export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorP
           onClose={() => setColorPickerModalVisible(false)}
           onSelectedColor={(color) => {
             console.log('Color', color);
-            onUpdate(color);
+            onUpdateColor(color);
           }}
           selectedColor={selectedColor}
+          selectedOpacity={selectedOpacity}
+          onSelectedOpacity={onUpdateOpacity}
         />
       ) : null}
     </HStack>

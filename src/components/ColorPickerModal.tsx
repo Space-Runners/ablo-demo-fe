@@ -6,7 +6,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalBody,
-  Spacer,
   Text,
 } from '@chakra-ui/react';
 
@@ -18,11 +17,17 @@ type Props = {
   onClose: () => void;
   onSelectedColor: (color: string) => void;
   selectedColor: string;
+  onSelectedOpacity: (opacity: number) => void;
+  selectedOpacity: number;
 };
 
-const ColorPickerModal = ({ onClose, onSelectedColor, selectedColor }: Props) => {
-  const;
-
+const ColorPickerModal = ({
+  onClose,
+  onSelectedColor,
+  selectedColor,
+  selectedOpacity,
+  onSelectedOpacity,
+}: Props) => {
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
@@ -43,9 +48,9 @@ const ColorPickerModal = ({ onClose, onSelectedColor, selectedColor }: Props) =>
           />
           <Box mb="20px" />
           <AlphaPicker
-            //  color={selectedColor}
-            onChangeComplete={(a) => {
-              console.log('Alpha', a);
+            color={{ r: 0, g: 0, b: 0, a: selectedOpacity }}
+            onChangeComplete={({ rgb }) => {
+              onSelectedOpacity(rgb.a);
             }}
             width="283px"
           />
