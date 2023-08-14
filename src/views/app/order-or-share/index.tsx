@@ -37,6 +37,8 @@ function getImgUrl(name) {
 
 const { abloBlue } = Colors;
 
+const NAVBAR_BUTTON_HEIGHT = '40px';
+
 const SHARE_OPTIONS = [
   {
     name: 'getLink',
@@ -117,7 +119,7 @@ export default function OrderOrShare() {
         rightSideContent={
           <HStack>
             <Button
-              h="40px"
+              h={NAVBAR_BUTTON_HEIGHT}
               icon={<IconBack />}
               onClick={() => history.goBack()}
               outlined
@@ -125,7 +127,7 @@ export default function OrderOrShare() {
               title="Back To Design"
             />
             <Button
-              h="40px"
+              h={NAVBAR_BUTTON_HEIGHT}
               icon={<IconCreateNew color="#FFFFFF" />}
               onClick={handleGoToDesigns}
               textTransform="none"
@@ -168,9 +170,9 @@ export default function OrderOrShare() {
                   {SLIDES.map((slide, index) => {
                     const { side, background } = slide;
 
-                    const stateFoSide = side === 'front' ? front : back;
+                    const stateForSide = side === 'front' ? front : back;
 
-                    const aiImage = getAiImageForSide(stateFoSide);
+                    const aiImage = getAiImageForSide(stateForSide);
 
                     const style = aiImage ? aiImage.options.style : 'kidult';
 
@@ -186,7 +188,7 @@ export default function OrderOrShare() {
                             />
                           ) : null}
                           <Image
-                            src={stateFoSide?.templateUrl}
+                            src={stateForSide?.previewUrl}
                             margin="0 auto"
                             left={0}
                             right={0}

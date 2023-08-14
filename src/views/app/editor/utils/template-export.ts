@@ -1,7 +1,4 @@
-import { toPng } from "html-to-image";
-import { random } from "lodash";
-
-import { saveTemplate } from "@/api/image-generator";
+import { toPng } from 'html-to-image';
 
 const getTemplateImgFromHtml = async (element) => {
   // We have to do multiple calls before the actual call because the library has a concurrency issue on mobile Safari
@@ -17,14 +14,14 @@ const getEditorStateAsImages = () => {
    * The exporting library requires both sides of the template to be visible in the DOM.
    * We have to make them temporarily visible and then hide them.
    */
-  const front = document.getElementById("#canvas-container-front");
-  const back = document.getElementById("#canvas-container-back");
+  const front = document.getElementById('#canvas-container-front');
+  const back = document.getElementById('#canvas-container-back');
 
   const frontOld = front.style.display;
   const backOld = back.style.display;
 
-  front.style.display = "block";
-  back.style.display = "block";
+  front.style.display = 'block';
+  back.style.display = 'block';
 
   const promises = [front, back].map((element) => getTemplateImgFromHtml(element));
 
@@ -40,14 +37,4 @@ const getEditorStateAsImages = () => {
   });
 };
 
-const getEditorStateAsImageUrls = () => {
-  return getEditorStateAsImages().then((dataUrls) =>
-    Promise.all(
-      dataUrls.map((dataUrl) =>
-        saveTemplate(`Template-${Date.now()}-${random(10e9)}`, dataUrl).then(({ url }) => url)
-      )
-    )
-  );
-};
-
-export default getEditorStateAsImageUrls;
+export default getEditorStateAsImages;

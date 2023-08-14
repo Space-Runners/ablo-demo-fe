@@ -45,11 +45,11 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
       <HStack spacing="16px" wrap="wrap">
         {designs.map((design, index) => {
           const { name, editorState } = design;
-          // Find first templateUrl
-          let templateUrl = '';
+          // Find first previewUrl
+          let previewUrl = '';
           for (const side in editorState) {
-            if (editorState[side].templateUrl) {
-              templateUrl = editorState[side].templateUrl;
+            if (editorState[side].previewUrl) {
+              previewUrl = editorState[side].previewUrl;
               break;
             }
           }
@@ -64,7 +64,7 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
             >
               <CardBody p={0}>
                 <Center cursor="pointer" h="172px" onClick={() => onSelectedDesign(design)}>
-                  <Image objectFit="contain" src={templateUrl} alt={name} h={155} px={1} py={4} />
+                  <Image objectFit="contain" src={previewUrl} alt={name} h={155} px={1} py={4} />
                 </Center>
                 <Stack m={0} p={3} spacing={0.5} bg={'white'} h="57px" borderBottomRadius={10}>
                   <Flex justify="space-between" position="relative">

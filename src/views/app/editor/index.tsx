@@ -1,34 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory } from 'react-router-dom';
 
-import { Box, Center, HStack, Spinner } from "@chakra-ui/react";
-import { useMe } from "@/api/auth";
-import { getDesign, saveDesign } from "@/api/designs";
+import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
+import { useMe } from '@/api/auth';
+import { getDesign, saveDesign } from '@/api/designs';
 
-import Button from "@/components/Button";
-import Navbar from "@/components/navbar/Navbar";
-import { Design } from "@/components/types";
+import Button from '@/components/Button';
+import Navbar from '@/components/navbar/Navbar';
+import { Design } from '@/components/types';
 
-import PRODUCTS from "@/data/products";
+import PRODUCTS from '@/data/products';
 
-import SignInModal from "@/views/auth/SignInModal";
-import SignUpModal from "@/views/auth/SignUpModal";
+import SignInModal from '@/views/auth/SignInModal';
+import SignUpModal from '@/views/auth/SignUpModal';
 
-import FeedbackAlert from "./components/FeedbackAlert";
-import { IconBack } from "./components/Icons";
-import SaveDesignDrawer from "./components/SaveDesignDrawer";
-import ConfirmEditorExitModal from "./components/ConfirmEditorExitModal";
+import FeedbackAlert from './components/FeedbackAlert';
+import { IconBack } from './components/Icons';
+import SaveDesignDrawer from './components/SaveDesignDrawer';
+import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
 
-import EditorTool from "./EditorTool";
+import EditorTool from './EditorTool';
 
-import getEditorStateAsImageUrls from "./utils/template-export";
+import getEditorStateAsImages from './utils/template-export';
 
 const DEFAULT_DESIGN = {
   garmentId: PRODUCTS[0].id,
-  garmentColor: "OatMilk",
-  name: "",
-  size: "S",
+  garmentColor: 'OatMilk',
+  name: '',
+  size: 'S',
   editorState: {
     front: {
       canvas: null,
@@ -61,12 +61,12 @@ export default function ImageEditorPage() {
 
   const { search } = useLocation();
 
-  const isGuest = !me || me.roles[0] === "guest";
+  const isGuest = !me || me.roles[0] === 'guest';
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
 
-    const designId = searchParams.get("designId");
+    const designId = searchParams.get('designId');
 
     if (!designId) {
       setIsLoading(false);
@@ -101,24 +101,15 @@ export default function ImageEditorPage() {
     setHasChanges(false);
 
     try {
-      const [urlFront, urlBack] = await getEditorStateAsImageUrls();
+      const [rawImageFront, rawImageBack] = await getEditorStateAsImages();
 
-      const { editorState: originalEditorState } = activeDesign;
-
-      const editorState = {
-        front: {
-          ...originalEditorState.front,
-          templateUrl: urlFront,
-        },
-        back: {
-          ...originalEditorState.back,
-          templateUrl: urlBack,
-        },
-      };
+      const { editorState } = activeDesign;
 
       const design = {
         ...activeDesign,
         editorState,
+        rawImageFront,
+        rawImageBack,
       };
 
       if (name) {
@@ -154,7 +145,7 @@ export default function ImageEditorPage() {
     if (hasChanges) {
       setModalConfirmExitModalVisible(true);
     } else {
-      history.push("/designs");
+      history.push('/designs');
     }
   };
 
@@ -179,7 +170,7 @@ export default function ImageEditorPage() {
         title="Create design"
       />
       {isLoading ? (
-        <Center bg="#FFFFFF" h={{ base: "calc(100% - 121px)", md: "calc(100% - 65px)" }}>
+        <Center bg="#FFFFFF" h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}>
           <Spinner thickness="1px" speed="0.65s" emptyColor="gray" size="md" />
         </Center>
       ) : (
@@ -193,7 +184,12 @@ export default function ImageEditorPage() {
         />
       )}
       {(errorSavingDesign || isDesignSaved) && (
-        <Box position="absolute" left={0} right={0} top="191px">
+        <Box
+          position="absolute"
+          left={{ base: 0, md: '393px' }}
+          right={0}
+          top={{ base: '191px', md: '140px' }}
+        >
           <FeedbackAlert error={errorSavingDesign} onClose={() => setErrorSavingDesign(null)} />
         </Box>
       )}
