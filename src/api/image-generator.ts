@@ -14,9 +14,6 @@ export const generateImage = (params: TextToImageRequest) => {
 const getOptions = () =>
   axios.get<ImageGenerationOptions>(`generate/options`).then(({ data }) => data);
 
-export const saveTemplate = (name, image) =>
-  axios.post('/templates', { filename: name, image }).then(({ data }) => data);
-
 export const removeBackground = (imageUrl) =>
   axios
     .post('/generate/remove-background', {

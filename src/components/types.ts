@@ -90,7 +90,7 @@ export interface AiImage {
 export interface CanvasState {
   canvas?: string;
   canvasUrl?: string;
-  templateUrl?: string;
+  previewUrl?: string;
 }
 
 export interface EditorState {
