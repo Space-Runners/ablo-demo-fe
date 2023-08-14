@@ -1,7 +1,10 @@
 import { Button as ChakraButton, HStack } from '@chakra-ui/react';
 
+import IconColorPicker from '@/components/icons/IconColorPicker';
+import ColorPickerModal from '@/components/ColorPickerModal';
 import { AiImage } from '@/components/types';
 import Colors from '@/theme/colors';
+import { useState } from 'react';
 
 const { abloBlue } = Colors;
 
@@ -44,6 +47,8 @@ type ColorPickerProps = {
 export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorPickerProps) {
   const style = aiImage ? aiImage.options.style : 'basic';
 
+  const [isColorPickerModalVisible, setColorPickerModalVisible] = useState(false);
+
   return (
     <HStack mt="8px" overflow="auto" spacing="10px">
       {COLORS_FOR_STYLES[style].map((color) => (
@@ -61,6 +66,19 @@ export default function ColorPicker({ aiImage, selectedColor, onUpdate }: ColorP
           onClick={() => onUpdate(color)}
         />
       ))}
+      <Button onClick={() => setColorPickerModalVisible(true)}>
+        <IconColorPicker />
+      </Button>
+      {isColorPickerModalVisible ? (
+        <ColorPickerModal
+          onClose={() => setColorPickerModalVisible(false)}
+          onSelectedColor={(color) => {
+            console.log('Color', color);
+            onUpdate(color);
+          }}
+          selectedColor={selectedColor}
+        />
+      ) : null}
     </HStack>
   );
 }
