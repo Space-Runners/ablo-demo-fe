@@ -8,7 +8,7 @@ export const IconProductPicker = ({ isSelected = false }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_810_1068)">
+    <g clipPath="url(#clip0_810_1068)">
       <path
         d="M19.4018 4.97796C18.376 3.86882 16.9492 3.22313 15.4495 3.16064C14.783 4.17605 13.6322 4.84257 12.3252 4.84257C11.0182 4.84257 9.86221 4.16563 9.19568 3.14502C7.62832 3.14502 6.13385 3.79071 5.05596 4.92588L1.15576 9.02916L4.57689 11.9712L6.51918 9.64361V21.0838H17.7876V9.64882L19.7299 11.9764L23.151 9.03437L19.3914 4.97796H19.4018Z"
         stroke={isSelected ? '#000000' : '#A0AEC0'}
@@ -88,7 +88,7 @@ export const IconTextToImage = ({ isSelected = false }) => (
 
 export const IconFontToImage = ({ isSelected = false }) => (
   <Icon width="24px" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_810_11636)">
+    <g clipPath="url(#clip0_810_11636)">
       <path
         d="M19.1936 8.32773L21.615 7.49458L19.1832 6.67184L18.3448 4.25049L17.5273 6.68746L15.106 7.52061L17.5377 8.33814L18.3761 10.7595L19.1936 8.32773Z"
         fill={isSelected ? '#000000' : '#A0AEC0'}
@@ -184,8 +184,8 @@ export const IconUploadImage = ({ isSelected = false }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M10.5 13.5H7.5L12 9L16.5 13.5H13.5V21H10.5V13.5ZM18 7.5C18 6.84 16.635 3 11.25 3C7.62 3 4.5 5.88 4.5 9C1.53 9 0 11.28 0 13.5C0 15.795 1.5 18 4.5 18H9V16.05H4.5C2.07 16.05 1.95 13.92 1.95 13.5C1.95 13.245 2.025 10.95 4.5 10.95H6.45V9C6.45 6.915 8.79 4.95 11.25 4.95C15.075 4.95 15.945 7.275 16.05 7.65V9.45H18C19.215 9.45 22.05 9.78 22.05 12.75C22.05 15.885 18.675 16.05 18 16.05H15V18H18C21.12 18 24 16.26 24 12.75C24 9.09 21.12 7.5 18 7.5Z"
       fill={isSelected ? '#000000' : '#A0AEC0'}
     />
