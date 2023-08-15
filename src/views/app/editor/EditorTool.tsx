@@ -1,24 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 
-import { fabric } from "fabric";
-import { isEmpty } from "lodash";
+import { fabric } from 'fabric';
+import { isEmpty } from 'lodash';
 
-import { AiImage, Design, Garment, Product } from "@/components/types";
-import PRODUCTS from "@/data/products";
+import { AiImage, Design, Garment, Product } from '@/components/types';
+import PRODUCTS from '@/data/products';
 
-import CanvasContainer from "./components/CanvasContainer";
-import Toolbar from "./controls";
+import CanvasContainer from './components/CanvasContainer';
+import Toolbar from './controls';
 
-import ObjectEditTools from "./object-edit-tools";
-import EditorToolbar from "./toolbar";
-import ProductDetails from "./toolbar/product-picker/ProductDetails";
+import ObjectEditTools from './object-edit-tools';
+import EditorToolbar from './toolbar';
+import ProductDetails from './toolbar/product-picker/ProductDetails';
 
-const sides = ["front", "back"];
+const sides = ['front', 'back'];
 
 const initCanvas = (side, width, height) => {
-  const canvas = new fabric.Canvas(side === "front" ? "canvas-front" : "canvas-back", {
+  const canvas = new fabric.Canvas(side === 'front' ? 'canvas-front' : 'canvas-back', {
     width: width * 3,
     height: height * 3,
     selection: false,
@@ -48,7 +48,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
 
-  const state = useRef<string>("");
+  const state = useRef<string>('');
 
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
@@ -67,11 +67,11 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
   const { printableAreas } = product;
 
-  const canvas = selectedSide === "front" ? canvasFront : canvasBack;
+  const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
   const isMobile = useBreakpointValue({ base: true, md: false }, { ssr: false });
 
-  const drawingArea = printableAreas[selectedSide.toLowerCase()][isMobile ? "base" : "md"];
+  const drawingArea = printableAreas[selectedSide.toLowerCase()][isMobile ? 'base' : 'md'];
 
   const saveState = useCallback(() => {
     setRedoStack([]);
@@ -81,7 +81,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       setUndoStack([...undoStack, state.current]);
     }
 
-    const json = canvas.current.toJSON(["aiImage"]);
+    const json = canvas.current.toJSON(['aiImage']);
 
     state.current = JSON.stringify(json);
 
@@ -98,13 +98,13 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   }, [canvas, design, editorState, onDesignChange, selectedSide, undoStack]);
 
   useEffect(() => {
-    console.log("Use effect");
+    console.log('Use effect');
     sides.forEach((side) => {
-      const canvas = side === "front" ? canvasFront : canvasBack;
+      const canvas = side === 'front' ? canvasFront : canvasBack;
 
       const drawingAreaForSide = printableAreas[side.toLowerCase()];
 
-      const { width, height } = drawingAreaForSide[isMobile ? "base" : "md"];
+      const { width, height } = drawingAreaForSide[isMobile ? 'base' : 'md'];
 
       canvas.current = initCanvas(side, width, height);
 
@@ -119,14 +119,14 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
         state.current = JSON.stringify(canvas.current);
       }
 
-      canvas.current.on("mouse:up", function (e) {
+      canvas.current.on('mouse:up', function (e) {
         setActiveObject(e.target);
       });
     });
 
     return () => {
       sides.forEach((side) => {
-        const canvas = side === "front" ? canvasFront : canvasBack;
+        const canvas = side === 'front' ? canvasFront : canvasBack;
 
         if (canvas.current) {
           canvas.current.dispose();
@@ -141,29 +141,29 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
     function handleClickOutside(e) {
       // On pressing "Next" in the navbar we have to deselect the active object or its handles are seen in the export
-      const navbar = document.getElementById("ablo-navbar");
+      const navbar = document.getElementById('ablo-navbar');
 
       if (navbar.contains(e.target)) {
         canvasCurrent.discardActiveObject().renderAll();
       }
     }
     // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-    canvasCurrent.on("object:modified", () => {
+    canvasCurrent.on('object:modified', () => {
       saveState();
     });
 
-    canvasCurrent.on("erasing:end", () => {
+    canvasCurrent.on('erasing:end', () => {
       saveState();
     });
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
 
       if (canvasCurrent) {
-        canvasCurrent.off("object:modified");
-        canvasCurrent.off("erasing:end");
+        canvasCurrent.off('object:modified');
+        canvasCurrent.off('erasing:end');
       }
     };
   }, [canvas, saveState]);
@@ -180,12 +180,12 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
     setSelectedProductPreview(null);
 
     sides.forEach((side) => {
-      const canvas = side === "front" ? canvasFront : canvasBack;
+      const canvas = side === 'front' ? canvasFront : canvasBack;
 
       const product = PRODUCTS.find((product) => product.id === garment.productId);
 
       const { width, height } =
-        product.printableAreas[side.toLowerCase()][isMobile ? "base" : "md"];
+        product.printableAreas[side.toLowerCase()][isMobile ? 'base' : 'md'];
 
       canvas.current.setDimensions({ width, height });
     });
@@ -218,7 +218,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   };
 
   const handleClick = (e) => {
-    if (!e.target || e.target.className.includes("canvas")) {
+    if (!e.target || e.target.className.includes('canvas')) {
       return;
     }
 
@@ -232,11 +232,15 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   const handleAddText = (defaultProps) => {
     const { width, height } = drawingArea;
 
+    const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage);
+
     const textObject = {
       ...defaultProps,
       left: (width * 3) / 2,
-      top: (height * 3) / 2 - 20,
+      top: aiImage ? aiImage.aCoords.tl.y + aiImage.height : (height * 3) / 2 - 20,
     };
+
+    console.log('Text object', textObject);
 
     const text = new fabric.IText(textObject.text, textObject);
 
@@ -278,13 +282,13 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
     const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage && !aiImage.isPreview);
 
     if (aiImage) {
-      aiImage.set("aiImage", null);
+      aiImage.set('aiImage', null);
     }
 
     const imagePreview = canvas.current._objects.find(({ aiImage }) => aiImage?.isPreview);
 
     if (imagePreview) {
-      imagePreview.set("aiImage", {
+      imagePreview.set('aiImage', {
         ...imagePreview.aiImage,
         isPreview: false,
       });
@@ -322,7 +326,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       (img) => {
         addImageToCanvas(img, { aiImage: image, ...options });
       },
-      { crossOrigin: "anonymous" }
+      { crossOrigin: 'anonymous' }
     );
   };
 
@@ -334,13 +338,13 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
     img.set({
       left: (width * 3) / 2,
       top: (height * 3) / 2,
-      originX: "center",
-      originY: "center",
+      originX: 'center',
+      originY: 'center',
       centeredScaling: true,
       ...options,
     });
 
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = 'anonymous';
     canvas.current.add(img);
     canvas.current.setActiveObject(img);
     canvas.current.renderAll();
@@ -374,8 +378,8 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
     <Flex
       align="center"
       bg="#F9F9F7"
-      flexDirection={{ base: "column", md: "row" }}
-      h={{ base: "calc(100% - 121px)", md: "calc(100% - 65px)" }}
+      flexDirection={{ base: 'column', md: 'row' }}
+      h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
       position="relative"
       w="100%"
     >
@@ -406,12 +410,12 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       ) : null}
       <Box
         display={{
-          base: "block",
-          md: selectedProductPreview ? "none" : "flex",
+          base: 'block',
+          md: selectedProductPreview ? 'none' : 'flex',
         }}
         flex={1}
         flexDirection="column"
-        h={{ base: "auto", md: "100%" }}
+        h={{ base: 'auto', md: '100%' }}
         position="relative"
         w="100%"
       >
@@ -442,11 +446,11 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
           onClick={handleClick}
           justifyContent="center"
           position="relative"
-          top={{ base: "40px", md: 0 }}
+          top={{ base: '40px', md: 0 }}
         >
           <Box
             id="#canvas-container-front"
-            display={selectedSide === "front" ? "block" : "none"}
+            display={selectedSide === 'front' ? 'block' : 'none'}
             position="relative"
             userSelect="none"
           >
@@ -463,7 +467,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
           </Box>
           <Box
             id="#canvas-container-back"
-            display={selectedSide === "back" ? "block" : "none"}
+            display={selectedSide === 'back' ? 'block' : 'none'}
             position="relative"
           >
             <CanvasContainer
