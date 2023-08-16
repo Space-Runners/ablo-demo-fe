@@ -15,6 +15,9 @@ import {
 } from '@chakra-ui/react';
 
 import { removeBackground } from '@/api/image-generator';
+
+import IconUndo from '@/components/icons/IconUndo';
+import IconRedo from '@/components/icons/IconRedo';
 import { AiImage } from '@/components/types';
 
 import Colors from '@/theme/colors';
@@ -120,6 +123,8 @@ type ObjectEditToolsProps = {
   onImageUpdate: (image: AiImage) => void;
   onSetActiveObject: (activeObject: ActiveObject) => void;
   onStateChange: () => void;
+  onUndo: () => void;
+  onRedo: () => void;
 };
 
 const ObjectEditTools = ({
@@ -129,6 +134,8 @@ const ObjectEditTools = ({
   onImageUpdate,
   onSetActiveObject,
   onStateChange,
+  onRedo,
+  onUndo,
 }: ObjectEditToolsProps) => {
   const [removingBackground, setRemovingBackground] = useState(false);
   const [errorRemovingBackground, setErrorRemovingBackground] = useState(null);
@@ -365,6 +372,7 @@ const ObjectEditTools = ({
       onClick={(e) => {
         e.stopPropagation();
       }}
+      overflow="auto"
       p="12px 11px 8px 11px"
     >
       <HStack position="relative" spacing="6px">
@@ -408,6 +416,18 @@ const ObjectEditTools = ({
         {!isText && <ToolbarButton onClick={handleErase} icon={<IconEraser />} text="Eraser" />}
         <ToolbarButton onClick={handleCopyActiveObject} icon={<IconCopy />} text="Duplicate" />
         {!isText ? <ToolbarButton onClick={handleCrop} icon={<IconCrop />} text="Crop" /> : null}
+        <ToolbarButton
+          isDisabled={!onUndo}
+          icon={<IconUndo isDisabled={!onUndo} />}
+          onClick={onUndo}
+          text="Undo"
+        />
+        <ToolbarButton
+          isDisabled={!onRedo}
+          icon={<IconRedo isDisabled={!onRedo} />}
+          onClick={onRedo}
+          text="Redo"
+        />
         <ToolbarButton onClick={handleRemoveActiveObject} icon={<IconTrash />} text="Delete" />
       </HStack>
       {isText ? (
