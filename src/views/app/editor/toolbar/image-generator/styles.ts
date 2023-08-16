@@ -67,7 +67,7 @@ export const Styles = {
     style_preset: '',
     sampler: 'K_LMS',
   },
-  'Scrap Collage': {
+  'William Morris': {
     text: [
       {
         text: 'matisse style, scrap, collage by children, rough, sketch',
@@ -159,13 +159,11 @@ export const MOODS = {
   Love: 'pink, light pink, pale pink, hot pink, deep pink, pastel pink',
   Doomsday: 'color palette of mad max fury road movie',
   'Juice Lemon': 'the yellow color palette of Wes Anderson movie',
-  Flora:
-    'lush, flora, tones of green, green palette, vegetation, greenery, leafage',
+  Flora: 'lush, flora, tones of green, green palette, vegetation, greenery, leafage',
   Neon: 'neon lights, deep neon, cyan, purple, green, night mood',
   Ocean: 'blue palette, deep blue, pale blue, sky blue, cerulean color',
   Mystery: 'violet palette, purple color, deep violet, pale purple',
-  Pastel:
-    'pastel colors, calming colors, peaceful, Mint colors, pale colors, grayish',
+  Pastel: 'pastel colors, calming colors, peaceful, Mint colors, pale colors, grayish',
   Psychedelic: 'sneakers on a psychedelic multicolored kaleidoscopic landscape',
 };
 
@@ -173,13 +171,11 @@ export const KEYWORD_SUGGESTIONS = {
   Kidult: [
     {
       name: 'Fish in ocean',
-      prompt:
-        'Colored fish of different sizes swim in the bright blue transparent water',
+      prompt: 'Colored fish of different sizes swim in the bright blue transparent water',
     },
     {
       name: 'Birds in the sky',
-      prompt:
-        'Beautiful silhouette of birds in the distance flying away at sunset',
+      prompt: 'Beautiful silhouette of birds in the distance flying away at sunset',
     },
     {
       name: 'Emoticons',
@@ -200,13 +196,11 @@ export const KEYWORD_SUGGESTIONS = {
     },
     {
       name: 'Flora in Brazil',
-      prompt:
-        'Varied colors and shapes of colorful plants in the rainy jungles of Brazil',
+      prompt: 'Varied colors and shapes of colorful plants in the rainy jungles of Brazil',
     },
     {
       name: 'Mushrooms in the forest',
-      prompt:
-        'Different sizes and colors of mushrooms in an evening forest with a setting sun',
+      prompt: 'Different sizes and colors of mushrooms in an evening forest with a setting sun',
     },
   ],
 };
