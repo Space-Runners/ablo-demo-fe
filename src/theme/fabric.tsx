@@ -1,4 +1,4 @@
-// @ts-nocheck
+import { fabric } from 'fabric';
 import Colors from './colors';
 
 const { abloBlue } = Colors;
@@ -60,7 +60,7 @@ fabric.Object.prototype.controls.mtr = new fabric.Control({
 });
 
 // Defining how the rendering action will be
-function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+function renderIcon(ctx, left, top, fabricObject) {
   const size = this.cornerSize;
   ctx.save();
   ctx.translate(left, top);

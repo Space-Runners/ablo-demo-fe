@@ -107,3 +107,36 @@ export interface Design {
   size?: string;
   updatedAt?: string;
 }
+
+export interface CanvasObject {
+  angle: number;
+  aiImage?: AiImage;
+  clone: (callback: (clone: CanvasObject) => void) => void;
+  left: number;
+  set: (key: string, property: number | string) => void | ((properties: object) => void);
+  top: number;
+}
+
+export interface CanvasEvent {
+  ctx: object;
+  target: CanvasObject;
+}
+
+export interface Canvas {
+  add: (object: object) => void;
+  aiImage: AiImage;
+  remove: (object: CanvasObject) => void;
+  freeDrawingBrush: {
+    width: number;
+  };
+  isDrawingMode: boolean;
+  getActiveObject: () => CanvasObject;
+  setActiveObject: (object: CanvasObject) => void;
+  centerObject: (object: CanvasObject) => void;
+  on: (event: string, callback: (e: CanvasEvent) => void) => void;
+  sendBackwards: (object: CanvasObject) => void;
+  bringForward: (object: CanvasObject) => void;
+  _objects: [CanvasObject];
+  renderAll: () => void;
+  toDataURL: (object: object) => string;
+}

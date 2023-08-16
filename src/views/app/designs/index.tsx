@@ -46,13 +46,9 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
         {designs.map((design, index) => {
           const { name, editorState } = design;
           // Find first previewUrl
-          let previewUrl = '';
-          for (const side in editorState) {
-            if (editorState[side].previewUrl) {
-              previewUrl = editorState[side].previewUrl;
-              break;
-            }
-          }
+          const previewUrl = editorState.front.previewUrl;
+
+          console.log('Preview URL', previewUrl);
           return (
             <Card
               key={index}

@@ -66,6 +66,8 @@ export default function ImageEditorPage() {
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
 
+    console.log('Effect', search);
+
     const designId = searchParams.get('designId');
 
     if (!designId) {
@@ -80,7 +82,7 @@ export default function ImageEditorPage() {
         setIsLoading(false);
       })
       .catch(() => setIsLoading(false));
-  }, []);
+  }, [search]);
 
   const handleNext = () => {
     if (!isGuest) {

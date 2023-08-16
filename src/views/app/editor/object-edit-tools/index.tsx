@@ -18,7 +18,7 @@ import { removeBackground } from '@/api/image-generator';
 
 import IconUndo from '@/components/icons/IconUndo';
 import IconRedo from '@/components/icons/IconRedo';
-import { AiImage } from '@/components/types';
+import { AiImage, Canvas, CanvasObject } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
@@ -120,7 +120,7 @@ type ActiveObject = {
 
 type ObjectEditToolsProps = {
   activeObject: ActiveObject;
-  canvas: any;
+  canvas: Canvas;
   onCrop: (image: object) => void;
   onImageUpdate: (image: AiImage) => void;
   onSetActiveObject: (activeObject: ActiveObject) => void;
@@ -319,11 +319,10 @@ const ObjectEditTools = ({
   const handleCopyActiveObject = () => {
     const activeObject = canvas.getActiveObject();
 
-    activeObject.clone((clone) => {
-      clone.set({
-        left: activeObject.left + 10,
-        top: activeObject.top + 10,
-      });
+    activeObject.clone((clone: CanvasObject) => {
+      clone.set('left', activeObject.left + 10);
+      clone.set('top', activeObject.top + 10);
+
       canvas.add(clone);
       canvas.bringForward(clone);
       canvas.setActiveObject(clone);

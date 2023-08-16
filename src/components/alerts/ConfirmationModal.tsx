@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRef } from 'react';
 
 import {
@@ -30,9 +29,7 @@ export default function ConfirmationModal({
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               {title}
             </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
+            <AlertDialogBody>Are you sure? You can't undo this action afterwards.</AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel

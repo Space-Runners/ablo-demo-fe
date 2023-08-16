@@ -5,14 +5,7 @@ import ButtonCTA from '@/components/Button';
 import Panel from '@/components/Panel';
 import { Filters } from '@/components/types';
 
-import {
-  BRANDS,
-  CLOTHING_TYPES,
-  COLLECTIONS,
-  FITS,
-  GENDERS,
-  SIZES,
-} from '@/data/products';
+import { BRANDS, CLOTHING_TYPES, COLLECTIONS, FITS, GENDERS, SIZES } from '@/data/products';
 
 import Colors from '@/theme/colors';
 import ColorPicker from '@/components/ColorPicker';
@@ -107,20 +100,11 @@ const Multiselect = ({
 type Props = {
   filters: Filters;
   onApply: () => void;
-  onUpdate: (updates: any) => void;
+  onUpdate: (updates: object) => void;
 };
 
 const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
-  const {
-    brands,
-    clothingTypes,
-    collections,
-    fits,
-    genders,
-    sizes,
-    colors,
-    price,
-  } = filters;
+  const { brands, clothingTypes, collections, fits, genders, sizes, colors, price } = filters;
 
   return (
     <Box paddingBottom="38px" w="100%">

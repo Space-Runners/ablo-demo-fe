@@ -21,7 +21,7 @@ import Config from './config';
 const { GOOGLE_CLIENT_ID } = Config;
 
 const container = document.getElementById('root');
-const root = ReactDOM.createRoot(container!);
+const root = ReactDOM.createRoot(container);
 
 const queryClient = new QueryClient({
   defaultOptions: {
