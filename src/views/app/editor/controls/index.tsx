@@ -1,20 +1,23 @@
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack } from '@chakra-ui/react';
 
-import ToolbarButton from "../components/ToolbarButton";
+import ToolbarButton from '../components/ToolbarButton';
 
-import { IconAddText, IconFlipProduct, IconUndo, IconRedo, IconSave } from "./Icons";
+import IconUndo from '@/components/icons/IconUndo';
+import IconRedo from '@/components/icons/IconRedo';
 
-const SIDES = ["front", "back"];
+import { IconAddText, IconFlipProduct, IconSave } from './Icons';
+
+const SIDES = ['front', 'back'];
 
 const textProps = {
   editable: true,
-  fill: "#000000",
-  fontFamily: "Poppins",
-  text: "",
+  fill: '#000000',
+  fontFamily: 'Poppins',
+  text: '',
   fontSize: 20,
-  textAlign: "left",
-  originX: "center",
-  originY: "center",
+  textAlign: 'left',
+  originX: 'center',
+  originY: 'center',
   scaleX: 3,
   scaleY: 3,
   centeredScaling: true,
@@ -40,10 +43,10 @@ export default function Toolbar({
   return (
     <Box
       bg="#FFFFFF"
-      borderLeft={{ base: "none", md: "1px solid rgba(26, 26, 26, 0.10)" }}
+      borderLeft={{ base: 'none', md: '1px solid rgba(26, 26, 26, 0.10)' }}
       boxShadow="0px 0.7647058963775635px 1.529411792755127px 0px rgba(0, 0, 0, 0.06), 0px 0.7647058963775635px 2.2941176891326904px 0px rgba(0, 0, 0, 0.10)"
-      h={{ base: "70px", md: "auto" }}
-      p={{ base: "20px 14px 10px 14px", md: "20px 14px" }}
+      h={{ base: '70px', md: 'auto' }}
+      p={{ base: '20px 14px 10px 14px', md: '20px 14px' }}
       w="100%"
     >
       <HStack justify="space-between" spacing="20px" w="100%">

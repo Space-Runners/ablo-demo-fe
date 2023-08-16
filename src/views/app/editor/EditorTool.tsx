@@ -374,6 +374,9 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
   const showHint = isEmpty(objects) && !activeObject;
 
+  const undoHandler = isEmpty(undoStack) ? null : handleUndo;
+  const redoHandler = isEmpty(redoStack) ? null : handleRedo;
+
   return (
     <Flex
       align="center"
@@ -427,13 +430,15 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
             onCrop={handleCrop}
             onSetActiveObject={setActiveObject}
             onImageUpdate={handleImageUpdate}
+            onUndo={undoHandler}
+            onRedo={redoHandler}
           />
         ) : (
           <Toolbar
             onAddText={handleAddText}
             onSelectedSide={handleSelectedSide}
-            onUndo={isEmpty(undoStack) ? null : handleUndo}
-            onRedo={isEmpty(redoStack) ? null : handleRedo}
+            onUndo={undoHandler}
+            onRedo={redoHandler}
             onSave={handleSave}
             selectedSide={selectedSide}
           />
