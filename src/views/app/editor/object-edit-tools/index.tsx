@@ -22,6 +22,8 @@ import { AiImage } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
+import ToolbarContainer from '../components/ToolbarContainer';
+
 import ColorPicker from './ColorPicker';
 import FontPicker from './FontPicker';
 
@@ -365,16 +367,7 @@ const ObjectEditTools = ({
   const mainAiImage = canvas._objects.find(({ aiImage }) => !!aiImage)?.aiImage;
 
   return (
-    <Box
-      bg="#FFFFFF"
-      boxShadow="0px 1px 2px 0px #0000000F"
-      id="object-edit-tools"
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      overflow="auto"
-      p="12px 11px 8px 11px"
-    >
+    <ToolbarContainer>
       <HStack position="relative" spacing="6px">
         {isText ? (
           <F>
@@ -496,7 +489,7 @@ const ObjectEditTools = ({
           onClose={() => setErrorRemovingBackground(null)}
         />
       ) : null}
-    </Box>
+    </ToolbarContainer>
   );
 };
 
