@@ -1,18 +1,18 @@
-import { Fragment as F, useEffect, useRef, useState } from "react";
+import { Fragment as F, useEffect, useRef, useState } from 'react';
 
-import { Box, Flex, Image, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 
-import { times } from "lodash";
+import { times } from 'lodash';
 
-import { Product } from "@/components/types";
+import { Canvas, Product } from '@/components/types';
 
-import IconEmptyState from "../icons/EmptyState";
-import renderRotateLabel from "../fabric/rotateLabel";
+import IconEmptyState from '../icons/EmptyState';
+import renderRotateLabel from '../fabric/rotateLabel';
 
-const DARK_VARIANTS = ["Onyx", "Oceana"];
+const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 type Props = {
-  canvas: any;
+  canvas: Canvas;
   onHintClick: () => void;
   product: Product;
   selectedVariant: string;
@@ -38,14 +38,14 @@ const CanvasContainer = ({
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const drawingArea = printableAreas.front[isMobile ? "base" : "md"];
+  const drawingArea = printableAreas.front[isMobile ? 'base' : 'md'];
 
   useEffect(() => {
     if (!canvas) {
       return;
     }
 
-    canvas.on("mouse:up", function (e) {
+    canvas.on('mouse:up', function (e) {
       const { isRotating } = userState.current;
 
       if (isRotating) {
@@ -55,7 +55,7 @@ const CanvasContainer = ({
 
         const nearestAngle = commonAngles.find((angle) => Math.abs(newAngle - angle) <= 5);
 
-        e.target.set("angle", nearestAngle !== undefined ? nearestAngle : newAngle);
+        e.target.set('angle', nearestAngle !== undefined ? nearestAngle : newAngle);
       }
 
       userState.current.isRotating = false;
@@ -63,7 +63,7 @@ const CanvasContainer = ({
       setIsModifyingObject(false);
     });
 
-    canvas.on("mouse:down", function (e) {
+    canvas.on('mouse:down', function (e) {
       if (e.target) {
         userState.current.isModifying = true;
 
@@ -71,12 +71,12 @@ const CanvasContainer = ({
       }
     });
 
-    canvas.on("object:rotating", function (e) {
+    canvas.on('object:rotating', function (e) {
       userState.current.isRotating = true;
       userState.current.angle = e.target.angle;
     });
 
-    canvas.on("after:render", function (opt) {
+    canvas.on('after:render', function (opt) {
       userState.current.isRotating && renderRotateLabel(opt.ctx, userState.current);
     });
   }, [canvas]);
@@ -91,8 +91,8 @@ const CanvasContainer = ({
       <Box
         border={
           isModifyingObject
-            ? `2px dashed ${DARK_VARIANTS.includes(selectedVariant) ? "#FFFFFF" : "#a8a8a8"}`
-            : "none"
+            ? `2px dashed ${DARK_VARIANTS.includes(selectedVariant) ? '#FFFFFF' : '#a8a8a8'}`
+            : 'none'
         }
         borderRadius="4px"
         left={`${drawingArea.left}px`}
@@ -107,8 +107,8 @@ const CanvasContainer = ({
               borderLeftWidth="1px"
               style={{
                 borderImage:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 7.81%, #FFFFFF 91.67%, rgba(255, 255, 255, 0) 100%) 1",
-                boxShadow: "0px 0px 4px 0px #97B9F559",
+                  'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 7.81%, #FFFFFF 91.67%, rgba(255, 255, 255, 0) 100%) 1',
+                boxShadow: '0px 0px 4px 0px #97B9F559',
               }}
               height={1.2 * drawingArea.height}
               position="absolute"
@@ -119,8 +119,8 @@ const CanvasContainer = ({
               borderTopWidth="1px"
               style={{
                 borderImage:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 8.85%, #FFFFFF 91.15%, rgba(255, 255, 255, 0) 100%) 1",
-                boxShadow: "0px 0px 4px 0px #97B9F559",
+                  'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 8.85%, #FFFFFF 91.15%, rgba(255, 255, 255, 0) 100%) 1',
+                boxShadow: '0px 0px 4px 0px #97B9F559',
               }}
               width={1.2 * drawingArea.width}
               position="absolute"
@@ -151,7 +151,7 @@ const CanvasContainer = ({
           >
             <IconEmptyState />
             <Text
-              color={DARK_VARIANTS.includes(selectedVariant) ? "#FFFFFF" : "#000000"}
+              color={DARK_VARIANTS.includes(selectedVariant) ? '#FFFFFF' : '#000000'}
               fontSize="sm"
               fontWeight={400}
               mt="17px"

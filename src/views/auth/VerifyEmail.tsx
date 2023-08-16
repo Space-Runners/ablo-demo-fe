@@ -14,7 +14,7 @@ function VerifyEmail() {
     verifyEmail(token).then(() => {
       window.location.href = '/auth';
     });
-  }, []);
+  }, [search]);
 
   return <div />;
 }
