@@ -1,4 +1,5 @@
-// @ts-nocheck
+import { fabric } from 'fabric';
+
 export default function renderRotateLabel(ctx, state) {
   const angleText = `${state.angle.toFixed(0)}°`,
     borderRadius = 5,

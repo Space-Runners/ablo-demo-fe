@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { extendTheme } from '@chakra-ui/react';
 import { CardComponent } from './additions/card/card';
 import { buttonStyles } from './components/button';

@@ -1,4 +1,4 @@
-// @ts-nocheck
+import { fabric } from 'fabric';
 import Colors from './colors';
 
 const { abloBlue } = Colors;

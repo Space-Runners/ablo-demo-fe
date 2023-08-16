@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 // chakra imports
@@ -25,10 +24,7 @@ function Sidebar(props: any) {
   const { routes } = props;
 
   const variantChange = '0.2s linear';
-  const shadow = useColorModeValue(
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.08)',
-    'unset'
-  );
+  const shadow = useColorModeValue('14px 17px 40px 4px rgba(112, 144, 176, 0.08)', 'unset');
   // Chakra Color Mode
   const sidebarBg = useColorModeValue('white', 'navy.800');
   const sidebarMargins = '0px';
@@ -84,7 +80,6 @@ export function SidebarResponsive(props: any) {
         <DrawerContent w="285px" maxW="285px" bg={sidebarBackgroundColor}>
           <DrawerCloseButton
             zIndex="3"
-            onClose={onClose}
             _focus={{ boxShadow: 'none' }}
             _hover={{ boxShadow: 'none' }}
           />
