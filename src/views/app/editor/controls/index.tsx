@@ -5,6 +5,8 @@ import ToolbarButton from '../components/ToolbarButton';
 import IconUndo from '@/components/icons/IconUndo';
 import IconRedo from '@/components/icons/IconRedo';
 
+import ToolbarContainer from '../components/ToolbarContainer';
+
 import { IconAddText, IconFlipProduct, IconSave } from './Icons';
 
 const SIDES = ['front', 'back'];
@@ -41,14 +43,7 @@ export default function Toolbar({
   selectedSide,
 }: Props) {
   return (
-    <Box
-      bg="#FFFFFF"
-      borderLeft={{ base: 'none', md: '1px solid rgba(26, 26, 26, 0.10)' }}
-      boxShadow="0px 0.7647058963775635px 1.529411792755127px 0px rgba(0, 0, 0, 0.06), 0px 0.7647058963775635px 2.2941176891326904px 0px rgba(0, 0, 0, 0.10)"
-      h={{ base: '70px', md: 'auto' }}
-      p={{ base: '20px 14px 10px 14px', md: '20px 14px' }}
-      w="100%"
-    >
+    <ToolbarContainer>
       <HStack justify="space-between" spacing="20px" w="100%">
         <HStack spacing="12px">
           <ToolbarButton
@@ -85,6 +80,6 @@ export default function Toolbar({
           <ToolbarButton icon={<IconSave />} onClick={onSave} text="Save" />
         </HStack>
       </HStack>
-    </Box>
+    </ToolbarContainer>
   );
 }
