@@ -20,7 +20,8 @@ jobs:
         run: npm run build
         if: github.ref == 'refs/heads/main'
         env:
-          VITE_API_URL: https://api.ablo.ai
+          VITE_API_URL: https://services-be-prod.onrender.com
+          VITE_API_KEY: 04bd8250dec91142c5bd953f6780fe5bb16636080a155e10c26b91b59fd78055
 
       - name: Build app for staging
         run: npm run build
