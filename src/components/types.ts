@@ -8,7 +8,7 @@ export interface ImageGenerationOptions {
 
 export interface TextToImageRequest {
   style: string;
-  mood?: string;
+  tone?: string;
   freeText: string;
   subjectSuggestions: string[];
   background: boolean;
@@ -42,6 +42,13 @@ export interface Variant {
   color: string;
 }
 
+type PrintableAreaDimensions = {
+  left: number;
+  top: number;
+  height: number;
+  width: number;
+};
+
 export interface Product {
   fabric: string;
   id: number;
@@ -51,13 +58,23 @@ export interface Product {
   price: number;
   urlPrefix: string;
   description: string;
+  printableAreas: {
+    front: {
+      base: PrintableAreaDimensions;
+      md: PrintableAreaDimensions;
+    };
+    back: {
+      base: PrintableAreaDimensions;
+      md: PrintableAreaDimensions;
+    };
+  };
   variants: Variant[];
   tags: string[];
 }
 
 export interface AiImageOptions {
   style: string;
-  mood: string;
+  tone: string;
   keywords?: string[];
   subject?: string;
   background: boolean;
@@ -70,12 +87,56 @@ export interface AiImage {
   withBackgroundUrl?: string;
 }
 
-export interface TemplateDesign {
-  canvas: string;
-  templateUrl?: string;
+export interface CanvasState {
+  canvas?: string;
+  canvasUrl?: string;
+  previewUrl?: string;
+}
+
+export interface EditorState {
+  front: CanvasState;
+  back: CanvasState;
 }
 
 export interface Design {
-  Front: TemplateDesign;
-  Back: TemplateDesign;
+  id?: string;
+  name: string;
+  garmentId: number;
+  garmentColor: string;
+  editorState: EditorState;
+  size?: string;
+  updatedAt?: string;
+}
+
+export interface CanvasObject {
+  angle: number;
+  aiImage?: AiImage;
+  clone: (callback: (clone: CanvasObject) => void) => void;
+  left: number;
+  set: (key: string, property: number | string) => void | ((properties: object) => void);
+  top: number;
+}
+
+export interface CanvasEvent {
+  ctx: object;
+  target: CanvasObject;
+}
+
+export interface Canvas {
+  add: (object: object) => void;
+  aiImage: AiImage;
+  remove: (object: CanvasObject) => void;
+  freeDrawingBrush: {
+    width: number;
+  };
+  isDrawingMode: boolean;
+  getActiveObject: () => CanvasObject;
+  setActiveObject: (object: CanvasObject) => void;
+  centerObject: (object: CanvasObject) => void;
+  on: (event: string, callback: (e: CanvasEvent) => void) => void;
+  sendBackwards: (object: CanvasObject) => void;
+  bringForward: (object: CanvasObject) => void;
+  _objects: [CanvasObject];
+  renderAll: () => void;
+  toDataURL: (object: object) => string;
 }

@@ -62,17 +62,23 @@ export default function ImagePicker(props) {
       return;
     }
 
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const image = new Image();
+
+      image.src = e.target.result as string;
+
+      image.onload = function () {
+        onImageUploaded(image);
+      };
+    };
+    reader.readAsDataURL(fileObj);
+
     onImageUploaded(fileObj);
 
     // 👇️ reset file input
     event.target.value = null;
-
-    // 👇️ is now empty
-    console.log(event.target.files);
-
-    // 👇️ can still access file object here
-    console.log(fileObj);
-    console.log(fileObj.name);
   };
 
   return (

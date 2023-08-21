@@ -35,7 +35,7 @@ export default function AddSubject({
   return (
     <Box padding="8px 14px">
       <Flex align="center" justify="space-between" mb="8px">
-        <Text as="b" color="#1A1A1A">
+        <Text as="b" color="#1A1A1A" fontSize="sm">
           Subject
         </Text>
         <HStack>

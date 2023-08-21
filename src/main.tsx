@@ -7,7 +7,6 @@ import VerifyEmailPage from '@/views/auth/VerifyEmail';
 import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/theme/theme';
-import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -17,12 +16,12 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto-condensed/700.css';
 
-import config from './config';
+import Config from './config';
 
-const { GOOGLE_CLIENT_ID } = config;
+const { GOOGLE_CLIENT_ID } = Config;
 
 const container = document.getElementById('root');
-const root = ReactDOM.createRoot(container!);
+const root = ReactDOM.createRoot(container);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,15 +36,13 @@ root.render(
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
-          <ThemeEditorProvider>
-            <BrowserRouter>
-              <Switch>
-                <Route path={`/verify-email`} component={VerifyEmailPage} />
-                <Route path={`/app`} component={Dashboard} />
-                <Redirect from="/" to="/app" />
-              </Switch>
-            </BrowserRouter>
-          </ThemeEditorProvider>
+          <BrowserRouter>
+            <Switch>
+              <Route path={`/verify-email`} component={VerifyEmailPage} />
+              <Route path={`/app`} component={Dashboard} />
+              <Redirect from="/" to="/app" />
+            </Switch>
+          </BrowserRouter>
         </ChakraProvider>
       </QueryClientProvider>
     </GoogleOAuthProvider>

@@ -34,8 +34,8 @@ import Progress from './components/Progress';
 import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
-  style: 'Botanical',
-  mood: '',
+  style: 'botanical',
+  tone: '',
   subject: '',
   keywords: [],
   background: true,
@@ -78,7 +78,7 @@ export default function ImageGenerator({
 
   const [images, setImages] = useState([]);
 
-  const { background, keywords, style, mood, subject } = options;
+  const { background, keywords, style, tone, subject } = options;
 
   const handleNewArtwork = () => {
     handleReset();
@@ -132,8 +132,8 @@ export default function ImageGenerator({
       freeText: subject,
     } as TextToImageRequest;
 
-    if (mood !== 'noMood') {
-      requestParams.mood = mood;
+    if (tone !== 'noTone') {
+      requestParams.tone = tone;
     }
 
     generateImage(requestParams)
@@ -214,12 +214,15 @@ export default function ImageGenerator({
   }
 
   return (
-    <Box pb="26px">
+    <Box mt="20px" pb="26px">
+      <Text as="b" fontSize="md" mb="5px" ml="14px">
+        Text to Image
+      </Text>
       <Accordion defaultIndex={[0, 1]} allowMultiple>
         <AccordionItem borderTopWidth={0} paddingBottom="8px">
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" textAlign="left">
+              <Box as="span" flex="1" fontSize="sm" textAlign="left">
                 Style
               </Box>
               <AccordionIcon />
@@ -243,7 +246,13 @@ export default function ImageGenerator({
         >
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" textAlign="left" ref={tonesRef}>
+              <Box
+                as="span"
+                flex="1"
+                fontSize="sm"
+                textAlign="left"
+                ref={tonesRef}
+              >
                 Color Filter
               </Box>
               <AccordionIcon />
@@ -251,12 +260,12 @@ export default function ImageGenerator({
           </h2>
           <AccordionPanel pb={4}>
             <SelectColorPalette
-              onChange={(mood) => {
+              onChange={(tone) => {
                 subjectInputRef.current?.focus();
 
-                handleUpdate({ mood });
+                handleUpdate({ tone });
               }}
-              selectedValue={mood}
+              selectedValue={tone}
               style={style}
             />
           </AccordionPanel>

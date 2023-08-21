@@ -1,14 +1,14 @@
-// @ts-nocheck
+import { fabric } from 'fabric';
 import Colors from './colors';
 
 const { abloBlue } = Colors;
 
 fabric.Object.prototype.set({
-  transparentCorners: true,
+  transparentCorners: false,
   borderColor: abloBlue,
   borderRadius: '1px',
   cornerColor: abloBlue,
-  cornerSize: 15,
+  cornerSize: 45,
 });
 
 fabric.Object.prototype.setControlsVisibility({
@@ -50,17 +50,17 @@ fabric.Object.prototype.controls.mtr = new fabric.Control({
   x: 0,
   y: -0.5,
   offsetX: 0,
-  offsetY: -40,
+  offsetY: -90,
   cursorStyle: 'crosshair',
   actionHandler: fabric.controlsUtils.rotationWithSnapping,
   actionName: 'rotate',
   render: renderIcon,
-  cornerSize: 38,
+  cornerSize: 38 * 3,
   withConnection: true,
 });
 
 // Defining how the rendering action will be
-function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+function renderIcon(ctx, left, top, fabricObject) {
   const size = this.cornerSize;
   ctx.save();
   ctx.translate(left, top);
