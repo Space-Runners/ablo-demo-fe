@@ -234,14 +234,6 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
     const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage);
 
-    console.log(
-      'Add text',
-      aiImage.aCoords.tl.y,
-      aiImage.height,
-      aiImage.aCoords.tl.y + aiImage.height,
-      height
-    );
-
     const maxTextOffset = height * 3 - 20;
 
     const textObject = {
