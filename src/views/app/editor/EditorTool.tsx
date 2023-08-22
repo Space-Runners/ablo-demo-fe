@@ -98,7 +98,6 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   }, [canvas, design, editorState, onDesignChange, selectedSide, undoStack]);
 
   useEffect(() => {
-    console.log('Use effect');
     sides.forEach((side) => {
       const canvas = side === 'front' ? canvasFront : canvasBack;
 
@@ -187,7 +186,11 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       const { width, height } =
         product.printableAreas[side.toLowerCase()][isMobile ? 'base' : 'md'];
 
-      canvas.current.setDimensions({ width, height });
+      canvas.current.setDimensions({ height: height * 3, width: width * 3 });
+      canvas.current.setDimensions(
+        { height: `${height}px`, width: `${width}px` },
+        { cssOnly: true }
+      );
     });
   };
 
@@ -239,8 +242,6 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       left: (width * 3) / 2,
       top: aiImage ? aiImage.aCoords.tl.y + aiImage.height : (height * 3) / 2 - 20,
     };
-
-    console.log('Text object', textObject);
 
     const text = new fabric.IText(textObject.text, textObject);
 
