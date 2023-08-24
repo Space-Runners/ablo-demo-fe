@@ -7,13 +7,15 @@ import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
+const NO_TONE = 'noTone';
+
 function getImgUrl(tone, style) {
   let filename = `${tone}_${style
     .split('_')
     .map((word) => capitalize(word))
     .join('')}.png`;
 
-  if (tone === 'noTone') {
+  if (tone === NO_TONE) {
     filename = `NoFilters.png`;
   }
 
@@ -26,18 +28,14 @@ type Props = {
   style: string;
 };
 
-export default function SelectColorPalette({
-  onChange,
-  selectedValue,
-  style,
-}: Props) {
+export default function SelectColorPalette({ onChange, selectedValue, style }: Props) {
   const { data: options } = useOptions();
 
   if (!options) {
     return null;
   }
 
-  const tones = [...options.tones[style.toLowerCase()], 'noTone'];
+  const tones = style ? [...options.tones[style.toLowerCase()], NO_TONE] : [NO_TONE];
 
   if (!tones) {
     return;
@@ -58,7 +56,7 @@ export default function SelectColorPalette({
 
             if (tone === 'BW') {
               label = 'Black/White';
-            } else if (tone === 'noTone') {
+            } else if (tone === NO_TONE) {
               label = 'Random tone';
             }
 
