@@ -19,11 +19,7 @@ import { isEmpty } from 'lodash';
 import { generateImage } from '@/api/image-generator';
 import Button from '@/components/Button';
 
-import {
-  AiImage,
-  AiImageOptions,
-  TextToImageRequest,
-} from '@/components/types';
+import { AiImage, AiImageOptions, TextToImageRequest } from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectColorPalette from './select-color-palette';
@@ -34,7 +30,7 @@ import Progress from './components/Progress';
 import ImageOverview from '../ai-image-overview';
 
 const defaultParams = {
-  style: 'botanical',
+  style: '',
   tone: '',
   subject: '',
   keywords: [],
@@ -153,11 +149,7 @@ export default function ImageGenerator({
   if (aiImage && !isEditingAiImage) {
     return (
       <Box padding="8px 14px">
-        <ImageOverview
-          aiImage={aiImage}
-          onEdit={handleEdit}
-          onRemove={handleRemove}
-        />
+        <ImageOverview aiImage={aiImage} onEdit={handleEdit} onRemove={handleRemove} />
       </Box>
     );
   }
@@ -195,19 +187,8 @@ export default function ImageGenerator({
         </HStack>
         <Button onClick={handlePlaceArtwork} title="Place artwork" w="100%" />
         <Flex align="center" mt="14px" pb="14px">
-          <Button
-            flex={1}
-            onClick={handleGenerate}
-            outlined
-            title="Generate similar"
-          />
-          <Button
-            flex={1}
-            ml="10px"
-            onClick={handleNewArtwork}
-            outlined
-            title="New"
-          />
+          <Button flex={1} onClick={handleGenerate} outlined title="Generate similar" />
+          <Button flex={1} ml="10px" onClick={handleNewArtwork} outlined title="New" />
         </Flex>
       </Box>
     );
@@ -239,20 +220,10 @@ export default function ImageGenerator({
             />
           </AccordionPanel>
         </AccordionItem>
-        <AccordionItem
-          borderColor="transparent"
-          borderTopWidth={0}
-          paddingBottom="10px"
-        >
+        <AccordionItem borderColor="transparent" borderTopWidth={0} paddingBottom="10px">
           <h2>
             <AccordionButton {...accordionButtonStyles}>
-              <Box
-                as="span"
-                flex="1"
-                fontSize="sm"
-                textAlign="left"
-                ref={tonesRef}
-              >
+              <Box as="span" flex="1" fontSize="sm" textAlign="left" ref={tonesRef}>
                 Color Filter
               </Box>
               <AccordionIcon />
