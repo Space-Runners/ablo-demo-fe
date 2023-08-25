@@ -12,7 +12,6 @@ const ToolbarContainer = ({ children, ...rest }: ToolbarContainerProps) => (
     onClick={(e) => {
       e.stopPropagation();
     }}
-    overflow="auto"
     p="12px 11px 8px 11px"
     {...rest}
   >

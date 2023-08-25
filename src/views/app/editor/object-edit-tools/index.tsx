@@ -367,7 +367,7 @@ const ObjectEditTools = ({
 
   return (
     <ToolbarContainer>
-      <HStack position="relative" spacing="6px">
+      <HStack position="relative" overflow="auto" spacing="6px">
         {isText ? (
           <F>
             <ToolbarButton
