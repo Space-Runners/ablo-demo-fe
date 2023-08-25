@@ -1,0 +1,71 @@
+@font-face {
+  font-family: '5yearsoldfont';
+  font-style: normal;
+  src: local('Opensans-Bold'), url(@/assets/fonts/5yearsoldfont.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'amsterdam';
+  font-style: normal;
+  src: local('amsterdam'), url(@/assets/fonts/amsterdam.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Barrio-Regular';
+  font-style: normal;
+  src: local('Barrio-Regular'), url(@/assets/fonts/Barrio-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Collage';
+  font-style: normal;
+  src: local('Collage'), url(@/assets/fonts/Collage.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'ItsaSketch';
+  font-style: normal;
+  src: local('ItsaSketch'), url(@/assets/fonts/ItsaSketch.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Naive';
+  font-style: normal;
+  src: local('Naive'), url(@/assets/fonts/Naive.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Naiveer';
+  font-style: normal;
+  src: local('Naiveer'), url(@/assets/fonts/Naiveer.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Paper Cutz';
+  font-style: normal;
+  src: local('Paper Cutz'), url(@/assets/fonts/PaperCutz.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Paperland';
+  font-style: normal;
+  src: local('Paperland'), url(@/assets/fonts/Paperland.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'PoorStory-Regular';
+  font-style: normal;
+  src: local('PoorStory-Regular'), url(@/assets/fonts/Paperland.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'SuperSketch';
+  font-style: normal;
+  src: local('SuperSketch'), url(@/assets/fonts/SuperSketch.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Vandalust';
+  font-style: normal;
+  src: local('Vandalust'), url(@/assets/fonts/Vandalust.ttf) format('truetype');
+}
