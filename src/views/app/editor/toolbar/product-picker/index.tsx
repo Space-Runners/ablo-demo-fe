@@ -201,7 +201,7 @@ export default function ProductPicker({
           onApply={() => {
             setFiltersVisible(false);
 
-            onSelectedGarment({ ...selectedGarment, productId: null });
+            onSelectedGarment({ ...selectedGarment });
           }}
           onUpdate={(updates) => onFiltersChange({ ...filters, ...updates })}
         />
