@@ -15,6 +15,8 @@ import ObjectEditTools from './object-edit-tools';
 import EditorToolbar from './toolbar';
 import ProductDetails from './toolbar/product-picker/ProductDetails';
 
+import { getDrawingArea } from './drawingAreas';
+
 const sides = ['front', 'back'];
 
 const initCanvas = (side, width, height) => {
@@ -71,7 +73,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
   const isMobile = useBreakpointValue({ base: true, md: false }, { ssr: false });
 
-  const drawingArea = printableAreas[selectedSide.toLowerCase()][isMobile ? 'base' : 'md'];
+  const drawingArea = getDrawingArea(printableAreas, selectedSide, isMobile);
 
   const saveState = useCallback(() => {
     setRedoStack([]);
@@ -101,9 +103,11 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
     sides.forEach((side) => {
       const canvas = side === 'front' ? canvasFront : canvasBack;
 
-      const drawingAreaForSide = printableAreas[side.toLowerCase()];
+      const drawingAreaForSide = getDrawingArea(printableAreas, side, isMobile);
 
-      const { width, height } = drawingAreaForSide[isMobile ? 'base' : 'md'];
+      console.log('Drawing area', drawingAreaForSide, isMobile);
+
+      const { width, height } = drawingAreaForSide;
 
       canvas.current = initCanvas(side, width, height);
 
@@ -183,8 +187,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
 
       const product = PRODUCTS.find((product) => product.id === garment.productId);
 
-      const { width, height } =
-        product.printableAreas[side.toLowerCase()][isMobile ? 'base' : 'md'];
+      const { width, height } = getDrawingArea(product.printableAreas, side, isMobile);
 
       canvas.current.setDimensions({ height: height * 3, width: width * 3 });
       canvas.current.setDimensions(

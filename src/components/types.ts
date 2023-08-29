@@ -59,14 +59,8 @@ export interface Product {
   urlPrefix: string;
   description: string;
   printableAreas: {
-    front: {
-      base: PrintableAreaDimensions;
-      md: PrintableAreaDimensions;
-    };
-    back: {
-      base: PrintableAreaDimensions;
-      md: PrintableAreaDimensions;
-    };
+    front: PrintableAreaDimensions;
+    back: PrintableAreaDimensions;
   };
   variants: Variant[];
   tags: string[];
