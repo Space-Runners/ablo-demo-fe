@@ -8,6 +8,11 @@ import { Canvas, Product } from '@/components/types';
 
 import IconEmptyState from '../icons/EmptyState';
 import renderRotateLabel from '../fabric/rotateLabel';
+import {
+  GARMENT_IMAGE_DESKTOP_WIDTH,
+  GARMENT_IMAGE_MOBILE_WIDTH,
+  getDrawingArea,
+} from '../drawingAreas';
 
 const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
@@ -38,7 +43,7 @@ const CanvasContainer = ({
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const drawingArea = printableAreas.front[isMobile ? 'base' : 'md'];
+  const drawingArea = getDrawingArea(printableAreas, side, isMobile);
 
   useEffect(() => {
     if (!canvas) {
@@ -86,7 +91,7 @@ const CanvasContainer = ({
       <Image
         src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
         crossOrigin="anonymous"
-        width={{ base: 350, md: 500 }}
+        width={{ base: GARMENT_IMAGE_MOBILE_WIDTH, md: GARMENT_IMAGE_DESKTOP_WIDTH }}
       />
       <Box
         border={
