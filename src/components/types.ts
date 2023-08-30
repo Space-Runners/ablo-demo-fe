@@ -32,32 +32,48 @@ export interface Garment {
   size: string;
 }
 
-export interface Variant {
-  name: string;
-  color: string;
-}
-
-type PrintableAreaDimensions = {
-  left: number;
-  top: number;
-  height: number;
-  width: number;
+type ColorVariantImage = {
+  templateSideId: string;
+  url: string;
 };
 
+export interface ColorVariant {
+  id: string;
+  name: string;
+  hex: string;
+  images: ColorVariantImage[];
+}
+
+type TemplateSide = {
+  id: string;
+  left: number;
+  top: number;
+  heightCm: number;
+  name: string;
+  widthCm: number;
+};
+
+export interface TemplateSize {
+  id: number;
+  name: string;
+}
+
 export interface Template {
+  colors: ColorVariant[];
+  currency: {
+    id: number;
+    name: string;
+  };
   fabric: string;
   id: number;
   madeIn: string;
   name: string;
   fit: string;
-  price: number;
+  price: string;
   urlPrefix: string;
-  description: string;
-  printableAreas: {
-    front: PrintableAreaDimensions;
-    back: PrintableAreaDimensions;
-  };
-  variants: Variant[];
+  material: string;
+  sides: TemplateSide[];
+  sizes: TemplateSize[];
   tags: string[];
 }
 
@@ -90,8 +106,8 @@ export interface EditorState {
 export interface Design {
   id?: string;
   name: string;
-  garmentId: number;
-  garmentColor: string;
+  templateId: number;
+  templateColor: string;
   editorState: EditorState;
   size?: string;
   updatedAt?: string;

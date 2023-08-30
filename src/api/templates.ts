@@ -8,7 +8,7 @@ const entity = 'templates';
 
 const URL = `/${entity}`;
 
-const getTemplates = () => axios.get<Template[]>(URL).then(({ data }) => data);
+export const getTemplates = () => axios.get<Template[]>(URL).then(({ data }) => data.reverse());
 
 export const useTemplates = () => useQuery([entity], () => getTemplates());
 

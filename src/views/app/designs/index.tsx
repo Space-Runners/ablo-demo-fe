@@ -48,7 +48,6 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
           // Find first previewUrl
           const previewUrl = editorState.front.previewUrl;
 
-          console.log('Preview URL', previewUrl);
           return (
             <Card
               key={index}

@@ -81,7 +81,6 @@ export default function ColorPicker({
         <ColorPickerModal
           onClose={() => setColorPickerModalVisible(false)}
           onSelectedColor={(color) => {
-            console.log('Color', color);
             onUpdateColor(color);
           }}
           selectedColor={selectedColor}

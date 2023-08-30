@@ -39,7 +39,9 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
     });
   };
 
-  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } = template;
+  const { colors, material, fabric, fit, madeIn, name, price } = template;
+
+  const variant = colors.find((variant) => variant.name === selectedVariant) || colors[0];
 
   return (
     <Box position="relative">
@@ -54,7 +56,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image h={216} src={`${urlPrefix}_${selectedVariant}_FRONT.webp`} alt={name} />
+        <Image h={216} src={variant.images[0].url} alt={name} />
       </Flex>
       <Box padding="24px 14px">
         <Text color="#959392" fontSize="sm" mb="13px">
@@ -78,9 +80,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
             </Text>
           </Box>
         </Flex>
-        <Text color="#000000" fontSize="sm" mb="20px">
-          {tags.join(' / ')}
-        </Text>
+
         <HStack mb="20px" spacing="10px">
           {SIZES.map((size) => {
             const isSelected = size === selectedSize;
@@ -107,6 +107,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         </HStack>
         <ColorPicker
           onSelectedVariants={([variant]) => setSelectedVariant(variant)}
+          options={colors}
           selectedVariants={[selectedVariant]}
         />
       </Box>
@@ -114,7 +115,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         <Box color="#000000" fontSize="md" padding="0 15px 22px 0">
           <Text as="b">Made in {madeIn}</Text>
           <Text fontWeight={300} mt="8px">
-            {description}
+            {material}
           </Text>
         </Box>
       </Panel>

@@ -5,12 +5,11 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
+import { getTemplates } from '@/api/templates';
 
 import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
-import { Design } from '@/components/types';
-
-import PRODUCTS from '@/data/products';
+import { Design, Template } from '@/components/types';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
@@ -25,8 +24,7 @@ import EditorTool from './EditorTool';
 import getEditorStateAsImages from './utils/template-export';
 
 const DEFAULT_DESIGN = {
-  garmentId: PRODUCTS[0].id,
-  garmentColor: 'OatMilk',
+  templateColor: 'OatMilk',
   name: '',
   size: 'S',
   editorState: {
@@ -40,8 +38,10 @@ const DEFAULT_DESIGN = {
 };
 
 export default function ImageEditorPage() {
-  const [activeDesign, setActiveDesign] = useState<Design>(DEFAULT_DESIGN);
+  const [activeDesign, setActiveDesign] = useState<Design>(null);
   const [hasChanges, setHasChanges] = useState(false);
+
+  const [templates, setTemplates] = useState<Template[]>(null);
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
@@ -66,22 +66,31 @@ export default function ImageEditorPage() {
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
 
-    console.log('Effect', search);
-
     const designId = searchParams.get('designId');
 
-    if (!designId) {
-      setIsLoading(false);
-      return;
-    }
+    getTemplates().then((templates) => {
+      const templateId = templates[0].id;
 
-    getDesign(designId)
-      .then((design) => {
-        setActiveDesign(design);
+      setTemplates(templates);
+
+      if (!designId) {
+        setActiveDesign({
+          ...DEFAULT_DESIGN,
+          templateId,
+        });
 
         setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
+        return;
+      }
+
+      getDesign(designId)
+        .then((design) => {
+          setActiveDesign(design);
+
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
+    });
   }, [search]);
 
   const handleNext = () => {
@@ -183,6 +192,7 @@ export default function ImageEditorPage() {
             setActiveDesign(design);
           }}
           onSave={() => handleSaveDesign()}
+          templates={templates}
         />
       )}
       {(errorSavingDesign || isDesignSaved) && (
