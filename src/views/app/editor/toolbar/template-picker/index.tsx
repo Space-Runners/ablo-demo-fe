@@ -10,7 +10,6 @@ import IconBack from '@/components/icons/IconBack';
 import { Filters, Garment, Template } from '@/components/types';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
-import { useTemplates } from '@/api/templates';
 
 import Colors from '@/theme/colors';
 
@@ -153,8 +152,6 @@ export default function TemplatePicker({
   const templates = getTemplatesMatchingFilters(filters);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  const { data: templates2 } = useTemplates();
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
