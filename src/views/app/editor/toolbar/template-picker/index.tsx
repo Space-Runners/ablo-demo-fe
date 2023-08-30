@@ -7,63 +7,65 @@ import { chunk } from 'lodash';
 import MiniFilterBar from '@/components/MiniFilterBar';
 
 import IconBack from '@/components/icons/IconBack';
-import { Filters, Garment, Product } from '@/components/types';
+import { Filters, Garment, Template } from '@/components/types';
 
 import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
+import { useTemplates } from '@/api/templates';
+
 import Colors from '@/theme/colors';
 
-import ProductDetails from './ProductDetails';
-import ProductFilters from './Filters';
+import TemplateDetails from './TemplateDetails';
+import TemplateFilters from './Filters';
 
 import { IconFilters, IconCloseFilters, IconSustainable, IconSelected } from './Icons';
 
 const { abloBlue } = Colors;
 
-const matchesClothingType = (types, product) =>
-  !types.length || types[0] === 'All' || types.find((type) => type.includes(product.name));
+const matchesClothingType = (types, template) =>
+  !types.length || types[0] === 'All' || types.find((type) => type.includes(template.name));
 
-const matchesFit = (fits, product) =>
-  !fits.length || fits.find((fit) => fit.includes(product.name));
+const matchesFit = (fits, template) =>
+  !fits.length || fits.find((fit) => fit.includes(template.name));
 
-const matchesPrice = ([min, max], product) => {
-  const { price } = product;
+const matchesPrice = ([min, max], template) => {
+  const { price } = template;
 
   return price >= min && price <= max;
 };
 
-const getProductsMatchingFilters = (filters) =>
-  PRODUCTS.filter((product) => {
+const getTemplatesMatchingFilters = (filters) =>
+  PRODUCTS.filter((template) => {
     const { clothingTypes = [], fits = [], price: priceRange } = filters;
 
     return (
-      matchesClothingType(clothingTypes, product) &&
-      matchesFit(fits, product) &&
-      matchesPrice(priceRange, product)
+      matchesClothingType(clothingTypes, template) &&
+      matchesFit(fits, template) &&
+      matchesPrice(priceRange, template)
     );
   });
 
-type ProductsListProps = {
-  products: Product[];
-  onSelectedProduct: (product: Product) => void;
+type TemplatesListProps = {
+  templates: Template[];
+  onSelectedTemplate: (template: Template) => void;
   selectedGarment: Garment;
 };
 
-const ProductsList = ({ products, onSelectedProduct, selectedGarment }: ProductsListProps) => {
-  const chunks = chunk(products, 2);
+const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: TemplatesListProps) => {
+  const chunks = chunk(templates, 2);
 
   return (
     <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="24px">
-          {chunk.map((product, index) => {
-            const { fabric, fit, id, name, price, variants, urlPrefix } = product;
+          {chunk.map((template, index) => {
+            const { fabric, fit, id, name, price, variants, urlPrefix } = template;
 
             const variant =
               selectedGarment && selectedGarment.variant
                 ? variants.find((variant) => variant.name === selectedGarment.variant)
                 : variants.find((variant) => variant.name === 'OatMilk');
 
-            const isSelected = selectedGarment && selectedGarment.productId === id;
+            const isSelected = selectedGarment && selectedGarment.templateId === id;
 
             const selectedProps = isSelected
               ? { border: '2px solid #000000', borderRadius: '10px' }
@@ -74,7 +76,7 @@ const ProductsList = ({ products, onSelectedProduct, selectedGarment }: Products
                 flex="1"
                 key={index}
                 marginLeft={`${index === 0 ? 0 : 8}px`}
-                onClick={() => onSelectedProduct(product)}
+                onClick={() => onSelectedTemplate(template)}
                 position="relative"
                 {...selectedProps}
               >
@@ -127,41 +129,43 @@ const ProductsList = ({ products, onSelectedProduct, selectedGarment }: Products
   );
 };
 
-type ProductPickerProps = {
+type TemplatePickerProps = {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
-  selectedProduct: Product;
-  onSelectedProduct: (garment: Product) => void;
+  selectedTemplate: Template;
+  onSelectedTemplate: (garment: Template) => void;
 };
 
-export default function ProductPicker({
+export default function TemplatePicker({
   filters,
   onFiltersChange,
   selectedGarment,
   onSelectedGarment,
-  selectedProduct,
-  onSelectedProduct,
-}: ProductPickerProps) {
+  selectedTemplate,
+  onSelectedTemplate,
+}: TemplatePickerProps) {
   const [areFiltersVisible, setFiltersVisible] = useState(false);
 
   const { clothingTypes } = filters;
 
-  const products = getProductsMatchingFilters(filters);
+  const templates = getTemplatesMatchingFilters(filters);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const { data: templates2 } = useTemplates();
 
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Flex align="center" height="63px" pl="17px">
-        {selectedProduct && isMobile ? (
+        {selectedTemplate && isMobile ? (
           <Button
             bg="transparent"
             height="30px"
             minWidth="none"
             mr="10px"
-            onClick={() => onSelectedProduct(null)}
+            onClick={() => onSelectedTemplate(null)}
             padding={0}
             _hover={{
               bg: '#F9F9F7',
@@ -176,7 +180,7 @@ export default function ProductPicker({
           Pick your clothe
         </Text>
       </Flex>
-      {!selectedProduct || !isMobile ? (
+      {!selectedTemplate || !isMobile ? (
         <Button
           alignItems="center"
           bg="#FFFFFF"
@@ -196,7 +200,7 @@ export default function ProductPicker({
         </Button>
       ) : null}
       {areFiltersVisible ? (
-        <ProductFilters
+        <TemplateFilters
           filters={filters}
           onApply={() => {
             setFiltersVisible(false);
@@ -207,11 +211,11 @@ export default function ProductPicker({
         />
       ) : (
         <Box>
-          {selectedProduct && isMobile ? (
-            <ProductDetails
+          {selectedTemplate && isMobile ? (
+            <TemplateDetails
               garment={selectedGarment}
               onGarmentUpdate={onSelectedGarment}
-              product={selectedProduct}
+              template={selectedTemplate}
             />
           ) : (
             <F>
@@ -220,9 +224,9 @@ export default function ProductPicker({
                 selectedValue={clothingTypes[0] || 'All'}
                 onChange={(value) => onFiltersChange({ ...filters, clothingTypes: [value] })}
               />
-              <ProductsList
-                onSelectedProduct={onSelectedProduct}
-                products={products}
+              <TemplatesList
+                onSelectedTemplate={onSelectedTemplate}
+                templates={templates}
                 selectedGarment={selectedGarment}
               />
             </F>

@@ -5,7 +5,7 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty } from 'lodash';
 
-import { AiImage, Design, Garment, Product } from '@/components/types';
+import { AiImage, Design, Garment, Template } from '@/components/types';
 import PRODUCTS from '@/data/products';
 
 import CanvasContainer from './components/CanvasContainer';
@@ -13,7 +13,7 @@ import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
 import EditorToolbar from './toolbar';
-import ProductDetails from './toolbar/product-picker/ProductDetails';
+import TemplateDetails from './toolbar/template-picker/TemplateDetails';
 
 import { getDrawingArea } from './drawingAreas';
 
@@ -59,15 +59,15 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   const [selectedSide, setSelectedSide] = useState(sides[0]);
   const [isEditorToolbarExpanded, setEditorToolbarExpanded] = useState(false);
 
-  const [selectedProductPreview, setSelectedProductPreview] = useState<Product>(null);
+  const [selectedTemplatePreview, setSelectedTemplatePreview] = useState<Template>(null);
 
   const { editorState, garmentId, garmentColor, size } = design;
 
-  const selectedGarment = { productId: garmentId, size, variant: garmentColor };
+  const selectedGarment = { templateId: garmentId, size, variant: garmentColor };
 
-  const product = PRODUCTS.find((product) => product.id === selectedGarment.productId);
+  const template = PRODUCTS.find((template) => template.id === selectedGarment.templateId);
 
-  const { printableAreas } = product;
+  const { printableAreas } = template;
 
   const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
@@ -172,22 +172,22 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
   }, [canvas, saveState]);
 
   const handleSelectedGarment = (garment: Garment) => {
-    const { productId, variant } = garment;
+    const { templateId, variant } = garment;
 
     onDesignChange({
       ...design,
-      garmentId: productId,
+      garmentId: templateId,
       garmentColor: variant,
     });
 
-    setSelectedProductPreview(null);
+    setSelectedTemplatePreview(null);
 
     sides.forEach((side) => {
       const canvas = side === 'front' ? canvasFront : canvasBack;
 
-      const product = PRODUCTS.find((product) => product.id === garment.productId);
+      const template = PRODUCTS.find((template) => template.id === garment.templateId);
 
-      const { width, height } = getDrawingArea(product.printableAreas, side, isMobile);
+      const { width, height } = getDrawingArea(template.printableAreas, side, isMobile);
 
       canvas.current.setDimensions({ height: height * 3, width: width * 3 });
       canvas.current.setDimensions(
@@ -405,16 +405,16 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
         onGeneratedImageRemoved={handleGeneratedImageRemoved}
         selectedGarment={selectedGarment}
         onSelectedGarment={handleSelectedGarment}
-        selectedProduct={selectedProductPreview}
-        onSelectedProduct={setSelectedProductPreview}
+        selectedTemplate={selectedTemplatePreview}
+        onSelectedTemplate={setSelectedTemplatePreview}
       />
-      {!isMobile && selectedProductPreview ? (
+      {!isMobile && selectedTemplatePreview ? (
         <Box flex={1} height="100%" p="20px">
           <Box bg="#FFFFFF" borderRadius="10px" height="100%" overflow="auto">
-            <ProductDetails
+            <TemplateDetails
               garment={selectedGarment}
               onGarmentUpdate={handleSelectedGarment}
-              product={selectedProductPreview}
+              template={selectedTemplatePreview}
             />
           </Box>
         </Box>
@@ -422,7 +422,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
       <Box
         display={{
           base: 'block',
-          md: selectedProductPreview ? 'none' : 'flex',
+          md: selectedTemplatePreview ? 'none' : 'flex',
         }}
         flex={1}
         flexDirection="column"
@@ -469,7 +469,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
           >
             <CanvasContainer
               canvas={canvasFront.current}
-              product={product}
+              template={template}
               selectedVariant={selectedGarment.variant}
               showHint={showHint}
               side="front"
@@ -485,7 +485,7 @@ export default function ImageEditorTool({ design, onDesignChange, onSave }: Imag
           >
             <CanvasContainer
               canvas={canvasBack.current}
-              product={product}
+              template={template}
               selectedVariant={selectedGarment.variant}
               showHint={showHint}
               side="back"

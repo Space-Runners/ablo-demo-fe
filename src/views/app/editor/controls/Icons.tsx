@@ -19,7 +19,7 @@ export const IconAddText = () => (
   </Icon>
 );
 
-export const IconFlipProduct = () => (
+export const IconFlipTemplate = () => (
   <Icon
     width="21px"
     height="20px"

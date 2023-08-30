@@ -4,7 +4,7 @@ import { Box, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 
 import { times } from 'lodash';
 
-import { Canvas, Product } from '@/components/types';
+import { Canvas, Template } from '@/components/types';
 
 import IconEmptyState from '../icons/EmptyState';
 import renderRotateLabel from '../fabric/rotateLabel';
@@ -19,7 +19,7 @@ const DARK_VARIANTS = ['Onyx', 'Oceana'];
 type Props = {
   canvas: Canvas;
   onHintClick: () => void;
-  product: Product;
+  template: Template;
   selectedVariant: string;
   side: string;
   showHint: boolean;
@@ -28,7 +28,7 @@ type Props = {
 const CanvasContainer = ({
   canvas,
   onHintClick,
-  product,
+  template,
   selectedVariant,
   side,
   showHint,
@@ -37,7 +37,7 @@ const CanvasContainer = ({
 
   const userState = useRef({ angle: 0, isModifying: false, isRotating: false });
 
-  const { printableAreas, urlPrefix } = product;
+  const { printableAreas, urlPrefix } = template;
 
   const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
 

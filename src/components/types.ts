@@ -14,11 +14,6 @@ export interface TextToImageRequest {
   background: boolean;
 }
 
-export interface Template {
-  name: string;
-  img: string;
-}
-
 export interface Filters {
   sizes?: string[];
   colors?: string[];
@@ -32,7 +27,7 @@ export interface Filters {
 }
 
 export interface Garment {
-  productId: number;
+  templateId: number;
   variant: string;
   size: string;
 }
@@ -49,7 +44,7 @@ type PrintableAreaDimensions = {
   width: number;
 };
 
-export interface Product {
+export interface Template {
   fabric: string;
   id: number;
   madeIn: string;

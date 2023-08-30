@@ -103,7 +103,7 @@ type Props = {
   onUpdate: (updates: object) => void;
 };
 
-const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
+const TemplateFilters = ({ filters, onApply, onUpdate }: Props) => {
   const { brands, clothingTypes, collections, fits, genders, sizes, colors, price } = filters;
 
   return (
@@ -166,4 +166,4 @@ const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
   );
 };
 
-export default ProductFilters;
+export default TemplateFilters;

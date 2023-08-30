@@ -1,27 +1,27 @@
-import { Box, Button, Flex, Hide, HStack, Icon } from "@chakra-ui/react";
+import { Box, Button, Flex, Hide, HStack, Icon } from '@chakra-ui/react';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { AiImage, Filters, Garment, Product } from "@/components/types";
+import { AiImage, Filters, Garment, Template } from '@/components/types';
 
 import {
-  IconProductPicker,
+  IconTemplatePicker,
   IconFontToImage,
   IconTextToImage,
   IconImageToImage,
   IconUploadImage,
-} from "./Icons";
+} from './Icons';
 
-import ProductPicker from "./product-picker";
-import ImageGenerator from "./image-generator";
-import ImagePicker from "./components/ImagePicker";
+import TemplatePicker from './template-picker';
+import ImageGenerator from './image-generator';
+import ImagePicker from './components/ImagePicker';
 
-import ComingSoon from "./components/coming-soon";
+import ComingSoon from './components/coming-soon';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
     <Button
-      background={isSelected ? "#E2E8F0" : "transparent"}
+      background={isSelected ? '#E2E8F0' : 'transparent'}
       borderRadius="12px"
       height="40px"
       padding="8px"
@@ -39,7 +39,7 @@ const IconDragHandle = ({ rotate }) => (
     height="11px"
     viewBox="0 0 28 11"
     fill="none"
-    {...(rotate ? { transform: "rotate(180deg)" } : {})}
+    {...(rotate ? { transform: 'rotate(180deg)' } : {})}
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
@@ -54,27 +54,27 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: "productPicker",
-    icon: <IconProductPicker />,
-    iconActive: <IconProductPicker isSelected />,
+    name: 'templatePicker',
+    icon: <IconTemplatePicker />,
+    iconActive: <IconTemplatePicker isSelected />,
   },
   {
-    name: "textToImage",
+    name: 'textToImage',
     icon: <IconTextToImage />,
     iconActive: <IconTextToImage isSelected />,
   },
   {
-    name: "fontToImage",
+    name: 'fontToImage',
     icon: <IconFontToImage />,
     iconActive: <IconFontToImage isSelected />,
   },
   {
-    name: "imageToImage",
+    name: 'imageToImage',
     icon: <IconImageToImage />,
     iconActive: <IconImageToImage isSelected />,
   },
   {
-    name: "imageUpload",
+    name: 'imageUpload',
     icon: <IconUploadImage />,
     iconActive: <IconUploadImage isSelected />,
   },
@@ -94,8 +94,8 @@ type FooterToolbarProps = {
   onGeneratedImageRemoved: (url: string) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
-  selectedProduct: Product;
-  onSelectedProduct: (product: Product) => void;
+  selectedTemplate: Template;
+  onSelectedTemplate: (template: Template) => void;
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
@@ -109,8 +109,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     onGeneratedImageRemoved,
     selectedGarment,
     onSelectedGarment,
-    selectedProduct,
-    onSelectedProduct,
+    selectedTemplate,
+    onSelectedTemplate,
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
@@ -118,19 +118,19 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     price: [20, 90],
   });
 
-  const [selectedTool, setSelectedTool] = useState("textToImage");
+  const [selectedTool, setSelectedTool] = useState('textToImage');
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
   const [isEditingAiImage, setIsEditingAiImage] = useState(false);
 
-  const isFullScreen = (aiImage && !isEditingAiImage) || selectedTool === "productPicker";
+  const isFullScreen = (aiImage && !isEditingAiImage) || selectedTool === 'templatePicker';
 
   const [drag, setDrag] = useState({
     active: false,
   });
 
   useEffect(() => {
-    if ((isExpanded && aiImage) || selectedTool === "productPicker") {
+    if ((isExpanded && aiImage) || selectedTool === 'templatePicker') {
       setHeight(window.innerHeight);
     } else if (isExpanded || isEditingAiImage) {
       setHeight(MAX_OVERLAY_HEIGHT);
@@ -146,7 +146,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   };
 
   const endResize = () => {
-    let newHeight = document.getElementById("toolbarOverlay")?.clientHeight || 0;
+    let newHeight = document.getElementById('toolbarOverlay')?.clientHeight || 0;
 
     const containerHeight = window.innerHeight || 0;
 
@@ -184,7 +184,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let clientY = 0;
 
-    if (e.type === "touchmove" || e.type === "touchstart") {
+    if (e.type === 'touchmove' || e.type === 'touchstart') {
       const { touches, changedTouches } = e as React.TouchEvent;
 
       const touch = touches[0] || changedTouches[0];
@@ -219,18 +219,18 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   return (
     <Box
-      borderRadius={{ base: "24px 24px 0 0", md: 0 }}
+      borderRadius={{ base: '24px 24px 0 0', md: 0 }}
       bottom={0}
       id="toolbarOverlay"
       bg="#FFFFFF"
-      h={{ base: `${height}px`, md: "100%" }}
+      h={{ base: `${height}px`, md: '100%' }}
       overflow={{
-        base: height === MIN_OVERLAY_HEIGHT ? "none" : "auto",
-        md: "auto",
+        base: height === MIN_OVERLAY_HEIGHT ? 'none' : 'auto',
+        md: 'auto',
       }}
-      pb={{ base: 0, md: "14px" }}
-      position={{ base: "fixed", md: "relative" }}
-      w={{ base: "100%", md: "393px" }}
+      pb={{ base: 0, md: '14px' }}
+      position={{ base: 'fixed', md: 'relative' }}
+      w={{ base: '100%', md: '393px' }}
       zIndex={3}
     >
       <Box
@@ -247,8 +247,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             height="20px"
             justify="center"
             style={{
-              cursor: active ? "grabbing" : "grab",
-              touchAction: "none",
+              cursor: active ? 'grabbing' : 'grab',
+              touchAction: 'none',
             }}
             padding="8px"
             w="100%"
@@ -271,17 +271,17 @@ export default function EditorToolbar(props: FooterToolbarProps) {
         </Flex>
       </Box>
       <Box>
-        {selectedTool === "productPicker" ? (
-          <ProductPicker
+        {selectedTool === 'templatePicker' ? (
+          <TemplatePicker
             filters={selectedFilters}
             onFiltersChange={setSelectedFilters}
             selectedGarment={selectedGarment}
             onSelectedGarment={onSelectedGarment}
-            selectedProduct={selectedProduct}
-            onSelectedProduct={onSelectedProduct}
+            selectedTemplate={selectedTemplate}
+            onSelectedTemplate={onSelectedTemplate}
           />
         ) : null}
-        {selectedTool === "textToImage" ? (
+        {selectedTool === 'textToImage' ? (
           <ImageGenerator
             aiImage={aiImage}
             isEditingAiImage={isEditingAiImage}
@@ -291,10 +291,10 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSetIsEditingAiImage={setIsEditingAiImage}
           />
         ) : null}
-        {["fontToImage", "imageToImage"].includes(selectedTool) ? (
+        {['fontToImage', 'imageToImage'].includes(selectedTool) ? (
           <ComingSoon feature={selectedTool} />
         ) : null}
-        {selectedTool === "imageUpload" ? <ImagePicker onImageUploaded={onImageUploaded} /> : null}
+        {selectedTool === 'imageUpload' ? <ImagePicker onImageUploaded={onImageUploaded} /> : null}
       </Box>
     </Box>
   );
