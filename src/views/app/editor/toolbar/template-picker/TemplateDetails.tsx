@@ -5,7 +5,7 @@ import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react';
 import ButtonCTA from '@/components/Button';
 import Panel from '@/components/Panel';
 
-import { Garment, Product } from '@/components/types';
+import { Garment, Template } from '@/components/types';
 
 import ColorPicker from '@/components/ColorPicker';
 import Colors from '@/theme/colors';
@@ -16,13 +16,13 @@ const { abloBlue } = Colors;
 
 const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-type ProductDetailsProps = {
+type TemplateDetailsProps = {
   garment: Garment;
   onGarmentUpdate: (updates: object) => void;
-  product: Product;
+  template: Template;
 };
 
-const ProductDetails = ({ garment, onGarmentUpdate, product }: ProductDetailsProps) => {
+const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetailsProps) => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedVariant, setSelectedVariant] = useState('');
 
@@ -33,13 +33,13 @@ const ProductDetails = ({ garment, onGarmentUpdate, product }: ProductDetailsPro
 
   const handleSelect = () => {
     onGarmentUpdate({
-      productId: product.id,
+      templateId: template.id,
       size: selectedSize,
       variant: selectedVariant,
     });
   };
 
-  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } = product;
+  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } = template;
 
   return (
     <Box position="relative">
@@ -125,4 +125,4 @@ const ProductDetails = ({ garment, onGarmentUpdate, product }: ProductDetailsPro
   );
 };
 
-export default ProductDetails;
+export default TemplateDetails;
