@@ -85,3 +85,8 @@ export const useMe = () =>
       return data;
     })
   );
+
+export const resetPassword = (email: string) =>
+  axios.post('/auth/forgot-password', {
+    email,
+  });

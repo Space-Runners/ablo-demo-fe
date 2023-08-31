@@ -14,6 +14,7 @@ import { Design, Template } from '@/components/types';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
+import ForgotPasswordModal from '@/views/auth/ForgotPasswordModal';
 
 import FeedbackAlert from './components/FeedbackAlert';
 import { IconBack } from './components/Icons';
@@ -32,6 +33,7 @@ export default function ImageEditorPage() {
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
+  const [isForgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
   const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] = useState(false);
 
   const [isSavingDesign, setSavingDesign] = useState(false);
@@ -250,10 +252,23 @@ export default function ImageEditorPage() {
             setSignInModalVisible(false);
             setSignUpModalVisible(true);
           }}
+          onGoToForgotPassword={() => {
+            setSignInModalVisible(false);
+            setForgotPasswordModalVisible(true);
+          }}
           onSignIn={() => {
             setSignInModalVisible(false);
 
             handleGoToSaveDesign();
+          }}
+        />
+      ) : null}
+      {isForgotPasswordModalVisible ? (
+        <ForgotPasswordModal
+          onClose={() => setForgotPasswordModalVisible(false)}
+          onGoToSignin={() => {
+            setSignInModalVisible(true);
+            setForgotPasswordModalVisible(false);
           }}
         />
       ) : null}
