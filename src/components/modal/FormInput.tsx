@@ -47,15 +47,17 @@ const PasswordInput = (props) => {
 };
 
 function FormInput(props) {
-  const { error, isPassword, name, ...rest } = props;
+  const { error, isPassword, isOptional = false, name, ...rest } = props;
 
   return (
     <FormControl w="100%">
       <FormLabel display="flex" fontSize="14px" fontWeight={400} color="#212529" mb="4px">
         {name}
-        <Text color="#DC3545" ml="4px">
-          *
-        </Text>
+        {!isOptional ? (
+          <Text color="#DC3545" ml="4px">
+            *
+          </Text>
+        ) : null}
       </FormLabel>
       {isPassword ? <PasswordInput {...rest} /> : <Input {...rest} />}
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}

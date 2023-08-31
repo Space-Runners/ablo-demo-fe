@@ -34,6 +34,7 @@ const ModalContainer = ({ children, onClose, title, subtitle }: Props) => {
                     height: 'calc(100vh - 34px)',
                     borderBottomLeftRadius: '10px',
                     borderTopLeftRadius: '10px',
+                    objectFit: 'cover',
                   }}
                   loop
                   muted
