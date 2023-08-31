@@ -51,7 +51,7 @@ function ForgotPassword({ onClose, onGoToSignin }: Props) {
       title="Forgot Password"
       subtitle="No worries, we’ll send you reset instructions."
     >
-      <VStack mb="20px" spacing="12px" maxW="350px" w={{ base: 'auto', md: '360px' }}>
+      <VStack mb="20px" spacing="12px" maxW="350px" w={{ base: '100%', md: '360px' }}>
         {success ? (
           <Alert height="60px" status="success" textAlign="left" w="350px">
             <AlertIcon />
