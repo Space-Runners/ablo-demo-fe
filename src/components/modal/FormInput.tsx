@@ -38,7 +38,7 @@ const PasswordInput = (props) => {
     <InputGroup size="md">
       <Input type={show ? 'text' : 'password'} placeholder="Enter password" {...props} />
       <InputRightElement>
-        <Button bg="transparent" minW="none" size="sm" onClick={handleClick} w="20px">
+        <Button bg="transparent" minW="none" size="sm" onClick={handleClick} w="20px" tabIndex={-1}>
           {show ? <IconEyeClosed /> : 'Show'}
         </Button>
       </InputRightElement>

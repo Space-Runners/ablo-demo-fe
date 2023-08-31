@@ -85,3 +85,11 @@ export const useMe = () =>
       return data;
     })
   );
+
+export const setPassword = (password: string, token: string) =>
+  axios
+    .post('/auth/reset-password', {
+      token,
+      password,
+    })
+    .then(({ data }) => data);
