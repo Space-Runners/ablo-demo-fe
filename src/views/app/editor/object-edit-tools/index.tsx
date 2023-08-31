@@ -162,8 +162,6 @@ const ObjectEditTools = ({
   const { aiImage, fill, fontFamily, fontSize, opacity, textAlign, text } = activeObject || {};
   const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
 
-  console.log('Active object', activeObject);
-
   const isBackgroundRemoved = url === noBackgroundUrl;
 
   const handleToggleBackground = async () => {
@@ -297,8 +295,6 @@ const ObjectEditTools = ({
   const handleLayerDown = () => {
     const selectedObject = canvas.getActiveObject();
 
-    console.log('sld', selectedObject);
-
     canvas.sendBackwards(selectedObject);
     canvas.renderAll();
 
@@ -307,8 +303,6 @@ const ObjectEditTools = ({
 
   const handleLayerUp = () => {
     const selectedObject = canvas.getActiveObject();
-
-    console.log('s', selectedObject);
 
     canvas.bringForward(selectedObject);
     canvas.renderAll();

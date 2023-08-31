@@ -37,13 +37,16 @@ const CanvasContainer = ({
 
   const userState = useRef({ angle: 0, isModifying: false, isRotating: false });
 
-  const { printableAreas, urlPrefix } = template;
+  const { colors, sides } = template;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
+  const sideId = sides.find(({ name }) => name === side).id;
+  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
+
+  const image = variant.images.find(({ templateSideId }) => templateSideId === sideId);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const drawingArea = getDrawingArea(printableAreas, side, isMobile);
+  const drawingArea = getDrawingArea(template, side, isMobile);
 
   useEffect(() => {
     if (!canvas) {
@@ -89,7 +92,7 @@ const CanvasContainer = ({
   return (
     <F>
       <Image
-        src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
+        src={image.url}
         crossOrigin="anonymous"
         width={{ base: GARMENT_IMAGE_MOBILE_WIDTH, md: GARMENT_IMAGE_DESKTOP_WIDTH }}
       />

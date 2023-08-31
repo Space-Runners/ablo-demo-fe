@@ -11,6 +11,7 @@ import { breakpoints } from './foundations/breakpoints';
 import { globalStyles } from './styles';
 
 import './fabric';
+import './fonts.ts';
 
 const extendedTheme = extendTheme(
   { breakpoints }, // Breakpoints

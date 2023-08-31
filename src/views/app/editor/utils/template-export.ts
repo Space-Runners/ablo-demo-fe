@@ -17,13 +17,18 @@ const getEditorStateAsImages = () => {
   const front = document.getElementById('#canvas-container-front');
   const back = document.getElementById('#canvas-container-back');
 
+  const frontCanvas = document.getElementById('canvas-front');
+  const backCanvas = document.getElementById('canvas-back');
+
   const frontOld = front.style.display;
   const backOld = back.style.display;
 
   front.style.display = 'block';
   back.style.display = 'block';
 
-  const promises = [front, back].map((element) => getTemplateImgFromHtml(element));
+  const promises = [front, frontCanvas, back, backCanvas].map((element) =>
+    getTemplateImgFromHtml(element)
+  );
 
   const reset = () => {
     front.style.display = frontOld;

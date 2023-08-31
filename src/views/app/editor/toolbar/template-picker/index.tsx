@@ -9,31 +9,32 @@ import MiniFilterBar from '@/components/MiniFilterBar';
 import IconBack from '@/components/icons/IconBack';
 import { Filters, Garment, Template } from '@/components/types';
 
-import PRODUCTS, { CLOTHING_TYPES } from '@/data/products';
-
 import Colors from '@/theme/colors';
 
 import TemplateDetails from './TemplateDetails';
 import TemplateFilters from './Filters';
+import { getOptions } from './utils';
 
 import { IconFilters, IconCloseFilters, IconSustainable, IconSelected } from './Icons';
 
 const { abloBlue } = Colors;
 
 const matchesClothingType = (types, template) =>
-  !types.length || types[0] === 'All' || types.find((type) => type.includes(template.name));
+  !types.length || types[0] === 'all' || types.find((type) => type.includes(template.name));
 
 const matchesFit = (fits, template) =>
-  !fits.length || fits.find((fit) => fit.includes(template.name));
+  !fits.length || fits.find((fit) => template.fit && fit.includes(template.fit));
 
 const matchesPrice = ([min, max], template) => {
-  const { price } = template;
+  const { price: priceAsString } = template;
+
+  const price = parseFloat(priceAsString);
 
   return price >= min && price <= max;
 };
 
-const getTemplatesMatchingFilters = (filters) =>
-  PRODUCTS.filter((template) => {
+const getTemplatesMatchingFilters = (templates, filters) =>
+  templates.filter((template) => {
     const { clothingTypes = [], fits = [], price: priceRange } = filters;
 
     return (
@@ -57,12 +58,9 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
       {chunks.map((chunk, index) => (
         <Flex key={index} mb="24px">
           {chunk.map((template, index) => {
-            const { fabric, fit, id, name, price, variants, urlPrefix } = template;
+            const { fabric, fit, id, name, price, colors } = template;
 
-            const variant =
-              selectedGarment && selectedGarment.variant
-                ? variants.find((variant) => variant.name === selectedGarment.variant)
-                : variants.find((variant) => variant.name === 'OatMilk');
+            const variant = colors.find((variant) => variant.name === 'OatMilk');
 
             const isSelected = selectedGarment && selectedGarment.templateId === id;
 
@@ -92,7 +90,7 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
                   justify="center"
                   padding="16px 8px"
                 >
-                  <Image h={160} src={`${urlPrefix}_${variant.name}_FRONT.webp`} alt={name} />
+                  <Image h={160} src={`${variant.images[0].url}`} alt={name} />
                 </Flex>
                 <Box padding="8px">
                   <Text color="#6A6866" display="block" fontSize="xs" textTransform="uppercase">
@@ -135,6 +133,7 @@ type TemplatePickerProps = {
   onSelectedGarment: (garment: Garment) => void;
   selectedTemplate: Template;
   onSelectedTemplate: (garment: Template) => void;
+  templates: Template[];
 };
 
 export default function TemplatePicker({
@@ -144,12 +143,13 @@ export default function TemplatePicker({
   onSelectedGarment,
   selectedTemplate,
   onSelectedTemplate,
+  templates: allTemplates,
 }: TemplatePickerProps) {
   const [areFiltersVisible, setFiltersVisible] = useState(false);
 
   const { clothingTypes } = filters;
 
-  const templates = getTemplatesMatchingFilters(filters);
+  const templates = getTemplatesMatchingFilters(allTemplates, filters);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -205,6 +205,7 @@ export default function TemplatePicker({
             onSelectedGarment({ ...selectedGarment });
           }}
           onUpdate={(updates) => onFiltersChange({ ...filters, ...updates })}
+          templates={allTemplates}
         />
       ) : (
         <Box>
@@ -217,7 +218,7 @@ export default function TemplatePicker({
           ) : (
             <F>
               <MiniFilterBar
-                options={['All', ...CLOTHING_TYPES]}
+                options={[{ name: 'All', value: 'all' }, ...getOptions(allTemplates, 'name')]}
                 selectedValue={clothingTypes[0] || 'All'}
                 onChange={(value) => onFiltersChange({ ...filters, clothingTypes: [value] })}
               />

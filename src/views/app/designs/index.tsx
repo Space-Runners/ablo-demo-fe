@@ -44,11 +44,12 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
     <Box bg="#ffffff" padding="22px" w="100%">
       <HStack spacing="16px" wrap="wrap">
         {designs.map((design, index) => {
-          const { name, editorState } = design;
-          // Find first previewUrl
-          const previewUrl = editorState.front.previewUrl;
+          const { name, sides } = design;
 
-          console.log('Preview URL', previewUrl);
+          console.log('Design', design);
+          // Find first previewUrl
+          const { previewUrl } = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText);
+
           return (
             <Card
               key={index}

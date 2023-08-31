@@ -96,6 +96,7 @@ type FooterToolbarProps = {
   onSelectedGarment: (garment: Garment) => void;
   selectedTemplate: Template;
   onSelectedTemplate: (template: Template) => void;
+  templates: Template[];
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
@@ -111,6 +112,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     onSelectedGarment,
     selectedTemplate,
     onSelectedTemplate,
+    templates,
   } = props;
 
   const [selectedFilters, setSelectedFilters] = useState<Filters>({
@@ -279,6 +281,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             onSelectedGarment={onSelectedGarment}
             selectedTemplate={selectedTemplate}
             onSelectedTemplate={onSelectedTemplate}
+            templates={templates}
           />
         ) : null}
         {selectedTool === 'textToImage' ? (

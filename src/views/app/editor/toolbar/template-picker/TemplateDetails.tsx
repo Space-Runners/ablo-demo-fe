@@ -14,8 +14,6 @@ import { IconSustainable } from './Icons';
 
 const { abloBlue } = Colors;
 
-const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
 type TemplateDetailsProps = {
   garment: Garment;
   onGarmentUpdate: (updates: object) => void;
@@ -23,23 +21,38 @@ type TemplateDetailsProps = {
 };
 
 const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetailsProps) => {
-  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState('');
 
+  console.log('Effect', garment);
+
   useEffect(() => {
-    setSelectedSize(garment.size);
-    setSelectedVariant(garment.variant);
-  }, []);
+    let variantId = garment.variantId;
+
+    const { colors } = template;
+
+    if (!variantId || !template.colors.find((variant) => variant.id === variantId) || colors[0]) {
+      const defaultVariant =
+        template.colors.find((variant) => variant.name === 'OatMilk') || colors[0];
+
+      variantId = defaultVariant.id;
+    }
+
+    setSelectedSize(garment.sizeId);
+    setSelectedVariant(variantId);
+  }, [template, garment]);
 
   const handleSelect = () => {
     onGarmentUpdate({
       templateId: template.id,
-      size: selectedSize,
-      variant: selectedVariant,
+      sizeId: selectedSize,
+      variantId: selectedVariant,
     });
   };
 
-  const { description, fabric, fit, madeIn, name, price, urlPrefix, tags } = template;
+  const { colors, material, fabric, fit, madeIn, name, price, sizes } = template;
+
+  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
 
   return (
     <Box position="relative">
@@ -54,7 +67,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image h={216} src={`${urlPrefix}_${selectedVariant}_FRONT.webp`} alt={name} />
+        <Image h={216} src={variant.images[0].url} alt={name} />
       </Flex>
       <Box padding="24px 14px">
         <Text color="#959392" fontSize="sm" mb="13px">
@@ -78,12 +91,10 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
             </Text>
           </Box>
         </Flex>
-        <Text color="#000000" fontSize="sm" mb="20px">
-          {tags.join(' / ')}
-        </Text>
+
         <HStack mb="20px" spacing="10px">
-          {SIZES.map((size) => {
-            const isSelected = size === selectedSize;
+          {sizes.map(({ id, name }) => {
+            const isSelected = id === selectedSize;
 
             return (
               <Flex
@@ -92,14 +103,14 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
                 border={isSelected ? `1px solid ${abloBlue}` : '1px solid #6A6866'}
                 borderRadius="4px"
                 fontWeight={isSelected ? 600 : 400}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => setSelectedSize(id)}
                 h="34px"
-                key={size}
+                key={id}
                 justify="center"
                 w="34px"
               >
                 <Text color={isSelected ? abloBlue : '#6A6866'} fontSize="sm">
-                  {size}
+                  {name}
                 </Text>
               </Flex>
             );
@@ -107,6 +118,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         </HStack>
         <ColorPicker
           onSelectedVariants={([variant]) => setSelectedVariant(variant)}
+          options={colors}
           selectedVariants={[selectedVariant]}
         />
       </Box>
@@ -114,7 +126,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         <Box color="#000000" fontSize="md" padding="0 15px 22px 0">
           <Text as="b">Made in {madeIn}</Text>
           <Text fontWeight={300} mt="8px">
-            {description}
+            {material}
           </Text>
         </Box>
       </Panel>

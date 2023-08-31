@@ -1,7 +1,8 @@
 import { Button, HStack } from '@chakra-ui/react';
-import Colors from '@/theme/colors';
 
-import { variants } from '@/data/products';
+import { ColorVariant } from './types';
+
+import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
@@ -9,13 +10,10 @@ type Props = {
   isMulti?: boolean;
   selectedVariants?: string[];
   onSelectedVariants?: (values: string[]) => void;
+  options: ColorVariant[];
 };
 
-const ColorPicker = ({
-  isMulti,
-  selectedVariants = [],
-  onSelectedVariants,
-}: Props) => {
+const ColorPicker = ({ isMulti, selectedVariants = [], onSelectedVariants, options }: Props) => {
   const toggleSelected = (value) => {
     let newSelected;
 
@@ -36,12 +34,12 @@ const ColorPicker = ({
 
   return (
     <HStack align="center" overflowX="auto" spacing="10px">
-      {variants.map(({ name, color }) => {
-        const isSelected = selectedVariants.includes(name);
+      {options.map(({ id, name, hex }) => {
+        const isSelected = selectedVariants.includes(id);
 
         return (
           <Button
-            bg={color}
+            bg={hex}
             border={
               isSelected
                 ? `1px solid ${abloBlue}`
@@ -51,7 +49,7 @@ const ColorPicker = ({
             }
             h="24px"
             flexShrink={0}
-            key={name}
+            key={id}
             padding="0"
             w="24px"
             borderRadius="50%"
@@ -59,7 +57,7 @@ const ColorPicker = ({
             onClick={(e) => {
               e.stopPropagation();
 
-              toggleSelected(name);
+              toggleSelected(id);
             }}
           />
         );

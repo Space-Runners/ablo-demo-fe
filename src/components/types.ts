@@ -28,36 +28,52 @@ export interface Filters {
 
 export interface Garment {
   templateId: number;
-  variant: string;
-  size: string;
+  variantId: string;
+  sizeId: number;
 }
 
-export interface Variant {
+type ColorVariantImage = {
+  templateSideId: string;
+  url: string;
+};
+
+export interface ColorVariant {
+  id: string;
   name: string;
-  color: string;
+  hex: string;
+  images: ColorVariantImage[];
 }
 
-type PrintableAreaDimensions = {
+type TemplateSide = {
+  id: string;
   left: number;
   top: number;
   height: number;
+  name: string;
   width: number;
 };
 
+export interface TemplateSize {
+  id: number;
+  name: string;
+}
+
 export interface Template {
+  colors: ColorVariant[];
+  currency: {
+    id: number;
+    name: string;
+  };
   fabric: string;
   id: number;
   madeIn: string;
   name: string;
   fit: string;
-  price: number;
+  price: string;
   urlPrefix: string;
-  description: string;
-  printableAreas: {
-    front: PrintableAreaDimensions;
-    back: PrintableAreaDimensions;
-  };
-  variants: Variant[];
+  material: string;
+  sides: TemplateSide[];
+  sizes: TemplateSize[];
   tags: string[];
 }
 
@@ -82,18 +98,25 @@ export interface CanvasState {
   previewUrl?: string;
 }
 
-export interface EditorState {
-  front: CanvasState;
-  back: CanvasState;
+export interface DesignSide {
+  id?: string;
+  templateSideId?: string;
+  hasGraphics?: boolean;
+  hasText?: boolean;
+  canvasState?: string;
+  canvasStateUrl?: string;
+  designImage?: string;
+  previewImage?: string;
+  previewUrl?: string;
 }
 
 export interface Design {
   id?: string;
   name: string;
-  garmentId: number;
-  garmentColor: string;
-  editorState: EditorState;
-  size?: string;
+  template: Template;
+  templateColorId: string;
+  sizeId?: number;
+  sides: DesignSide[];
   updatedAt?: string;
 }
 
