@@ -98,7 +98,7 @@ const CanvasContainer = ({
       />
       <Box
         border={
-          isModifyingObject || true
+          isModifyingObject
             ? `2px dashed ${DARK_VARIANTS.includes(selectedVariant) ? '#FFFFFF' : '#a8a8a8'}`
             : 'none'
         }

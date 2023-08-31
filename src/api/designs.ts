@@ -6,8 +6,20 @@ import { Design, DesignSide } from '@/components/types';
 
 const URL = `/designs`;
 
-const getDesignSides = (designId) =>
-  axios.get<DesignSide[]>(`${URL}/${designId}/sides`).then(({ data }) => data);
+const getDesignSides = (designId, includeCanvasState = false) =>
+  axios.get<DesignSide[]>(`${URL}/${designId}/sides`).then(({ data }) => {
+    if (!includeCanvasState) {
+      return data;
+    }
+
+    return Promise.all(
+      data.map((side) =>
+        axios
+          .get<string>(side.canvasStateUrl)
+          .then(({ data: canvasState }) => ({ ...side, canvasState }))
+      )
+    );
+  });
 
 const getDesigns = () =>
   axios
@@ -24,7 +36,7 @@ export const useDesigns = () => useQuery(['designs'], () => getDesigns());
 
 export const getDesign = (id: string) =>
   axios.get<Design>(`${URL}/${id}`).then(({ data }) =>
-    getDesignSides(id).then((sides) => ({
+    getDesignSides(id, true).then((sides) => ({
       ...data,
       sides,
     }))

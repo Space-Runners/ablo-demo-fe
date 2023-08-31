@@ -103,6 +103,7 @@ export interface DesignSide {
   hasGraphics?: boolean;
   hasText?: boolean;
   canvasState?: string;
+  canvasStateUrl?: string;
   designImage?: string;
   previewImage?: string;
   previewUrl?: string;
