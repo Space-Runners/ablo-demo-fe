@@ -96,8 +96,6 @@ export default function OrderOrShare() {
 
   const { data: design, isLoading } = useDesign(designId);
 
-  console.log('design', design);
-
   const { sides = [] } = design || {};
 
   const history = useHistory();
@@ -112,8 +110,6 @@ export default function OrderOrShare() {
 
     return [...result, ...newSlides];
   }, []);
-
-  console.log('Slides', slides);
 
   return (
     <Box>

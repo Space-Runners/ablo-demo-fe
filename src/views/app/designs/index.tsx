@@ -46,7 +46,6 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
         {designs.map((design, index) => {
           const { name, sides } = design;
 
-          console.log('Design', design);
           // Find first previewUrl
           const { previewUrl } = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText);
 

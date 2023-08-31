@@ -83,8 +83,6 @@ export default function ImageEditorPage() {
         .then((design) => {
           const fullTemplate = templates.find(({ id }) => id === design.template.id);
 
-          console.log('Des', design);
-
           setActiveDesign({
             ...design,
             template: fullTemplate,
@@ -117,8 +115,6 @@ export default function ImageEditorPage() {
     try {
       const [previewImageFront, imageFront, previewImageBack, imageBack] =
         await getEditorStateAsImages();
-
-      console.log('Active design', activeDesign);
 
       const { sides, template } = activeDesign;
 
