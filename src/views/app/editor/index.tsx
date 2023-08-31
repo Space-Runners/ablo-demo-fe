@@ -83,6 +83,8 @@ export default function ImageEditorPage() {
         .then((design) => {
           const fullTemplate = templates.find(({ id }) => id === design.template.id);
 
+          console.log('Des', design);
+
           setActiveDesign({
             ...design,
             template: fullTemplate,

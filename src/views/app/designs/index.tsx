@@ -45,8 +45,10 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
       <HStack spacing="16px" wrap="wrap">
         {designs.map((design, index) => {
           const { name, sides } = design;
+
+          console.log('Design', design);
           // Find first previewUrl
-          const { previewUrl } = sides[0] || {};
+          const { previewUrl } = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText);
 
           return (
             <Card

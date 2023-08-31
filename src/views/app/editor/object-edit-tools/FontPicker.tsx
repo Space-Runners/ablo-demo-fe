@@ -4,7 +4,7 @@ import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
-import Fonts from './fonts';
+import Fonts from '@/theme/fonts';
 
 const Button = (props) => {
   const { isSelected, ...rest } = props;

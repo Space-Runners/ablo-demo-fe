@@ -6,37 +6,24 @@ import { Design, DesignSide } from '@/components/types';
 
 const URL = `/designs`;
 
-const getDesignSides = (designId, includeCanvasState = false) =>
-  axios.get<DesignSide[]>(`${URL}/${designId}/sides`).then(({ data }) => {
-    if (!includeCanvasState) {
-      return data;
-    }
+// TODO: Change this back to axios when S3 bucket where canvas states are stored enables CORS with our domain
+const getCanvasStates = (sides) =>
+  Promise.all(
+    sides.map((side) =>
+      fetch(side.canvasStateUrl)
+        .then((response) => response.text())
+        .then((canvasState) => ({ ...side, canvasState }))
+        .catch(() => side)
+    )
+  );
 
-    return Promise.all(
-      data.map((side) =>
-        axios
-          .get<string>(side.canvasStateUrl)
-          .then(({ data: canvasState }) => ({ ...side, canvasState }))
-      )
-    );
-  });
-
-const getDesigns = () =>
-  axios
-    .get<Design[]>(URL)
-    .then(({ data }) =>
-      Promise.all(
-        data.map((design) =>
-          getDesignSides(design.id).then((sides) => ({ ...design, sides: sides.reverse() }))
-        )
-      )
-    );
+const getDesigns = () => axios.get<Design[]>(URL).then(({ data }) => data);
 
 export const useDesigns = () => useQuery(['designs'], () => getDesigns());
 
 export const getDesign = (id: string) =>
   axios.get<Design>(`${URL}/${id}`).then(({ data }) =>
-    getDesignSides(id, true).then((sides) => ({
+    getCanvasStates(data.sides).then((sides) => ({
       ...data,
       sides,
     }))
@@ -60,11 +47,30 @@ const createDesign = (design: Design): Promise<Design> => {
   });
 };
 
+const updateDesignSide = (designId, side: DesignSide) => {
+  const { canvasState, designImage, previewImage } = side;
+
+  return axios
+    .patch<DesignSide>(`${URL}/${designId}/sides/${side.id}`, {
+      canvasState,
+      designImage,
+      previewImage,
+    })
+    .then(({ data }) => data);
+};
+
 const updateDesign = (design: Design) => {
-  return axios.put<Design>(`${URL}/${design.id}`, design).then(({ data }) => data);
+  const { sides } = design;
+
+  return Promise.all(sides.map((side) => updateDesignSide(design.id, side))).then((newSides) => ({
+    ...design,
+    sides: newSides,
+  }));
 };
 
 export const saveDesign = (design: Design) => {
+  console.log('Saving design', design);
+
   const method = design.id ? updateDesign : createDesign;
 
   return method(design);

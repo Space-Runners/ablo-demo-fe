@@ -99,6 +99,7 @@ export interface CanvasState {
 }
 
 export interface DesignSide {
+  id?: string;
   templateSideId?: string;
   hasGraphics?: boolean;
   hasText?: boolean;
