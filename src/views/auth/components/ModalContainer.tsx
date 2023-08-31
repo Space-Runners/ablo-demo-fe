@@ -8,7 +8,7 @@ import Header from './Header';
 
 type Props = {
   children: ReactElement;
-  onClose: () => void;
+  onClose?: () => void;
   title: string;
   subtitle: string;
 };
@@ -54,12 +54,16 @@ const ModalContainer = ({ children, onClose, title, subtitle }: Props) => {
               textAlign="center"
               w="100%"
             >
-              <Show below="md">
-                <ButtonBack position="absolute" top="17px" left="8px" onClick={onClose} />
-              </Show>
-              <Show above="md">
-                <ButtonCloseModal position="absolute" top="35px" right="33px" onClick={onClose} />
-              </Show>
+              {onClose ? (
+                <Show below="md">
+                  <ButtonBack position="absolute" top="17px" left="8px" onClick={onClose} />
+                </Show>
+              ) : null}
+              {onClose ? (
+                <Show above="md">
+                  <ButtonCloseModal position="absolute" top="35px" right="33px" onClick={onClose} />
+                </Show>
+              ) : null}
               <Header title={title} subtitle={subtitle} />
               {children}
             </Flex>
