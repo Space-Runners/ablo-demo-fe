@@ -40,7 +40,7 @@ const CanvasContainer = ({
   const { colors, sides } = template;
 
   const sideId = sides.find(({ name }) => name === side).id;
-  const variant = colors.find((variant) => variant.name === selectedVariant) || colors[0];
+  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
 
   const image = variant.images.find(({ templateSideId }) => templateSideId === sideId);
 
@@ -88,8 +88,6 @@ const CanvasContainer = ({
       userState.current.isRotating && renderRotateLabel(opt.ctx, userState.current);
     });
   }, [canvas]);
-
-  console.log('Drawing area', drawingArea);
 
   return (
     <F>

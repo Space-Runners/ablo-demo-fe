@@ -5,6 +5,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
+import { getSizes } from '@/api/sizes';
 import { getTemplates } from '@/api/templates';
 
 import Button from '@/components/Button';
@@ -22,20 +23,6 @@ import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
 import EditorTool from './EditorTool';
 
 import getEditorStateAsImages from './utils/template-export';
-
-const DEFAULT_DESIGN = {
-  templateColor: 'OatMilk',
-  name: '',
-  size: 'S',
-  editorState: {
-    front: {
-      canvas: null,
-    },
-    back: {
-      canvas: null,
-    },
-  },
-};
 
 export default function ImageEditorPage() {
   const [activeDesign, setActiveDesign] = useState<Design>(null);
@@ -68,16 +55,25 @@ export default function ImageEditorPage() {
 
     const designId = searchParams.get('designId');
 
-    getTemplates().then((templates) => {
-      const templateId = templates[0].id;
+    Promise.all([getTemplates(), getSizes()]).then(([templates, sizes]) => {
+      const [defaultTemplate] = templates;
+
+      const { colors, sides } = defaultTemplate;
+
+      const defaultColor = colors.find((color) => color.name === 'OatMilk');
 
       setTemplates(templates);
 
+      const defaultDesign = {
+        name: '',
+        templateColorId: defaultColor.id,
+        template: defaultTemplate,
+        sizeId: sizes[0].id,
+        sides: sides.map(({ id }) => ({ templateSideId: id })),
+      };
+
       if (!designId) {
-        setActiveDesign({
-          ...DEFAULT_DESIGN,
-          templateId,
-        });
+        setActiveDesign(defaultDesign);
 
         setIsLoading(false);
         return;
@@ -85,7 +81,12 @@ export default function ImageEditorPage() {
 
       getDesign(designId)
         .then((design) => {
-          setActiveDesign(design);
+          const fullTemplate = templates.find(({ id }) => id === design.template.id);
+
+          setActiveDesign({
+            ...design,
+            template: fullTemplate,
+          });
 
           setIsLoading(false);
         })
@@ -112,19 +113,44 @@ export default function ImageEditorPage() {
     setHasChanges(false);
 
     try {
-      const [rawImageFront, rawImageBack] = await getEditorStateAsImages();
+      const [previewImageFront, imageFront, previewImageBack, imageBack] =
+        await getEditorStateAsImages();
 
-      const { editorState } = activeDesign;
+      console.log('Active design', activeDesign);
+
+      const { sides, template } = activeDesign;
+
+      const { sides: templateSides } = templates.find(({ id }) => id === template.id);
+
+      const sidesWithImages = sides.map((side) => {
+        const sideName = templateSides.find(({ id }) => id === side.templateSideId).name;
+
+        const defaultProperties = {
+          canvasState: '',
+          hasGraphics: false,
+          hasText: false,
+        };
+
+        const isFront = sideName.toLowerCase() === 'front';
+
+        return {
+          ...defaultProperties,
+          ...side,
+          previewImage: isFront ? previewImageFront : previewImageBack,
+          designImage: isFront ? imageFront : imageBack,
+        };
+      });
 
       const design = {
         ...activeDesign,
-        editorState,
-        rawImageFront,
-        rawImageBack,
+        sides: sidesWithImages,
+        templateId: template.id,
       };
 
+      delete design.template;
+
       if (name) {
-        design.id = null;
+        delete design.id;
         design.name = name;
       }
 

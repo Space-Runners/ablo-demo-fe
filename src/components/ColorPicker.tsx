@@ -34,8 +34,8 @@ const ColorPicker = ({ isMulti, selectedVariants = [], onSelectedVariants, optio
 
   return (
     <HStack align="center" overflowX="auto" spacing="10px">
-      {options.map(({ name, hex }) => {
-        const isSelected = selectedVariants.includes(name);
+      {options.map(({ id, name, hex }) => {
+        const isSelected = selectedVariants.includes(id);
 
         return (
           <Button
@@ -49,7 +49,7 @@ const ColorPicker = ({ isMulti, selectedVariants = [], onSelectedVariants, optio
             }
             h="24px"
             flexShrink={0}
-            key={name}
+            key={id}
             padding="0"
             w="24px"
             borderRadius="50%"
@@ -57,7 +57,7 @@ const ColorPicker = ({ isMulti, selectedVariants = [], onSelectedVariants, optio
             onClick={(e) => {
               e.stopPropagation();
 
-              toggleSelected(name);
+              toggleSelected(id);
             }}
           />
         );

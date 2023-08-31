@@ -7,19 +7,17 @@ export const getDrawingArea = (template, side, isMobile) => {
   const drawingArea = sides.find(({ name }) => name === side.toLowerCase());
 
   if (!isMobile) {
-    const { widthCm, heightCm } = drawingArea;
-
-    return { ...drawingArea, width: widthCm, height: heightCm };
+    return drawingArea;
   }
 
   const scalingFactorFoMobile = 350 / 500;
 
-  const { left, top, widthCm, heightCm } = drawingArea;
+  const { left, top, width, height } = drawingArea;
 
   return {
     left: left * scalingFactorFoMobile,
     top: top * scalingFactorFoMobile,
-    width: widthCm * scalingFactorFoMobile,
-    height: heightCm * scalingFactorFoMobile,
+    width: width * scalingFactorFoMobile,
+    height: height * scalingFactorFoMobile,
   };
 };

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
-import { isEmpty } from 'lodash';
+import { isEmpty, partition } from 'lodash';
 
 import { AiImage, Design, Garment, Template } from '@/components/types';
 
@@ -66,11 +66,15 @@ export default function ImageEditorTool({
 
   const [selectedTemplatePreview, setSelectedTemplatePreview] = useState<Template>(null);
 
-  const { editorState, templateId, templateColor, size } = design;
+  const { template, templateColorId, sizeId, sides: designSides } = design;
 
-  const selectedGarment = { templateId, size, variant: templateColor };
+  console.log('Editor tool design', design);
 
-  const template = templates.find((template) => template.id === selectedGarment.templateId);
+  const { sides: templateSides } = template;
+
+  const templateSideId = templateSides.find(({ name }) => name === selectedSide).id;
+
+  const selectedGarment = { templateId: template.id, sizeId, variantId: templateColorId };
 
   const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
@@ -90,17 +94,30 @@ export default function ImageEditorTool({
 
     state.current = JSON.stringify(json);
 
+    const { sides } = design;
+
+    console.log(canvas.current._objects);
+
+    const [textObjects, imageObjects] = partition(canvas.current._objects, ({ text }) => !!text);
+
+    const newSides = sides.map((side) => {
+      if (side.templateSideId === templateSideId) {
+        return {
+          ...side,
+          canvasState: state.current,
+          hasGraphics: imageObjects.length > 0,
+          hasText: textObjects.length > 0,
+        };
+      }
+
+      return side;
+    });
+
     onDesignChange({
       ...design,
-      editorState: {
-        ...editorState,
-        [selectedSide]: {
-          ...editorState[selectedSide],
-          canvas: state.current,
-        },
-      },
+      sides: newSides,
     });
-  }, [canvas, design, editorState, onDesignChange, selectedSide, undoStack]);
+  }, [canvas, design, templateSideId, onDesignChange, undoStack]);
 
   useEffect(() => {
     SIDES.forEach((side) => {
@@ -108,11 +125,17 @@ export default function ImageEditorTool({
 
       const drawingAreaForSide = getDrawingArea(template, side, isMobile);
 
+      const { sides: templateSides } = template;
+
+      const templateSide = templateSides.find(({ name }) => name === side);
+
       const { width, height } = drawingAreaForSide;
 
       canvas.current = initCanvas(side, width, height);
 
-      const canvasState = editorState[side]?.canvas;
+      const { canvasState } = design.sides.find(
+        ({ templateSideId }) => templateSide.id === templateSideId
+      );
 
       if (canvasState) {
         // Loading an already active design if you to go another page and come back
@@ -173,12 +196,40 @@ export default function ImageEditorTool({
   }, [canvas, saveState]);
 
   const handleSelectedGarment = (garment: Garment) => {
-    const { templateId, variant } = garment;
+    const { sizeId, templateId, variantId } = garment;
+
+    const oldTemplate = templates.find(({ id }) => id === design.template.id);
+    const newTemplate = templates.find(({ id }) => id === templateId);
+
+    const newSides = newTemplate.sides.map(({ id, name }) => {
+      const sideInOldTemplate = oldTemplate.sides.find((side) => side.name === name);
+
+      if (sideInOldTemplate) {
+        const { id: sideId } = sideInOldTemplate;
+
+        const oldDesign = design.sides.find(({ templateSideId }) => templateSideId === sideId);
+
+        if (oldDesign) {
+          return {
+            ...oldDesign,
+            templateSideId: id,
+          };
+        }
+      }
+
+      return {
+        templateSideId: id,
+      };
+    });
+
+    console.log('New sides', newSides);
 
     onDesignChange({
       ...design,
-      templateId: templateId,
-      templateColor: variant,
+      sizeId,
+      sides: newSides,
+      template: newTemplate,
+      templateColorId: variantId,
     });
 
     setSelectedTemplatePreview(null);
@@ -237,7 +288,7 @@ export default function ImageEditorTool({
   };
 
   const handleAddText = (defaultProps) => {
-    const { width, heightCm: height } = drawingArea;
+    const { width, height } = drawingArea;
 
     const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage);
 
@@ -340,7 +391,7 @@ export default function ImageEditorTool({
   };
 
   const addImageToCanvas = (img, options = {}) => {
-    const { width, heightCm: height } = drawingArea;
+    const { width, height } = drawingArea;
 
     img.scaleToWidth(450);
 
@@ -372,7 +423,7 @@ export default function ImageEditorTool({
     setUndoStack([]);
   };
 
-  const canvasState = editorState[selectedSide]?.canvas;
+  const { canvasState } = designSides.find((design) => design.templateSideId === templateSideId);
   const canvasStateFromJson = canvasState && JSON.parse(canvasState);
 
   const objects = canvasStateFromJson?.objects || [];
@@ -472,7 +523,7 @@ export default function ImageEditorTool({
             <CanvasContainer
               canvas={canvasFront.current}
               template={template}
-              selectedVariant={selectedGarment.variant}
+              selectedVariant={selectedGarment.variantId}
               showHint={showHint}
               side="front"
               onHintClick={() => {
@@ -488,7 +539,7 @@ export default function ImageEditorTool({
             <CanvasContainer
               canvas={canvasBack.current}
               template={template}
-              selectedVariant={selectedGarment.variant}
+              selectedVariant={selectedGarment.variantId}
               showHint={showHint}
               side="back"
               onHintClick={() => {

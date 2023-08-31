@@ -6,6 +6,6 @@ import { TemplateSize } from '@/components/types';
 
 const entity = `sizes`;
 
-const getSizes = () => axios.get<TemplateSize[]>(`/${entity}`).then(({ data }) => data);
+export const getSizes = () => axios.get<TemplateSize[]>(`/${entity}`).then(({ data }) => data);
 
 export const useSizes = () => useQuery([entity], () => getSizes());

@@ -65,15 +65,11 @@ const SHARE_OPTIONS = [
 
 const SLIDES = [
   {
-    side: 'front',
     background: true,
   },
   {
-    side: 'front',
     background: false,
   },
-  { side: 'back', background: true },
-  { side: 'back', background: false },
 ];
 
 const getAiImageForSide = (side: CanvasState): AiImage => {
@@ -100,11 +96,24 @@ export default function OrderOrShare() {
 
   const { data: design, isLoading } = useDesign(designId);
 
-  const { front, back } = design?.editorState || {};
+  console.log('design', design);
+
+  const { sides = [] } = design || {};
 
   const history = useHistory();
 
   const handleGoToDesigns = () => history.push('/app/designs');
+
+  const slides = SLIDES.reduce((result, slide) => {
+    const newSlides = sides.map((side) => ({
+      ...side,
+      ...slide,
+    }));
+
+    return [...result, ...newSlides];
+  }, []);
+
+  console.log('Slides', slides);
 
   return (
     <Box>
@@ -167,12 +176,10 @@ export default function OrderOrShare() {
             >
               <Box h="100%" w={{ base: '100%', md: '600px' }}>
                 <Swiper pagination modules={[Pagination]} className="mySwiper">
-                  {SLIDES.map((slide, index) => {
-                    const { side, background } = slide;
+                  {slides.map((slide, index) => {
+                    const { canvasState, previewUrl, background } = slide;
 
-                    const stateForSide = side === 'front' ? front : back;
-
-                    const aiImage = getAiImageForSide(stateForSide);
+                    const aiImage = null && getAiImageForSide(canvasState);
 
                     const style = aiImage ? aiImage.options.style : 'kidult';
 
@@ -188,7 +195,7 @@ export default function OrderOrShare() {
                             />
                           ) : null}
                           <Image
-                            src={stateForSide?.previewUrl}
+                            src={previewUrl}
                             margin="0 auto"
                             left={0}
                             right={0}

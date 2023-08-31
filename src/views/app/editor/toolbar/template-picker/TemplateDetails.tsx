@@ -14,8 +14,6 @@ import { IconSustainable } from './Icons';
 
 const { abloBlue } = Colors;
 
-const SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
 type TemplateDetailsProps = {
   garment: Garment;
   onGarmentUpdate: (updates: object) => void;
@@ -23,25 +21,38 @@ type TemplateDetailsProps = {
 };
 
 const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetailsProps) => {
-  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState('');
 
+  console.log('Effect', garment);
+
   useEffect(() => {
-    setSelectedSize(garment.size);
-    setSelectedVariant(garment.variant);
-  }, []);
+    let variantId = garment.variantId;
+
+    const { colors } = template;
+
+    if (!variantId || !template.colors.find((variant) => variant.id === variantId) || colors[0]) {
+      const defaultVariant =
+        template.colors.find((variant) => variant.name === 'OatMilk') || colors[0];
+
+      variantId = defaultVariant.id;
+    }
+
+    setSelectedSize(garment.sizeId);
+    setSelectedVariant(variantId);
+  }, [template, garment]);
 
   const handleSelect = () => {
     onGarmentUpdate({
       templateId: template.id,
-      size: selectedSize,
-      variant: selectedVariant,
+      sizeId: selectedSize,
+      variantId: selectedVariant,
     });
   };
 
-  const { colors, material, fabric, fit, madeIn, name, price } = template;
+  const { colors, material, fabric, fit, madeIn, name, price, sizes } = template;
 
-  const variant = colors.find((variant) => variant.name === selectedVariant) || colors[0];
+  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
 
   return (
     <Box position="relative">
@@ -82,8 +93,8 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         </Flex>
 
         <HStack mb="20px" spacing="10px">
-          {SIZES.map((size) => {
-            const isSelected = size === selectedSize;
+          {sizes.map(({ id, name }) => {
+            const isSelected = id === selectedSize;
 
             return (
               <Flex
@@ -92,14 +103,14 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
                 border={isSelected ? `1px solid ${abloBlue}` : '1px solid #6A6866'}
                 borderRadius="4px"
                 fontWeight={isSelected ? 600 : 400}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => setSelectedSize(id)}
                 h="34px"
-                key={size}
+                key={id}
                 justify="center"
                 w="34px"
               >
                 <Text color={isSelected ? abloBlue : '#6A6866'} fontSize="sm">
-                  {size}
+                  {name}
                 </Text>
               </Flex>
             );

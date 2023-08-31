@@ -44,9 +44,9 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
     <Box bg="#ffffff" padding="22px" w="100%">
       <HStack spacing="16px" wrap="wrap">
         {designs.map((design, index) => {
-          const { name, editorState } = design;
+          const { name, sides } = design;
           // Find first previewUrl
-          const previewUrl = editorState.front.previewUrl;
+          const { previewUrl } = sides[0] || {};
 
           return (
             <Card

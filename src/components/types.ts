@@ -28,8 +28,8 @@ export interface Filters {
 
 export interface Garment {
   templateId: number;
-  variant: string;
-  size: string;
+  variantId: string;
+  sizeId: number;
 }
 
 type ColorVariantImage = {
@@ -48,9 +48,9 @@ type TemplateSide = {
   id: string;
   left: number;
   top: number;
-  heightCm: number;
+  height: number;
   name: string;
-  widthCm: number;
+  width: number;
 };
 
 export interface TemplateSize {
@@ -98,18 +98,23 @@ export interface CanvasState {
   previewUrl?: string;
 }
 
-export interface EditorState {
-  front: CanvasState;
-  back: CanvasState;
+export interface DesignSide {
+  templateSideId?: string;
+  hasGraphics?: boolean;
+  hasText?: boolean;
+  canvasState?: string;
+  designImage?: string;
+  previewImage?: string;
+  previewUrl?: string;
 }
 
 export interface Design {
   id?: string;
   name: string;
-  templateId: number;
-  templateColor: string;
-  editorState: EditorState;
-  size?: string;
+  template: Template;
+  templateColorId: string;
+  sizeId?: number;
+  sides: DesignSide[];
   updatedAt?: string;
 }
 
