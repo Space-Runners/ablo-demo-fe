@@ -68,8 +68,6 @@ export default function ImageEditorTool({
 
   const { template, templateColorId, sizeId, sides: designSides } = design;
 
-  console.log('Editor tool design', design);
-
   const { sides: templateSides } = template;
 
   const templateSideId = templateSides.find(({ name }) => name === selectedSide).id;
@@ -95,8 +93,6 @@ export default function ImageEditorTool({
     state.current = JSON.stringify(json);
 
     const { sides } = design;
-
-    console.log(canvas.current._objects);
 
     const [textObjects, imageObjects] = partition(canvas.current._objects, ({ text }) => !!text);
 
@@ -221,8 +217,6 @@ export default function ImageEditorTool({
         templateSideId: id,
       };
     });
-
-    console.log('New sides', newSides);
 
     onDesignChange({
       ...design,

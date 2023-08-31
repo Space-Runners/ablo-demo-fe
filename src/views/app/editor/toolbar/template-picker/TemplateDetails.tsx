@@ -24,8 +24,6 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState('');
 
-  console.log('Effect', garment);
-
   useEffect(() => {
     let variantId = garment.variantId;
 
