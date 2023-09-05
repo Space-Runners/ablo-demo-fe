@@ -4,17 +4,22 @@ import { Box, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 
 import { times } from 'lodash';
 
-import { Canvas, Product } from '@/components/types';
+import { Canvas, Template } from '@/components/types';
 
 import IconEmptyState from '../icons/EmptyState';
 import renderRotateLabel from '../fabric/rotateLabel';
+import {
+  GARMENT_IMAGE_DESKTOP_WIDTH,
+  GARMENT_IMAGE_MOBILE_WIDTH,
+  getDrawingArea,
+} from '../drawingAreas';
 
 const DARK_VARIANTS = ['Onyx', 'Oceana'];
 
 type Props = {
   canvas: Canvas;
   onHintClick: () => void;
-  product: Product;
+  template: Template;
   selectedVariant: string;
   side: string;
   showHint: boolean;
@@ -23,7 +28,7 @@ type Props = {
 const CanvasContainer = ({
   canvas,
   onHintClick,
-  product,
+  template,
   selectedVariant,
   side,
   showHint,
@@ -32,13 +37,16 @@ const CanvasContainer = ({
 
   const userState = useRef({ angle: 0, isModifying: false, isRotating: false });
 
-  const { printableAreas, urlPrefix } = product;
+  const { colors, sides } = template;
 
-  const variantImageUrl = `${urlPrefix}_${selectedVariant}`;
+  const sideId = sides.find(({ name }) => name === side).id;
+  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
+
+  const image = variant.images.find(({ templateSideId }) => templateSideId === sideId);
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const drawingArea = printableAreas.front[isMobile ? 'base' : 'md'];
+  const drawingArea = getDrawingArea(template, side, isMobile);
 
   useEffect(() => {
     if (!canvas) {
@@ -84,9 +92,9 @@ const CanvasContainer = ({
   return (
     <F>
       <Image
-        src={`${variantImageUrl}_${side.toUpperCase()}.webp?timestamp=${Date.now()}`}
+        src={image.url}
         crossOrigin="anonymous"
-        width={{ base: 350, md: 500 }}
+        width={{ base: GARMENT_IMAGE_MOBILE_WIDTH, md: GARMENT_IMAGE_DESKTOP_WIDTH }}
       />
       <Box
         border={

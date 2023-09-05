@@ -1,16 +1,17 @@
 import { Box, Button, Flex, HStack, Icon } from '@chakra-ui/react';
 
+import { useSizes } from '@/api/sizes';
 import ButtonCTA from '@/components/Button';
-
 import Panel from '@/components/Panel';
-import { Filters } from '@/components/types';
+import { Filters, Template } from '@/components/types';
 
-import { BRANDS, CLOTHING_TYPES, COLLECTIONS, FITS, GENDERS, SIZES } from '@/data/products';
+import { BRANDS, COLLECTIONS, GENDERS } from '@/data/products';
 
 import Colors from '@/theme/colors';
 import ColorPicker from '@/components/ColorPicker';
 
 import PricePicker from './PricePicker';
+import { getOptions } from './utils';
 
 const { abloBlue } = Colors;
 
@@ -33,6 +34,15 @@ const IconCheckmark = () => (
     />
   </Icon>
 );
+
+const getColorOptions = (templates: Template[]) =>
+  templates.reduce((result, template) => {
+    const { colors } = template;
+
+    const newColors = colors.filter(({ name }) => !result.find((color) => color.name === name));
+
+    return [...result, ...newColors];
+  }, []);
 
 type MultiselectProps = {
   name: string;
@@ -76,6 +86,7 @@ const Multiselect = ({
               fontSize="sm"
               fontWeight={isSelected ? 500 : 400}
               h="30px"
+              key={value}
               onClick={() => toggleSelected(value)}
               padding="7px 12px"
               _focus={{
@@ -101,16 +112,19 @@ type Props = {
   filters: Filters;
   onApply: () => void;
   onUpdate: (updates: object) => void;
+  templates: Template[];
 };
 
-const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
+const TemplateFilters = ({ filters, onApply, onUpdate, templates }: Props) => {
   const { brands, clothingTypes, collections, fits, genders, sizes, colors, price } = filters;
+
+  const { data: allSizes = [] } = useSizes();
 
   return (
     <Box paddingBottom="38px" w="100%">
       <Multiselect
         name="Sizes Available"
-        options={SIZES.map((size) => ({ value: size, name: size }))}
+        options={allSizes.map(({ name }) => ({ value: name, name }))}
         selectedValues={sizes}
         onUpdateSelectedValues={(values) => onUpdate({ sizes: values })}
       />
@@ -118,18 +132,19 @@ const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
         <ColorPicker
           isMulti
           onSelectedVariants={(values) => onUpdate({ colors: values })}
+          options={getColorOptions(templates)}
           selectedVariants={colors}
         />
       </Panel>
       <Multiselect
         name="Clothing Type"
-        options={CLOTHING_TYPES.map((name) => ({ value: name, name }))}
+        options={getOptions(templates, 'name')}
         selectedValues={clothingTypes}
         onUpdateSelectedValues={(values) => onUpdate({ clothingTypes: values })}
       />
       <Multiselect
         name="Product Fit"
-        options={FITS.map((name) => ({ value: name, name }))}
+        options={getOptions(templates, 'fit')}
         selectedValues={fits}
         onUpdateSelectedValues={(values) => onUpdate({ fits: values })}
       />
@@ -166,4 +181,4 @@ const ProductFilters = ({ filters, onApply, onUpdate }: Props) => {
   );
 };
 
-export default ProductFilters;
+export default TemplateFilters;

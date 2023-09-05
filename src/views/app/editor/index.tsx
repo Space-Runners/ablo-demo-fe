@@ -5,15 +5,16 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
+import { getSizes } from '@/api/sizes';
+import { getTemplates } from '@/api/templates';
 
 import Button from '@/components/Button';
 import Navbar from '@/components/navbar/Navbar';
-import { Design } from '@/components/types';
-
-import PRODUCTS from '@/data/products';
+import { Design, Template } from '@/components/types';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
+import ForgotPasswordModal from '@/views/auth/ForgotPasswordModal';
 
 import FeedbackAlert from './components/FeedbackAlert';
 import { IconBack } from './components/Icons';
@@ -24,27 +25,15 @@ import EditorTool from './EditorTool';
 
 import getEditorStateAsImages from './utils/template-export';
 
-const DEFAULT_DESIGN = {
-  garmentId: PRODUCTS[0].id,
-  garmentColor: 'OatMilk',
-  name: '',
-  size: 'S',
-  editorState: {
-    front: {
-      canvas: null,
-    },
-    back: {
-      canvas: null,
-    },
-  },
-};
-
 export default function ImageEditorPage() {
-  const [activeDesign, setActiveDesign] = useState<Design>(DEFAULT_DESIGN);
+  const [activeDesign, setActiveDesign] = useState<Design>(null);
   const [hasChanges, setHasChanges] = useState(false);
+
+  const [templates, setTemplates] = useState<Template[]>(null);
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
+  const [isForgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
   const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] = useState(false);
 
   const [isSavingDesign, setSavingDesign] = useState(false);
@@ -66,22 +55,45 @@ export default function ImageEditorPage() {
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
 
-    console.log('Effect', search);
-
     const designId = searchParams.get('designId');
 
-    if (!designId) {
-      setIsLoading(false);
-      return;
-    }
+    Promise.all([getTemplates(), getSizes()]).then(([templates, sizes]) => {
+      const [defaultTemplate] = templates;
 
-    getDesign(designId)
-      .then((design) => {
-        setActiveDesign(design);
+      const { colors, sides } = defaultTemplate;
+
+      const defaultColor = colors.find((color) => color.name === 'OatMilk');
+
+      setTemplates(templates);
+
+      const defaultDesign = {
+        name: '',
+        templateColorId: defaultColor.id,
+        template: defaultTemplate,
+        sizeId: sizes[0].id,
+        sides: sides.map(({ id }) => ({ templateSideId: id })),
+      };
+
+      if (!designId) {
+        setActiveDesign(defaultDesign);
 
         setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
+        return;
+      }
+
+      getDesign(designId)
+        .then((design) => {
+          const fullTemplate = templates.find(({ id }) => id === design.template.id);
+
+          setActiveDesign({
+            ...design,
+            template: fullTemplate,
+          });
+
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
+    });
   }, [search]);
 
   const handleNext = () => {
@@ -103,19 +115,42 @@ export default function ImageEditorPage() {
     setHasChanges(false);
 
     try {
-      const [rawImageFront, rawImageBack] = await getEditorStateAsImages();
+      const [previewImageFront, imageFront, previewImageBack, imageBack] =
+        await getEditorStateAsImages();
 
-      const { editorState } = activeDesign;
+      const { sides, template } = activeDesign;
+
+      const { sides: templateSides } = templates.find(({ id }) => id === template.id);
+
+      const sidesWithImages = sides.map((side) => {
+        const sideName = templateSides.find(({ id }) => id === side.templateSideId).name;
+
+        const defaultProperties = {
+          canvasState: '',
+          hasGraphics: false,
+          hasText: false,
+        };
+
+        const isFront = sideName.toLowerCase() === 'front';
+
+        return {
+          ...defaultProperties,
+          ...side,
+          previewImage: isFront ? previewImageFront : previewImageBack,
+          designImage: isFront ? imageFront : imageBack,
+        };
+      });
 
       const design = {
         ...activeDesign,
-        editorState,
-        rawImageFront,
-        rawImageBack,
+        sides: sidesWithImages,
+        templateId: template.id,
       };
 
+      delete design.template;
+
       if (name) {
-        design.id = null;
+        delete design.id;
         design.name = name;
       }
 
@@ -183,6 +218,7 @@ export default function ImageEditorPage() {
             setActiveDesign(design);
           }}
           onSave={() => handleSaveDesign()}
+          templates={templates}
         />
       )}
       {(errorSavingDesign || isDesignSaved) && (
@@ -216,10 +252,23 @@ export default function ImageEditorPage() {
             setSignInModalVisible(false);
             setSignUpModalVisible(true);
           }}
+          onGoToForgotPassword={() => {
+            setSignInModalVisible(false);
+            setForgotPasswordModalVisible(true);
+          }}
           onSignIn={() => {
             setSignInModalVisible(false);
 
             handleGoToSaveDesign();
+          }}
+        />
+      ) : null}
+      {isForgotPasswordModalVisible ? (
+        <ForgotPasswordModal
+          onClose={() => setForgotPasswordModalVisible(false)}
+          onGoToSignin={() => {
+            setSignInModalVisible(true);
+            setForgotPasswordModalVisible(false);
           }}
         />
       ) : null}

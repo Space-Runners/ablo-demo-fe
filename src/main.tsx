@@ -4,6 +4,8 @@ import './index.css';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import VerifyEmailPage from '@/views/auth/VerifyEmail';
+import ResetPasswordPage from '@/views/auth/ResetPassword';
+
 import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/theme/theme';
@@ -40,6 +42,7 @@ root.render(
             <Switch>
               <Route path={`/verify-email`} component={VerifyEmailPage} />
               <Route path={`/app`} component={Dashboard} />
+              <Route path={`/reset-password`} component={ResetPasswordPage} />
               <Redirect from="/" to="/app" />
             </Switch>
           </BrowserRouter>

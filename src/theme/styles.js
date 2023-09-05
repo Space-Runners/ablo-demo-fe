@@ -79,6 +79,7 @@ export const globalStyles = {
       100: '#CCCCCC',
       200: '#484848',
       300: '#383838',
+      600: '#6C757D',
     },
   },
   styles: {

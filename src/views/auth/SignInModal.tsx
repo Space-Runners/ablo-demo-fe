@@ -20,10 +20,23 @@ import ModalContainer from './components/ModalContainer';
 type Props = {
   onClose: () => void;
   onGoToSignup: () => void;
+  onGoToForgotPassword: () => void;
   onSignIn: () => void;
 };
 
-function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
+const LinkButton = (props) => (
+  <ChakraButton
+    bg="transparent"
+    color="#0D6EFD"
+    fontSize="md"
+    fontWeight={400}
+    height="auto"
+    padding={0}
+    {...props}
+  />
+);
+
+function SignIn({ onClose, onGoToSignup, onGoToForgotPassword, onSignIn }: Props) {
   // Chakra color mode
 
   const [email, setEmail] = useState('');
@@ -77,6 +90,9 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
           onChange={(e) => setPassword(e.target.value)}
           type="password"
         />
+        <Flex justify="flex-end" w="100%">
+          <LinkButton onClick={onGoToForgotPassword}>Forgot password?</LinkButton>
+        </Flex>
         <Button isLoading={waiting} onClick={handleSubmit} title="Sign in" />
         <GoogleLogin
           onSuccess={(credentialResponse) => {
@@ -93,17 +109,7 @@ function SignIn({ onClose, onGoToSignup, onSignIn }: Props) {
           <Text color="#6C757D" fontSize="md" mr="4px">
             Don't have an account?
           </Text>
-          <ChakraButton
-            bg="transparent"
-            color="#0D6EFD"
-            fontSize="md"
-            fontWeight={400}
-            height="auto"
-            onClick={onGoToSignup}
-            padding={0}
-          >
-            Sign up
-          </ChakraButton>
+          <LinkButton onClick={onGoToSignup}>Sign up</LinkButton>
         </Flex>
       </VStack>
     </ModalContainer>

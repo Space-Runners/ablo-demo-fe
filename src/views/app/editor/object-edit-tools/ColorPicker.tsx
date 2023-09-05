@@ -18,7 +18,7 @@ const COLORS_FOR_STYLES = {
   mixed_media: ['#FFFFFF', '#050606', '#FF95D9', '#00C770', '#3D6B9E', '#EDE838', '#8399AA'],
   origami: ['#FFFFFF', '#050606', '#FF3900', '#00E8CB', '#005EAA', '#FFD900', '#99928A'],
   pop_stained_glass: ['#FFFFFF', '#050606', '#FF0080', '#8D055A', '#0072F7', '#FDDE0A', '#05D3AB'],
-  william_morris: ['#FFFFFF', '#050606', '#FF006A', '#00A064', '#2259B2', '#FF9F1D', '#C9C3CE'],
+  deco: ['#FFFFFF', '#050606', '#FF006A', '#00A064', '#2259B2', '#FF9F1D', '#C9C3CE'],
   vintage_poster: ['#FFFFFF', '#050606', '#D22700', '#366140', '#107988', '#DAC190', '#776655'],
 };
 
@@ -81,7 +81,6 @@ export default function ColorPicker({
         <ColorPickerModal
           onClose={() => setColorPickerModalVisible(false)}
           onSelectedColor={(color) => {
-            console.log('Color', color);
             onUpdateColor(color);
           }}
           selectedColor={selectedColor}

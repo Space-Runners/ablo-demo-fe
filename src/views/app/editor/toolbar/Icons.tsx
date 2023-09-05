@@ -1,6 +1,6 @@
 import { Icon } from '@chakra-ui/react';
 
-export const IconProductPicker = ({ isSelected = false }) => (
+export const IconTemplatePicker = ({ isSelected = false }) => (
   <Icon
     width="24px"
     height="24px"

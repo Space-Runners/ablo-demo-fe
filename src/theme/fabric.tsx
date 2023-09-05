@@ -9,6 +9,7 @@ fabric.Object.prototype.set({
   borderRadius: '1px',
   cornerColor: abloBlue,
   cornerSize: 45,
+  touchCornerSize: 100,
 });
 
 fabric.Object.prototype.setControlsVisibility({

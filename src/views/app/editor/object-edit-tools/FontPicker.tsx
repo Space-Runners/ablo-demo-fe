@@ -4,7 +4,7 @@ import Colors from '@/theme/colors';
 
 const { abloBlue } = Colors;
 
-import Fonts from './fonts';
+import Fonts from '@/theme/fonts';
 
 const Button = (props) => {
   const { isSelected, ...rest } = props;
@@ -24,13 +24,9 @@ const Button = (props) => {
 
 export default function FontPicker({ fontFamily, onUpdate }) {
   return (
-    <HStack mt="8px" overflow="auto" spacing="0" w="220px">
+    <HStack mt="8px" overflow="auto" spacing="0" w="100%">
       {Fonts.map((font) => (
-        <Button
-          isSelected={font === fontFamily}
-          key={font}
-          onClick={() => onUpdate(font)}
-        >
+        <Button isSelected={font === fontFamily} key={font} onClick={() => onUpdate(font)}>
           <Text fontFamily={font} fontWeight={700}>
             Aa
           </Text>

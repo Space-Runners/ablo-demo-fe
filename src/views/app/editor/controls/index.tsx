@@ -7,7 +7,7 @@ import IconRedo from '@/components/icons/IconRedo';
 
 import ToolbarContainer from '../components/ToolbarContainer';
 
-import { IconAddText, IconFlipProduct, IconSave } from './Icons';
+import { IconAddText, IconFlipTemplate, IconSave } from './Icons';
 
 const SIDES = ['front', 'back'];
 
@@ -55,7 +55,7 @@ export default function Toolbar({
             text="Add Text"
           />
           <ToolbarButton
-            icon={<IconFlipProduct />}
+            icon={<IconFlipTemplate />}
             onClick={() => {
               const currentIndex = SIDES.indexOf(selectedSide);
 
