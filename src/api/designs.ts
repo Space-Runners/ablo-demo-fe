@@ -9,12 +9,16 @@ const URL = `/designs`;
 // TODO: Change this back to axios when S3 bucket where canvas states are stored enables CORS with our domain
 const getCanvasStates = (sides) =>
   Promise.all(
-    sides.map((side) =>
-      fetch(side.canvasStateUrl)
-        .then((response) => response.text())
-        .then((canvasState) => ({ ...side, canvasState }))
-        .catch(() => side)
-    )
+    sides.map((side) => {
+      if (side.canvasStateUrl) {
+        return fetch(side.canvasStateUrl)
+          .then((response) => response.text())
+          .then((canvasState) => ({ ...side, canvasState }))
+          .catch(() => side);
+      } else {
+        return side;
+      }
+    })
   );
 
 const getDesigns = () => axios.get<Design[]>(URL).then(({ data }) => data);
