@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Config } from '../config';
 import { StorageKeys } from '../constants';
 
-const { API_KEY, API_URL } = Config;
+const { API_URL } = Config;
 
 axios.defaults.baseURL = API_URL;
 
@@ -14,7 +14,6 @@ axios.interceptors.request.use(function (config) {
 
   config.headers.Authorization = `Bearer ${token}`;
   config.headers['Target-URL'] = API_URL;
-  config.headers['X-Api-Key'] = API_KEY;
 
   return config;
 });
