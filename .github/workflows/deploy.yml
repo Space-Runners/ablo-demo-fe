@@ -20,14 +20,14 @@ jobs:
         run: npm run build
         if: github.ref == 'refs/heads/main'
         env:
-          VITE_API_URL: https://services-be-prod.onrender.com
+          VITE_API_URL: https://demo-be-production.onrender.com
           VITE_API_KEY: 04bd8250dec91142c5bd953f6780fe5bb16636080a155e10c26b91b59fd78055
 
       - name: Build app for staging
         run: npm run build
         if: github.ref == 'refs/heads/develop'
         env:
-          VITE_API_URL: https://services-be-staging.onrender.com
+          VITE_API_URL: https://demo-be-staging.onrender.com
           VITE_API_KEY: fc5f298bf23d711fd041f411c34cf64ed5cef6df5cc2b7c6ebf895b7af921718
 
       - name: Deploy to S3 production
