@@ -14,6 +14,7 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import { verifyPassword } from '../../api/auth';
+import { StorageKeys } from '../../constants';
 
 export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
   const [password, setPassword] = useState('');
@@ -26,8 +27,9 @@ export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
     setError(null);
     try {
       const response = await verifyPassword(password);
-      console.log(response);
+
       if (response.status === 201) {
+        localStorage.setItem(StorageKeys.HAS_ACCESS, 'true');
         onPasswordSuccess();
         onClose();
       } else {

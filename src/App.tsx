@@ -12,11 +12,14 @@ import Config from './config';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PasswordWallModal } from './components/modals/PasswordWallModal';
+import { StorageKeys } from './constants';
 
 const { GOOGLE_CLIENT_ID } = Config;
 
 export const App: React.FC = () => {
-  const [hasEnteredPassword, setHasEnteredPassword] = useState(false);
+  const [hasEnteredPassword, setHasEnteredPassword] = useState(
+    localStorage.getItem(StorageKeys.HAS_ACCESS) === 'true'
+  );
   const [isModalOpen, setModalOpen] = useState(true);
 
   const onClose = () => setModalOpen(false);
