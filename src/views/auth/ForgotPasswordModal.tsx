@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 
 import { resetPassword } from '@/api/auth';
-import FormInput from '@/components/modal/FormInput';
+import FormInput from '@/components/modals/FormInput';
 
 import Button from './components/ButtonCTA';
 import IconBack from './components/IconBack';
