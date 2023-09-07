@@ -11,20 +11,32 @@ import {
   Text,
   FormControl,
   FormLabel,
+  Spinner,
 } from '@chakra-ui/react';
+import { verifyPassword } from '../../api/auth';
 
 export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const checkPassword = () => {
+  const checkPassword = async (event) => {
     event.preventDefault();
-    if (password === 'correctPassword') {
-      onPasswordSuccess();
-      onClose();
-    } else {
-      setError('Incorrect password. Please try again.');
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await verifyPassword(password);
+      console.log(response);
+      if (response.status === 201) {
+        onPasswordSuccess();
+        onClose();
+      } else {
+        setError('Incorrect password. Please try again.');
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again.');
     }
+    setIsLoading(false);
   };
 
   return (
@@ -41,17 +53,21 @@ export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
         <ModalBody>
           <form onSubmit={checkPassword}>
             {error && <Text color="red.500">{error}</Text>}
-            <FormControl>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                mt={4}
-              />
-            </FormControl>
+            {isLoading ? (
+              <Spinner />
+            ) : (
+              <FormControl>
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  mt={4}
+                />
+              </FormControl>
+            )}
             <ModalFooter>
-              <Button colorScheme="blue" type="submit">
+              <Button colorScheme="blue" type="submit" isLoading={isLoading}>
                 Submit
               </Button>
             </ModalFooter>
