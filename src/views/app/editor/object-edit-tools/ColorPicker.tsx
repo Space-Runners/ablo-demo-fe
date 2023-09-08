@@ -1,10 +1,10 @@
 import { Button as ChakraButton, HStack } from '@chakra-ui/react';
 
 import IconColorPicker from '@/components/icons/IconColorPicker';
-import ColorPickerModal from '@/components/ColorPickerModal';
 import { AiImage } from '@/components/types';
 import Colors from '@/theme/colors';
 import { useState } from 'react';
+import ColorPickerModal from '@/components/modals/ColorPickerModal';
 
 const { abloBlue } = Colors;
 

@@ -12,7 +12,7 @@ import {
 import { GoogleLogin } from '@react-oauth/google';
 
 import { googleLogin, login } from '@/api/auth';
-import FormInput from '@/components/modal/FormInput';
+import FormInput from '@/components/modals/FormInput';
 
 import Button from './components/ButtonCTA';
 import ModalContainer from './components/ModalContainer';

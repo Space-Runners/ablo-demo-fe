@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 import {
   Alert,
@@ -9,16 +9,16 @@ import {
   FormErrorMessage,
   VStack,
   Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import FormInput from "@/components/modal/FormInput";
+import FormInput from '@/components/modals/FormInput';
 
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from '@react-oauth/google';
 
-import { googleLogin, signUp } from "@/api/auth";
+import { googleLogin, signUp } from '@/api/auth';
 
-import Button from "./components/ButtonCTA";
-import ModalContainer from "./components/ModalContainer";
+import Button from './components/ButtonCTA';
+import ModalContainer from './components/ModalContainer';
 
 type Props = {
   onClose: () => void;
@@ -29,30 +29,30 @@ type Props = {
 function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
   // Chakra color mode
 
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = () => {
     if (!firstName || !lastName || !email || !password) {
-      setError("Please fill all required fields");
+      setError('Please fill all required fields');
 
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords have to match");
+      setError('Passwords have to match');
 
       return;
     }
 
-    setError("");
+    setError('');
     setWaiting(true);
     setSuccess(false);
 
@@ -64,7 +64,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
         onClose();
       })
       .catch(() => {
-        setError("Error signing up");
+        setError('Error signing up');
         setWaiting(false);
       });
   };
@@ -121,8 +121,8 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             googleLogin(credentialResponse.credential).then(({ access_token: accessToken }) => {
-              localStorage.setItem("access-token", accessToken);
-              localStorage.removeItem("client-token");
+              localStorage.setItem('access-token', accessToken);
+              localStorage.removeItem('client-token');
 
               onSignUp();
             });
