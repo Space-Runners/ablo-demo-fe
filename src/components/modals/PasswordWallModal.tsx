@@ -16,7 +16,7 @@ import {
 import { verifyPassword } from '@/api/auth';
 import { StorageKeys } from '../../constants';
 
-export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
+export const PasswordWallModal = ({ onPasswordSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,6 @@ export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
 
       localStorage.setItem(StorageKeys.HAS_ACCESS, 'true');
       onPasswordSuccess();
-      onClose();
     } catch (error) {
       setError('An error occurred. Please try again.');
     }
@@ -39,8 +38,10 @@ export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={true}
+      onClose={() => {
+        return;
+      }}
       isCentered={true}
       closeOnEsc={false}
       closeOnOverlayClick={false}

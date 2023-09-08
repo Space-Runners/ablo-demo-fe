@@ -20,9 +20,7 @@ export const App: React.FC = () => {
   const [hasEnteredPassword, setHasEnteredPassword] = useState(
     localStorage.getItem(StorageKeys.HAS_ACCESS) === 'true'
   );
-  const [isModalOpen, setModalOpen] = useState(true);
 
-  const onClose = () => setModalOpen(false);
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -46,11 +44,7 @@ export const App: React.FC = () => {
                 </Switch>
               </BrowserRouter>
             ) : (
-              <PasswordWallModal
-                isOpen={isModalOpen}
-                onClose={onClose}
-                onPasswordSuccess={() => setHasEnteredPassword(true)}
-              />
+              <PasswordWallModal onPasswordSuccess={() => setHasEnteredPassword(true)} />
             )}
           </ChakraProvider>
         </QueryClientProvider>
