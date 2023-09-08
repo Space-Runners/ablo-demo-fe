@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-import { useQuery } from '@tanstack/react-query';
-
 import { TemplateSize } from '@/components/types';
+import { useQuery } from '@tanstack/react-query';
 
 const entity = `sizes`;
 
