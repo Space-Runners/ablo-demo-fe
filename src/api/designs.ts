@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Design, DesignSide } from '@/components/types';
+import { useQueryWithRetry } from './use-query-with-retry.hook';
 
 const URL = `/designs`;
 
@@ -23,7 +24,7 @@ const getCanvasStates = (sides) =>
 
 const getDesigns = () => axios.get<Design[]>(URL).then(({ data }) => data);
 
-export const useDesigns = () => useQuery(['designs'], () => getDesigns());
+export const useDesigns = () => useQueryWithRetry(['designs'], () => getDesigns());
 
 export const getDesign = (id: string) =>
   axios.get<Design>(`${URL}/${id}`).then(({ data }) =>
@@ -33,7 +34,7 @@ export const getDesign = (id: string) =>
     }))
   );
 
-export const useDesign = (id: string) => useQuery(['design', id], () => getDesign(id));
+export const useDesign = (id: string) => useQueryWithRetry(['design', id], () => getDesign(id));
 
 const createDesignSide = (designSide: DesignSide, designId): Promise<DesignSide> =>
   axios.post<DesignSide>(`${URL}/${designId}/sides`, designSide).then(({ data }) => data);

@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-import { useQuery } from '@tanstack/react-query';
-
 import { TemplateSize } from '@/components/types';
+import { useQueryWithRetry } from './use-query-with-retry.hook';
 
 const entity = `sizes`;
 
 export const getSizes = () => axios.get<TemplateSize[]>(`/${entity}`).then(({ data }) => data);
 
-export const useSizes = () => useQuery([entity], () => getSizes());
+export const useSizes = () => useQueryWithRetry([entity], () => getSizes());

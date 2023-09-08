@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 
 import { ImageGenerationOptions, TextToImageRequest } from '@/components/types';
+import { useQueryWithRetry } from './use-query-with-retry.hook';
 
-export const useOptions = () => useQuery(['image-generation-options'], () => getOptions());
+export const useOptions = () => useQueryWithRetry(['image-generation-options'], () => getOptions());
 
 export const generateImage = (params: TextToImageRequest) => {
   return axios.post('/generate/image', params).then(({ data }) => {
