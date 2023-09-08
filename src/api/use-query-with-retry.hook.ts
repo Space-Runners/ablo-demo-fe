@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 // Custom retry function to handle 500s
-const shouldRetry = (failureCount, error) => {
+const shouldRetry = (error) => {
   if (error.response?.status === 500) {
     return true;
   }
