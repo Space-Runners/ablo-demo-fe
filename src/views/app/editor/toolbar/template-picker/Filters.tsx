@@ -124,7 +124,7 @@ const TemplateFilters = ({ filters, onApply, onUpdate, templates }: Props) => {
     <Box paddingBottom="38px" w="100%">
       <Multiselect
         name="Sizes Available"
-        options={(allSizes as []).map(({ name }) => ({ value: name, name }))}
+        options={allSizes.map(({ name }) => ({ value: name, name }))}
         selectedValues={sizes}
         onUpdateSelectedValues={(values) => onUpdate({ sizes: values })}
       />
