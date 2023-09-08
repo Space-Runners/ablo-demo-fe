@@ -96,7 +96,7 @@ export default function OrderOrShare() {
 
   const { data: design, isLoading } = useDesign(designId);
 
-  const { sides = [] } = (design as { sides: any[] }) || { sides: [] };
+  const { sides = [] } = design || { sides: [] };
 
   const history = useHistory();
 
