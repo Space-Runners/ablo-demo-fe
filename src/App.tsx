@@ -28,6 +28,7 @@ export const App: React.FC = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        refetchOnWindowFocus: false,
         retry: (failureCount, error) => {
           if (failureCount > MAX_RETRIES) {
             return false;
