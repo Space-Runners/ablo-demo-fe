@@ -17,8 +17,7 @@ type Props = {
 };
 
 export default function SelectStyle({ onChange, selectedValue }: Props) {
-  const { data } = useOptions();
-  const options = data as any;
+  const { data: options } = useOptions();
 
   if (!options) {
     return null;
