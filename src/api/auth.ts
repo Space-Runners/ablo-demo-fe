@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { Config } from '../config';
 import { StorageKeys } from '../constants';
-import { useQueryWithRetry } from './use-query-with-retry.hook';
+import { useQuery } from '@tanstack/react-query';
 
 const { API_URL } = Config;
 
@@ -78,7 +78,7 @@ export const signUp = (email: string, password: string, firstName: string, lastN
 export const verifyEmail = (token: string) => axios.get(`/users/verify-email/${token}`);
 
 export const useMe = () =>
-  useQueryWithRetry(['me'], () =>
+  useQuery(['me'], () =>
     axios.get('/profile').then(({ data }) => {
       return data;
     })

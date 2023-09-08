@@ -17,7 +17,8 @@ type Props = {
 };
 
 export default function SelectStyle({ onChange, selectedValue }: Props) {
-  const { data: options } = useOptions();
+  const { data } = useOptions();
+  const options = data as any;
 
   if (!options) {
     return null;
@@ -39,11 +40,7 @@ export default function SelectStyle({ onChange, selectedValue }: Props) {
             const isSelected = value === selectedValue;
 
             return (
-              <Box
-                key={index}
-                onClick={() => onChange(value)}
-                borderRadius="4px"
-              >
+              <Box key={index} onClick={() => onChange(value)} borderRadius="4px">
                 <Image
                   border={isSelected ? `3px solid ${abloBlue}` : ''}
                   borderRadius="50%"
