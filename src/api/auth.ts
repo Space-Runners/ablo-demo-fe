@@ -96,3 +96,12 @@ export const setPassword = (password: string, token: string) =>
       password,
     })
     .then(({ data }) => data);
+
+/**
+ * For verifying password wall password
+ * @param password
+ */
+export const verifyPassword = (password: string) =>
+  axios.post('/auth/verify-password', {
+    password,
+  });
