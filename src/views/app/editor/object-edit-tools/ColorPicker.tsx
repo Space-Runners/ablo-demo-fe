@@ -4,7 +4,7 @@ import IconColorPicker from '@/components/icons/IconColorPicker';
 import { AiImage } from '@/components/types';
 import Colors from '@/theme/colors';
 import { useState } from 'react';
-import ColorPickerModal from '../../../../components/modals/ColorPickerModal';
+import ColorPickerModal from '@/components/modals/ColorPickerModal';
 
 const { abloBlue } = Colors;
 

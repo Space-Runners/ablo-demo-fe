@@ -13,7 +13,7 @@ import {
   FormLabel,
   Spinner,
 } from '@chakra-ui/react';
-import { verifyPassword } from '../../api/auth';
+import { verifyPassword } from '@/api/auth';
 import { StorageKeys } from '../../constants';
 
 export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
@@ -26,15 +26,11 @@ export const PasswordWallModal = ({ isOpen, onClose, onPasswordSuccess }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await verifyPassword(password);
+      await verifyPassword(password);
 
-      if (response.status === 201) {
-        localStorage.setItem(StorageKeys.HAS_ACCESS, 'true');
-        onPasswordSuccess();
-        onClose();
-      } else {
-        setError('Incorrect password. Please try again.');
-      }
+      localStorage.setItem(StorageKeys.HAS_ACCESS, 'true');
+      onPasswordSuccess();
+      onClose();
     } catch (error) {
       setError('An error occurred. Please try again.');
     }
