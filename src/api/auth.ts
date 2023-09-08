@@ -1,8 +1,9 @@
 import axios from 'axios';
 
+import { useQuery } from '@tanstack/react-query';
+
 import { Config } from '../config';
 import { StorageKeys } from '../constants';
-import { useQuery } from '@tanstack/react-query';
 
 const { API_URL } = Config;
 
