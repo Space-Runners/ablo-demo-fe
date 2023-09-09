@@ -437,7 +437,6 @@ export default function ImageEditorTool({
       bg="#F9F9F7"
       flexDirection={{ base: 'column', md: 'row' }}
       h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
-      position="relative"
       w="100%"
     >
       <EditorToolbar
@@ -474,7 +473,6 @@ export default function ImageEditorTool({
         flex={1}
         flexDirection="column"
         h={{ base: 'auto', md: '100%' }}
-        position="relative"
         w="100%"
       >
         {activeObject ? (

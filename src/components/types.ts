@@ -143,6 +143,7 @@ export interface Canvas {
   };
   isDrawingMode: boolean;
   getActiveObject: () => CanvasObject;
+  getAbsoluteCoords: (object: CanvasObject) => { left: number; top: number };
   setActiveObject: (object: CanvasObject) => void;
   centerObject: (object: CanvasObject) => void;
   on: (event: string, callback: (e: CanvasEvent) => void) => void;
