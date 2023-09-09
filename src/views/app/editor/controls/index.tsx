@@ -13,10 +13,10 @@ const SIDES = ['front', 'back'];
 
 const textProps = {
   editable: true,
-  fill: '#000000',
+  fill: '#00FF29',
   fontFamily: 'Poppins',
   text: '',
-  fontSize: 20,
+  fontSize: 46,
   textAlign: 'left',
   originX: 'center',
   originY: 'center',
