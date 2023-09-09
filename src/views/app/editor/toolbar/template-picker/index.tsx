@@ -90,7 +90,7 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
                   justify="center"
                   padding="16px 8px"
                 >
-                  <Image h={160} src={`${variant.images[0].url}`} alt={name} />
+                  <Image h={160} src={`${variant?.images[0]?.url}`} alt={name} />
                 </Flex>
                 <Box padding="8px">
                   <Text color="#6A6866" display="block" fontSize="xs" textTransform="uppercase">
