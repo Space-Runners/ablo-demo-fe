@@ -367,9 +367,13 @@ export default function ImageEditorTool({
   };
 
   const handleImageUpdate = (aiImage) => {
+    const oldImage = canvas.current.getActiveObject();
+
     canvas.current.remove(canvas.current.getActiveObject());
 
-    addAiImageToCanvas(aiImage);
+    const { left, top, scaleX, scaleY } = oldImage;
+
+    addAiImageToCanvas(aiImage, { left, top, scaleX, scaleY });
 
     saveState();
   };
