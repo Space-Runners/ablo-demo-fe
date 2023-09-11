@@ -195,7 +195,15 @@ export default function ImageGenerator({
   }
 
   return (
-    <Box mt="20px" pb="26px">
+    <Box
+      mt="20px"
+      pb="26px"
+      onKeyPress={(e) => {
+        if (e.key === 'Enter') {
+          handleGenerate();
+        }
+      }}
+    >
       <Text as="b" fontSize="md" mb="5px" ml="14px">
         Text to Image
       </Text>
