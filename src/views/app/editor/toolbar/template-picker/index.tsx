@@ -60,7 +60,7 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
           {chunk.map((template, index) => {
             const { fabric, fit, id, name, price, colors } = template;
 
-            const variant = colors.find((variant) => variant.name === 'OatMilk');
+            const variant = colors.find((variant) => variant.name === 'OatMilk') || colors[0];
 
             const isSelected = selectedGarment && selectedGarment.templateId === id;
 
