@@ -70,3 +70,10 @@ function renderIcon(ctx, left, top, fabricObject) {
 
   ctx.restore();
 }
+
+fabric.Canvas.prototype.getAbsoluteCoords = function (object) {
+  return {
+    left: object.left + this._offset.left,
+    top: object.top + this._offset.top,
+  };
+};

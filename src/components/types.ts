@@ -144,6 +144,7 @@ export interface Canvas {
   isDrawingMode: boolean;
   getActiveObject: () => CanvasObject;
   setActiveObject: (object: CanvasObject) => void;
+  getAbsoluteCoords: (object: CanvasObject) => { left: number; top: number };
   centerObject: (object: CanvasObject) => void;
   on: (event: string, callback: (e: CanvasEvent) => void) => void;
   sendBackwards: (object: CanvasObject) => void;
