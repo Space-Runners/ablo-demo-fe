@@ -65,7 +65,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image w={500} src={variant.images[0].url} alt={name} />
+        <Image w={{ base: 350, md: 500 }} src={variant.images[0].url} alt={name} />
       </Flex>
       <Box padding="24px 14px">
         <Text color="#959392" fontSize="sm" mb="13px">
