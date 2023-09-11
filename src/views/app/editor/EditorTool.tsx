@@ -507,12 +507,14 @@ export default function ImageEditorTool({
           flexDirection="column"
           onClick={handleClick}
           justifyContent="center"
+          overflowY="auto"
           position="relative"
           top={{ base: '40px', md: 0 }}
         >
           <Box
             id="#canvas-container-front"
             display={selectedSide === 'front' ? 'block' : 'none'}
+            maxHeight="100%"
             position="relative"
             userSelect="none"
           >
@@ -530,6 +532,7 @@ export default function ImageEditorTool({
           <Box
             id="#canvas-container-back"
             display={selectedSide === 'back' ? 'block' : 'none'}
+            maxHeight="100%"
             position="relative"
           >
             <CanvasContainer
