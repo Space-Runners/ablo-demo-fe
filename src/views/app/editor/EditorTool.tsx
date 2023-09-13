@@ -509,8 +509,8 @@ export default function ImageEditorTool({
           onClick={handleClick}
           justifyContent="center"
           overflowY="auto"
+          paddingTop={{ base: '40px', md: 0 }}
           position="relative"
-          top={{ base: '40px', md: 0 }}
         >
           <Box position="absolute" right="13px" top="12px">
             <ColorPicker
