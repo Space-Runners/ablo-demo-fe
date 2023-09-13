@@ -174,7 +174,7 @@ export default function TemplatePicker({
           </Button>
         ) : null}
         <Text fontFamily="Roboto Condensed" fontSize="18px" fontWeight={600} lineHeight="18px">
-          Pick your clothe
+          Pick your product
         </Text>
       </Flex>
       {!selectedTemplate || !isMobile ? (
