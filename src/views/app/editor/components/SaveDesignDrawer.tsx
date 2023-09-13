@@ -48,6 +48,11 @@ function SaveDesignDrawer({ isSaving, onClose, onSave, designName }: Props) {
             border="none"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                onSave(name);
+              }
+            }}
             padding="12px 14px"
             tabIndex={0}
             placeholder="Enter a name..."
