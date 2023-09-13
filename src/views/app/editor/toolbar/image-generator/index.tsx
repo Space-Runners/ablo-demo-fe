@@ -27,8 +27,6 @@ import AddSubject from './add-subject';
 
 import Progress from './components/Progress';
 
-import ImageOverview from '../ai-image-overview';
-
 const defaultParams = {
   style: '',
   tone: '',
@@ -47,21 +45,15 @@ const accordionButtonStyles = {
 };
 
 type ImageGeneratorProps = {
-  aiImage: AiImage;
-  isEditingAiImage: boolean;
   onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   onGeneratedImageRemoved: (imageUrl: string) => void;
-  onSetIsEditingAiImage: (isEditing: boolean) => void;
 };
 
 export default function ImageGenerator({
-  aiImage,
-  isEditingAiImage,
   onGeneratedImagePreview,
   onGeneratedImageSelected,
   onGeneratedImageRemoved,
-  onSetIsEditingAiImage,
 }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
@@ -95,27 +87,9 @@ export default function ImageGenerator({
     setImages([]);
     setSelectedImage(null);
     setOptions(defaultParams);
-
-    onSetIsEditingAiImage(false);
   };
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
-
-  const handleEdit = () => {
-    const { options } = aiImage;
-
-    setOptions(options);
-    setImages([]);
-    setSelectedImage(null);
-
-    onSetIsEditingAiImage(true);
-  };
-
-  const handleRemove = () => {
-    handleReset();
-
-    onGeneratedImageRemoved(aiImage.url);
-  };
 
   const handleGenerate = () => {
     setWaiting(true);
@@ -145,14 +119,6 @@ export default function ImageGenerator({
         setWaiting(false);
       });
   };
-
-  if (aiImage && !isEditingAiImage) {
-    return (
-      <Box padding="8px 14px">
-        <ImageOverview aiImage={aiImage} onEdit={handleEdit} onRemove={handleRemove} />
-      </Box>
-    );
-  }
 
   if (waiting) {
     return (

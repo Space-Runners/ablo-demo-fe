@@ -426,10 +426,6 @@ export default function ImageEditorTool({
 
   const objects = canvasStateFromJson?.objects || [];
 
-  const aiImage = objects.find(({ aiImage }) => aiImage && !aiImage.isPreview)?.aiImage;
-
-  const imagePreview = objects.find(({ aiImage }) => aiImage?.isPreview);
-
   const showHint = isEmpty(objects) && !activeObject;
 
   const undoHandler = isEmpty(undoStack) ? null : handleUndo;
@@ -447,7 +443,6 @@ export default function ImageEditorTool({
         isExpanded={isEditorToolbarExpanded}
         onSetExpanded={setEditorToolbarExpanded}
         activeObject={activeObject}
-        aiImage={!imagePreview && aiImage}
         onImageUploaded={handleImageUpload}
         onGeneratedImagePreview={handleGeneratedImagePreview}
         onGeneratedImageSelected={handlePreviewImageSelected}
