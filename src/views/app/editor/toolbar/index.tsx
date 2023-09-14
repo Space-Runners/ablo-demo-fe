@@ -88,9 +88,7 @@ type FooterToolbarProps = {
   onSetExpanded: (isExpaned: boolean) => void;
   activeObject: { text: string };
   onImageUploaded: (image: File) => void;
-  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  onGeneratedImageRemoved: (url: string) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
   selectedTemplate: Template;
@@ -103,9 +101,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     isExpanded,
     onSetExpanded,
     onImageUploaded,
-    onGeneratedImagePreview,
     onGeneratedImageSelected,
-    onGeneratedImageRemoved,
     selectedGarment,
     onSelectedGarment,
     selectedTemplate,
@@ -279,11 +275,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
           />
         ) : null}
         {selectedTool === 'textToImage' ? (
-          <ImageGenerator
-            onGeneratedImagePreview={onGeneratedImagePreview}
-            onGeneratedImageSelected={onGeneratedImageSelected}
-            onGeneratedImageRemoved={onGeneratedImageRemoved}
-          />
+          <ImageGenerator onGeneratedImageSelected={onGeneratedImageSelected} />
         ) : null}
         {['fontToImage', 'imageToImage'].includes(selectedTool) ? (
           <ComingSoon feature={selectedTool} />

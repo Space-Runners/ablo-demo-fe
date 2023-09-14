@@ -5,7 +5,7 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty, partition } from 'lodash';
 
-import { AiImage, Design, Garment, Template } from '@/components/types';
+import { Design, Garment, Template } from '@/components/types';
 
 import CanvasContainer from './components/CanvasContainer';
 import ColorPicker from './components/ColorPicker';
@@ -323,48 +323,14 @@ export default function ImageEditorTool({
     addImageToCanvas(img);
   };
 
-  const handleGeneratedImagePreview = (image: AiImage) => {
-    const imagesToRemove = canvas.current._objects.filter(({ aiImage }) => aiImage?.isPreview);
-
-    imagesToRemove.forEach((image) => {
-      canvas.current.remove(image);
-    });
-
-    addAiImageToCanvas({ ...image, isPreview: true });
-  };
-
-  const handlePreviewImageSelected = () => {
-    const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage && !aiImage.isPreview);
-
-    if (aiImage) {
-      aiImage.set('aiImage', null);
-    }
-
-    const imagePreview = canvas.current._objects.find(({ aiImage }) => aiImage?.isPreview);
-
-    if (imagePreview) {
-      imagePreview.set('aiImage', {
-        ...imagePreview.aiImage,
-        isPreview: false,
-      });
-    }
+  const handlePreviewImageSelected = (image) => {
+    addAiImageToCanvas({ ...image });
 
     saveState();
 
     setActiveObject(canvas.current.getActiveObject());
 
     setEditorToolbarExpanded(false);
-  };
-
-  const handleGeneratedImageRemoved = (imageUrl: string) => {
-    const aiImages = canvas.current._objects.filter((obj) => obj.aiImage?.url === imageUrl);
-
-    canvas.current.remove(aiImages[0]);
-    canvas.current.renderAll();
-
-    setActiveObject(null);
-
-    saveState();
   };
 
   const handleImageUpdate = (aiImage) => {
@@ -445,9 +411,7 @@ export default function ImageEditorTool({
         onSetExpanded={setEditorToolbarExpanded}
         activeObject={activeObject}
         onImageUploaded={handleImageUpload}
-        onGeneratedImagePreview={handleGeneratedImagePreview}
         onGeneratedImageSelected={handlePreviewImageSelected}
-        onGeneratedImageRemoved={handleGeneratedImageRemoved}
         selectedGarment={selectedGarment}
         onSelectedGarment={handleSelectedGarment}
         selectedTemplate={selectedTemplatePreview}

@@ -45,16 +45,10 @@ const accordionButtonStyles = {
 };
 
 type ImageGeneratorProps = {
-  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  onGeneratedImageRemoved: (imageUrl: string) => void;
 };
 
-export default function ImageGenerator({
-  onGeneratedImagePreview,
-  onGeneratedImageSelected,
-  onGeneratedImageRemoved,
-}: ImageGeneratorProps) {
+export default function ImageGenerator({ onGeneratedImageSelected }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
 
@@ -70,8 +64,6 @@ export default function ImageGenerator({
 
   const handleNewArtwork = () => {
     handleReset();
-
-    onGeneratedImageRemoved(selectedImage);
   };
 
   const handlePlaceArtwork = () => {
@@ -79,8 +71,6 @@ export default function ImageGenerator({
       options,
       url: selectedImage,
     });
-
-    handleReset();
   };
 
   const handleReset = () => {
@@ -132,8 +122,6 @@ export default function ImageGenerator({
 
         setImages(images);
         setSelectedImage(images[0]);
-
-        onGeneratedImagePreview({ url: images[0], options });
       })
       .catch(() => {
         setWaiting(false);
@@ -166,7 +154,6 @@ export default function ImageGenerator({
               alt="Generated image"
               onClick={() => {
                 setSelectedImage(imageUrl);
-                onGeneratedImagePreview({ url: imageUrl, options });
               }}
             />
           ))}
