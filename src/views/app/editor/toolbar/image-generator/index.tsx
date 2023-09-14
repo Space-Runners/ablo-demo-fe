@@ -89,6 +89,26 @@ export default function ImageGenerator({
     setOptions(defaultParams);
   };
 
+  const handleUpdateKeywords = (newKeywords) => {
+    const added = newKeywords.filter((keyword) => !keywords.includes(keyword));
+
+    const removed = keywords.filter((keyword) => !newKeywords.includes(keyword));
+
+    const updates = { keywords: newKeywords } as { keywords: string[]; subject?: string };
+
+    if (added.length > 0 && !subject.includes(added[0])) {
+      const newSubject = subject ? `${subject} ${added[0]}` : added[0];
+
+      updates.subject = newSubject;
+    } else if (removed.length > 0 && subject.includes(removed[0])) {
+      const newSubject = subject.replace(removed[0], '');
+
+      updates.subject = newSubject;
+    }
+
+    handleUpdate(updates);
+  };
+
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
 
   const handleGenerate = () => {
@@ -220,7 +240,7 @@ export default function ImageGenerator({
         background={background}
         onChangeBackground={(background) => handleUpdate({ background })}
         keywords={keywords}
-        onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
+        onUpdateKeywords={handleUpdateKeywords}
         style={style}
       >
         <Input
