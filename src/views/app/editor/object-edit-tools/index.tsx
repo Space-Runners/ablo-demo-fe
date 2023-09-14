@@ -271,17 +271,15 @@ const ObjectEditTools = ({
     setCroppingMask(selectionRect);
     setImageToCrop(activeObject);
 
-    //  selectionRect.scaleToWidth(300);
-
     canvas.centerObject(selectionRect);
-
-    const cropMaskCoords = canvas.getAbsoluteCoords(selectionRect);
-
-    setCropButtonsCoords(cropMaskCoords);
 
     canvas.add(selectionRect);
     canvas.setActiveObject(selectionRect);
     canvas.renderAll();
+
+    const cropMaskCoords = canvas.getAbsoluteCoords(selectionRect);
+
+    setCropButtonsCoords(cropMaskCoords);
   };
 
   const cancelCrop = () => {
@@ -494,8 +492,8 @@ const ObjectEditTools = ({
       {croppingMask ? (
         <HStack
           position="absolute"
-          top={cropButtonsCoords.top}
-          left={cropButtonsCoords.left - 190 / 2}
+          top={cropButtonsCoords.top + CropMaskProps.height + 20}
+          left={cropButtonsCoords.left - 20}
           zIndex={2}
         >
           <CropButton onClick={handleCrop} title="Apply" />

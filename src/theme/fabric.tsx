@@ -73,7 +73,7 @@ function renderIcon(ctx, left, top, fabricObject) {
 
 fabric.Canvas.prototype.getAbsoluteCoords = function (object) {
   return {
-    left: object.left + this._offset.left,
-    top: object.top + this._offset.top,
+    left: object.left / 3 + this._offset.left,
+    top: object.top / 3 + this._offset.top,
   };
 };
