@@ -8,6 +8,7 @@ import { isEmpty, partition } from 'lodash';
 import { AiImage, Design, Garment, Template } from '@/components/types';
 
 import CanvasContainer from './components/CanvasContainer';
+import ColorPicker from './components/ColorPicker';
 import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
@@ -503,9 +504,21 @@ export default function ImageEditorTool({
           onClick={handleClick}
           justifyContent="center"
           overflowY="auto"
+          paddingTop={{ base: '40px', md: 0 }}
           position="relative"
-          top={{ base: '40px', md: 0 }}
         >
+          <Box position="absolute" right="13px" top="12px">
+            <ColorPicker
+              selectedVariantId={templateColorId}
+              onSelectedVariant={(variantId) =>
+                onDesignChange({
+                  ...design,
+                  templateColorId: variantId,
+                })
+              }
+              options={template.colors}
+            />
+          </Box>
           <Box
             id="#canvas-container-front"
             display={selectedSide === 'front' ? 'block' : 'none'}

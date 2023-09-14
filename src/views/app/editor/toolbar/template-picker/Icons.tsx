@@ -16,72 +16,32 @@ export const IconFilters = () => (
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <path
-          d="M6 4.66313V8.66313"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M6 12.6631V20.6631"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M6 4.66313V8.66313" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M6 12.6631V20.6631" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
         <path
           d="M10 14.6631H14V18.6631H10V14.6631Z"
           stroke="black"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <path
-          d="M12 4.66313V14.6631"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12 18.6631V20.6631"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M12 4.66313V14.6631" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 18.6631V20.6631" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
         <path
           d="M16 5.66313H20V9.66313H16V5.66313Z"
           stroke="black"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <path
-          d="M18 4.66313V5.66313"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18 9.66313V20.6631"
-          stroke="black"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M18 4.66313V5.66313" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M18 9.66313V20.6631" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
       </g>
     </g>
     <defs>
       <clipPath id="clip0_354_236">
-        <rect
-          width="24"
-          height="24"
-          fill="white"
-          transform="translate(0 0.663132)"
-        />
+        <rect width="24" height="24" fill="white" transform="translate(0 0.663132)" />
       </clipPath>
       <clipPath id="clip1_354_236">
-        <rect
-          width="24"
-          height="24"
-          fill="white"
-          transform="translate(0 0.663132)"
-        />
+        <rect width="24" height="24" fill="white" transform="translate(0 0.663132)" />
       </clipPath>
     </defs>
   </Icon>
@@ -132,34 +92,12 @@ export const IconSustainable = (props) => (
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M12 15V9"
-        stroke="#6A6866"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M12 15V9" stroke="#6A6866" strokeLinecap="round" strokeLinejoin="round" />
     </g>
     <defs>
       <clipPath id="clip0_1384_4224">
         <rect width="24" height="24" fill="white" />
       </clipPath>
     </defs>
-  </Icon>
-);
-
-export const IconSelected = (props) => (
-  <Icon
-    width="22px"
-    height="23px"
-    viewBox="0 0 22 23"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <circle cx="11" cy="11.3369" r="8.90476" fill="white" />
-    <path
-      d="M11.0002 2.17041C5.94016 2.17041 1.8335 6.27708 1.8335 11.3371C1.8335 16.3971 5.94016 20.5037 11.0002 20.5037C16.0602 20.5037 20.1668 16.3971 20.1668 11.3371C20.1668 6.27708 16.0602 2.17041 11.0002 2.17041ZM9.16683 15.9204L4.5835 11.3371L5.876 10.0446L9.16683 13.3262L16.1243 6.36874L17.4168 7.67041L9.16683 15.9204Z"
-      fill="#064AC4"
-    />
   </Icon>
 );
