@@ -4,6 +4,7 @@ import ToolbarButton from '../components/ToolbarButton';
 
 import IconUndo from '@/components/icons/IconUndo';
 import IconRedo from '@/components/icons/IconRedo';
+import { Design } from '@/components/types';
 
 import ToolbarContainer from '../components/ToolbarContainer';
 
@@ -26,6 +27,7 @@ const textProps = {
 };
 
 type Props = {
+  design: Design;
   onAddText: (props: object) => void;
   onSelectedSide: (side: string) => void;
   onUndo?: () => void;
@@ -35,6 +37,7 @@ type Props = {
 };
 
 export default function Toolbar({
+  design,
   onAddText,
   onSelectedSide,
   onUndo,
@@ -77,7 +80,7 @@ export default function Toolbar({
             onClick={onRedo}
             text="Redo"
           />
-          <ToolbarButton icon={<IconSave />} onClick={onSave} text="Save" />
+          {design.id ? <ToolbarButton icon={<IconSave />} onClick={onSave} text="Save" /> : null}
         </HStack>
       </HStack>
     </ToolbarContainer>

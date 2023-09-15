@@ -452,6 +452,7 @@ export default function ImageEditorTool({
           />
         ) : (
           <Toolbar
+            design={design}
             onAddText={handleAddText}
             onSelectedSide={handleSelectedSide}
             onUndo={undoHandler}
