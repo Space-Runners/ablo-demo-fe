@@ -16,6 +16,7 @@ import {
 
 import { removeBackground } from '@/api/image-generator';
 
+import Button from '@/components/Button';
 import IconUndo from '@/components/icons/IconUndo';
 import IconRedo from '@/components/icons/IconRedo';
 import { AiImage, Canvas, CanvasObject } from '@/components/types';
@@ -73,6 +74,8 @@ const CropMaskProps = {
   borderDashArray: [5, 5],
   borderScaleFactor: 1.3,
 };
+
+const CropButton = (props) => <Button height="28px" textTransform="none" w="91px" {...props} />;
 
 const IconButton = ({ isSelected = false, ...rest }) => (
   <ChakraButton
@@ -144,6 +147,7 @@ const ObjectEditTools = ({
 
   const [selectedTool, setSelectedTool] = useState(null);
   const [croppingMask, setCroppingMask] = useState(null);
+  const [cropButtonsCoords, setCropButtonsCoords] = useState(null);
   const [imageToCrop, setImageToCrop] = useState(null);
   const [isErasing, setErasing] = useState(false);
 
@@ -267,12 +271,21 @@ const ObjectEditTools = ({
     setCroppingMask(selectionRect);
     setImageToCrop(activeObject);
 
-    //  selectionRect.scaleToWidth(300);
-
     canvas.centerObject(selectionRect);
+
     canvas.add(selectionRect);
     canvas.setActiveObject(selectionRect);
     canvas.renderAll();
+
+    const cropMaskCoords = canvas.getAbsoluteCoords(selectionRect);
+
+    setCropButtonsCoords(cropMaskCoords);
+  };
+
+  const cancelCrop = () => {
+    canvas.remove(croppingMask);
+    setCroppingMask(null);
+    setImageToCrop(null);
   };
 
   const handleErase = () => {
@@ -475,6 +488,17 @@ const ObjectEditTools = ({
             </HStack>
           ) : null}
         </F>
+      ) : null}
+      {croppingMask ? (
+        <HStack
+          position="absolute"
+          top={cropButtonsCoords.top + CropMaskProps.height + 20}
+          left={cropButtonsCoords.left - 20}
+          zIndex={2}
+        >
+          <CropButton onClick={handleCrop} title="Apply" />
+          <CropButton onClick={cancelCrop} title="Cancel" outlined />
+        </HStack>
       ) : null}
       {errorRemovingBackground ? (
         <ErrorModal

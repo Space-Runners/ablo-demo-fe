@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 
 import { ImageGenerationOptions, TextToImageRequest } from '@/components/types';
+import { useQuery } from '@tanstack/react-query';
 
 export const useOptions = () => useQuery(['image-generation-options'], () => getOptions());
 

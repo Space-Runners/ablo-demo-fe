@@ -1,5 +1,4 @@
 export const Config = {
-  API_KEY: import.meta.env.VITE_API_KEY,
   API_URL: import.meta.env.VITE_API_URL || 'https://dev.ablo.ai',
   GOOGLE_CLIENT_ID:
     import.meta.env.VITE_GOOGLE_CLIENT_ID ||

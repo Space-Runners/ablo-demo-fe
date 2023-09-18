@@ -5,9 +5,10 @@ import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty, partition } from 'lodash';
 
-import { AiImage, Design, Garment, Template } from '@/components/types';
+import { Design, Garment, Template } from '@/components/types';
 
 import CanvasContainer from './components/CanvasContainer';
+import ColorPicker from './components/ColorPicker';
 import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
@@ -322,31 +323,8 @@ export default function ImageEditorTool({
     addImageToCanvas(img);
   };
 
-  const handleGeneratedImagePreview = (image: AiImage) => {
-    const imagesToRemove = canvas.current._objects.filter(({ aiImage }) => aiImage?.isPreview);
-
-    imagesToRemove.forEach((image) => {
-      canvas.current.remove(image);
-    });
-
-    addAiImageToCanvas({ ...image, isPreview: true });
-  };
-
-  const handlePreviewImageSelected = () => {
-    const aiImage = canvas.current._objects.find(({ aiImage }) => aiImage && !aiImage.isPreview);
-
-    if (aiImage) {
-      aiImage.set('aiImage', null);
-    }
-
-    const imagePreview = canvas.current._objects.find(({ aiImage }) => aiImage?.isPreview);
-
-    if (imagePreview) {
-      imagePreview.set('aiImage', {
-        ...imagePreview.aiImage,
-        isPreview: false,
-      });
-    }
+  const handlePreviewImageSelected = (image) => {
+    addAiImageToCanvas({ ...image });
 
     saveState();
 
@@ -355,21 +333,14 @@ export default function ImageEditorTool({
     setEditorToolbarExpanded(false);
   };
 
-  const handleGeneratedImageRemoved = (imageUrl: string) => {
-    const aiImages = canvas.current._objects.filter((obj) => obj.aiImage?.url === imageUrl);
-
-    canvas.current.remove(aiImages[0]);
-    canvas.current.renderAll();
-
-    setActiveObject(null);
-
-    saveState();
-  };
-
   const handleImageUpdate = (aiImage) => {
+    const oldImage = canvas.current.getActiveObject();
+
     canvas.current.remove(canvas.current.getActiveObject());
 
-    addAiImageToCanvas(aiImage);
+    const { left, top, scaleX, scaleY } = oldImage;
+
+    addAiImageToCanvas(aiImage, { left, top, scaleX, scaleY });
 
     saveState();
   };
@@ -422,10 +393,6 @@ export default function ImageEditorTool({
 
   const objects = canvasStateFromJson?.objects || [];
 
-  const aiImage = objects.find(({ aiImage }) => aiImage && !aiImage.isPreview)?.aiImage;
-
-  const imagePreview = objects.find(({ aiImage }) => aiImage?.isPreview);
-
   const showHint = isEmpty(objects) && !activeObject;
 
   const undoHandler = isEmpty(undoStack) ? null : handleUndo;
@@ -437,18 +404,14 @@ export default function ImageEditorTool({
       bg="#F9F9F7"
       flexDirection={{ base: 'column', md: 'row' }}
       h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
-      position="relative"
       w="100%"
     >
       <EditorToolbar
         isExpanded={isEditorToolbarExpanded}
         onSetExpanded={setEditorToolbarExpanded}
         activeObject={activeObject}
-        aiImage={!imagePreview && aiImage}
         onImageUploaded={handleImageUpload}
-        onGeneratedImagePreview={handleGeneratedImagePreview}
         onGeneratedImageSelected={handlePreviewImageSelected}
-        onGeneratedImageRemoved={handleGeneratedImageRemoved}
         selectedGarment={selectedGarment}
         onSelectedGarment={handleSelectedGarment}
         selectedTemplate={selectedTemplatePreview}
@@ -474,7 +437,6 @@ export default function ImageEditorTool({
         flex={1}
         flexDirection="column"
         h={{ base: 'auto', md: '100%' }}
-        position="relative"
         w="100%"
       >
         {activeObject ? (
@@ -490,6 +452,7 @@ export default function ImageEditorTool({
           />
         ) : (
           <Toolbar
+            design={design}
             onAddText={handleAddText}
             onSelectedSide={handleSelectedSide}
             onUndo={undoHandler}
@@ -505,12 +468,26 @@ export default function ImageEditorTool({
           flexDirection="column"
           onClick={handleClick}
           justifyContent="center"
+          overflowY="auto"
+          paddingTop={{ base: '40px', md: 0 }}
           position="relative"
-          top={{ base: '40px', md: 0 }}
         >
+          <Box position="absolute" right="13px" top="12px">
+            <ColorPicker
+              selectedVariantId={templateColorId}
+              onSelectedVariant={(variantId) =>
+                onDesignChange({
+                  ...design,
+                  templateColorId: variantId,
+                })
+              }
+              options={template.colors}
+            />
+          </Box>
           <Box
             id="#canvas-container-front"
             display={selectedSide === 'front' ? 'block' : 'none'}
+            maxHeight="100%"
             position="relative"
             userSelect="none"
           >
@@ -528,6 +505,7 @@ export default function ImageEditorTool({
           <Box
             id="#canvas-container-back"
             display={selectedSide === 'back' ? 'block' : 'none'}
+            maxHeight="100%"
             position="relative"
           >
             <CanvasContainer

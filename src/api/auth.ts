@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Config } from '../config';
 import { StorageKeys } from '../constants';
 
-const { API_KEY, API_URL } = Config;
+const { API_URL } = Config;
 
 axios.defaults.baseURL = API_URL;
 
@@ -14,7 +14,6 @@ axios.interceptors.request.use(function (config) {
 
   config.headers.Authorization = `Bearer ${token}`;
   config.headers['Target-URL'] = API_URL;
-  config.headers['X-Api-Key'] = API_KEY;
 
   return config;
 });
@@ -98,3 +97,12 @@ export const setPassword = (password: string, token: string) =>
       password,
     })
     .then(({ data }) => data);
+
+/**
+ * For verifying password wall password
+ * @param password
+ */
+export const verifyPassword = (password: string) =>
+  axios.post('/auth/verify-password', {
+    password,
+  });

@@ -145,6 +145,7 @@ const CanvasContainer = ({
           <Flex
             align="center"
             as="button"
+            display={{ base: 'flex', md: 'none' }}
             direction="column"
             justify="center"
             onClick={(e) => {

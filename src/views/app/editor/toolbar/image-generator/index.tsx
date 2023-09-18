@@ -27,8 +27,6 @@ import AddSubject from './add-subject';
 
 import Progress from './components/Progress';
 
-import ImageOverview from '../ai-image-overview';
-
 const defaultParams = {
   style: '',
   tone: '',
@@ -47,22 +45,10 @@ const accordionButtonStyles = {
 };
 
 type ImageGeneratorProps = {
-  aiImage: AiImage;
-  isEditingAiImage: boolean;
-  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  onGeneratedImageRemoved: (imageUrl: string) => void;
-  onSetIsEditingAiImage: (isEditing: boolean) => void;
 };
 
-export default function ImageGenerator({
-  aiImage,
-  isEditingAiImage,
-  onGeneratedImagePreview,
-  onGeneratedImageSelected,
-  onGeneratedImageRemoved,
-  onSetIsEditingAiImage,
-}: ImageGeneratorProps) {
+export default function ImageGenerator({ onGeneratedImageSelected }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
 
@@ -78,8 +64,6 @@ export default function ImageGenerator({
 
   const handleNewArtwork = () => {
     handleReset();
-
-    onGeneratedImageRemoved(selectedImage);
   };
 
   const handlePlaceArtwork = () => {
@@ -87,35 +71,35 @@ export default function ImageGenerator({
       options,
       url: selectedImage,
     });
-
-    handleReset();
   };
 
   const handleReset = () => {
     setImages([]);
     setSelectedImage(null);
     setOptions(defaultParams);
+  };
 
-    onSetIsEditingAiImage(false);
+  const handleUpdateKeywords = (newKeywords) => {
+    const added = newKeywords.filter((keyword) => !keywords.includes(keyword));
+
+    const removed = keywords.filter((keyword) => !newKeywords.includes(keyword));
+
+    const updates = { keywords: newKeywords } as { keywords: string[]; subject?: string };
+
+    if (added.length > 0 && !subject.includes(added[0])) {
+      const newSubject = subject ? `${subject} ${added[0]}` : added[0];
+
+      updates.subject = newSubject;
+    } else if (removed.length > 0 && subject.includes(removed[0])) {
+      const newSubject = subject.replace(removed[0], '');
+
+      updates.subject = newSubject;
+    }
+
+    handleUpdate(updates);
   };
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
-
-  const handleEdit = () => {
-    const { options } = aiImage;
-
-    setOptions(options);
-    setImages([]);
-    setSelectedImage(null);
-
-    onSetIsEditingAiImage(true);
-  };
-
-  const handleRemove = () => {
-    handleReset();
-
-    onGeneratedImageRemoved(aiImage.url);
-  };
 
   const handleGenerate = () => {
     setWaiting(true);
@@ -138,21 +122,11 @@ export default function ImageGenerator({
 
         setImages(images);
         setSelectedImage(images[0]);
-
-        onGeneratedImagePreview({ url: images[0], options });
       })
       .catch(() => {
         setWaiting(false);
       });
   };
-
-  if (aiImage && !isEditingAiImage) {
-    return (
-      <Box padding="8px 14px">
-        <ImageOverview aiImage={aiImage} onEdit={handleEdit} onRemove={handleRemove} />
-      </Box>
-    );
-  }
 
   if (waiting) {
     return (
@@ -180,7 +154,6 @@ export default function ImageGenerator({
               alt="Generated image"
               onClick={() => {
                 setSelectedImage(imageUrl);
-                onGeneratedImagePreview({ url: imageUrl, options });
               }}
             />
           ))}
@@ -195,7 +168,15 @@ export default function ImageGenerator({
   }
 
   return (
-    <Box mt="20px" pb="26px">
+    <Box
+      mt="20px"
+      pb="26px"
+      onKeyPress={(e) => {
+        if (e.key === 'Enter') {
+          handleGenerate();
+        }
+      }}
+    >
       <Text as="b" fontSize="md" mb="5px" ml="14px">
         Text to Image
       </Text>
@@ -246,7 +227,7 @@ export default function ImageGenerator({
         background={background}
         onChangeBackground={(background) => handleUpdate({ background })}
         keywords={keywords}
-        onUpdateKeywords={(keywords) => handleUpdate({ keywords })}
+        onUpdateKeywords={handleUpdateKeywords}
         style={style}
       >
         <Input

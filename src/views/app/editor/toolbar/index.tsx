@@ -87,11 +87,8 @@ type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
   activeObject: { text: string };
-  aiImage: AiImage;
   onImageUploaded: (image: File) => void;
-  onGeneratedImagePreview: (image: AiImage) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  onGeneratedImageRemoved: (url: string) => void;
   selectedGarment: Garment;
   onSelectedGarment: (garment: Garment) => void;
   selectedTemplate: Template;
@@ -101,13 +98,10 @@ type FooterToolbarProps = {
 
 export default function EditorToolbar(props: FooterToolbarProps) {
   const {
-    aiImage,
     isExpanded,
     onSetExpanded,
     onImageUploaded,
-    onGeneratedImagePreview,
     onGeneratedImageSelected,
-    onGeneratedImageRemoved,
     selectedGarment,
     onSelectedGarment,
     selectedTemplate,
@@ -123,23 +117,21 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const [selectedTool, setSelectedTool] = useState('textToImage');
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
-  const [isEditingAiImage, setIsEditingAiImage] = useState(false);
-
-  const isFullScreen = (aiImage && !isEditingAiImage) || selectedTool === 'templatePicker';
+  const isFullScreen = selectedTool === 'templatePicker';
 
   const [drag, setDrag] = useState({
     active: false,
   });
 
   useEffect(() => {
-    if ((isExpanded && aiImage) || selectedTool === 'templatePicker') {
+    if (selectedTool === 'templatePicker') {
       setHeight(window.innerHeight);
-    } else if (isExpanded || isEditingAiImage) {
+    } else if (isExpanded) {
       setHeight(MAX_OVERLAY_HEIGHT);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
     }
-  }, [aiImage, isExpanded, isEditingAiImage, selectedTool]);
+  }, [isExpanded, selectedTool]);
 
   const startResize = () => {
     setDrag({
@@ -177,8 +169,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     if (!active) {
       return;
     }
-
-    // const resizable = document.getElementById('toolbarOverlay');
 
     e.stopPropagation();
 
@@ -285,14 +275,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
           />
         ) : null}
         {selectedTool === 'textToImage' ? (
-          <ImageGenerator
-            aiImage={aiImage}
-            isEditingAiImage={isEditingAiImage}
-            onGeneratedImagePreview={onGeneratedImagePreview}
-            onGeneratedImageSelected={onGeneratedImageSelected}
-            onGeneratedImageRemoved={onGeneratedImageRemoved}
-            onSetIsEditingAiImage={setIsEditingAiImage}
-          />
+          <ImageGenerator onGeneratedImageSelected={onGeneratedImageSelected} />
         ) : null}
         {['fontToImage', 'imageToImage'].includes(selectedTool) ? (
           <ComingSoon feature={selectedTool} />

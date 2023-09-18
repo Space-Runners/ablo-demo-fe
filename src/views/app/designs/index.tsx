@@ -47,7 +47,8 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
           const { name, sides } = design;
 
           // Find first previewUrl
-          const { previewUrl } = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText);
+          const { previewUrl } =
+            sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText) || {};
 
           return (
             <Card

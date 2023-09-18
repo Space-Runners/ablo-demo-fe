@@ -7,7 +7,7 @@ import { isArray } from 'lodash';
 import { FormControl, FormErrorMessage, VStack } from '@chakra-ui/react';
 
 import { setPassword } from '@/api/auth';
-import FormInput from '@/components/modal/FormInput';
+import FormInput from '@/components/modals/FormInput';
 import { StorageKeys } from '@/constants';
 
 import Button from './components/ButtonCTA';

@@ -1,6 +1,6 @@
 import { Fragment as F, useState } from 'react';
 
-import { Box, Button, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 
 import { chunk } from 'lodash';
 
@@ -15,7 +15,7 @@ import TemplateDetails from './TemplateDetails';
 import TemplateFilters from './Filters';
 import { getOptions } from './utils';
 
-import { IconFilters, IconCloseFilters, IconSustainable, IconSelected } from './Icons';
+import { IconFilters, IconCloseFilters } from './Icons';
 
 const { abloBlue } = Colors;
 
@@ -60,12 +60,15 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
           {chunk.map((template, index) => {
             const { fabric, fit, id, name, price, colors } = template;
 
-            const variant = colors.find((variant) => variant.name === 'OatMilk');
+            const variant = colors.find((variant) => variant.name === 'OatMilk') || colors[0];
 
             const isSelected = selectedGarment && selectedGarment.templateId === id;
 
+            const selectedColor =
+              isSelected && colors.find((variant) => variant.id === selectedGarment.variantId).hex;
+
             const selectedProps = isSelected
-              ? { border: '2px solid #000000', borderRadius: '10px' }
+              ? { border: '1px solid #BABABA', borderRadius: '10px' }
               : {};
 
             return (
@@ -75,13 +78,7 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
                 marginLeft={`${index === 0 ? 0 : 8}px`}
                 onClick={() => onSelectedTemplate(template)}
                 position="relative"
-                {...selectedProps}
               >
-                {isSelected ? (
-                  <IconSelected position="absolute" top="8px" right="8px" />
-                ) : (
-                  <IconSustainable position="absolute" top="8px" right="8px" />
-                )}
                 <Flex
                   align="center"
                   bg="#F9F9F7"
@@ -89,8 +86,25 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
                   h="180px"
                   justify="center"
                   padding="16px 8px"
+                  position="relative"
+                  {...selectedProps}
                 >
-                  <Image h={160} src={`${variant.images[0].url}`} alt={name} />
+                  <Image h={160} src={`${variant?.images[0]?.url}`} alt={name} />
+                  {isSelected ? (
+                    <HStack
+                      borderRadius="50px"
+                      border="1px solid #DDD"
+                      bottom="1"
+                      background="#FFFFFF"
+                      padding="5px 8px"
+                      position="absolute"
+                    >
+                      <Box bg={selectedColor} borderRadius="50%" width="26px" height="26px" />
+                      <Text color="#828282" fontSize="13px" fontWeight={500}>
+                        Selected
+                      </Text>
+                    </HStack>
+                  ) : null}
                 </Flex>
                 <Box padding="8px">
                   <Text color="#6A6866" display="block" fontSize="xs" textTransform="uppercase">
@@ -174,7 +188,7 @@ export default function TemplatePicker({
           </Button>
         ) : null}
         <Text fontFamily="Roboto Condensed" fontSize="18px" fontWeight={600} lineHeight="18px">
-          Pick your clothe
+          Pick your product
         </Text>
       </Flex>
       {!selectedTemplate || !isMobile ? (
