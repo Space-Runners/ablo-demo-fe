@@ -193,14 +193,16 @@ export default function ImageEditorPage() {
         onNext={handleNext}
         rightSideContent={
           <HStack>
-            <Button
-              h="40px"
-              icon={<IconBack />}
-              onClick={handleGoBack}
-              outlined
-              textTransform="none"
-              title="Back To Designs"
-            />
+            {!isGuest && (
+              <Button
+                h="40px"
+                icon={<IconBack />}
+                onClick={handleGoBack}
+                outlined
+                textTransform="none"
+                title="Back To Designs"
+              />
+            )}
             <Button h="40px" onClick={handleNext} textTransform="none" title="Finish & Share" />
           </HStack>
         }
