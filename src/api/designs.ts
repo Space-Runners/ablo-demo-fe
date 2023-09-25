@@ -33,7 +33,7 @@ export const getDesign = (id: string) =>
     }))
   );
 
-export const useDesign = (id: string) => useQuery(['design', id], () => getDesign(id));
+export const useDesign = (id: string) => useQuery(['designs', id], () => getDesign(id));
 
 const createDesignSide = (designSide: DesignSide, designId): Promise<DesignSide> =>
   axios.post<DesignSide>(`${URL}/${designId}/sides`, designSide).then(({ data }) => data);
@@ -73,11 +73,30 @@ const updateDesign = (design: Design) => {
 };
 
 export const saveDesign = (design: Design) => {
-  console.log('Saving design', design);
-
   const method = design.id ? updateDesign : createDesign;
 
   return method(design);
+};
+
+const updateBasicDesign = (design: Partial<Design>) => {
+  const { id, ...rest } = design;
+
+  return axios.patch<Design>(`${URL}/${id}`, rest);
+};
+
+export const useUpdateBasicDesign = () => {
+  const client = useQueryClient();
+
+  const { mutateAsync: updateDesign, isLoading } = useMutation(updateBasicDesign, {
+    onSuccess: () => {
+      client.invalidateQueries(['designs']);
+    },
+  });
+
+  return {
+    updateDesign,
+    isUpdating: isLoading,
+  };
 };
 
 export const useDeleteDesign = () => {

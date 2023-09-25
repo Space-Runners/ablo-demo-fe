@@ -1,4 +1,4 @@
-import { Fragment as F } from 'react';
+import { Fragment as F, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -12,7 +12,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  MenuItem,
+  MenuItem as ChakraMenuItem,
   Spinner,
   Stack,
   Text,
@@ -24,11 +24,28 @@ import IconMenu from '@/components/icons/IconMenu';
 import Navbar from '@/components/navbar/Navbar';
 
 import { Design } from '@/components/types';
-import { useDesigns, useDeleteDesign } from '@/api/designs';
+import { useDesigns, useDeleteDesign, useUpdateBasicDesign } from '@/api/designs';
 import Colors from '@/theme/colors';
 import { timeAgo } from '@/utils/time';
 
+import RenameDesignModal from './RenameDesignModal';
+
 const { abloBlue } = Colors;
+
+const MenuItem = (props) => (
+  <ChakraMenuItem
+    fontSize="sm"
+    fontWeight={400}
+    padding="8px 18px"
+    _focus={{
+      bg: '#F4F4F4',
+    }}
+    _active={{
+      bg: 'none',
+    }}
+    {...props}
+  />
+);
 
 type DesignsListProps = {
   designs: Design[];
@@ -36,7 +53,15 @@ type DesignsListProps = {
 };
 
 const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
+  const [renamingDesign, setRenamingDesign] = useState(null);
+
   const { removeDesign } = useDeleteDesign();
+
+  const { updateDesign, isUpdating } = useUpdateBasicDesign();
+
+  const handleRename = (name) => {
+    updateDesign({ id: renamingDesign.id, name }).then(() => setRenamingDesign(null));
+  };
 
   const handleDelete = (designId) => removeDesign(designId);
 
@@ -93,19 +118,19 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
                       />
                       <MenuList border="none" borderRadius="11px" minWidth="none" p="0" w="124px">
                         <MenuItem
-                          fontSize="sm"
-                          fontWeight={400}
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            setRenamingDesign(design);
+                          }}
+                        >
+                          Rename
+                        </MenuItem>
+                        <MenuItem
                           onClick={(e) => {
                             e.stopPropagation();
 
                             handleDelete(design.id);
-                          }}
-                          padding="8px 18px"
-                          _focus={{
-                            bg: '#F4F4F4',
-                          }}
-                          _active={{
-                            bg: 'none',
                           }}
                         >
                           Delete
@@ -122,6 +147,14 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
           );
         })}
       </HStack>
+      {renamingDesign && (
+        <RenameDesignModal
+          designName={renamingDesign.name}
+          isRenaming={isUpdating}
+          onClose={() => setRenamingDesign(null)}
+          onSave={handleRename}
+        />
+      )}
     </Box>
   );
 };
