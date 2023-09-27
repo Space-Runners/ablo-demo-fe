@@ -11,9 +11,11 @@ import Config from './config';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { PasswordWallModal } from './components/modals/PasswordWallModal';
+
 import { StorageKeys } from './constants';
 import { isAxiosError } from 'axios';
+
+import PasswordWall from './views/PasswordWall';
 
 const { GOOGLE_CLIENT_ID } = Config;
 
@@ -63,7 +65,7 @@ export const App: React.FC = () => {
                 </Switch>
               </BrowserRouter>
             ) : (
-              <PasswordWallModal onPasswordSuccess={() => setHasEnteredPassword(true)} />
+              <PasswordWall onPasswordSuccess={() => setHasEnteredPassword(true)} />
             )}
           </ChakraProvider>
         </QueryClientProvider>
