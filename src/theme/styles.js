@@ -35,6 +35,9 @@ export const globalStyles = {
       800: '#190793',
       900: '#02044A',
     },
+    primary: {
+      500: '#2B3674',
+    },
     secondaryGray: {
       100: '#E0E5F2',
       200: '#E1E9F8',
@@ -48,6 +51,8 @@ export const globalStyles = {
     },
     red: {
       100: '#FEEFEE',
+      200: '#FBEDEC',
+      400: '#F12000',
       500: '#EE5D50',
       600: '#E31A1A',
     },
