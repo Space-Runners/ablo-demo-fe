@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:library": "tsc && vite build --config vite-lib.config.ts",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 20",
     "postinstall": "cd node_modules/fabric && node build.js modules=ALL requirejs fast exclude=gestures,accessors",
     "preview": "vite preview"
