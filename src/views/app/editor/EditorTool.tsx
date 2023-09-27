@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, Fragment as F } from 'react';
 
-import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
+import { Box, useBreakpointValue } from '@chakra-ui/react';
 
 import { fabric } from 'fabric';
 import { isEmpty, partition } from 'lodash';
@@ -9,11 +9,10 @@ import { Design, Garment, Template } from '@/components/types';
 
 import CanvasContainer from './components/CanvasContainer';
 import ColorPicker from './components/ColorPicker';
+import EditorContainer from './EditorContainer';
 import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
-import EditorToolbar from './toolbar';
-import TemplateDetails from './toolbar/template-picker/TemplateDetails';
 
 import { getDrawingArea } from './drawingAreas';
 
@@ -40,19 +39,14 @@ const reloadCanvasFromState = (canvas, stateAsJson) => {
   });
 };
 
-type ImageEditorProps = {
+type EditorToolProps = {
   design: Design;
   onDesignChange: (design: Design) => void;
   onSave: () => void;
   templates: Template[];
 };
 
-export default function ImageEditorTool({
-  design,
-  onDesignChange,
-  onSave,
-  templates,
-}: ImageEditorProps) {
+export default function EditorTool({ design, onDesignChange, onSave, templates }: EditorToolProps) {
   const canvasFront = useRef(null);
   const canvasBack = useRef(null);
 
@@ -399,46 +393,18 @@ export default function ImageEditorTool({
   const redoHandler = isEmpty(redoStack) ? null : handleRedo;
 
   return (
-    <Flex
-      align="center"
-      bg="#F9F9F7"
-      flexDirection={{ base: 'column', md: 'row' }}
-      h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
-      w="100%"
+    <EditorContainer
+      selectedGarment={selectedGarment}
+      onSelectedGarment={handleSelectedGarment}
+      selectedTemplate={selectedTemplatePreview}
+      onSelectedTemplate={setSelectedTemplatePreview}
+      templates={templates}
+      onImageUploaded={handleImageUpload}
+      onGeneratedImageSelected={handlePreviewImageSelected}
+      isEditorToolbarExpanded={isEditorToolbarExpanded}
+      onChangeEditorToolbarExpanded={setEditorToolbarExpanded}
     >
-      <EditorToolbar
-        isExpanded={isEditorToolbarExpanded}
-        onSetExpanded={setEditorToolbarExpanded}
-        activeObject={activeObject}
-        onImageUploaded={handleImageUpload}
-        onGeneratedImageSelected={handlePreviewImageSelected}
-        selectedGarment={selectedGarment}
-        onSelectedGarment={handleSelectedGarment}
-        selectedTemplate={selectedTemplatePreview}
-        onSelectedTemplate={setSelectedTemplatePreview}
-        templates={templates}
-      />
-      {!isMobile && selectedTemplatePreview ? (
-        <Box flex={1} height="100%" p="20px">
-          <Box bg="#FFFFFF" borderRadius="10px" height="100%" overflow="auto">
-            <TemplateDetails
-              garment={selectedGarment}
-              onGarmentUpdate={handleSelectedGarment}
-              template={selectedTemplatePreview}
-            />
-          </Box>
-        </Box>
-      ) : null}
-      <Box
-        display={{
-          base: 'block',
-          md: selectedTemplatePreview ? 'none' : 'flex',
-        }}
-        flex={1}
-        flexDirection="column"
-        h={{ base: 'auto', md: '100%' }}
-        w="100%"
-      >
+      <F>
         {activeObject ? (
           <ObjectEditTools
             activeObject={activeObject}
@@ -520,7 +486,7 @@ export default function ImageEditorTool({
             />
           </Box>
         </Box>
-      </Box>
-    </Flex>
+      </F>
+    </EditorContainer>
   );
 }

@@ -17,6 +17,7 @@ import ImageGenerator from './image-generator';
 import ImagePicker from './components/ImagePicker';
 
 import ComingSoon from './components/coming-soon';
+import { isEmpty } from 'lodash';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -86,7 +87,6 @@ const MAX_OVERLAY_HEIGHT = 400;
 type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
-  activeObject: { text: string };
   onImageUploaded: (image: File) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   selectedGarment: Garment;
@@ -209,6 +209,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
 
+  const views = VIEWS.filter(({ name }) => name !== 'templatePicker' || !isEmpty(templates));
+
   return (
     <Box
       borderRadius={{ base: '24px 24px 0 0', md: 0 }}
@@ -250,7 +252,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
         </Hide>
         <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
-            {VIEWS.map(({ name, icon, iconActive }) => (
+            {views.map(({ name, icon, iconActive }) => (
               <ToolbarButton
                 isSelected={selectedTool === name}
                 key={name}
