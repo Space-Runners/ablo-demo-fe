@@ -32,16 +32,16 @@ export interface Garment {
   sizeId: number;
 }
 
-type ColorVariantImage = {
+type TemplateColorImage = {
   templateSideId: string;
   url: string;
 };
 
-export interface ColorVariant {
+export interface TemplateColor {
   id: string;
   name: string;
   hex: string;
-  images: ColorVariantImage[];
+  images: TemplateColorImage[];
 }
 
 type TemplateSide = {
@@ -59,7 +59,7 @@ export interface TemplateSize {
 }
 
 export interface Template {
-  colors: ColorVariant[];
+  colors: TemplateColor[];
   currency: {
     id: number;
     name: string;

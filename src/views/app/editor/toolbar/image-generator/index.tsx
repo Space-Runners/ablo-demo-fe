@@ -12,14 +12,19 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { isEmpty } from 'lodash';
 
-import { generateImage } from '@/api/image-generator';
+import { generateImage, getOptions } from '@/api/image-generator';
 import Button from '@/components/Button';
 
-import { AiImage, AiImageOptions, TextToImageRequest } from '@/components/types';
+import {
+  AiImage,
+  AiImageOptions,
+  ImageGenerationOptions,
+  TextToImageRequest,
+} from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectColorPalette from './select-color-palette';
@@ -52,6 +57,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
 
+  const [allOptions, setAllOptions] = useState<ImageGenerationOptions>(null);
   const [waiting, setWaiting] = useState(false);
 
   const [options, setOptions] = useState<AiImageOptions>(defaultParams);
@@ -61,6 +67,10 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
   const [images, setImages] = useState([]);
 
   const { background, keywords, style, tone, subject } = options;
+
+  useEffect(() => {
+    getOptions().then(setAllOptions);
+  }, []);
 
   const handleNewArtwork = () => {
     handleReset();
@@ -197,6 +207,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
 
                 handleUpdate({ style });
               }}
+              options={allOptions}
               selectedValue={style}
             />
           </AccordionPanel>
@@ -217,6 +228,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
 
                 handleUpdate({ tone });
               }}
+              options={allOptions}
               selectedValue={tone}
               style={style}
             />
@@ -226,6 +238,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
       <AddSubject
         background={background}
         onChangeBackground={(background) => handleUpdate({ background })}
+        options={allOptions}
         keywords={keywords}
         onUpdateKeywords={handleUpdateKeywords}
         style={style}

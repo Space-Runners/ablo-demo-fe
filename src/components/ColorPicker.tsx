@@ -1,6 +1,6 @@
 import { Button, HStack } from '@chakra-ui/react';
 
-import { ColorVariant } from './types';
+import { TemplateColor } from './types';
 
 import Colors from '@/theme/colors';
 
@@ -10,7 +10,7 @@ type Props = {
   isMulti?: boolean;
   selectedVariants?: string[];
   onSelectedVariants?: (values: string[]) => void;
-  options: ColorVariant[];
+  options: TemplateColor[];
 };
 
 const ColorPicker = ({ isMulti, selectedVariants = [], onSelectedVariants, options }: Props) => {

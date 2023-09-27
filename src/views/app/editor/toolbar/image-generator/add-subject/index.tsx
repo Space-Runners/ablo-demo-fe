@@ -1,9 +1,10 @@
 import { Box, Flex, HStack, Switch, Text } from '@chakra-ui/react';
 
-import { useOptions } from '@/api/image-generator';
 import Colors from '@/theme/colors';
 
 import Keywords from '../components/Keywords';
+
+import { ImageGenerationOptions } from '@/components/types';
 
 const { abloBlue } = Colors;
 
@@ -13,6 +14,7 @@ type Props = {
   onChangeBackground: (value: boolean) => void;
   style: string;
   keywords: string[];
+  options: ImageGenerationOptions;
   onUpdateKeywords: (keywords: string[]) => void;
 };
 
@@ -21,11 +23,10 @@ export default function AddSubject({
   keywords,
   background,
   onChangeBackground,
+  options,
   onUpdateKeywords,
   style,
 }: Props) {
-  const { data: options } = useOptions();
-
   if (!options) {
     return null;
   }
@@ -64,11 +65,7 @@ export default function AddSubject({
       </Flex>
       {children}
       {suggestions ? (
-        <Keywords
-          keywords={suggestions}
-          selectedValues={keywords}
-          onChange={onUpdateKeywords}
-        />
+        <Keywords keywords={suggestions} selectedValues={keywords} onChange={onUpdateKeywords} />
       ) : null}
     </Box>
   );

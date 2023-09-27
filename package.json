@@ -1,8 +1,23 @@
 {
-  "name": "sr-ai-tool",
-  "private": true,
-  "version": "0.0.0",
+  "name": "ablo-demo-fe",
+  "description": "A tool that lets you put AI generated designs on templates like clothes, with a full fledged text and image editor",
+  "version": "0.0.3",
   "type": "module",
+  "license": "MIT",
+  "homepage": "web.ablo.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Space-Runners/ablo-demo-fe"
+  },
+  "bugs": {
+    "url": "https://github.com/Space-Runners/ablo-demo-fe"
+  },
+  "keywords": [
+    "AI",
+    "image",
+    "editor",
+    "design"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -10,6 +25,18 @@
     "postinstall": "cd node_modules/fabric && node build.js modules=ALL requirejs fast exclude=gestures,accessors",
     "preview": "vite preview"
   },
+  "main": "./dist/ablo-demo-fe.js",
+  "module": "./dist/ablo-demo-fe.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ablo-demo-fe.js",
+      "require": "./dist/ablo-demo-fe.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
@@ -32,9 +59,7 @@
     "framer-motion": "^10.16.4",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
-    "react": "^18.2.0",
     "react-color": "^2.19.3",
-    "react-dom": "^18.2.0",
     "react-dropzone": "^12.0.4",
     "react-icons": "^4.3.1",
     "react-is": "^18.0.0",
@@ -43,6 +68,7 @@
     "swiper": "^9.4.1"
   },
   "devDependencies": {
+    "@types/node": "^20.7.0",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@types/react-router-dom": "^5.3.3",
@@ -53,6 +79,11 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "typescript": "4.9.5",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-dts": "^3.6.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

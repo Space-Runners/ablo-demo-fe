@@ -1,7 +1,7 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { capitalize, chunk } from 'lodash';
 
-import { useOptions } from '@/api/image-generator';
+import { ImageGenerationOptions } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
@@ -24,13 +24,12 @@ function getImgUrl(tone, style) {
 
 type Props = {
   onChange: (value: string) => void;
+  options: ImageGenerationOptions;
   selectedValue: string;
   style: string;
 };
 
-export default function SelectColorPalette({ onChange, selectedValue, style }: Props) {
-  const { data: options } = useOptions();
-
+export default function SelectColorPalette({ onChange, options, selectedValue, style }: Props) {
   if (!options) {
     return null;
   }

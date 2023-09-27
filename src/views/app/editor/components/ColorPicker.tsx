@@ -1,6 +1,6 @@
 import { Box, Button, HStack } from '@chakra-ui/react';
 
-import { ColorVariant } from '@/components/types';
+import { TemplateColor } from '@/components/types';
 
 import Colors from '@/theme/colors';
 import { useState } from 'react';
@@ -36,7 +36,7 @@ const ButtonLink = (props) => (
 type Props = {
   selectedVariantId: string;
   onSelectedVariant: (value: string) => void;
-  options: ColorVariant[];
+  options: TemplateColor[];
 };
 
 const ColorPicker = ({ selectedVariantId, onSelectedVariant, options }: Props) => {
