@@ -4,34 +4,32 @@ import Colors from '@/theme/colors';
 
 import Keywords from '../components/Keywords';
 
-import { ImageGenerationOptions } from '@/components/types';
+import { Style } from '@/components/types';
 
 const { abloBlue } = Colors;
 
 type Props = {
   background: boolean;
   children: React.ReactNode;
-  onChangeBackground: (value: boolean) => void;
-  style: string;
   keywords: string[];
-  options: ImageGenerationOptions;
+  onChangeBackground: (value: boolean) => void;
+  style: Style;
   onUpdateKeywords: (keywords: string[]) => void;
 };
 
 export default function AddSubject({
   children,
-  keywords,
   background,
+  keywords,
   onChangeBackground,
-  options,
   onUpdateKeywords,
   style,
 }: Props) {
-  if (!options) {
+  if (!style) {
     return null;
   }
 
-  const suggestions = options.suggestions[style] || [];
+  const suggestions = style.keywords;
 
   return (
     <Box padding="8px 14px">

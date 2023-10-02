@@ -1,19 +1,20 @@
 import { Box, Button, HStack, Text } from '@chakra-ui/react';
+import { Keyword } from '@/components/types';
 
 type Props = {
-  keywords: string[];
+  keywords: Keyword[];
   onChange: (values: string[]) => void;
   selectedValues: string[];
 };
 
 const Keywords = ({ keywords, onChange, selectedValues }: Props) => {
-  const handleKeywordsChange = (value) => {
+  const handleKeywordsChange = (name) => {
     let newSelected;
 
-    if (selectedValues.includes(value)) {
-      newSelected = selectedValues.filter((s) => s !== value);
+    if (selectedValues.includes(name)) {
+      newSelected = selectedValues.filter((s) => s !== name);
     } else {
-      newSelected = [...selectedValues, value];
+      newSelected = [...selectedValues, name];
     }
 
     onChange(newSelected);
@@ -25,8 +26,8 @@ const Keywords = ({ keywords, onChange, selectedValues }: Props) => {
         <Text color="#2D3748" fontSize="sm" fontWeight={500}>
           Trending:
         </Text>
-        {keywords.map((value) => {
-          const isSelected = selectedValues.includes(value);
+        {keywords.map(({ id, name }) => {
+          const isSelected = selectedValues.includes(name);
 
           return (
             <Button
@@ -37,11 +38,11 @@ const Keywords = ({ keywords, onChange, selectedValues }: Props) => {
               flexShrink={0}
               fontSize="xs"
               fontWeight={isSelected ? '600' : '500'}
-              key={value}
-              onClick={() => handleKeywordsChange(value)}
+              key={id}
+              onClick={() => handleKeywordsChange(name)}
               padding="0 7px"
             >
-              {value}
+              {name}
             </Button>
           );
         })}

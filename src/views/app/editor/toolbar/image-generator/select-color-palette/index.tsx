@@ -1,44 +1,34 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
-import { capitalize, chunk } from 'lodash';
+import { chunk, isEmpty } from 'lodash';
 
-import { ImageGenerationOptions } from '@/components/types';
+import { Style } from '@/components/types';
 
 import Colors from '@/theme/colors';
 
+import NoToneImage from './images/NoFilters.png';
+
 const { abloBlue } = Colors;
 
-const NO_TONE = 'noTone';
-
-function getImgUrl(tone, style) {
-  let filename = `${tone}_${style
-    .split('_')
-    .map((word) => capitalize(word))
-    .join('')}.png`;
-
-  if (tone === NO_TONE) {
-    filename = `NoFilters.png`;
-  }
-
-  return new URL(`./images/${filename}`, import.meta.url).href;
-}
+const NO_TONE_OPTION = {
+  id: 'noTone',
+  imageUrl: NoToneImage,
+  tone: {
+    name: 'Random tone',
+  },
+};
 
 type Props = {
   onChange: (value: string) => void;
-  options: ImageGenerationOptions;
   selectedValue: string;
-  style: string;
+  style: Style;
 };
 
-export default function SelectColorPalette({ onChange, options, selectedValue, style }: Props) {
-  if (!options) {
+export default function SelectColorPalette({ onChange, selectedValue, style }: Props) {
+  if (!style || isEmpty(style.tones)) {
     return null;
   }
 
-  const tones = style ? [...options.tones[style.toLowerCase()], NO_TONE] : [NO_TONE];
-
-  if (!tones) {
-    return;
-  }
+  const tones = [...style.tones, NO_TONE_OPTION];
 
   const chunks = chunk(tones, 4);
 
@@ -46,28 +36,29 @@ export default function SelectColorPalette({ onChange, options, selectedValue, s
     <VStack align="flex-start" spacing="20px">
       {chunks.map((chunk, index) => (
         <HStack key={index} spacing="12px" w="100%">
-          {chunk.map((name: string, index) => {
-            const isSelected = name === selectedValue;
+          {chunk.map((tone, index) => {
+            const {
+              id,
+              imageUrl,
+              tone: { name },
+            } = tone;
+            const isSelected = id === selectedValue;
 
-            const tone = name.replace(' Tones', '').replace('B/W', 'BW');
+            let label = name;
 
-            let label = tone;
-
-            if (tone === 'BW') {
+            if (name === 'BW') {
               label = 'Black/White';
-            } else if (tone === NO_TONE) {
-              label = 'Random tone';
             }
 
             return (
-              <Box borderRadius="4px" onClick={() => onChange(name)} key={name}>
+              <Box borderRadius="4px" onClick={() => onChange(id)} key={id}>
                 <Image
                   border={isSelected ? `3px solid ${abloBlue}` : ''}
                   borderRadius="50%"
                   key={index}
                   mb="8px"
                   h="73px"
-                  src={getImgUrl(tone, style)}
+                  src={imageUrl}
                   alt={name}
                   w="73px"
                 />
