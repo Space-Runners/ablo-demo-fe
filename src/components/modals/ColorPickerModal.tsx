@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { AlphaPicker, HuePicker } from 'react-color';
+import { AlphaPicker, SketchPicker } from 'react-color';
 
 import IconCloseModalSmall from '@/components/icons/IconCloseModalSmall';
 
@@ -31,7 +31,7 @@ const ColorPickerModal = ({
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
-      <ModalContent alignSelf="center" borderRadius="10px" h="165px" w="308px">
+      <ModalContent alignSelf="center" borderRadius="10px" h="500px" w="328px">
         <ModalBody padding="15px 12px">
           <Flex alignItems="center" justifyContent="space-between" mb="20px">
             <Text as="b" fontSize="sm">
@@ -41,7 +41,8 @@ const ColorPickerModal = ({
               <IconCloseModalSmall />
             </Button>
           </Flex>
-          <HuePicker
+          <SketchPicker
+            disableAlpha
             color={selectedColor}
             onChangeComplete={({ hex }) => onSelectedColor(hex)}
             width="283px"
@@ -52,7 +53,7 @@ const ColorPickerModal = ({
             onChangeComplete={({ rgb }) => {
               onSelectedOpacity(rgb.a);
             }}
-            width="283px"
+            width="300px"
           />
         </ModalBody>
       </ModalContent>
