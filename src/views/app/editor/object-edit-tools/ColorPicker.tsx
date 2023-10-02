@@ -9,17 +9,25 @@ import ColorPickerModal from '@/components/modals/ColorPickerModal';
 const { abloBlue } = Colors;
 
 const COLORS_FOR_STYLES = {
-  basic: ['#FFFFFF', '#050606', '#EA2824', '#019548', '#4063AE', '#FDDE0A', '#8399AA'],
-  botanical: ['#FFFFFF', '#050606', '#553B28', '#616100', '#415561', '#E6DFCA', '#DAC190'],
-  collage: ['#FFFFFF', '#050606', '#EA2824', '#019548', '#4063AE', '#FDDE0A', '#68AFBC'],
-  graffiti: ['#FFFFFF', '#050606', '#FF0080', '#87009B', '#4FD0F0', '#EBFF00', '#6C84A8'],
-  kidult: ['#FFFFFF', '#050606', '#E440FB', '#00F000', '#0099E7', '#F3F300', '#FF7000'],
-  line_art: ['#FFFFFF', '#050606', '#FF1C1A', '#00C900', '#0099E7', '#BCBCBC', '#666666'],
-  mixed_media: ['#FFFFFF', '#050606', '#FF95D9', '#00C770', '#3D6B9E', '#EDE838', '#8399AA'],
-  origami: ['#FFFFFF', '#050606', '#FF3900', '#00E8CB', '#005EAA', '#FFD900', '#99928A'],
-  pop_stained_glass: ['#FFFFFF', '#050606', '#FF0080', '#8D055A', '#0072F7', '#FDDE0A', '#05D3AB'],
-  deco: ['#FFFFFF', '#050606', '#FF006A', '#00A064', '#2259B2', '#FF9F1D', '#C9C3CE'],
-  vintage_poster: ['#FFFFFF', '#050606', '#D22700', '#366140', '#107988', '#DAC190', '#776655'],
+  Basic: ['#FFFFFF', '#050606', '#EA2824', '#019548', '#4063AE', '#FDDE0A', '#8399AA'],
+  Botanical: ['#FFFFFF', '#050606', '#553B28', '#616100', '#415561', '#E6DFCA', '#DAC190'],
+  Collage: ['#FFFFFF', '#050606', '#EA2824', '#019548', '#4063AE', '#FDDE0A', '#68AFBC'],
+  Graffiti: ['#FFFFFF', '#050606', '#FF0080', '#87009B', '#4FD0F0', '#EBFF00', '#6C84A8'],
+  Kidult: ['#FFFFFF', '#050606', '#E440FB', '#00F000', '#0099E7', '#F3F300', '#FF7000'],
+  'Line Art': ['#FFFFFF', '#050606', '#FF1C1A', '#00C900', '#0099E7', '#BCBCBC', '#666666'],
+  'Mixed Media': ['#FFFFFF', '#050606', '#FF95D9', '#00C770', '#3D6B9E', '#EDE838', '#8399AA'],
+  Origami: ['#FFFFFF', '#050606', '#FF3900', '#00E8CB', '#005EAA', '#FFD900', '#99928A'],
+  'Pop Stained Glass': [
+    '#FFFFFF',
+    '#050606',
+    '#FF0080',
+    '#8D055A',
+    '#0072F7',
+    '#FDDE0A',
+    '#05D3AB',
+  ],
+  Deco: ['#FFFFFF', '#050606', '#FF006A', '#00A064', '#2259B2', '#FF9F1D', '#C9C3CE'],
+  'Vintage Poster': ['#FFFFFF', '#050606', '#D22700', '#366140', '#107988', '#DAC190', '#776655'],
 };
 
 const Button = ({ isSelected = false, ...rest }) => {
@@ -53,13 +61,15 @@ export default function ColorPicker({
   selectedOpacity,
   onUpdateOpacity,
 }: ColorPickerProps) {
-  const style = aiImage ? aiImage.options.style : 'basic';
+  const style = aiImage && aiImage.options.style;
 
   const [isColorPickerModalVisible, setColorPickerModalVisible] = useState(false);
 
+  const colorsForStyle = COLORS_FOR_STYLES[style] || COLORS_FOR_STYLES.Basic;
+
   return (
     <HStack mt="8px" overflow="auto" spacing="10px">
-      {COLORS_FOR_STYLES[style].map((color) => (
+      {colorsForStyle.map((color) => (
         <Button
           bg={color}
           border={

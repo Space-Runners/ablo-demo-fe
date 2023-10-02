@@ -16,15 +16,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { isEmpty } from 'lodash';
 
-import { generateImage, getOptions } from '@/api/image-generator';
+import { generateImage, getStyles } from '@/api/image-generator';
 import Button from '@/components/Button';
 
-import {
-  AiImage,
-  AiImageOptions,
-  ImageGenerationOptions,
-  TextToImageRequest,
-} from '@/components/types';
+import { AiImage, Style, TextToImageRequest } from '@/components/types';
 
 import SelectStyle from './select-style';
 import SelectColorPalette from './select-color-palette';
@@ -33,10 +28,10 @@ import AddSubject from './add-subject';
 import Progress from './components/Progress';
 
 const defaultParams = {
-  style: '',
-  tone: '',
-  subject: '',
-  keywords: [],
+  styleId: '',
+  toneId: '',
+  freeText: '',
+  subjectSuggestions: [],
   background: true,
 };
 
@@ -57,19 +52,21 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
 
-  const [allOptions, setAllOptions] = useState<ImageGenerationOptions>(null);
+  const [styles, setStyles] = useState<Style[]>([]);
   const [waiting, setWaiting] = useState(false);
 
-  const [options, setOptions] = useState<AiImageOptions>(defaultParams);
+  const [options, setOptions] = useState<TextToImageRequest>(defaultParams);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [images, setImages] = useState([]);
 
-  const { background, keywords, style, tone, subject } = options;
+  const { background, subjectSuggestions: keywords, styleId, toneId, freeText } = options;
+
+  const style = styles.find(({ id }) => id === styleId);
 
   useEffect(() => {
-    getOptions().then(setAllOptions);
+    getStyles().then(setStyles);
   }, []);
 
   const handleNewArtwork = () => {
@@ -78,7 +75,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
 
   const handlePlaceArtwork = () => {
     onGeneratedImageSelected({
-      options,
+      options: { ...options, style: style.name },
       url: selectedImage,
     });
   };
@@ -94,16 +91,19 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
 
     const removed = keywords.filter((keyword) => !newKeywords.includes(keyword));
 
-    const updates = { keywords: newKeywords } as { keywords: string[]; subject?: string };
+    const updates = { subjectSuggestions: newKeywords } as {
+      subjectSuggestions: string[];
+      freeText?: string;
+    };
 
-    if (added.length > 0 && !subject.includes(added[0])) {
-      const newSubject = subject ? `${subject} ${added[0]}` : added[0];
+    if (added.length > 0 && !freeText.includes(added[0])) {
+      const newSubject = freeText ? `${freeText} ${added[0]}` : added[0];
 
-      updates.subject = newSubject;
-    } else if (removed.length > 0 && subject.includes(removed[0])) {
-      const newSubject = subject.replace(removed[0], '');
+      updates.freeText = newSubject;
+    } else if (removed.length > 0 && freeText.includes(removed[0])) {
+      const newSubject = freeText.replace(removed[0], '');
 
-      updates.subject = newSubject;
+      updates.freeText = newSubject;
     }
 
     handleUpdate(updates);
@@ -117,13 +117,13 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
 
     const requestParams = {
       background,
-      style,
+      styleId,
       subjectSuggestions: keywords,
-      freeText: subject,
+      freeText,
     } as TextToImageRequest;
 
-    if (tone !== 'noTone') {
-      requestParams.tone = tone;
+    if (toneId && toneId !== 'noTone') {
+      requestParams.toneId = toneId;
     }
 
     generateImage(requestParams)
@@ -202,13 +202,13 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
           </h2>
           <AccordionPanel pb={4}>
             <SelectStyle
-              onChange={(style) => {
+              onChange={(styleId) => {
                 tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
 
-                handleUpdate({ style });
+                handleUpdate({ styleId });
               }}
-              options={allOptions}
-              selectedValue={style}
+              options={styles}
+              selectedValue={styleId}
             />
           </AccordionPanel>
         </AccordionItem>
@@ -223,13 +223,12 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
           </h2>
           <AccordionPanel pb={4}>
             <SelectColorPalette
-              onChange={(tone) => {
+              onChange={(toneId) => {
                 subjectInputRef.current?.focus();
 
-                handleUpdate({ tone });
+                handleUpdate({ toneId });
               }}
-              options={allOptions}
-              selectedValue={tone}
+              selectedValue={toneId}
               style={style}
             />
           </AccordionPanel>
@@ -238,25 +237,24 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
       <AddSubject
         background={background}
         onChangeBackground={(background) => handleUpdate({ background })}
-        options={allOptions}
         keywords={keywords}
-        onUpdateKeywords={handleUpdateKeywords}
         style={style}
+        onUpdateKeywords={handleUpdateKeywords}
       >
         <Input
           bg="#F5F5F5"
           border="none"
           borderRadius="11px"
           h="42px"
-          onChange={(e) => handleUpdate({ subject: e.target.value })}
+          onChange={(e) => handleUpdate({ freeText: e.target.value })}
           ref={subjectInputRef}
-          value={subject}
+          value={freeText}
           placeholder="Write subject..."
         />
       </AddSubject>
       <Box padding="0 14px" mt="22px">
         <Button
-          disabled={!subject && isEmpty(keywords)}
+          disabled={!freeText && isEmpty(keywords)}
           onClick={handleGenerate}
           title="Generate"
           w="100%"

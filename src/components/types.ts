@@ -1,14 +1,30 @@
-export interface ImageGenerationOptions {
-  styles: object;
-  tones: {
-    string: string[];
+export interface Keyword {
+  id: string;
+  name: string;
+}
+
+export interface Tone {
+  id: string;
+  imageUrl: string;
+  tone?: {
+    id: string;
+    name: string;
   };
-  suggestions: object;
+}
+
+export interface Style {
+  description: string;
+  id: string;
+  imageUrl: string;
+  keywords: Keyword[];
+  name: string;
+  tones: Tone[];
 }
 
 export interface TextToImageRequest {
-  style: string;
-  tone?: string;
+  style?: string;
+  styleId: string;
+  toneId?: string;
   freeText: string;
   subjectSuggestions: string[];
   background: boolean;
@@ -77,16 +93,8 @@ export interface Template {
   tags: string[];
 }
 
-export interface AiImageOptions {
-  style: string;
-  tone: string;
-  keywords?: string[];
-  subject?: string;
-  background: boolean;
-}
-
 export interface AiImage {
-  options: AiImageOptions;
+  options: TextToImageRequest;
   url: string;
   noBackgroundUrl?: string;
   withBackgroundUrl?: string;
