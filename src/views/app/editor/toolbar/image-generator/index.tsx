@@ -122,7 +122,7 @@ export default function ImageGenerator({ onGeneratedImageSelected }: ImageGenera
       freeText,
     } as TextToImageRequest;
 
-    if (toneId !== 'noTone') {
+    if (toneId && toneId !== 'noTone') {
       requestParams.toneId = toneId;
     }
 
