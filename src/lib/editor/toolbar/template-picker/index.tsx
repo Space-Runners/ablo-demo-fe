@@ -1,0 +1,250 @@
+import { Fragment as F, useState } from 'react';
+
+import { Box, Button, Flex, HStack, Image, Text, useBreakpointValue } from '@chakra-ui/react';
+
+import { chunk } from 'lodash';
+
+import MiniFilterBar from '../../../components/MiniFilterBar';
+
+import IconBack from '../../../components/icons/IconBack';
+import { Filters, Garment, Template } from '../../../types';
+
+import Colors from '../../../theme/colors';
+
+import TemplateDetails from './TemplateDetails';
+import TemplateFilters from './Filters';
+import { getOptions } from './utils';
+
+import { IconFilters, IconCloseFilters } from './Icons';
+
+const { abloBlue } = Colors;
+
+const matchesClothingType = (types, template) =>
+  !types.length || types[0] === 'all' || types.find((type) => type.includes(template.name));
+
+const matchesFit = (fits, template) =>
+  !fits.length || fits.find((fit) => template.fit && fit.includes(template.fit));
+
+const matchesPrice = ([min, max], template) => {
+  const { price: priceAsString } = template;
+
+  const price = parseFloat(priceAsString);
+
+  return price >= min && price <= max;
+};
+
+const getTemplatesMatchingFilters = (templates, filters) =>
+  templates.filter((template) => {
+    const { clothingTypes = [], fits = [], price: priceRange } = filters;
+
+    return (
+      matchesClothingType(clothingTypes, template) &&
+      matchesFit(fits, template) &&
+      matchesPrice(priceRange, template)
+    );
+  });
+
+type TemplatesListProps = {
+  templates: Template[];
+  onSelectedTemplate: (template: Template) => void;
+  selectedGarment: Garment;
+};
+
+const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: TemplatesListProps) => {
+  const chunks = chunk(templates, 2);
+
+  return (
+    <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
+      {chunks.map((chunk, index) => (
+        <Flex key={index} mb="24px">
+          {chunk.map((template, index) => {
+            const { fabric, fit, id, name, price, colors } = template;
+
+            const variant = colors.find((variant) => variant.name === 'OatMilk') || colors[0];
+
+            const isSelected = selectedGarment && selectedGarment.templateId === id;
+
+            const selectedColor =
+              isSelected && colors.find((variant) => variant.id === selectedGarment.variantId).hex;
+
+            const selectedProps = isSelected
+              ? { border: '1px solid #BABABA', borderRadius: '10px' }
+              : {};
+
+            return (
+              <Box
+                flex="1"
+                key={index}
+                marginLeft={`${index === 0 ? 0 : 8}px`}
+                onClick={() => onSelectedTemplate(template)}
+                position="relative"
+              >
+                <Flex
+                  align="center"
+                  bg="#F9F9F7"
+                  borderRadius="10px"
+                  h="180px"
+                  justify="center"
+                  padding="16px 8px"
+                  position="relative"
+                  {...selectedProps}
+                >
+                  <Image h={160} src={`${variant?.images[0]?.url}`} alt={name} />
+                  {isSelected ? (
+                    <HStack
+                      borderRadius="50px"
+                      border="1px solid #DDD"
+                      bottom="1"
+                      background="#FFFFFF"
+                      padding="5px 8px"
+                      position="absolute"
+                    >
+                      <Box bg={selectedColor} borderRadius="50%" width="26px" height="26px" />
+                      <Text color="#828282" fontSize="13px" fontWeight={500}>
+                        Selected
+                      </Text>
+                    </HStack>
+                  ) : null}
+                </Flex>
+                <Box padding="8px">
+                  <Text color="#6A6866" display="block" fontSize="xs" textTransform="uppercase">
+                    Spaarkd
+                  </Text>
+                  <Text color="#000000" fontSize="md" fontWeight={500} lineHeight="20px">
+                    {fit} {name}
+                  </Text>
+                  <Text color="#6A6866" fontSize="xs">
+                    {fabric}
+                  </Text>
+                  <Flex color="#6A6866" align="center" fontSize="xs">
+                    <Text
+                      as="b"
+                      color="#000000"
+                      fontFamily="Roboto Condensed"
+                      fontSize="md"
+                      fontWeight={700}
+                      mr="4px"
+                    >
+                      ${price}.00
+                    </Text>{' '}
+                    (Base Price)
+                  </Flex>
+                </Box>
+              </Box>
+            );
+          })}
+          {chunk.length === 1 ? <Box flex="1" marginLeft="8px" /> : null}
+        </Flex>
+      ))}
+    </Box>
+  );
+};
+
+type TemplatePickerProps = {
+  filters: Filters;
+  onFiltersChange: (filters: Filters) => void;
+  selectedGarment: Garment;
+  onSelectedGarment: (garment: Garment) => void;
+  selectedTemplate: Template;
+  onSelectedTemplate: (garment: Template) => void;
+  templates: Template[];
+};
+
+export default function TemplatePicker({
+  filters,
+  onFiltersChange,
+  selectedGarment,
+  onSelectedGarment,
+  selectedTemplate,
+  onSelectedTemplate,
+  templates: allTemplates,
+}: TemplatePickerProps) {
+  const [areFiltersVisible, setFiltersVisible] = useState(false);
+
+  const { clothingTypes } = filters;
+
+  const templates = getTemplatesMatchingFilters(allTemplates, filters);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  return (
+    <Box bg="#ffffff" w="100%" h="100%">
+      <Flex align="center" height="63px" pl="17px">
+        {selectedTemplate && isMobile ? (
+          <Button
+            bg="transparent"
+            height="30px"
+            minWidth="none"
+            mr="10px"
+            onClick={() => onSelectedTemplate(null)}
+            padding={0}
+            _hover={{
+              bg: '#F9F9F7',
+              border: `1px solid ${abloBlue}`,
+              boxShadow: '0px 0px 8px 0px #97B9F5',
+            }}
+          >
+            <IconBack />
+          </Button>
+        ) : null}
+        <Text fontFamily="Roboto Condensed" fontSize="18px" fontWeight={600} lineHeight="18px">
+          Pick your product
+        </Text>
+      </Flex>
+      {!selectedTemplate || !isMobile ? (
+        <Button
+          alignItems="center"
+          bg="#FFFFFF"
+          borderRadius={0}
+          boxShadow="none"
+          display="flex"
+          height="50px"
+          justifyContent="space-between"
+          onClick={() => setFiltersVisible(!areFiltersVisible)}
+          padding="10px 14px"
+          w="100%"
+        >
+          <Text color="#212121" fontWeight={400}>
+            FILTERS
+          </Text>
+          {areFiltersVisible ? <IconCloseFilters /> : <IconFilters />}
+        </Button>
+      ) : null}
+      {areFiltersVisible ? (
+        <TemplateFilters
+          filters={filters}
+          onApply={() => {
+            setFiltersVisible(false);
+
+            onSelectedGarment({ ...selectedGarment });
+          }}
+          onUpdate={(updates) => onFiltersChange({ ...filters, ...updates })}
+          templates={allTemplates}
+        />
+      ) : (
+        <Box>
+          {selectedTemplate && isMobile ? (
+            <TemplateDetails
+              garment={selectedGarment}
+              onGarmentUpdate={onSelectedGarment}
+              template={selectedTemplate}
+            />
+          ) : (
+            <F>
+              <MiniFilterBar
+                options={[{ name: 'All', value: 'all' }, ...getOptions(allTemplates, 'name')]}
+                selectedValue={clothingTypes[0] || 'All'}
+                onChange={(value) => onFiltersChange({ ...filters, clothingTypes: [value] })}
+              />
+              <TemplatesList
+                onSelectedTemplate={onSelectedTemplate}
+                templates={templates}
+                selectedGarment={selectedGarment}
+              />
+            </F>
+          )}
+        </Box>
+      )}
+    </Box>
+  );
+}

@@ -6,7 +6,7 @@ import ResetPasswordPage from '@/views/auth/ResetPassword';
 
 import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
-import theme from '@/theme/theme';
+import theme from '@/lib/theme';
 import Config from './config';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

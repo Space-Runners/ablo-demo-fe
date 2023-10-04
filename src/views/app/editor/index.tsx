@@ -8,9 +8,9 @@ import { getDesign, saveDesign } from '@/api/designs';
 import { getSizes } from '@/api/sizes';
 import { getTemplates } from '@/api/templates';
 
-import Button from '@/components/Button';
+import Button from '@/lib/components/Button';
 import Navbar from '@/components/navbar/Navbar';
-import { Design, Template } from '@/components/types';
+import { Design, Template } from '@/lib/types';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
@@ -21,7 +21,7 @@ import { IconBack } from './components/Icons';
 import SaveDesignDrawer from './components/SaveDesignDrawer';
 import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
 
-import EditorTool from './EditorTool';
+import EditorTool from '@/lib/editor';
 
 import getEditorStateAsImages from './utils/template-export';
 

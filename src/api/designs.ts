@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Design, DesignSide } from '@/components/types';
+import { Design, DesignSide } from '@/lib/types';
 
 const URL = `/designs`;
 

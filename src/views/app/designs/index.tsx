@@ -18,14 +18,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import Button from '@/components/Button';
+import Button from '@/lib/components/Button';
 import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconMenu from '@/components/icons/IconMenu';
 import Navbar from '@/components/navbar/Navbar';
 
-import { Design } from '@/components/types';
+import { Design } from '@/lib/types';
 import { useDesigns, useDeleteDesign, useUpdateBasicDesign } from '@/api/designs';
-import Colors from '@/theme/colors';
+import Colors from '@/lib/theme/colors';
 import { timeAgo } from '@/utils/time';
 
 import RenameDesignModal from './RenameDesignModal';
