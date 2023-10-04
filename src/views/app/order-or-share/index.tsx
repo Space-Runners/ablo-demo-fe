@@ -18,13 +18,13 @@ import { Pagination } from 'swiper';
 
 import { useDesign } from '@/api/designs';
 
-import Button from '@/components/Button';
-import IconBack from '@/components/icons/IconBack';
+import Button from '@/lib/components/Button';
+import IconBack from '@/lib/components/icons/IconBack';
 import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconShare from '@/components/icons/IconShare';
 import Navbar from '@/components/navbar/Navbar';
-import { AiImage, CanvasState } from '@/components/types';
-import Colors from '@/theme/colors';
+import { AiImage, CanvasState } from '@/lib/types';
+import Colors from '@/lib/theme/colors';
 
 import { IconInstagram, IconTikTok, IconFacebook } from './Icons';
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Template } from '@/components/types';
+import { Template } from '@/lib/types';
 
 const entity = 'templates';
 

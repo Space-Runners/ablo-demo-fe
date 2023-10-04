@@ -2,8 +2,8 @@ import { Box, Button, Flex, Hide, Show, Text } from '@chakra-ui/react';
 
 import { useMe } from '@/api/auth';
 import IconAblo from '@/components/icons/IconAblo';
-import IconBack from '@/components/icons/IconBack';
-import Colors from '@/theme/colors';
+import IconBack from '@/lib/components/icons/IconBack';
+import Colors from '@/lib/theme/colors';
 import React from 'react';
 
 import { useHistory } from 'react-router-dom';

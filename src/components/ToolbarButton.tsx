@@ -1,6 +1,6 @@
 import { Button as ChakraButton } from '@chakra-ui/react';
 
-import Colors from '@/theme/colors';
+import Colors from '@/lib/theme/colors';
 
 const { abloBlue } = Colors;
 

@@ -11,7 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import Button from '@/components/Button';
+import Button from '@/lib/components/Button';
 
 type Props = {
   onClose: () => void;
