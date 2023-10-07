@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { useLocation, useHistory } from 'react-router-dom';
 
-import { Box, Center, HStack, Spinner } from '@chakra-ui/react';
+import { Box, Center, HStack, Show, Spinner } from '@chakra-ui/react';
 import { useMe } from '@/api/auth';
 import { getDesign, saveDesign } from '@/api/designs';
-import { getSizes } from '@/api/sizes';
-import { getTemplates } from '@/api/templates';
 
 import Button from '@/lib/components/Button';
-import Navbar from '@/components/navbar/Navbar';
-import { Design, Template } from '@/lib/types';
+import Navbar from '@/lib/components/navbar';
+import { Design, Template, User } from '@/lib/types';
 
 import SignInModal from '@/views/auth/SignInModal';
 import SignUpModal from '@/views/auth/SignUpModal';
@@ -25,11 +23,22 @@ import EditorTool from '@/lib/editor';
 
 import getEditorStateAsImages from './utils/template-export';
 
-export default function ImageEditorPage() {
+type ImageEditorPageProps = {
+  pendingDesign: Design;
+  onPendingDesignChange: (design: Design) => void;
+  loadingTemplates: boolean;
+  templates: Template[];
+  user: User;
+};
+
+export default function ImageEditorPage({
+  pendingDesign,
+  onPendingDesignChange,
+  loadingTemplates,
+  templates,
+}: ImageEditorPageProps) {
   const [activeDesign, setActiveDesign] = useState<Design>(null);
   const [hasChanges, setHasChanges] = useState(false);
-
-  const [templates, setTemplates] = useState<Template[]>(null);
 
   const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
   const [isSignInModalVisible, setSignInModalVisible] = useState(false);
@@ -50,50 +59,25 @@ export default function ImageEditorPage() {
 
   const { search } = useLocation();
 
-  const isGuest = !me || me.roles[0] === 'guest';
+  const isGuest = !me || me.roles[0]?.name === 'guest';
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
 
     const designId = searchParams.get('designId');
 
-    Promise.all([getTemplates(), getSizes()]).then(([templates, sizes]) => {
-      const [defaultTemplate] = templates;
+    if (!designId) {
+      setIsLoading(false);
+      return;
+    }
 
-      const { colors, sides } = defaultTemplate;
-
-      const defaultColor = colors.find((color) => color.name === 'OatMilk');
-
-      setTemplates(templates);
-
-      const defaultDesign = {
-        name: '',
-        templateColorId: defaultColor.id,
-        template: defaultTemplate,
-        sizeId: sizes[0].id,
-        sides: sides.map(({ id }) => ({ templateSideId: id })),
-      };
-
-      if (!designId) {
-        setActiveDesign(defaultDesign);
+    getDesign(designId)
+      .then((design) => {
+        setActiveDesign(design);
 
         setIsLoading(false);
-        return;
-      }
-
-      getDesign(designId)
-        .then((design) => {
-          const fullTemplate = templates.find(({ id }) => id === design.template.id);
-
-          setActiveDesign({
-            ...design,
-            template: fullTemplate,
-          });
-
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    });
+      })
+      .catch(() => setIsLoading(false));
   }, [search]);
 
   const handleNext = () => {
@@ -118,12 +102,16 @@ export default function ImageEditorPage() {
       const [previewImageFront, imageFront, previewImageBack, imageBack] =
         await getEditorStateAsImages();
 
-      const { sides, template } = activeDesign;
+      const designToUse = activeDesign || pendingDesign;
 
-      const { sides: templateSides } = templates.find(({ id }) => id === template.id);
+      const { sides, templateId } = designToUse;
+
+      const template = templates.find(({ id }) => id === templateId);
 
       const sidesWithImages = sides.map((side) => {
-        const sideName = templateSides.find(({ id }) => id === side.templateSideId).name;
+        const templateSide = template.sides.find(({ id }) => side.templateSideId === id);
+
+        const { name: sideName } = templateSide;
 
         const defaultProperties = {
           canvasState: '',
@@ -142,7 +130,7 @@ export default function ImageEditorPage() {
       });
 
       const design = {
-        ...activeDesign,
+        ...designToUse,
         sides: sidesWithImages,
         templateId: template.id,
       };
@@ -157,6 +145,7 @@ export default function ImageEditorPage() {
       const newDesign = await saveDesign(design);
 
       setIsDesignSaved(true);
+      onPendingDesignChange(null);
 
       if (design.id) {
         setTimeout(() => {
@@ -179,43 +168,55 @@ export default function ImageEditorPage() {
   };
 
   const handleGoBack = () => {
+    if (!activeDesign) {
+      history.push('/app/templates');
+
+      return;
+    }
+
     if (hasChanges) {
       setModalConfirmExitModalVisible(true);
     } else {
-      history.push('/designs');
+      history.push('/app/designs');
     }
   };
 
   return (
     <Box bg="#FFFFFF" h="100vh" w="100%">
       <Navbar
-        onBack={!isGuest && handleGoBack}
+        onBack={handleGoBack}
         onNext={handleNext}
         rightSideContent={
-          <HStack>
-            {!isGuest && (
+          <Show above="md">
+            <HStack>
               <Button
                 h="40px"
                 icon={<IconBack />}
                 onClick={handleGoBack}
                 outlined
                 textTransform="none"
-                title="Back To Designs"
+                title={`Back To ${activeDesign ? 'Designs' : 'Templates'}`}
               />
-            )}
-            <Button h="40px" onClick={handleNext} textTransform="none" title="Finish & Share" />
-          </HStack>
+              <Button h="40px" onClick={handleNext} textTransform="none" title="Finish & Share" />
+            </HStack>
+          </Show>
         }
         title="Create design"
       />
-      {isLoading ? (
+      {isLoading || loadingTemplates ? (
         <Center bg="#FFFFFF" h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}>
           <Spinner thickness="1px" speed="0.65s" emptyColor="gray" size="md" />
         </Center>
       ) : (
         <EditorTool
-          design={activeDesign}
+          design={activeDesign || pendingDesign}
           onDesignChange={(design) => {
+            if (!activeDesign) {
+              onPendingDesignChange(design);
+
+              return;
+            }
+
             setHasChanges(true);
             setActiveDesign(design);
           }}

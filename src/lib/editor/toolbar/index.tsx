@@ -2,17 +2,9 @@ import { Box, Button, Flex, Hide, HStack, Icon } from '@chakra-ui/react';
 
 import { ReactNode, useEffect, useState } from 'react';
 
-import { AiImage, Garment, Template } from '../../types';
+import { AiImage } from '../../types';
 
-import {
-  IconTemplatePicker,
-  IconFontToImage,
-  IconTextToImage,
-  IconImageToImage,
-  IconUploadImage,
-} from './Icons';
-
-import { isEmpty } from 'lodash';
+import { IconFontToImage, IconImageToImage, IconTextToImage, IconUploadImage } from './Icons';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -50,11 +42,6 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: 'templatePicker',
-    icon: <IconTemplatePicker />,
-    iconActive: <IconTemplatePicker isSelected />,
-  },
-  {
     name: 'textToImage',
     icon: <IconTextToImage />,
     iconActive: <IconTextToImage isSelected />,
@@ -84,31 +71,22 @@ type FooterToolbarProps = {
   onSetExpanded: (isExpaned: boolean) => void;
   onImageUploaded: (image: File) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  selectedGarment: Garment;
-  onSelectedGarment: (garment: Garment) => void;
-  selectedTemplate: Template;
-  onSelectedTemplate: (template: Template) => void;
-  templates: Template[];
   selectedTool: string;
   onSelectedTool: (tool: string) => void;
   children: ReactNode;
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
-  const { children, isExpanded, onSetExpanded, templates, onSelectedTool, selectedTool } = props;
+  const { children, isExpanded, onSetExpanded, onSelectedTool, selectedTool } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
-
-  const isFullScreen = selectedTool === 'templatePicker';
 
   const [drag, setDrag] = useState({
     active: false,
   });
 
   useEffect(() => {
-    if (selectedTool === 'templatePicker') {
-      setHeight(window.innerHeight);
-    } else if (isExpanded) {
+    if (isExpanded) {
       setHeight(MAX_OVERLAY_HEIGHT);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
@@ -124,9 +102,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const endResize = () => {
     let newHeight = document.getElementById('toolbarOverlay')?.clientHeight || 0;
 
-    const containerHeight = window.innerHeight || 0;
-
-    const maxHeight = isFullScreen ? containerHeight : MAX_OVERLAY_HEIGHT;
+    const maxHeight = MAX_OVERLAY_HEIGHT;
 
     if (newHeight > MIN_OVERLAY_HEIGHT + (maxHeight - MIN_OVERLAY_HEIGHT) / 2) {
       newHeight = maxHeight;
@@ -170,7 +146,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let newHeight = containerHeight - clientY;
 
-    const maxHeight = isFullScreen ? containerHeight : MAX_OVERLAY_HEIGHT;
+    const maxHeight = MAX_OVERLAY_HEIGHT;
 
     if (newHeight > maxHeight) {
       newHeight = maxHeight;
@@ -190,8 +166,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const { active } = drag;
 
   const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
-
-  const views = VIEWS.filter(({ name }) => name !== 'templatePicker' || !isEmpty(templates));
 
   return (
     <Box
@@ -234,7 +208,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
         </Hide>
         <Flex align="center" justify="space-between" padding="10px 14px">
           <HStack spacing="8px">
-            {views.map(({ name, icon, iconActive }) => (
+            {VIEWS.map(({ name, icon, iconActive }) => (
               <ToolbarButton
                 isSelected={selectedTool === name}
                 key={name}

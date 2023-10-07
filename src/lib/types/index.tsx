@@ -1,3 +1,15 @@
+interface UserRole {
+  id: number;
+  firstName: string;
+  lastName: string;
+  name: string;
+}
+
+export interface User {
+  email: string;
+  roles: UserRole[];
+}
+
 export interface Keyword {
   id: string;
   name: string;
@@ -43,8 +55,8 @@ export interface Filters {
 }
 
 export interface Garment {
-  templateId: number;
-  variantId: string;
+  templateId: string;
+  templateColorId: string;
   sizeId: number;
 }
 
@@ -81,7 +93,7 @@ export interface Template {
     name: string;
   };
   fabric: string;
-  id: number;
+  id: string;
   madeIn: string;
   name: string;
   fit: string;
@@ -109,6 +121,7 @@ export interface CanvasState {
 export interface DesignSide {
   id?: string;
   templateSideId?: string;
+  templateSide?: TemplateSide;
   hasGraphics?: boolean;
   hasText?: boolean;
   canvasState?: string;
@@ -120,10 +133,11 @@ export interface DesignSide {
 
 export interface Design {
   id?: string;
-  name: string;
-  template: Template;
+  name?: string;
+  template?: Template;
+  templateId: string;
   templateColorId: string;
-  sizeId?: number;
+  sizeId: number;
   sides: DesignSide[];
   updatedAt?: string;
 }

@@ -1,30 +1,5 @@
 import { Icon } from '@chakra-ui/react';
 
-export const IconTemplatePicker = ({ isSelected = false }) => (
-  <Icon
-    width="24px"
-    height="24px"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <g clipPath="url(#clip0_810_1068)">
-      <path
-        d="M19.4018 4.97796C18.376 3.86882 16.9492 3.22313 15.4495 3.16064C14.783 4.17605 13.6322 4.84257 12.3252 4.84257C11.0182 4.84257 9.86221 4.16563 9.19568 3.14502C7.62832 3.14502 6.13385 3.79071 5.05596 4.92588L1.15576 9.02916L4.57689 11.9712L6.51918 9.64361V21.0838H17.7876V9.64882L19.7299 11.9764L23.151 9.03437L19.3914 4.97796H19.4018Z"
-        stroke={isSelected ? '#000000' : '#A0AEC0'}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_810_1068">
-        <rect width="24" height="24" fill="white" />
-      </clipPath>
-    </defs>
-  </Icon>
-);
-
 export const IconTextToImage = ({ isSelected = false }) => (
   <Icon
     width="24px"
