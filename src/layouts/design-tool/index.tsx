@@ -93,6 +93,7 @@ export default function DesignTool() {
                     onPendingDesignChange={setPendingDesign}
                     loadingTemplates={loading}
                     templates={templates}
+                    user={me}
                   />
                 )}
               />

@@ -116,7 +116,7 @@ type Props = {
 const TemplateFilters = ({ filters, onApply, onUpdate, templates }: Props) => {
   const { data: allSizes = [] } = useSizes();
 
-  const { brands, clothingTypes, collections, fits, genders, sizes, colors, price } = filters;
+  const { clothingTypes, collections, fits, genders, sizes, colors, price } = filters;
 
   return (
     <Box paddingBottom="38px" w="100%">

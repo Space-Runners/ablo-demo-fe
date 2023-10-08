@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import { Box, Center, HStack, Show, Spinner } from '@chakra-ui/react';
-import { useMe } from '@/api/auth';
+
 import { getDesign, saveDesign } from '@/api/designs';
 
 import Button from '@/lib/components/Button';
@@ -36,6 +36,7 @@ export default function ImageEditorPage({
   onPendingDesignChange,
   loadingTemplates,
   templates,
+  user: me,
 }: ImageEditorPageProps) {
   const [activeDesign, setActiveDesign] = useState<Design>(null);
   const [hasChanges, setHasChanges] = useState(false);
@@ -54,8 +55,6 @@ export default function ImageEditorPage({
   const [isConfirmExitModalVisible, setModalConfirmExitModalVisible] = useState(false);
 
   const history = useHistory();
-
-  const { data: me } = useMe();
 
   const { search } = useLocation();
 
