@@ -72,7 +72,7 @@ export default function ImageGenerator({
 
   useEffect(() => {
     getStyles().then(setStyles);
-  }, []);
+  }, [getStyles]);
 
   const handleNewArtwork = () => {
     handleReset();

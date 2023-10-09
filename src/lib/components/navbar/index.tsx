@@ -1,14 +1,11 @@
-import { Box, Button, Flex, Hide, Show, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Hide, Text } from '@chakra-ui/react';
 
 import { useMe } from '@/api/auth';
 import IconAblo from '@/components/icons/IconAblo';
 import IconBack from '@/lib/components/icons/IconBack';
-import Colors from '@/lib/theme/colors';
 import React from 'react';
 
 import { useHistory } from 'react-router-dom';
-
-const { abloBlue } = Colors;
 
 type Props = {
   callToActionContent?: React.ReactNode;
@@ -26,17 +23,17 @@ export default function Navbar(props: Props) {
 
   const { data: me } = useMe();
 
-  const isGuest = !me || me.roles[0] === 'guest';
+  const isGuest = !me || me.roles[0]?.name === 'guest';
 
   return (
-    <Box boxShadow="0px 2px 4px 0px rgba(173, 173, 173, 0.25)" id="ablo-navbar">
+    <Box boxShadow="0px 4px 4px 0px rgba(220, 220, 220, 0.25)" id="ablo-navbar" marginBottom="1px">
       <Flex
         align="center"
         bg="#FFFFFF"
         borderBottom="1px solid #E7E7E7"
         h="58px"
-        justify={{ base: 'center', md: 'space-between' }}
-        p={{ base: 0, md: '32px' }}
+        justify={{ base: 'center', md: 'center' }}
+        p={{ base: '0 17px', md: '32px' }}
       >
         <Button
           bg="transparent"
@@ -44,7 +41,11 @@ export default function Navbar(props: Props) {
         >
           <IconAblo />
         </Button>
-        <Show above="md">{rightSideContent}</Show>
+        {rightSideContent ? (
+          <Box position="absolute" right="17px">
+            {rightSideContent}
+          </Box>
+        ) : null}
       </Flex>
       <Hide above="md">
         <Flex
@@ -65,7 +66,8 @@ export default function Navbar(props: Props) {
               w="48px"
               _hover={{
                 bg: '#F9F9F7',
-                border: `1px solid ${abloBlue}`,
+                border: '1px solid',
+                borderColor: 'brand.500',
                 boxShadow: '0px 0px 8px 0px #97B9F5',
               }}
             >
@@ -81,7 +83,7 @@ export default function Navbar(props: Props) {
             <Button
               bg="transparent"
               borderRadius="40px"
-              color={abloBlue}
+              color="brand.500"
               disabled={isNextDisabled}
               fontSize="sm"
               onClick={onNext}

@@ -1,4 +1,4 @@
-import { Template } from '../../../types';
+import { Template } from '@/lib/types';
 
 export const getOptions = (templates: Template[], property) =>
   templates

@@ -4,10 +4,11 @@ import {
   Center,
   Spinner,
   Flex,
-  HStack,
   Image,
+  Show,
   Text,
   VStack,
+  HStack,
 } from '@chakra-ui/react';
 
 import { useLocation, useHistory } from 'react-router-dom';
@@ -22,7 +23,7 @@ import Button from '@/lib/components/Button';
 import IconBack from '@/lib/components/icons/IconBack';
 import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconShare from '@/components/icons/IconShare';
-import Navbar from '@/components/navbar/Navbar';
+import Navbar from '@/lib/components/navbar';
 import { AiImage, CanvasState } from '@/lib/types';
 import Colors from '@/lib/theme/colors';
 
@@ -102,6 +103,8 @@ export default function OrderOrShare() {
 
   const handleGoToDesigns = () => history.push('/app/designs');
 
+  const handleGoToTemplates = () => history.push('/app/templates');
+
   const slides = SLIDES.reduce((result, slide) => {
     const newSlides = sides.map((side) => ({
       ...side,
@@ -122,23 +125,25 @@ export default function OrderOrShare() {
         onBack={() => history.goBack()}
         onNext={handleGoToDesigns}
         rightSideContent={
-          <HStack>
-            <Button
-              h={NAVBAR_BUTTON_HEIGHT}
-              icon={<IconBack />}
-              onClick={() => history.goBack()}
-              outlined
-              textTransform="none"
-              title="Back To Design"
-            />
-            <Button
-              h={NAVBAR_BUTTON_HEIGHT}
-              icon={<IconCreateNew color="#FFFFFF" />}
-              onClick={handleGoToDesigns}
-              textTransform="none"
-              title="Create New"
-            />
-          </HStack>
+          <Show above="md">
+            <HStack>
+              <Button
+                h={NAVBAR_BUTTON_HEIGHT}
+                icon={<IconBack />}
+                onClick={() => history.goBack()}
+                outlined
+                textTransform="none"
+                title="Back To Design"
+              />
+              <Button
+                h={NAVBAR_BUTTON_HEIGHT}
+                icon={<IconCreateNew color="#FFFFFF" />}
+                onClick={handleGoToTemplates}
+                textTransform="none"
+                title="Create New"
+              />
+            </HStack>
+          </Show>
         }
         title="Share"
       />

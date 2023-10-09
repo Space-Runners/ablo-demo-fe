@@ -1,59 +1,70 @@
 import { useEffect, useState } from 'react';
 
-import { Box, Flex, HStack, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
 
-import ButtonCTA from '../../../components/Button';
-import Panel from '../../../components/Panel';
+import ButtonCTA from '@/lib/components/Button';
+import IconBack from '@/lib/components/icons/IconBack';
+import Panel from '@/components/Panel';
 
-import { Garment, Template } from '../../../types';
+import { Garment, Template } from '@/lib/types';
 
-import ColorPicker from '../../../components/ColorPicker';
-import Colors from '../../../theme/colors';
+import ColorPicker from './components/ColorPicker';
 
-import { IconSustainable } from './Icons';
-
-const { abloBlue } = Colors;
+import { IconSustainable } from './components/Icons';
 
 type TemplateDetailsProps = {
   garment: Garment;
+  onBack: () => void;
   onGarmentUpdate: (updates: object) => void;
   template: Template;
 };
 
-const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetailsProps) => {
+const TemplateDetails = ({ garment, onBack, onGarmentUpdate, template }: TemplateDetailsProps) => {
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedVariant, setSelectedVariant] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   useEffect(() => {
-    let variantId = garment.variantId;
+    let templateColorId = garment.templateColorId;
 
     const { colors } = template;
 
-    if (!variantId || !template.colors.find((variant) => variant.id === variantId) || colors[0]) {
-      const defaultVariant =
+    if (
+      !templateColorId ||
+      !template.colors.find((variant) => variant.id === templateColorId) ||
+      colors[0]
+    ) {
+      const defaultColor =
         template.colors.find((variant) => variant.name === 'OatMilk') || colors[0];
 
-      variantId = defaultVariant.id;
+      templateColorId = defaultColor.id;
     }
 
     setSelectedSize(garment.sizeId);
-    setSelectedVariant(variantId);
+    setSelectedColor(templateColorId);
   }, [template, garment]);
 
   const handleSelect = () => {
     onGarmentUpdate({
       templateId: template.id,
       sizeId: selectedSize,
-      variantId: selectedVariant,
+      templateColorId: selectedColor,
     });
   };
 
   const { colors, material, fabric, fit, madeIn, name, price, sizes } = template;
 
-  const variant = colors.find((variant) => variant.id === selectedVariant) || colors[0];
+  const variant = colors.find((variant) => variant.id === selectedColor) || colors[0];
 
   return (
     <Box position="relative">
+      <Box padding="30px 17px 20px 17px">
+        <Button bg="transparent" height="27px" minWidth="none" onClick={onBack} padding={0}>
+          <IconBack />
+          <Text as="b" fontSize="18px" ml="10px">
+            Back to list
+          </Text>
+        </Button>
+      </Box>
       <Flex
         align="center"
         bg={{ base: '#F9F9F7', md: 'transparent' }}
@@ -68,9 +79,6 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
         <Image w={{ base: 350, md: 500 }} src={variant.images[0].url} alt={name} />
       </Flex>
       <Box padding="24px 14px">
-        <Text color="#959392" fontSize="sm" mb="13px">
-          SPAARKD
-        </Text>
         <Flex color="#000000" justify={{ base: 'space-between', md: 'flex-start' }} mb="16px">
           <Text fontSize="md">
             {fit} {name}
@@ -98,7 +106,8 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
               <Flex
                 align="center"
                 as="button"
-                border={isSelected ? `1px solid ${abloBlue}` : '1px solid #6A6866'}
+                border="1px solid"
+                borderColor={isSelected ? 'brand.500' : '#6A6866'}
                 borderRadius="4px"
                 fontWeight={isSelected ? 600 : 400}
                 onClick={() => setSelectedSize(id)}
@@ -107,7 +116,7 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
                 justify="center"
                 w="34px"
               >
-                <Text color={isSelected ? abloBlue : '#6A6866'} fontSize="sm">
+                <Text color={isSelected ? 'brand.500' : '#6A6866'} fontSize="sm">
                   {name}
                 </Text>
               </Flex>
@@ -115,9 +124,9 @@ const TemplateDetails = ({ garment, onGarmentUpdate, template }: TemplateDetails
           })}
         </HStack>
         <ColorPicker
-          onSelectedVariants={([variant]) => setSelectedVariant(variant)}
+          onSelectedVariants={([variant]) => setSelectedColor(variant)}
           options={colors}
-          selectedVariants={[selectedVariant]}
+          selectedVariants={[selectedColor]}
         />
       </Box>
       <Panel title="More Info">

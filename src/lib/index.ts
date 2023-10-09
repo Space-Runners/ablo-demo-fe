@@ -7,3 +7,4 @@ export * from './types';
 export { default as theme } from './theme';
 
 export { getStyles, generateImage } from './api/image-generator';
+export { default as Navbar } from './components/navbar';

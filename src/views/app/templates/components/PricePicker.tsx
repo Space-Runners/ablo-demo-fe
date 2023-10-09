@@ -6,10 +6,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import Colors from '../../../theme/colors';
-
-const { abloBlue } = Colors;
-
 type Props = {
   min: number;
   max: number;
@@ -40,12 +36,12 @@ const PricePicker = ({ min, max, onChange, value }: Props) => {
       value={value}
     >
       <RangeSliderTrack bg="#D4D4D3" h="2px">
-        <RangeSliderFilledTrack bg={abloBlue} />
+        <RangeSliderFilledTrack bg="brand.500" />
       </RangeSliderTrack>
-      <RangeSliderThumb bg={abloBlue} index={0} position="relative">
+      <RangeSliderThumb bg="brand.500" index={0} position="relative">
         <PriceTag price={value[0]} />
       </RangeSliderThumb>
-      <RangeSliderThumb bg={abloBlue} index={1} position="relative">
+      <RangeSliderThumb bg="brand.500" index={1} position="relative">
         <PriceTag price={value[1]} />
       </RangeSliderThumb>
     </RangeSlider>

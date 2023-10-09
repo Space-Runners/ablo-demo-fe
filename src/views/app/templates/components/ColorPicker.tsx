@@ -1,7 +1,6 @@
 import { Button, HStack } from '@chakra-ui/react';
 
-import { TemplateColor } from '../types';
-
+import { TemplateColor } from '@/lib/types';
 import Colors from '@/lib/theme/colors';
 
 const { abloBlue } = Colors;

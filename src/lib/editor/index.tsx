@@ -5,7 +5,7 @@ import { Box, useBreakpointValue } from '@chakra-ui/react';
 import { fabric } from 'fabric';
 import { isEmpty, partition } from 'lodash';
 
-import { Design, Garment, Template } from '@/lib/types';
+import { Design, Template } from '@/lib/types';
 
 import CanvasContainer from './components/CanvasContainer';
 import ColorPicker from './components/ColorPicker';
@@ -61,15 +61,15 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
   const [selectedSide, setSelectedSide] = useState(SIDES[0]);
   const [isEditorToolbarExpanded, setEditorToolbarExpanded] = useState(false);
 
-  const [selectedTemplatePreview, setSelectedTemplatePreview] = useState<Template>(null);
+  const { templateId, templateColorId, sizeId, sides: designSides } = design;
 
-  const { template, templateColorId, sizeId, sides: designSides } = design;
+  const template = templates.find(({ id }) => id === templateId);
 
   const { sides: templateSides } = template;
 
   const templateSideId = templateSides.find(({ name }) => name === selectedSide).id;
 
-  const selectedGarment = { templateId: template.id, sizeId, variantId: templateColorId };
+  const selectedGarment = { templateId, sizeId, variantId: templateColorId };
 
   const canvas = selectedSide === 'front' ? canvasFront : canvasBack;
 
@@ -187,58 +187,6 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
       }
     };
   }, [canvas, saveState]);
-
-  const handleSelectedGarment = (garment: Garment) => {
-    const { sizeId, templateId, variantId } = garment;
-
-    const oldTemplate = templates.find(({ id }) => id === design.template.id);
-    const newTemplate = templates.find(({ id }) => id === templateId);
-
-    const newSides = newTemplate.sides.map(({ id, name }) => {
-      const sideInOldTemplate = oldTemplate.sides.find((side) => side.name === name);
-
-      if (sideInOldTemplate) {
-        const { id: sideId } = sideInOldTemplate;
-
-        const oldDesign = design.sides.find(({ templateSideId }) => templateSideId === sideId);
-
-        if (oldDesign) {
-          return {
-            ...oldDesign,
-            templateSideId: id,
-          };
-        }
-      }
-
-      return {
-        templateSideId: id,
-      };
-    });
-
-    onDesignChange({
-      ...design,
-      sizeId,
-      sides: newSides,
-      template: newTemplate,
-      templateColorId: variantId,
-    });
-
-    setSelectedTemplatePreview(null);
-
-    SIDES.forEach((side) => {
-      const canvas = side === 'front' ? canvasFront : canvasBack;
-
-      const template = templates.find((template) => template.id === garment.templateId);
-
-      const { width, height } = getDrawingArea(template, side, isMobile);
-
-      canvas.current.setDimensions({ height: height * 3, width: width * 3 });
-      canvas.current.setDimensions(
-        { height: `${height}px`, width: `${width}px` },
-        { cssOnly: true }
-      );
-    });
-  };
 
   const handleSave = () => {
     canvas.current.discardActiveObject().renderAll();
@@ -396,11 +344,6 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
 
   return (
     <EditorContainer
-      selectedGarment={selectedGarment}
-      onSelectedGarment={handleSelectedGarment}
-      selectedTemplate={selectedTemplatePreview}
-      onSelectedTemplate={setSelectedTemplatePreview}
-      templates={templates}
       onImageUploaded={handleImageUpload}
       onGeneratedImageSelected={handlePreviewImageSelected}
       isEditorToolbarExpanded={isEditorToolbarExpanded}
