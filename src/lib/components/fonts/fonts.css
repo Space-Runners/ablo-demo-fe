@@ -1,13 +1,7 @@
 @font-face {
-  font-family: '5yearsoldfont';
+  font-family: 'Amsterdam';
   font-style: normal;
-  src: local('Opensans-Bold'), url(@/assets/fonts/5yearsoldfont.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'amsterdam';
-  font-style: normal;
-  src: local('amsterdam'), url(@/assets/fonts/amsterdam.ttf) format('truetype');
+  src: local('amsterdam'), url(@/assets/fonts/amsterdam.otf) format('truetype');
 }
 
 @font-face {
@@ -17,9 +11,29 @@
 }
 
 @font-face {
+  font-family: 'ChelseaMarket';
+  font-style: normal;
+  src: local('ChelseaMarket-Regular'),
+    url(@/assets/fonts/ChelseaMarket-Regular.ttf) format('truetype');
+}
+
+@font-face {
   font-family: 'Collage';
   font-style: normal;
   src: local('Collage'), url(@/assets/fonts/Collage.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'GlassAntiqua';
+  font-style: normal;
+  src: local('GlassAntiqua_Custom-Regular'),
+    url(@/assets/fonts/GlassAntiqua_Custom-Regular.otf) format('truetype');
+}
+
+@font-face {
+  font-family: 'gomarice_old_book';
+  font-style: normal;
+  src: local('gomarice_old_book'), url(@/assets/fonts/gomarice_old_book.ttf) format('truetype');
 }
 
 @font-face {
@@ -29,21 +43,36 @@
 }
 
 @font-face {
+  font-family: 'Koulen';
+  font-style: normal;
+  src: local('Koulen-Regular'), url(@/assets/fonts/Koulen-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'LuckiestGuy';
+  font-style: normal;
+  src: local('LuckiestGuy_Custom-Regular'),
+    url(@/assets/fonts/LuckiestGuy_Custom-Regular.otf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Miniver';
+  font-style: normal;
+  src: local('Miniver-Regular'), url(@/assets/fonts/Miniver-Regular.ttf) format('truetype');
+}
+
+@font-face {
   font-family: 'Naive';
   font-style: normal;
-  src: local('Naive'), url(@/assets/fonts/Naive.ttf) format('truetype');
+  src: local('NaiveFont_Custom-Regular'),
+    url(@/assets/fonts/NaiveFont_Custom-Regular.otf) format('truetype');
 }
 
 @font-face {
-  font-family: 'Naiveer';
+  font-family: 'PaletteMosaic';
   font-style: normal;
-  src: local('Naiveer'), url(@/assets/fonts/Naiveer.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Paper Cutz';
-  font-style: normal;
-  src: local('Paper Cutz'), url(@/assets/fonts/PaperCutz.ttf) format('truetype');
+  src: local('PaletteMosaic_Custom-Regular'),
+    url(@/assets/fonts/PaletteMosaic_Custom-Regular.otf) format('truetype');
 }
 
 @font-face {
@@ -53,19 +82,22 @@
 }
 
 @font-face {
+  font-family: 'PicoPop';
+  font-style: normal;
+  src: local('PicoPop_Custom-Regular'),
+    url(@/assets/fonts/PicoPop_Custom-Regular.otf) format('truetype');
+}
+
+@font-face {
   font-family: 'PoorStory-Regular';
   font-style: normal;
-  src: local('PoorStory-Regular'), url(@/assets/fonts/Paperland.ttf) format('truetype');
+  src: local('PoorStory_Custom-Regular'),
+    url(@/assets/fonts/PoorStory_Custom-Regular.otf) format('truetype');
 }
 
 @font-face {
-  font-family: 'SuperSketch';
+  font-family: 'SingleDay';
   font-style: normal;
-  src: local('SuperSketch'), url(@/assets/fonts/SuperSketch.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'Vandalust';
-  font-style: normal;
-  src: local('Vandalust'), url(@/assets/fonts/Vandalust.ttf) format('truetype');
+  src: local('SingleDay_Regular_Custom-Regular'),
+    url(@/assets/fonts/SingleDay_Regular_Custom-Regular.otf) format('truetype');
 }
