@@ -24,11 +24,13 @@ const Button = (props) => {
 export default function FontPicker({ fontFamily, onUpdate }) {
   return (
     <HStack mt="8px" overflow="auto" spacing="0" w="100%">
-      {Fonts.map((font) => (
+      {Fonts.map(({ name: font, icon }) => (
         <Button isSelected={font === fontFamily} key={font} onClick={() => onUpdate(font)}>
-          <Text fontFamily={font} fontWeight={700}>
-            Aa
+          {/* We have to preload these fonts or they won't be applied to the canvas */}
+          <Text fontFamily={font} fontWeight={700} visibility="hidden" w={0}>
+            A
           </Text>
+          {icon}
         </Button>
       ))}
     </HStack>
