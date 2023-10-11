@@ -13,19 +13,20 @@ import {
   MenuButton,
   MenuList,
   MenuItem as ChakraMenuItem,
+  Show,
   Spinner,
   Stack,
   Text,
 } from '@chakra-ui/react';
 
-import Button from '@/components/Button';
+import Button from '@/lib/components/Button';
 import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconMenu from '@/components/icons/IconMenu';
-import Navbar from '@/components/navbar/Navbar';
+import Navbar from '@/lib/components/navbar';
 
-import { Design } from '@/components/types';
+import { Design } from '@/lib/types';
 import { useDesigns, useDeleteDesign, useUpdateBasicDesign } from '@/api/designs';
-import Colors from '@/theme/colors';
+import Colors from '@/lib/theme/colors';
 import { timeAgo } from '@/utils/time';
 
 import RenameDesignModal from './RenameDesignModal';
@@ -159,7 +160,11 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
   );
 };
 
-export default function DesignsPage() {
+type DesignsPageProps = {
+  onCreateNewDesign: () => void;
+};
+
+export default function DesignsPage({ onCreateNewDesign }: DesignsPageProps) {
   const history = useHistory();
 
   const { data: designs, isLoading } = useDesigns();
@@ -168,8 +173,8 @@ export default function DesignsPage() {
     history.push(`/app/editor?designId=${design.id}`);
   };
 
-  const handleGoToEditor = () => {
-    history.push('/app/editor');
+  const handleGoToTemplatePicker = () => {
+    onCreateNewDesign();
   };
 
   return (
@@ -181,15 +186,17 @@ export default function DesignsPage() {
             <Text color={abloBlue}>Create New</Text>
           </F>
         }
-        onNext={handleGoToEditor}
+        onNext={handleGoToTemplatePicker}
         rightSideContent={
-          <Button
-            h="40px"
-            icon={<IconCreateNew color="#FFFFFF" />}
-            onClick={handleGoToEditor}
-            textTransform="none"
-            title="Create New"
-          />
+          <Show above="md">
+            <Button
+              h="40px"
+              icon={<IconCreateNew color="#FFFFFF" />}
+              onClick={handleGoToTemplatePicker}
+              textTransform="none"
+              title="Create New"
+            />
+          </Show>
         }
         title="My Designs"
       />

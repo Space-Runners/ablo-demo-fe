@@ -23,7 +23,7 @@
     "build": "tsc && vite build",
     "build:library": "tsc && vite build --config vite-lib.config.ts",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 20",
-    "postinstall": "cd node_modules/fabric && node build.js modules=ALL requirejs fast exclude=gestures,accessors",
+    "build:fabric": "cd node_modules/fabric && node build.js modules=ALL requirejs fast exclude=gestures,accessors",
     "preview": "vite preview"
   },
   "main": "./dist/ablo-demo-fe.js",
@@ -32,7 +32,7 @@
     ".": {
       "import": "./dist/ablo-demo-fe.js",
       "require": "./dist/ablo-demo-fe.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/lib/index.d.ts"
     }
   },
   "files": [
@@ -42,17 +42,9 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@fontsource/bangers": "^5.0.3",
-    "@fontsource/karla": "^5.0.3",
-    "@fontsource/koulen": "^5.0.3",
-    "@fontsource/luckiest-guy": "^5.0.3",
     "@fontsource/poppins": "^5.0.3",
-    "@fontsource/press-start-2p": "^5.0.3",
     "@fontsource/roboto": "^5.0.3",
     "@fontsource/roboto-condensed": "^5.0.3",
-    "@fontsource/silkscreen": "^5.0.3",
-    "@fontsource/space-grotesk": "^5.0.3",
-    "@fontsource/special-elite": "^5.0.3",
     "@react-oauth/google": "^0.11.0",
     "@tanstack/react-query": "^4.29.5",
     "axios": "^1.4.0",
@@ -60,10 +52,10 @@
     "framer-motion": "^10.16.4",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
-    "react-color": "^2.19.3",
-    "react-dropzone": "^12.0.4",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^12.0.4",
     "react-icons": "^4.3.1",
     "react-is": "^18.0.0",
     "react-router-dom": "^5.3.0",
@@ -83,6 +75,15 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "typescript": "4.9.5",
     "vite": "^4.3.9",
-    "vite-plugin-dts": "^3.6.0"
+    "vite-plugin-dts": "^3.6.0",
+    "vite-plugin-lib-inject-css": "^1.3.0"
+  },
+  "peerDependencies": {
+    "fabric": "^5.3.0",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

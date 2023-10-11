@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { useQuery } from '@tanstack/react-query';
+import { User } from '@/lib/types';
 
 import { Config } from '../config';
 import { StorageKeys } from '../constants';
@@ -80,7 +81,7 @@ export const verifyEmail = (token: string) => axios.get(`/users/verify-email/${t
 
 export const useMe = () =>
   useQuery(['me'], () =>
-    axios.get('/profile').then(({ data }) => {
+    axios.get<User>('/profile').then(({ data }) => {
       return data;
     })
   );

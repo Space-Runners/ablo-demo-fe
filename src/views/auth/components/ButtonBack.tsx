@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react';
 
-import IconBack from '@/components/icons/IconBack';
+import IconBack from '@/lib/components/icons/IconBack';
 
 const ButtonBack = (props) => (
   <Button

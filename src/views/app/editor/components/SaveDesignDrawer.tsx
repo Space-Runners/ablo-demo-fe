@@ -12,9 +12,9 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 
-import Button from '@/components/Button';
+import Button from '@/lib/components/Button';
 
-import Colors from '@/theme/colors';
+import Colors from '@/lib/theme/colors';
 
 const { abloBlue } = Colors;
 
