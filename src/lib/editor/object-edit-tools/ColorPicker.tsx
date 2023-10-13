@@ -50,17 +50,9 @@ type ColorPickerProps = {
   aiImage: AiImage;
   selectedColor: string;
   onUpdateColor: (color: string) => void;
-  selectedOpacity: number;
-  onUpdateOpacity: (opacity: number) => void;
 };
 
-export default function ColorPicker({
-  aiImage,
-  selectedColor,
-  onUpdateColor,
-  selectedOpacity,
-  onUpdateOpacity,
-}: ColorPickerProps) {
+export default function ColorPicker({ aiImage, selectedColor, onUpdateColor }: ColorPickerProps) {
   const style = aiImage && aiImage.options.style;
 
   const [isColorPickerModalVisible, setColorPickerModalVisible] = useState(false);
@@ -94,8 +86,6 @@ export default function ColorPicker({
             onUpdateColor(color);
           }}
           selectedColor={selectedColor}
-          selectedOpacity={selectedOpacity}
-          onSelectedOpacity={onUpdateOpacity}
         />
       ) : null}
     </HStack>
