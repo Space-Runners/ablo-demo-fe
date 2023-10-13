@@ -44,16 +44,8 @@ const ColorPickerModal = ({
           <SketchPicker
             disableAlpha
             color={selectedColor}
-            onChangeComplete={({ hex }) => onSelectedColor(hex)}
+            onChange={({ hex }) => onSelectedColor(hex)}
             width="283px"
-          />
-          <Box mb="20px" />
-          <AlphaPicker
-            color={{ r: 0, g: 0, b: 0, a: selectedOpacity }}
-            onChangeComplete={({ rgb }) => {
-              onSelectedOpacity(rgb.a);
-            }}
-            width="300px"
           />
         </ModalBody>
       </ModalContent>
