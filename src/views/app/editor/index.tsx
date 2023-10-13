@@ -201,6 +201,7 @@ export default function ImageEditorPage({
           </Show>
         }
         title="Create design"
+        user={me}
       />
       {isLoading || loadingTemplates ? (
         <Center bg="#FFFFFF" h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}>
