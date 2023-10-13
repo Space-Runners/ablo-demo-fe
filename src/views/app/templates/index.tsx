@@ -144,6 +144,7 @@ export default function TemplatesPage({
           </F>
         }
         title="Pick Your Product"
+        user={user}
       />
       {loading ? (
         <Center h="300px">

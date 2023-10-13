@@ -24,7 +24,7 @@ import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconMenu from '@/components/icons/IconMenu';
 import Navbar from '@/lib/components/navbar';
 
-import { Design } from '@/lib/types';
+import { Design, User } from '@/lib/types';
 import { useDesigns, useDeleteDesign, useUpdateBasicDesign } from '@/api/designs';
 import Colors from '@/lib/theme/colors';
 import { timeAgo } from '@/utils/time';
@@ -162,9 +162,10 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
 
 type DesignsPageProps = {
   onCreateNewDesign: () => void;
+  user: User;
 };
 
-export default function DesignsPage({ onCreateNewDesign }: DesignsPageProps) {
+export default function DesignsPage({ onCreateNewDesign, user }: DesignsPageProps) {
   const history = useHistory();
 
   const { data: designs, isLoading } = useDesigns();
@@ -199,6 +200,7 @@ export default function DesignsPage({ onCreateNewDesign }: DesignsPageProps) {
           </Show>
         }
         title="My Designs"
+        user={user}
       />
       {isLoading ? (
         <Center h="300px">

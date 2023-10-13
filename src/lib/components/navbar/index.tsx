@@ -1,27 +1,36 @@
 import { Box, Button, Flex, Hide, Text } from '@chakra-ui/react';
 
-import { useMe } from '@/api/auth';
 import IconAblo from '@/components/icons/IconAblo';
-import IconBack from '@/lib/components/icons/IconBack';
-import React from 'react';
+import IconBack from '../icons/IconBack';
+import { User } from '../../types';
+import React, { ReactNode } from 'react';
 
 import { useHistory } from 'react-router-dom';
 
 type Props = {
   callToActionContent?: React.ReactNode;
+  icon?: ReactNode;
   onBack?: () => void;
   onNext?: () => void;
   rightSideContent?: React.ReactNode;
   isNextDisabled?: boolean;
   title: string;
+  user?: User;
 };
 
 export default function Navbar(props: Props) {
-  const { callToActionContent, onBack, onNext, rightSideContent, isNextDisabled, title } = props;
+  const {
+    callToActionContent,
+    icon,
+    onBack,
+    onNext,
+    rightSideContent,
+    isNextDisabled,
+    title,
+    user: me,
+  } = props;
 
   const history = useHistory();
-
-  const { data: me } = useMe();
 
   const isGuest = !me || me.roles[0]?.name === 'guest';
 
@@ -39,7 +48,7 @@ export default function Navbar(props: Props) {
           bg="transparent"
           onClick={() => history.push(`/app/${isGuest ? 'editor' : 'designs'}`)}
         >
-          <IconAblo />
+          {icon || <IconAblo />}
         </Button>
         {rightSideContent ? (
           <Box position="absolute" right="17px">
