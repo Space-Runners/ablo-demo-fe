@@ -6,7 +6,11 @@ const getTemplateImgFromHtml = async (element) => {
   await toPng(element, { cacheBust: false });
   await toPng(element, { cacheBust: false });
 
-  return toPng(element, { cacheBust: false });
+  const result = await toPng(element, {
+    cacheBust: false,
+  });
+
+  return result;
 };
 
 const getEditorStateAsImages = () => {
@@ -17,8 +21,8 @@ const getEditorStateAsImages = () => {
   const front = document.getElementById('#canvas-container-front');
   const back = document.getElementById('#canvas-container-back');
 
-  const frontCanvas = document.getElementById('canvas-front');
-  const backCanvas = document.getElementById('canvas-back');
+  const frontCanvas = document.getElementById('#canvas-wrapper-front');
+  const backCanvas = document.getElementById('#canvas-wrapper-back');
 
   const frontOld = front.style.display;
   const backOld = back.style.display;

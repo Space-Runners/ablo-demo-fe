@@ -87,17 +87,3 @@
   src: local('PicoPop_Custom-Regular'),
     url(@/assets/fonts/PicoPop_Custom-Regular.otf) format('truetype');
 }
-
-@font-face {
-  font-family: 'PoorStory-Regular';
-  font-style: normal;
-  src: local('PoorStory_Custom-Regular'),
-    url(@/assets/fonts/PoorStory_Custom-Regular.otf) format('truetype');
-}
-
-@font-face {
-  font-family: 'SingleDay';
-  font-style: normal;
-  src: local('SingleDay_Regular_Custom-Regular'),
-    url(@/assets/fonts/SingleDay_Regular_Custom-Regular.otf) format('truetype');
-}
