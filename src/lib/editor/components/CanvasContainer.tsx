@@ -137,7 +137,7 @@ const CanvasContainer = ({
             ></Box>
           </F>
         ) : null}
-        <div className="canvas-container">
+        <div id={`#canvas-wrapper-${side}`} className="canvas-container">
           <canvas id={`canvas-${side}`}></canvas>
         </div>
 

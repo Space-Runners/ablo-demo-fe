@@ -10,9 +10,9 @@ import NoToneImage from './images/NoFilters.png';
 const { abloBlue } = Colors;
 
 const NO_TONE_OPTION = {
-  id: 'noTone',
   imageUrl: NoToneImage,
   tone: {
+    id: 'noTone',
     name: 'Random tone',
   },
 };
@@ -38,9 +38,8 @@ export default function SelectColorPalette({ onChange, selectedValue, style }: P
         <HStack key={index} spacing="12px" w="100%">
           {chunk.map((tone, index) => {
             const {
-              id,
               imageUrl,
-              tone: { name },
+              tone: { id, name },
             } = tone;
             const isSelected = id === selectedValue;
 

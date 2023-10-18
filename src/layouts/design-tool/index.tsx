@@ -71,7 +71,7 @@ export default function DesignTool() {
             <Switch location={location}>
               <Route
                 path={`/app/designs`}
-                render={() => <DesignsPage onCreateNewDesign={handleCreateNewDesign} />}
+                render={() => <DesignsPage onCreateNewDesign={handleCreateNewDesign} user={me} />}
               />
               <Route
                 path={`/app/templates`}

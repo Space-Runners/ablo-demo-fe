@@ -162,7 +162,7 @@ const ObjectEditTools = ({
     return null;
   }
 
-  const { aiImage, fill, fontFamily, fontSize, opacity, textAlign, text } = activeObject || {};
+  const { aiImage, fill, fontFamily, fontSize, textAlign, text } = activeObject || {};
   const { url, noBackgroundUrl, withBackgroundUrl } = aiImage || {};
 
   const isBackgroundRemoved = url === noBackgroundUrl;
@@ -435,8 +435,6 @@ const ObjectEditTools = ({
               aiImage={mainAiImage}
               selectedColor={fill}
               onUpdateColor={(color) => handleUpdateTextObject({ fill: color })}
-              selectedOpacity={opacity}
-              onUpdateOpacity={(opacity) => handleUpdateTextObject({ opacity })}
             />
           ) : null}
           {isFontSizeActive ? (
