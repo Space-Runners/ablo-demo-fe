@@ -3,7 +3,6 @@ import './fonts.css';
 import {
   Amsterdam,
   Barrio,
-  ChelseaMarket,
   Collage,
   GlassAntiqua,
   GomariceOldBook,
@@ -15,15 +14,12 @@ import {
   PaletteMosaic,
   Paperland,
   PicoPop,
-  PoorStory,
   Poppins,
-  SingleDay,
 } from './IconsFonts';
 
 export default [
   { name: 'Amsterdam', icon: <Amsterdam /> },
   { name: 'Barrio-Regular', icon: <Barrio /> },
-  { name: 'ChelseaMarket', icon: <ChelseaMarket /> },
   { name: 'Collage', icon: <Collage /> },
   { name: 'GlassAntiqua', icon: <GlassAntiqua /> },
   { name: 'gomarice_old_book', icon: <GomariceOldBook /> },
@@ -35,7 +31,5 @@ export default [
   { name: 'PaletteMosaic', icon: <PaletteMosaic /> },
   { name: 'Paperland', icon: <Paperland /> },
   { name: 'PicoPop', icon: <PicoPop /> },
-  { name: 'PoorStory-Regular', icon: <PoorStory /> },
   { name: 'Poppins', icon: <Poppins /> },
-  { name: 'SingleDay', icon: <SingleDay /> },
 ];
