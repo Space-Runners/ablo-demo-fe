@@ -27,7 +27,7 @@ const getDefaultDesign = (templates) => {
     template: defaultTemplate,
     templateId: id,
     sizeId: sizes[0].id,
-    sides: sides.map(({ id }) => ({ templateSideId: id })),
+    sides: sides.map((side) => ({ templateSideId: side.id, templateSide: side })),
   };
 };
 

@@ -120,6 +120,7 @@ export interface CanvasState {
 
 export interface DesignSide {
   id?: string;
+  canvas?: Canvas;
   templateSideId?: string;
   templateSide?: TemplateSide;
   hasGraphics?: boolean;
@@ -129,6 +130,7 @@ export interface DesignSide {
   designImage?: string;
   previewImage?: string;
   previewUrl?: string;
+  imageUrl?: string;
 }
 
 export interface Design {
@@ -171,6 +173,8 @@ export interface Canvas {
   on: (event: string, callback: (e: CanvasEvent) => void) => void;
   sendBackwards: (object: CanvasObject) => void;
   bringForward: (object: CanvasObject) => void;
+  width: number;
+  height: number;
   _objects: [CanvasObject];
   renderAll: () => void;
   toDataURL: (object: object) => string;
