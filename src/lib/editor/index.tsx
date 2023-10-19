@@ -97,6 +97,7 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
       if (side.templateSideId === templateSideId) {
         return {
           ...side,
+          canvas: canvas.current,
           canvasState: state.current,
           hasGraphics: imageObjects.length > 0,
           hasText: textObjects.length > 0,
@@ -143,6 +144,24 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
         setActiveObject(e.target);
       });
     });
+
+    const newSides = design.sides.map((side) => {
+      const { templateSide } = side;
+
+      const canvas = templateSide.name.toLowerCase() === 'front' ? canvasFront : canvasBack;
+
+      return {
+        ...side,
+        canvas: canvas.current,
+      };
+    });
+
+    setTimeout(() => {
+      onDesignChange({
+        ...design,
+        sides: newSides,
+      });
+    }, 1000);
 
     return () => {
       SIDES.forEach((side) => {

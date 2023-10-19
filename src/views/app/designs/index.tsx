@@ -17,6 +17,7 @@ import {
   Spinner,
   Stack,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
 import Button from '@/lib/components/Button';
@@ -24,9 +25,17 @@ import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconMenu from '@/components/icons/IconMenu';
 import Navbar from '@/lib/components/navbar';
 
-import { Design, User } from '@/lib/types';
+import { Design, Template, User } from '@/lib/types';
 import { useDesigns, useDeleteDesign, useUpdateBasicDesign } from '@/api/designs';
+import { useTemplates } from '@/api/templates';
+
 import Colors from '@/lib/theme/colors';
+import {
+  GARMENT_IMAGE_DESKTOP_WIDTH,
+  GARMENT_IMAGE_MOBILE_WIDTH,
+  getDrawingArea,
+} from '@/lib/editor/drawingAreas';
+
 import { timeAgo } from '@/utils/time';
 
 import RenameDesignModal from './RenameDesignModal';
@@ -51,12 +60,15 @@ const MenuItem = (props) => (
 type DesignsListProps = {
   designs: Design[];
   onSelectedDesign: (design: Design) => void;
+  templates: Template[];
 };
 
-const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
+const DesignsList = ({ designs, onSelectedDesign, templates }: DesignsListProps) => {
   const [renamingDesign, setRenamingDesign] = useState(null);
 
   const { removeDesign } = useDeleteDesign();
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const { updateDesign, isUpdating } = useUpdateBasicDesign();
 
@@ -70,24 +82,62 @@ const DesignsList = ({ designs, onSelectedDesign }: DesignsListProps) => {
     <Box bg="#ffffff" padding="22px" w="100%">
       <HStack spacing="16px" wrap="wrap">
         {designs.map((design, index) => {
-          const { name, sides } = design;
+          const { name, sides, templateId, templateColorId } = design;
 
-          // Find first previewUrl
-          const { previewUrl } =
-            sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText) || {};
+          const template = templates.find(({ id }) => id === templateId);
+
+          const images =
+            (template && template.colors.find(({ id }) => id === templateColorId).images) || [];
+
+          const side = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText) || {};
+
+          const { imageUrl, templateSideId } = side;
+
+          const templateSide = template && template.sides.find(({ id }) => id === templateSideId);
+
+          const { id, name: sideName } = templateSide || {};
+
+          const image = images.find(({ templateSideId }) => id === templateSideId);
+
+          const drawingArea = template ? getDrawingArea(template, sideName, isMobile) : {};
+
+          const THUMBNAIL_HEIGHT = 157;
+
+          const scalingFactor =
+            THUMBNAIL_HEIGHT /
+            (isMobile ? GARMENT_IMAGE_MOBILE_WIDTH : GARMENT_IMAGE_DESKTOP_WIDTH);
 
           return (
             <Card
               key={index}
-              w="157px"
+              w={`${THUMBNAIL_HEIGHT}px`}
               bgColor="#F4F4F4"
               borderRadius={10}
               boxShadow="0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 3px 0px rgba(0, 0, 0, 0.10)"
               alignSelf="stretch"
             >
               <CardBody p={0}>
-                <Center cursor="pointer" h="172px" onClick={() => onSelectedDesign(design)}>
-                  <Image objectFit="contain" src={previewUrl} alt={name} h={155} px={1} py={4} />
+                <Center
+                  cursor="pointer"
+                  h={`${THUMBNAIL_HEIGHT}px`}
+                  onClick={() => onSelectedDesign(design)}
+                  position="relative"
+                >
+                  <Image
+                    src={image?.url}
+                    position="absolute"
+                    width={{
+                      base: GARMENT_IMAGE_MOBILE_WIDTH,
+                      md: GARMENT_IMAGE_DESKTOP_WIDTH,
+                    }}
+                  />
+                  <Image
+                    src={imageUrl}
+                    position="absolute"
+                    left={`${drawingArea.left * scalingFactor}px`}
+                    top={`${drawingArea.top * scalingFactor}px`}
+                    w={`${drawingArea.width * scalingFactor}px`}
+                  />
                 </Center>
                 <Stack m={0} p={3} spacing={0.5} bg={'white'} h="57px" borderBottomRadius={10}>
                   <Flex justify="space-between" position="relative">
@@ -170,6 +220,8 @@ export default function DesignsPage({ onCreateNewDesign, user }: DesignsPageProp
 
   const { data: designs, isLoading } = useDesigns();
 
+  const { data: templates = [], isLoading: isLoadingTemplates } = useTemplates();
+
   const onSelectedDesign = (design: Design) => {
     history.push(`/app/editor?designId=${design.id}`);
   };
@@ -202,12 +254,18 @@ export default function DesignsPage({ onCreateNewDesign, user }: DesignsPageProp
         title="My Designs"
         user={user}
       />
-      {isLoading ? (
+      {isLoading || isLoadingTemplates ? (
         <Center h="300px">
           <Spinner thickness="1px" speed="0.65s" emptyColor="gray" color={abloBlue} size="md" />
         </Center>
       ) : (
-        designs && <DesignsList onSelectedDesign={onSelectedDesign} designs={designs} />
+        designs && (
+          <DesignsList
+            onSelectedDesign={onSelectedDesign}
+            designs={designs}
+            templates={templates}
+          />
+        )
       )}
     </Box>
   );
