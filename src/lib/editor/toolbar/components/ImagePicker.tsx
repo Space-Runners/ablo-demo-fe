@@ -30,12 +30,6 @@ const IconUpload = () => (
   </Icon>
 );
 
-const ButtonUpload = (props) => (
-  <ToolbarButton {...props}>
-    <IconUpload />
-  </ToolbarButton>
-);
-
 export default function ImagePicker(props) {
   const inputRef = useRef(null);
 
@@ -74,7 +68,7 @@ export default function ImagePicker(props) {
   return (
     <Flex color="#fffffff" justify="center" padding="30px">
       <input style={{ display: 'none' }} ref={inputRef} type="file" onChange={handleFileChange} />
-      <ButtonUpload onClick={handleClick}></ButtonUpload>
+      <ToolbarButton icon={<IconUpload />} onClick={handleClick} />
     </Flex>
   );
 }
