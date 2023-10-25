@@ -1,7 +1,7 @@
 {
   "name": "ablo-demo-fe",
   "description": "A tool that lets you put AI generated designs on templates like clothes, with a full fledged text and image editor",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "license": "MIT",
   "homepage": "web.ablo.ai",
