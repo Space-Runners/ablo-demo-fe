@@ -17,6 +17,7 @@ type EditorContainerProps = {
   children: React.ReactNode;
   getStyles: () => Promise<Style[]>;
   generateImage: (options: TextToImageRequest) => Promise<string[]>;
+  hideAiImageBackgroundSelector?: boolean;
 };
 
 export default function EditorContainer({
@@ -27,6 +28,7 @@ export default function EditorContainer({
   children,
   getStyles,
   generateImage,
+  hideAiImageBackgroundSelector,
 }: EditorContainerProps) {
   const [selectedTool, setSelectedTool] = useState('textToImage');
 
@@ -51,6 +53,7 @@ export default function EditorContainer({
             <ImageGenerator
               getStyles={getStyles}
               generateImage={generateImage}
+              hideBackgroundSelector={hideAiImageBackgroundSelector}
               onGeneratedImageSelected={onGeneratedImageSelected}
             />
           ) : null}
