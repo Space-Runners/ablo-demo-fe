@@ -369,6 +369,7 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
       onChangeEditorToolbarExpanded={setEditorToolbarExpanded}
       generateImage={generateImage}
       getStyles={getStyles}
+      hideAiImageBackgroundSelector
     >
       <F>
         {activeObject ? (

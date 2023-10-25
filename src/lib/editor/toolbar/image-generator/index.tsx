@@ -47,12 +47,14 @@ type ImageGeneratorProps = {
   onGeneratedImageSelected: (image: AiImage) => void;
   getStyles: () => Promise<Style[]>;
   generateImage: (options: TextToImageRequest) => Promise<string[]>;
+  hideBackgroundSelector: boolean;
 };
 
 export default function ImageGenerator({
   onGeneratedImageSelected,
   getStyles,
   generateImage,
+  hideBackgroundSelector,
 }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
@@ -257,7 +259,9 @@ export default function ImageGenerator({
       ) : null}
       <AddSubject
         background={background}
-        onChangeBackground={(background) => handleUpdate({ background })}
+        onChangeBackground={
+          hideBackgroundSelector ? null : (background) => handleUpdate({ background })
+        }
         keywords={keywords}
         style={style}
         onUpdateKeywords={handleUpdateKeywords}
