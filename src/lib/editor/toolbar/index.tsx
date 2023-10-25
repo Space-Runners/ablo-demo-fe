@@ -65,6 +65,7 @@ const VIEWS = [
 
 const MIN_OVERLAY_HEIGHT = 80;
 const MAX_OVERLAY_HEIGHT = 400;
+const MAX_OVERLAY_HEIGHT_ONE_STYLE = 282;
 
 type FooterToolbarProps = {
   isExpanded: boolean;
@@ -74,10 +75,11 @@ type FooterToolbarProps = {
   selectedTool: string;
   onSelectedTool: (tool: string) => void;
   children: ReactNode;
+  hideStyles: boolean;
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
-  const { children, isExpanded, onSetExpanded, onSelectedTool, selectedTool } = props;
+  const { children, hideStyles, isExpanded, onSetExpanded, onSelectedTool, selectedTool } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
@@ -87,11 +89,11 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   useEffect(() => {
     if (isExpanded) {
-      setHeight(MAX_OVERLAY_HEIGHT);
+      setHeight(hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
     }
-  }, [isExpanded, selectedTool]);
+  }, [isExpanded, selectedTool, hideStyles]);
 
   const startResize = () => {
     setDrag({
@@ -102,7 +104,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const endResize = () => {
     let newHeight = document.getElementById('toolbarOverlay')?.clientHeight || 0;
 
-    const maxHeight = MAX_OVERLAY_HEIGHT;
+    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
 
     if (newHeight > MIN_OVERLAY_HEIGHT + (maxHeight - MIN_OVERLAY_HEIGHT) / 2) {
       newHeight = maxHeight;
@@ -146,7 +148,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let newHeight = containerHeight - clientY;
 
-    const maxHeight = MAX_OVERLAY_HEIGHT;
+    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
 
     if (newHeight > maxHeight) {
       newHeight = maxHeight;
@@ -165,7 +167,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
-  const isFullHeight = height >= MAX_OVERLAY_HEIGHT;
+  const isFullHeight = height >= (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
 
   return (
     <Box

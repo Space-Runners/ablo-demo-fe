@@ -48,6 +48,7 @@ type ImageGeneratorProps = {
   getStyles: () => Promise<Style[]>;
   generateImage: (options: TextToImageRequest) => Promise<string[]>;
   hideBackgroundSelector: boolean;
+  hideStyles: boolean;
 };
 
 export default function ImageGenerator({
@@ -55,6 +56,7 @@ export default function ImageGenerator({
   getStyles,
   generateImage,
   hideBackgroundSelector,
+  hideStyles,
 }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
@@ -206,7 +208,7 @@ export default function ImageGenerator({
         }
       }}
     >
-      {styles.length > 1 ? (
+      {!hideStyles ? (
         <Box>
           <Text as="b" fontSize="md" mb="5px" ml="14px">
             Text to Image
