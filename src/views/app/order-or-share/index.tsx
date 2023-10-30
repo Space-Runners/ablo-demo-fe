@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
   HStack,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 
 import { useLocation, useHistory } from 'react-router-dom';
@@ -18,12 +19,20 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 
 import { useDesign } from '@/api/designs';
+import { useTemplates } from '@/api/templates';
 
 import Button from '@/lib/components/Button';
 import IconBack from '@/lib/components/icons/IconBack';
 import IconCreateNew from '@/components/icons/IconCreateNew';
 import IconShare from '@/components/icons/IconShare';
 import Navbar from '@/lib/components/navbar';
+
+import {
+  GARMENT_IMAGE_DESKTOP_WIDTH,
+  GARMENT_IMAGE_MOBILE_WIDTH,
+  getDrawingArea,
+} from '@/lib/editor/drawingAreas';
+
 import { AiImage, CanvasState } from '@/lib/types';
 import Colors from '@/lib/theme/colors';
 
@@ -97,9 +106,16 @@ export default function OrderOrShare() {
 
   const { data: design, isLoading } = useDesign(designId);
 
-  const { sides = [] } = design || { sides: [] };
+  const { sides = [], templateId, templateColorId } = design || { sides: [] };
+  const { data: templates = [] } = useTemplates();
+
+  const template = templates.find(({ id }) => id === templateId);
+  const images =
+    (template && template.colors.find(({ id }) => id === templateColorId).images) || [];
 
   const history = useHistory();
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const handleGoToDesigns = () => history.push('/app/designs');
 
@@ -161,7 +177,7 @@ export default function OrderOrShare() {
         >
           <Box
             bg={{ base: 'transparent', md: '#CFD3DE' }}
-            h={{ base: '300px', md: '100%' }}
+            h={{ base: '375px', md: '100%' }}
             p={{ base: 0, md: '16px' }}
             flex={1}
           >
@@ -178,11 +194,17 @@ export default function OrderOrShare() {
               <Box h="100%" w={{ base: '100%', md: '600px' }}>
                 <Swiper pagination modules={[Pagination]} className="mySwiper">
                   {slides.map((slide, index) => {
-                    const { canvasState, previewUrl, background } = slide;
+                    const { canvasState, previewUrl, background, templateSide } = slide;
+
+                    const { id, name } = templateSide;
+
+                    const image = images.find(({ templateSideId }) => id === templateSideId);
 
                     const aiImage = null && getAiImageForSide(canvasState);
 
                     const style = aiImage ? aiImage.options.style : 'kidult';
+
+                    const drawingArea = template ? getDrawingArea(template, name, isMobile) : {};
 
                     return (
                       <SwiperSlide key={index}>
@@ -195,15 +217,30 @@ export default function OrderOrShare() {
                               alt={style}
                             />
                           ) : null}
-                          <Image
-                            src={previewUrl}
+                          <Box
+                            position="absolute"
                             margin="0 auto"
                             left={0}
                             right={0}
-                            top={50}
-                            position="absolute"
-                            w={{ base: 250, md: 500 }}
-                          />
+                            top={{ base: 0, md: 50 }}
+                            w={{ base: GARMENT_IMAGE_MOBILE_WIDTH, md: 500 }}
+                          >
+                            <Image
+                              src={image?.url}
+                              position="absolute"
+                              width={{
+                                base: GARMENT_IMAGE_MOBILE_WIDTH,
+                                md: GARMENT_IMAGE_DESKTOP_WIDTH,
+                              }}
+                            />
+                            <Image
+                              src={previewUrl}
+                              position="absolute"
+                              left={`${drawingArea.left}px`}
+                              top={`${drawingArea.top}px`}
+                              w={`${drawingArea.width}px`}
+                            />
+                          </Box>
                         </Box>
                       </SwiperSlide>
                     );

@@ -47,12 +47,16 @@ type ImageGeneratorProps = {
   onGeneratedImageSelected: (image: AiImage) => void;
   getStyles: () => Promise<Style[]>;
   generateImage: (options: TextToImageRequest) => Promise<string[]>;
+  hideBackgroundSelector: boolean;
+  hideStyles: boolean;
 };
 
 export default function ImageGenerator({
   onGeneratedImageSelected,
   getStyles,
   generateImage,
+  hideBackgroundSelector,
+  hideStyles,
 }: ImageGeneratorProps) {
   const tonesRef = useRef(null);
   const subjectInputRef = useRef(null);
@@ -71,7 +75,13 @@ export default function ImageGenerator({
   const style = styles.find(({ id }) => id === styleId);
 
   useEffect(() => {
-    getStyles().then(setStyles);
+    getStyles().then((styles) => {
+      setStyles(styles);
+
+      if (styles?.length === 1) {
+        setOptions((options) => ({ ...options, styleId: styles[0].id }));
+      }
+    });
   }, [getStyles]);
 
   const handleNewArtwork = () => {
@@ -88,7 +98,13 @@ export default function ImageGenerator({
   const handleReset = () => {
     setImages([]);
     setSelectedImage(null);
-    setOptions(defaultParams);
+
+    const options = { ...defaultParams };
+
+    if (styles?.length === 1) {
+      options.styleId = styles[0].id;
+    }
+    setOptions(options);
   };
 
   const handleUpdateKeywords = (newKeywords) => {
@@ -192,56 +208,62 @@ export default function ImageGenerator({
         }
       }}
     >
-      <Text as="b" fontSize="md" mb="5px" ml="14px">
-        Text to Image
-      </Text>
-      <Accordion defaultIndex={[0, 1]} allowMultiple>
-        <AccordionItem borderTopWidth={0} paddingBottom="8px">
-          <h2>
-            <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" fontSize="sm" textAlign="left">
-                Style
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <SelectStyle
-              onChange={(styleId) => {
-                tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
+      {!hideStyles ? (
+        <Box>
+          <Text as="b" fontSize="md" mb="5px" ml="14px">
+            Text to Image
+          </Text>
+          <Accordion defaultIndex={[0, 1]} allowMultiple>
+            <AccordionItem borderTopWidth={0} paddingBottom="8px">
+              <h2>
+                <AccordionButton {...accordionButtonStyles}>
+                  <Box as="span" flex="1" fontSize="sm" textAlign="left">
+                    Style
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <SelectStyle
+                  onChange={(styleId) => {
+                    tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
 
-                handleUpdate({ styleId });
-              }}
-              options={styles}
-              selectedValue={styleId}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-        <AccordionItem borderColor="transparent" borderTopWidth={0} paddingBottom="10px">
-          <h2>
-            <AccordionButton {...accordionButtonStyles}>
-              <Box as="span" flex="1" fontSize="sm" textAlign="left" ref={tonesRef}>
-                Color Filter
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            <SelectColorPalette
-              onChange={(toneId) => {
-                subjectInputRef.current?.focus();
+                    handleUpdate({ styleId });
+                  }}
+                  options={styles}
+                  selectedValue={styleId}
+                />
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem borderColor="transparent" borderTopWidth={0} paddingBottom="10px">
+              <h2>
+                <AccordionButton {...accordionButtonStyles}>
+                  <Box as="span" flex="1" fontSize="sm" textAlign="left" ref={tonesRef}>
+                    Color Filter
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <SelectColorPalette
+                  onChange={(toneId) => {
+                    subjectInputRef.current?.focus();
 
-                handleUpdate({ toneId });
-              }}
-              selectedValue={toneId}
-              style={style}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+                    handleUpdate({ toneId });
+                  }}
+                  selectedValue={toneId}
+                  style={style}
+                />
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </Box>
+      ) : null}
       <AddSubject
         background={background}
-        onChangeBackground={(background) => handleUpdate({ background })}
+        onChangeBackground={
+          hideBackgroundSelector ? null : (background) => handleUpdate({ background })
+        }
         keywords={keywords}
         style={style}
         onUpdateKeywords={handleUpdateKeywords}

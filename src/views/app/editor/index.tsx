@@ -21,8 +21,6 @@ import ConfirmEditorExitModal from './components/ConfirmEditorExitModal';
 
 import EditorTool from '@/lib/editor';
 
-import getEditorStateAsImages from './utils/template-export';
-
 type ImageEditorPageProps = {
   pendingDesign: Design;
   onPendingDesignChange: (design: Design) => void;
@@ -98,9 +96,6 @@ export default function ImageEditorPage({
     setHasChanges(false);
 
     try {
-      const [previewImageFront, imageFront, previewImageBack, imageBack] =
-        await getEditorStateAsImages();
-
       const designToUse = activeDesign || pendingDesign;
 
       const { sides, templateId } = designToUse;
@@ -108,9 +103,7 @@ export default function ImageEditorPage({
       const template = templates.find(({ id }) => id === templateId);
 
       const sidesWithImages = sides.map((side) => {
-        const templateSide = template.sides.find(({ id }) => side.templateSideId === id);
-
-        const { name: sideName } = templateSide;
+        const canvas = side.canvas;
 
         const defaultProperties = {
           canvasState: '',
@@ -118,14 +111,28 @@ export default function ImageEditorPage({
           hasText: false,
         };
 
-        const isFront = sideName.toLowerCase() === 'front';
-
-        return {
+        const newSide = {
           ...defaultProperties,
           ...side,
-          previewImage: isFront ? previewImageFront : previewImageBack,
-          designImage: isFront ? imageFront : imageBack,
+          canvas: null,
         };
+
+        let dataUrl = '';
+
+        if (canvas) {
+          dataUrl = canvas.toDataURL({
+            width: canvas.width,
+            height: canvas.height,
+            left: 0,
+            top: 0,
+            format: 'png',
+          });
+
+          newSide.previewImage = dataUrl;
+          newSide.designImage = dataUrl;
+        }
+
+        return newSide;
       });
 
       const design = {

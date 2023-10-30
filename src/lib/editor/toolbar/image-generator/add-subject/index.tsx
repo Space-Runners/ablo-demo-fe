@@ -1,5 +1,7 @@
 import { Box, Flex, HStack, Switch, Text } from '@chakra-ui/react';
 
+import { isEmpty } from 'lodash';
+
 import Colors from '../../../../theme/colors';
 
 import Keywords from '../components/Keywords';
@@ -37,32 +39,35 @@ export default function AddSubject({
         <Text as="b" color="#1A1A1A" fontSize="sm">
           Subject
         </Text>
-        <HStack>
-          <Text color="#1A1A1A" fontSize="sm" mr="8px">
-            Solid background
-          </Text>
-          <Switch
-            isChecked={background}
-            onChange={(e) => onChangeBackground(e.target.checked)}
-            position="relative"
-          >
-            <Text
-              as="b"
-              color={background ? abloBlue : '#000000'}
-              fontSize="10px"
-              position="absolute"
-              textTransform="uppercase"
-              top="12px"
-              left={background ? '8px' : undefined}
-              right={background ? undefined : '8px'}
-            >
-              {background ? 'On' : 'Off'}
+        {onChangeBackground ? (
+          <HStack>
+            <Text color="#1A1A1A" fontSize="sm" mr="8px">
+              Solid background
             </Text>
-          </Switch>
-        </HStack>
+
+            <Switch
+              isChecked={background}
+              onChange={(e) => onChangeBackground(e.target.checked)}
+              position="relative"
+            >
+              <Text
+                as="b"
+                color={background ? abloBlue : '#000000'}
+                fontSize="10px"
+                position="absolute"
+                textTransform="uppercase"
+                top="12px"
+                left={background ? '8px' : undefined}
+                right={background ? undefined : '8px'}
+              >
+                {background ? 'On' : 'Off'}
+              </Text>
+            </Switch>
+          </HStack>
+        ) : null}
       </Flex>
       {children}
-      {suggestions ? (
+      {!isEmpty(suggestions) ? (
         <Keywords keywords={suggestions} selectedValues={keywords} onChange={onUpdateKeywords} />
       ) : null}
     </Box>

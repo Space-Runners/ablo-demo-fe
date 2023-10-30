@@ -1,9 +1,9 @@
-import { Button, Text, VStack } from "@chakra-ui/react";
+import { Button, Text, VStack } from '@chakra-ui/react';
 
-const ToolbarButton = ({ icon, isDisabled = false, isSelected = null, text, ...rest }) => {
+const ToolbarButton = ({ icon, isDisabled = false, isSelected = null, text = null, ...rest }) => {
   return (
     <Button
-      background={isSelected ? "#EDF2F7" : "transparent"}
+      background={isSelected ? '#EDF2F7' : 'transparent'}
       borderRadius="7px"
       disabled={isDisabled}
       h="47px"
@@ -13,9 +13,11 @@ const ToolbarButton = ({ icon, isDisabled = false, isSelected = null, text, ...r
     >
       <VStack>
         {icon}
-        <Text as="b" fontSize="9px" color={isDisabled ? "#848484" : "#000000"}>
-          {text}
-        </Text>
+        {text ? (
+          <Text as="b" fontSize="9px" color={isDisabled ? '#848484' : '#000000'}>
+            {text}
+          </Text>
+        ) : null}
       </VStack>
     </Button>
   );
