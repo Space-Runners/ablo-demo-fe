@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { sortBy } from 'lodash';
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Template } from '@/lib/types';
@@ -8,12 +10,22 @@ const entity = 'templates';
 
 const URL = `/${entity}`;
 
-export const getTemplates = () => axios.get<Template[]>(URL).then(({ data }) => data.reverse());
+const getTemplateWithOrderedSides = (template) => {
+  const { sides } = template;
+
+  return {
+    ...template,
+    sides: sortBy(sides, ({ order }) => order),
+  };
+};
+
+export const getTemplates = () =>
+  axios.get<Template[]>(URL).then(({ data }) => data.reverse().map(getTemplateWithOrderedSides));
 
 export const useTemplates = () => useQuery([entity], () => getTemplates());
 
 export const getTemplate = (id: string) =>
-  axios.get<Template>(`${URL}/${id}`).then(({ data }) => data);
+  axios.get<Template>(`${URL}/${id}`).then(({ data }) => getTemplateWithOrderedSides(data));
 
 export const useTemplate = (id: string) => useQuery([entity, id], () => getTemplate(id));
 

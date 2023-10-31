@@ -13,9 +13,13 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
     <Box bg="#ffffff" padding="25px 16px 45px 14px" w="100%">
       <HStack align="flex-start" spacing="16px" wrap="wrap">
         {templates.map((template, index) => {
-          const { fabric, fit, id, name, price, colors } = template;
+          const { fabric, fit, id, name, price, colors, sides } = template;
 
           const color = colors.find(({ name }) => name === 'OatMilk') || colors[0];
+
+          const imageUrl = color.images.find(
+            ({ templateSideId }) => templateSideId === sides[0]?.id
+          )?.url;
 
           const isSelected = selectedGarment && selectedGarment.templateId === id;
 
@@ -43,7 +47,7 @@ const TemplatesList = ({ templates, onSelectedTemplate, selectedGarment }: Templ
                 position="relative"
                 {...selectedProps}
               >
-                <Image h={160} src={`${color?.images[0]?.url}`} alt={name} />
+                <Image h={160} src={imageUrl} alt={name} />
                 {isSelected ? (
                   <HStack
                     borderRadius="50px"
