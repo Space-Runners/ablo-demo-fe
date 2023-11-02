@@ -1,16 +1,4 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Input,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Input, Text } from '@chakra-ui/react';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -18,13 +6,13 @@ import { isEmpty } from 'lodash';
 
 import Button from '../../../components/Button';
 
-import { AiImage, Style, TextToImageRequest } from '../../../types';
+import { AiImage, Style, StyleType, TextToImageRequest } from '../../../types';
 
-import SelectStyle from './select-style';
-import SelectColorPalette from './select-color-palette';
 import AddSubject from './add-subject';
 
-import Progress from './components/Progress';
+import StyleSelector from '../components/style-selector';
+import ImagesPreview from '../components/ImagesPreview';
+import Progress from '../components/Progress';
 
 const defaultParams = {
   styleId: '',
@@ -34,31 +22,21 @@ const defaultParams = {
   background: true,
 };
 
-const accordionButtonStyles = {
-  borderRadius: 0,
-  color: '#1A1A1A',
-  padding: '12px 14px',
-  _focus: {
-    boxShadow: 'none',
-  },
-};
-
-type ImageGeneratorProps = {
+type TextToImageGeneratorProps = {
   onGeneratedImageSelected: (image: AiImage) => void;
-  getStyles: () => Promise<Style[]>;
-  generateImage: (options: TextToImageRequest) => Promise<string[]>;
+  getStyles: (type: StyleType) => Promise<Style[]>;
+  generateImageFromText: (options: TextToImageRequest) => Promise<string[]>;
   hideBackgroundSelector: boolean;
   hideStyles: boolean;
 };
 
-export default function ImageGenerator({
+export default function TextToImageGenerator({
   onGeneratedImageSelected,
   getStyles,
-  generateImage,
+  generateImageFromText,
   hideBackgroundSelector,
   hideStyles,
-}: ImageGeneratorProps) {
-  const tonesRef = useRef(null);
+}: TextToImageGeneratorProps) {
   const subjectInputRef = useRef(null);
 
   const [styles, setStyles] = useState<Style[]>([]);
@@ -75,7 +53,7 @@ export default function ImageGenerator({
   const style = styles.find(({ id }) => id === styleId);
 
   useEffect(() => {
-    getStyles().then((styles) => {
+    getStyles('text').then((styles) => {
       setStyles(styles);
 
       if (styles?.length === 1) {
@@ -83,10 +61,6 @@ export default function ImageGenerator({
       }
     });
   }, [getStyles]);
-
-  const handleNewArtwork = () => {
-    handleReset();
-  };
 
   const handlePlaceArtwork = () => {
     onGeneratedImageSelected({
@@ -147,7 +121,7 @@ export default function ImageGenerator({
       requestParams.toneId = toneId;
     }
 
-    generateImage(requestParams)
+    generateImageFromText(requestParams)
       .then((images) => {
         setWaiting(false);
 
@@ -169,32 +143,14 @@ export default function ImageGenerator({
 
   if (images.length) {
     return (
-      <Box padding="8px 14px">
-        <Text mb="22px" textTransform="uppercase">
-          Select image
-        </Text>
-        <HStack justify="center" mb="20px">
-          {images.map((imageUrl) => (
-            <Image
-              border={imageUrl === selectedImage ? '4px solid #000000' : 'none'}
-              borderRadius="5px"
-              h={117}
-              key={imageUrl}
-              w="108px"
-              src={imageUrl}
-              alt="Generated image"
-              onClick={() => {
-                setSelectedImage(imageUrl);
-              }}
-            />
-          ))}
-        </HStack>
-        <Button onClick={handlePlaceArtwork} title="Place artwork" w="100%" />
-        <Flex align="center" mt="14px" pb="14px">
-          <Button flex={1} onClick={handleGenerate} outlined title="Generate similar" />
-          <Button flex={1} ml="10px" onClick={handleNewArtwork} outlined title="New" />
-        </Flex>
-      </Box>
+      <ImagesPreview
+        images={images}
+        selectedImage={selectedImage}
+        onSelectedImage={setSelectedImage}
+        onPlaceArtwork={handlePlaceArtwork}
+        onGenerateSimilar={handleGenerate}
+        onNewArtwork={handleReset}
+      />
     );
   }
 
@@ -213,50 +169,19 @@ export default function ImageGenerator({
           <Text as="b" fontSize="md" mb="5px" ml="14px">
             Text to Image
           </Text>
-          <Accordion defaultIndex={[0, 1]} allowMultiple>
-            <AccordionItem borderTopWidth={0} paddingBottom="8px">
-              <h2>
-                <AccordionButton {...accordionButtonStyles}>
-                  <Box as="span" flex="1" fontSize="sm" textAlign="left">
-                    Style
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <SelectStyle
-                  onChange={(styleId) => {
-                    tonesRef.current?.scrollIntoView({ behavior: 'smooth' });
+          <StyleSelector
+            styles={styles}
+            selectedStyle={styleId}
+            onSelectedStyle={(styleId) => {
+              handleUpdate({ styleId });
+            }}
+            selectedColorPalette={toneId}
+            onSelectedColorPalette={(toneId) => {
+              subjectInputRef.current?.focus();
 
-                    handleUpdate({ styleId });
-                  }}
-                  options={styles}
-                  selectedValue={styleId}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem borderColor="transparent" borderTopWidth={0} paddingBottom="10px">
-              <h2>
-                <AccordionButton {...accordionButtonStyles}>
-                  <Box as="span" flex="1" fontSize="sm" textAlign="left" ref={tonesRef}>
-                    Color Filter
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <SelectColorPalette
-                  onChange={(toneId) => {
-                    subjectInputRef.current?.focus();
-
-                    handleUpdate({ toneId });
-                  }}
-                  selectedValue={toneId}
-                  style={style}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
+              handleUpdate({ toneId });
+            }}
+          />
         </Box>
       ) : null}
       <AddSubject

@@ -38,6 +38,10 @@ export const globalStyles = {
     primary: {
       500: '#2B3674',
     },
+    black: {
+      200: '#1A1A1A',
+      600: '#000000',
+    },
     secondaryGray: {
       100: '#E0E5F2',
       200: '#E1E9F8',
