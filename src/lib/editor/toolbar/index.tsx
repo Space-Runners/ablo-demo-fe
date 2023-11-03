@@ -99,7 +99,6 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
 
   useEffect(() => {
-    console.log('Is expanded', isExpanded, maxOverlayHeight);
     if (isExpanded) {
       setHeight(maxOverlayHeight);
     } else {

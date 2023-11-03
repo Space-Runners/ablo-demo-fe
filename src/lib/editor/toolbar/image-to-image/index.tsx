@@ -49,8 +49,6 @@ export default function ImageToImageGenerator({
 
   const style = styles.find(({ id }) => id === styleId);
 
-  console.log('Options', style, styleId);
-
   useEffect(() => {
     getStyles('image').then((styles) => {
       setStyles(styles);
@@ -72,8 +70,6 @@ export default function ImageToImageGenerator({
     setUploadedImage({ file: image, preview: URL.createObjectURL(image) });
 
     onMaxHeightChange(650);
-
-    console.log('Image', image);
   };
 
   const handleReset = () => {
