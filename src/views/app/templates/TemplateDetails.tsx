@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, HStack, Image, Spinner, Text } from '@chakra-ui/react';
 
 import ButtonCTA from '@/lib/components/Button';
 import IconBack from '@/lib/components/icons/IconBack';
@@ -76,7 +76,16 @@ const TemplateDetails = ({ garment, onBack, onGarmentUpdate, template }: Templat
         w="100%"
       >
         <IconSustainable position="absolute" right="14px" top="23px" />
-        <Image w={{ base: 350, md: 500 }} src={variant.images[0].url} alt={name} />
+        <Image
+          w={{ base: 350, md: 500 }}
+          src={variant.images[0].url}
+          alt={name}
+          fallback={
+            <Center h="500px" w="100%">
+              <Spinner />
+            </Center>
+          }
+        />
       </Flex>
       <Box padding="24px 14px">
         <Flex color="#000000" justify={{ base: 'space-between', md: 'flex-start' }} mb="16px">
