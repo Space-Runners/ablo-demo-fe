@@ -76,6 +76,7 @@ type FooterToolbarProps = {
   children: ReactNode;
   hideStyles: boolean;
   maxHeight?: number;
+  hideButtons?: boolean;
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
@@ -87,6 +88,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     onSelectedTool,
     selectedTool,
     maxHeight,
+    hideButtons,
   } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
@@ -118,6 +120,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     if (newHeight > MIN_OVERLAY_HEIGHT + (maxOverlayHeight - MIN_OVERLAY_HEIGHT) / 2) {
       newHeight = maxOverlayHeight;
+
+      onSetExpanded(true);
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
 
@@ -216,19 +220,21 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             <IconDragHandle rotate={!isFullHeight} />
           </Flex>
         </Hide>
-        <Flex align="center" justify="space-between" padding="10px 14px">
-          <HStack spacing="8px">
-            {VIEWS.map(({ name, icon, iconActive }) => (
-              <ToolbarButton
-                isSelected={selectedTool === name}
-                key={name}
-                onClick={() => handleToolChange(name)}
-              >
-                {selectedTool === name ? iconActive : icon}
-              </ToolbarButton>
-            ))}
-          </HStack>
-        </Flex>
+        {!hideButtons ? (
+          <Flex align="center" justify="space-between" padding="10px 14px">
+            <HStack spacing="8px">
+              {VIEWS.map(({ name, icon, iconActive }) => (
+                <ToolbarButton
+                  isSelected={selectedTool === name}
+                  key={name}
+                  onClick={() => handleToolChange(name)}
+                >
+                  {selectedTool === name ? iconActive : icon}
+                </ToolbarButton>
+              ))}
+            </HStack>
+          </Flex>
+        ) : null}
       </Box>
       {children}
     </Box>
