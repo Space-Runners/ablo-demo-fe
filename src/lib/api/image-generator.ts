@@ -1,15 +1,24 @@
 import axios from 'axios';
 
-import { Style, TextToImageRequest } from '@/lib/types';
+import { ImageToImageRequest, Style, TextToImageRequest } from '@/lib/types';
 
-export const generateImage = (params: TextToImageRequest, baseUrl = '') => {
-  return axios.post(`${baseUrl || ''}/generate/text-to-image`, params).then(({ data }) => {
+export const generateImageFromText = (params: TextToImageRequest) => {
+  return axios.post('/generate/text-to-image', params).then(({ data }) => {
     return data.images;
   });
 };
 
-export const getStyles = (baseUrl = '') =>
-  axios.get<Style[]>(`${baseUrl || ''}/styles`).then(({ data }) => data);
+export const generateImageFromImage = (params: ImageToImageRequest) =>
+  axios
+    .post(`/generate/image-file-to-image`, params, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(({ data }) => data.map(({ url }) => url));
+
+export const getStyles = (type: string) =>
+  axios.get<Style[]>('/styles').then(({ data }) => data.filter((item) => item.type === type));
 
 export const removeBackground = (imageUrl) =>
   axios

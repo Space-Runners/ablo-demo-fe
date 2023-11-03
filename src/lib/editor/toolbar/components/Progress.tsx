@@ -1,13 +1,13 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 
-import Colors from '../../../../theme/colors';
+import Colors from '../../../theme/colors';
 import { useEffect, useState } from 'react';
 
 const { abloBlue } = Colors;
 
-const DURATION = 20;
+const DURATION = 10;
 
-const Progress = () => {
+const Progress = ({ duration = DURATION }: { duration?: number }) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const Progress = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const progressPercentage = Math.min(100, Math.floor((100 * progress) / DURATION));
+  const progressPercentage = Math.min(100, Math.floor((100 * progress) / (duration * 2)));
 
   return (
     <Flex align="center">

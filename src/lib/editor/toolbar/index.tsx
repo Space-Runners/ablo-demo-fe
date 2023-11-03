@@ -70,16 +70,24 @@ const MAX_OVERLAY_HEIGHT_ONE_STYLE = 282;
 type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
-  onImageUploaded: (image: File) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   selectedTool: string;
   onSelectedTool: (tool: string) => void;
   children: ReactNode;
   hideStyles: boolean;
+  maxHeight?: number;
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
-  const { children, hideStyles, isExpanded, onSetExpanded, onSelectedTool, selectedTool } = props;
+  const {
+    children,
+    hideStyles,
+    isExpanded,
+    onSetExpanded,
+    onSelectedTool,
+    selectedTool,
+    maxHeight,
+  } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
@@ -87,13 +95,17 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     active: false,
   });
 
+  const maxOverlayHeight =
+    maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+
   useEffect(() => {
+    console.log('Is expanded', isExpanded, maxOverlayHeight);
     if (isExpanded) {
-      setHeight(hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+      setHeight(maxOverlayHeight);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
     }
-  }, [isExpanded, selectedTool, hideStyles]);
+  }, [isExpanded, selectedTool, maxOverlayHeight]);
 
   const startResize = () => {
     setDrag({
@@ -104,10 +116,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const endResize = () => {
     let newHeight = document.getElementById('toolbarOverlay')?.clientHeight || 0;
 
-    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
-
-    if (newHeight > MIN_OVERLAY_HEIGHT + (maxHeight - MIN_OVERLAY_HEIGHT) / 2) {
-      newHeight = maxHeight;
+    if (newHeight > MIN_OVERLAY_HEIGHT + (maxOverlayHeight - MIN_OVERLAY_HEIGHT) / 2) {
+      newHeight = maxOverlayHeight;
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
 
@@ -148,10 +158,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let newHeight = containerHeight - clientY;
 
-    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
-
-    if (newHeight > maxHeight) {
-      newHeight = maxHeight;
+    if (newHeight > maxOverlayHeight) {
+      newHeight = maxOverlayHeight;
     } else if (newHeight < MIN_OVERLAY_HEIGHT) {
       newHeight = MIN_OVERLAY_HEIGHT;
     }
@@ -167,7 +175,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
-  const isFullHeight = height >= (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+  const isFullHeight = height >= maxOverlayHeight;
 
   return (
     <Box

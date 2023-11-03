@@ -14,7 +14,7 @@ import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
 
-import { generateImage, getStyles } from '../api/image-generator';
+import { generateImageFromImage, generateImageFromText, getStyles } from '../api/image-generator';
 
 import { getDrawingArea } from './drawingAreas';
 
@@ -367,7 +367,8 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
       onGeneratedImageSelected={handlePreviewImageSelected}
       isEditorToolbarExpanded={isEditorToolbarExpanded}
       onChangeEditorToolbarExpanded={setEditorToolbarExpanded}
-      generateImage={generateImage}
+      generateImageFromText={generateImageFromText}
+      generateImageFromImage={generateImageFromImage}
       getStyles={getStyles}
       hideAiImageBackgroundSelector
     >

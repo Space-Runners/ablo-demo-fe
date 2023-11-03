@@ -1,9 +1,9 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { chunk } from 'lodash';
 
-import { Style } from '../../../../types';
+import { Style } from '../../../../../types';
 
-import Colors from '../../../../theme/colors';
+import Colors from '../../../../../theme/colors';
 
 const { abloBlue } = Colors;
 

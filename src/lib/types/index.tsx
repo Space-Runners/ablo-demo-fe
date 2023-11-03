@@ -24,6 +24,8 @@ export interface Tone {
   };
 }
 
+export type StyleType = 'text' | 'image';
+
 export interface Style {
   description: string;
   id: string;
@@ -31,6 +33,7 @@ export interface Style {
   keywords: Keyword[];
   name: string;
   tones: Tone[];
+  type?: StyleType;
 }
 
 export interface TextToImageRequest {
@@ -40,6 +43,18 @@ export interface TextToImageRequest {
   freeText: string;
   subjectSuggestions: string[];
   background: boolean;
+}
+
+export interface ImageToImageRequest {
+  styleId: string;
+  imageFile: BinaryData;
+}
+
+export interface ImageToImageRequest {
+  style?: string;
+  styleId: string;
+  toneId?: string;
+  image?: string;
 }
 
 export interface Filters {
@@ -106,7 +121,7 @@ export interface Template {
 }
 
 export interface AiImage {
-  options: TextToImageRequest;
+  options: TextToImageRequest | ImageToImageRequest;
   url: string;
   noBackgroundUrl?: string;
   withBackgroundUrl?: string;
