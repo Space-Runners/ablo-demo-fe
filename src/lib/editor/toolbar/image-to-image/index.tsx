@@ -13,8 +13,6 @@ import StyleSelector from '../components/style-selector';
 import ImagesPreview from '../components/ImagesPreview';
 import Progress from '../components/Progress';
 
-import 'react-image-crop/dist/ReactCrop.css';
-
 const defaultParams = {
   styleId: '',
   imageFile: null,
@@ -181,7 +179,7 @@ export default function ImageToImageGenerator({
             </ChakraButton>
           </Flex>
         ) : (
-          <VStack mb="50px" w="100%">
+          <VStack mb="50px">
             <Text
               alignSelf="flex-start"
               as="b"
@@ -192,7 +190,7 @@ export default function ImageToImageGenerator({
             >
               Upload image
             </Text>
-            {uploadedImage ? <Image src={uploadedImage.preview} /> : null}
+            {uploadedImage ? <Image height={200} src={uploadedImage.preview} /> : null}
             <ImageUpload onFileUploaded={handleImageUploaded} />
           </VStack>
         )}

@@ -34,7 +34,7 @@ export default function Navbar(props: Props) {
         justify={{ base: 'center', md: 'center' }}
         p={{ base: '0 17px', md: '32px' }}
       >
-        <Button bg="transparent" onClick={() => history.push('designs')}>
+        <Button bg="transparent" onClick={() => history.push('/app/designs')}>
           {icon || <IconAblo />}
         </Button>
         {rightSideContent ? (
