@@ -2,6 +2,9 @@ import { Box, Button as ChakraButton, Flex, HStack, Image, Text, VStack } from '
 
 import { useEffect, useState } from 'react';
 
+import ReactCrop from 'react-image-crop';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+
 import Button from '../../../components/Button';
 import IconTrash from '../../../components/icons/IconTrash';
 import ImageUpload from '../../../components/upload/ImageUpload';
@@ -12,6 +15,8 @@ import StyleSelector from '../components/style-selector';
 
 import ImagesPreview from '../components/ImagesPreview';
 import Progress from '../components/Progress';
+
+import 'react-image-crop/dist/ReactCrop.css';
 
 const defaultParams = {
   styleId: '',
@@ -44,6 +49,8 @@ export default function ImageToImageGenerator({
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [images, setImages] = useState([]);
+
+  const [crop, setCrop] = useState();
 
   const { styleId, toneId } = options;
 
@@ -179,7 +186,7 @@ export default function ImageToImageGenerator({
             </ChakraButton>
           </Flex>
         ) : (
-          <VStack mb="50px">
+          <VStack mb="50px" w="100%">
             <Text
               alignSelf="flex-start"
               as="b"
@@ -190,7 +197,19 @@ export default function ImageToImageGenerator({
             >
               Upload image
             </Text>
-            {uploadedImage ? <Image src={uploadedImage.preview} height={200} /> : null}
+            {uploadedImage ? (
+              <TransformWrapper style={{ height: '200px', width: '200px' }}>
+                {({ zoomIn, zoomOut }) => (
+                  <Box>
+                    <TransformComponent>
+                      <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
+                        <Image src={uploadedImage.preview} />
+                      </ReactCrop>
+                    </TransformComponent>
+                  </Box>
+                )}
+              </TransformWrapper>
+            ) : null}
             <ImageUpload onFileUploaded={handleImageUploaded} />
           </VStack>
         )}

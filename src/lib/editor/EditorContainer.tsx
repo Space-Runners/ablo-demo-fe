@@ -39,7 +39,7 @@ export default function EditorContainer({
   hideStyles,
   customToolbarContent,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState('textToImage');
+  const [selectedTool, setSelectedTool] = useState('imageToImage');
   const [maxHeight, setMaxHeight] = useState(null);
 
   const isImageToImage = selectedTool === 'imageToImage';
