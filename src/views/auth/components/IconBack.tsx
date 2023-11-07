@@ -8,7 +8,7 @@ const IconBack = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_518_118580)">
+    <g clipPath="url(#clip0_518_118580)">
       <path
         d="M5.5 12.5356H19.5"
         stroke="#6C757D"

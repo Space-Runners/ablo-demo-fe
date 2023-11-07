@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import VerifyEmailPage from '@/views/auth/VerifyEmail';
 import ResetPasswordPage from '@/views/auth/ResetPassword';
 
+import Auth from '@/layouts/auth';
 import Dashboard from '@/layouts/design-tool';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from '@/lib/theme';
@@ -60,6 +61,7 @@ export const App: React.FC = () => {
                 <Switch>
                   <Route path={`/verify-email`} component={VerifyEmailPage} />
                   <Route path={`/app`} component={Dashboard} />
+                  <Route path={`/auth`} component={Auth} />
                   <Route path={`/reset-password`} component={ResetPasswordPage} />
                   <Redirect from="/" to="/app" />
                 </Switch>

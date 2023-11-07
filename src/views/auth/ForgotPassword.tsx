@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useHistory } from 'react-router-dom';
+
 import {
   Alert,
   AlertIcon,
@@ -15,19 +17,20 @@ import FormInput from '@/components/modals/FormInput';
 
 import Button from './components/ButtonCTA';
 import IconBack from './components/IconBack';
-import ModalContainer from './components/ModalContainer';
+import AuthContainer from './components/AuthContainer';
 
-type Props = {
-  onClose: () => void;
-  onGoToSignin: () => void;
-};
-
-function ForgotPassword({ onClose, onGoToSignin }: Props) {
+function ForgotPassword() {
   const [email, setEmail] = useState('');
 
   const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [success, setSuccess] = useState(null);
+
+  const history = useHistory();
+
+  const handleGoToSignIn = () => {
+    history.push('/auth/signin');
+  };
 
   const handleSubmit = () => {
     setWaiting(true);
@@ -46,8 +49,7 @@ function ForgotPassword({ onClose, onGoToSignin }: Props) {
   };
 
   return (
-    <ModalContainer
-      onClose={onClose}
+    <AuthContainer
       title="Forgot Password"
       subtitle="No worries, we’ll send you reset instructions."
     >
@@ -70,14 +72,14 @@ function ForgotPassword({ onClose, onGoToSignin }: Props) {
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button isLoading={waiting} onClick={handleSubmit} title="Reset password" />
-        <ChakraButton bg="transparent" mt="20px" onClick={onGoToSignin} padding={0}>
+        <ChakraButton bg="transparent" mt="20px" onClick={handleGoToSignIn} padding={0}>
           <IconBack />
           <Text color="gray.600" fontWeight={400} ml="4px">
             Back to log in
           </Text>
         </ChakraButton>
       </VStack>
-    </ModalContainer>
+    </AuthContainer>
   );
 }
 

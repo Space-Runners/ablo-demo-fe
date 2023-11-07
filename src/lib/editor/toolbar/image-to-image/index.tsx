@@ -2,9 +2,6 @@ import { Box, Button as ChakraButton, Flex, HStack, Image, Text, VStack } from '
 
 import { useEffect, useState } from 'react';
 
-import ReactCrop from 'react-image-crop';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-
 import Button from '../../../components/Button';
 import IconTrash from '../../../components/icons/IconTrash';
 import ImageUpload from '../../../components/upload/ImageUpload';
@@ -49,8 +46,6 @@ export default function ImageToImageGenerator({
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [images, setImages] = useState([]);
-
-  const [crop, setCrop] = useState();
 
   const { styleId, toneId } = options;
 
@@ -197,19 +192,7 @@ export default function ImageToImageGenerator({
             >
               Upload image
             </Text>
-            {uploadedImage ? (
-              <TransformWrapper style={{ height: '200px', width: '200px' }}>
-                {({ zoomIn, zoomOut }) => (
-                  <Box>
-                    <TransformComponent>
-                      <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-                        <Image src={uploadedImage.preview} />
-                      </ReactCrop>
-                    </TransformComponent>
-                  </Box>
-                )}
-              </TransformWrapper>
-            ) : null}
+            {uploadedImage ? <Image src={uploadedImage.preview} /> : null}
             <ImageUpload onFileUploaded={handleImageUploaded} />
           </VStack>
         )}

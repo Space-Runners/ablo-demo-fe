@@ -19,20 +19,10 @@ type Props = {
 };
 
 export default function Navbar(props: Props) {
-  const {
-    callToActionContent,
-    icon,
-    onBack,
-    onNext,
-    rightSideContent,
-    isNextDisabled,
-    title,
-    user: me,
-  } = props;
+  const { callToActionContent, icon, onBack, onNext, rightSideContent, isNextDisabled, title } =
+    props;
 
   const history = useHistory();
-
-  const isGuest = !me || me.roles[0]?.name === 'guest';
 
   return (
     <Box boxShadow="0px 4px 4px 0px rgba(220, 220, 220, 0.25)" id="ablo-navbar" marginBottom="1px">
@@ -44,10 +34,7 @@ export default function Navbar(props: Props) {
         justify={{ base: 'center', md: 'center' }}
         p={{ base: '0 17px', md: '32px' }}
       >
-        <Button
-          bg="transparent"
-          onClick={() => history.push(`/app/${isGuest ? 'editor' : 'designs'}`)}
-        >
+        <Button bg="transparent" onClick={() => history.push('designs')}>
           {icon || <IconAblo />}
         </Button>
         {rightSideContent ? (

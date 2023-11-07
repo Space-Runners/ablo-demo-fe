@@ -28,19 +28,10 @@ axios.interceptors.response.use(
     const { response } = error || {};
 
     if (response && response.status === 401) {
-      const {
-        config: { url },
-      } = response;
-
-      if (url.startsWith('/generate')) {
-        // Guest usage
-
+      if (response && response.status === 401 && !response.config.url.includes('/auth')) {
         localStorage.removeItem(StorageKeys.ACCESS_TOKEN);
 
-        return guestLogin().then(({ access_token: token }) => {
-          localStorage.setItem(StorageKeys.ACCESS_TOKEN, token);
-          return axios.request(response.config);
-        });
+        window.location.href = '/auth/signin';
       }
     }
 
@@ -58,8 +49,6 @@ export const login = (email: string, password: string) =>
       return data;
     });
 
-export const guestLogin = () => axios.post('/auth/guest/login', {}).then(({ data }) => data);
-
 export const googleLogin = (token: string) =>
   axios
     .post('/auth/google/login', {
@@ -70,12 +59,16 @@ export const googleLogin = (token: string) =>
     });
 
 export const signUp = (email: string, password: string, firstName: string, lastName: string) =>
-  axios.post('/auth/register', {
-    email,
-    password,
-    firstName,
-    lastName,
-  });
+  axios
+    .post('/auth/register', {
+      email,
+      password,
+      firstName,
+      lastName,
+    })
+    .then(({ data }) => {
+      return data;
+    });
 
 export const verifyEmail = (token: string) => axios.get(`/users/verify-email/${token}`);
 
@@ -87,9 +80,11 @@ export const useMe = () =>
   );
 
 export const resetPassword = (email: string) =>
-  axios.post('/auth/forgot-password', {
-    email,
-  });
+  axios
+    .post('/auth/forgot-password', {
+      email,
+    })
+    .then(({ data }) => data);
 
 export const setPassword = (password: string, token: string) =>
   axios

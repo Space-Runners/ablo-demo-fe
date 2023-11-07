@@ -98,10 +98,7 @@ export default function DesignTool() {
                 )}
               />
               <Route path={`/app/order-or-share`} render={() => <OrderOrSharePage />} />
-              <Redirect
-                from="/"
-                to={me && me.roles[0]?.name !== 'guest' ? '/app/designs' : '/app/templates'}
-              />
+              <Redirect from="/" to="/app/designs" />
             </Switch>
           </CSSTransition>
         </TransitionGroup>
