@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useHistory } from 'react-router-dom';
+
 import {
   Alert,
   AlertIcon,
@@ -16,18 +18,13 @@ import FormInput from '@/components/modals/FormInput';
 import { GoogleLogin } from '@react-oauth/google';
 
 import { googleLogin, signUp } from '@/api/auth';
+import { StorageKeys } from '@/constants';
 
 import Button from './components/ButtonCTA';
-import ModalContainer from './components/ModalContainer';
+import AuthContainer from './components/AuthContainer';
 
-type Props = {
-  onClose: () => void;
-  onGoToSignin: () => void;
-  onSignUp: () => void;
-};
-
-function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
-  // Chakra color mode
+function SignUp() {
+  const history = useHistory();
 
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -38,6 +35,16 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
   const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const handleGoToSignIn = () => {
+    history.push('/auth/signin');
+  };
+
+  const handleSignIn = (accessToken) => {
+    localStorage.setItem(StorageKeys.ACCESS_TOKEN, accessToken);
+
+    history.push('/app/designs');
+  };
 
   const handleSubmit = () => {
     if (!firstName || !lastName || !email || !password) {
@@ -57,11 +64,10 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
     setSuccess(false);
 
     signUp(email, password, firstName, lastName)
-      .then(() => {
+      .then(({ access_token: accessToken }) => {
         setWaiting(false);
-        setSuccess(true);
 
-        onClose();
+        handleSignIn(accessToken);
       })
       .catch(() => {
         setError('Error signing up');
@@ -70,7 +76,7 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
   };
 
   return (
-    <ModalContainer onClose={onClose} title="Create an account" subtitle="Start your journey!">
+    <AuthContainer title="Create an account" subtitle="Start your journey!">
       <VStack mb="12px" spacing="12px" maxW="350px">
         {success ? (
           <Alert height="60px" status="success">
@@ -120,12 +126,9 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
         <Button isLoading={waiting} onClick={handleSubmit} title="Get started" />
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            googleLogin(credentialResponse.credential).then(({ access_token: accessToken }) => {
-              localStorage.setItem('access-token', accessToken);
-              localStorage.removeItem('client-token');
-
-              onSignUp();
-            });
+            googleLogin(credentialResponse.credential).then(({ access_token: accessToken }) =>
+              handleSignIn(accessToken)
+            );
           }}
           width="350px"
         />
@@ -139,14 +142,14 @@ function SignUp({ onClose, onGoToSignin, onSignUp }: Props) {
             fontSize="md"
             fontWeight={400}
             height="auto"
-            onClick={onGoToSignin}
+            onClick={handleGoToSignIn}
             padding={0}
           >
             Log in
           </ChakraButton>
         </Flex>
       </VStack>
-    </ModalContainer>
+    </AuthContainer>
   );
 }
 

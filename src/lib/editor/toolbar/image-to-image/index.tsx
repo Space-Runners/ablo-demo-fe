@@ -190,7 +190,7 @@ export default function ImageToImageGenerator({
             >
               Upload image
             </Text>
-            {uploadedImage ? <Image src={uploadedImage.preview} height={200} /> : null}
+            {uploadedImage ? <Image height={200} src={uploadedImage.preview} /> : null}
             <ImageUpload onFileUploaded={handleImageUploaded} />
           </VStack>
         )}

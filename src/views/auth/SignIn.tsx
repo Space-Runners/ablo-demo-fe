@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useHistory } from 'react-router-dom';
+
 import {
   Button as ChakraButton,
   Flex,
@@ -13,16 +15,10 @@ import { GoogleLogin } from '@react-oauth/google';
 
 import { googleLogin, login } from '@/api/auth';
 import FormInput from '@/components/modals/FormInput';
+import { StorageKeys } from '@/constants';
 
+import AuthContainer from './components/AuthContainer';
 import Button from './components/ButtonCTA';
-import ModalContainer from './components/ModalContainer';
-
-type Props = {
-  onClose: () => void;
-  onGoToSignup: () => void;
-  onGoToForgotPassword: () => void;
-  onSignIn: () => void;
-};
 
 const LinkButton = (props) => (
   <ChakraButton
@@ -36,26 +32,37 @@ const LinkButton = (props) => (
   />
 );
 
-function SignIn({ onClose, onGoToSignup, onGoToForgotPassword, onSignIn }: Props) {
-  // Chakra color mode
-
+function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [error, setError] = useState('');
   const [waiting, setWaiting] = useState(false);
 
+  const history = useHistory();
+
+  const handleSignIn = (accessToken) => {
+    localStorage.setItem(StorageKeys.ACCESS_TOKEN, accessToken);
+
+    history.push('/app/designs');
+  };
+
+  const handleGoToForgotPassword = () => {
+    history.push('/auth/forgot-password');
+  };
+
+  const handleGoToSignup = () => {
+    history.push('/auth/signup');
+  };
+
   const handleSubmit = () => {
     setWaiting(true);
 
     login(email, password)
       .then(({ access_token: accessToken }) => {
-        localStorage.setItem('access-token', accessToken);
-        localStorage.removeItem('client-token');
-
         setWaiting(false);
 
-        onSignIn();
+        handleSignIn(accessToken);
       })
       .catch(() => {
         setError('Error signing in');
@@ -65,8 +72,7 @@ function SignIn({ onClose, onGoToSignup, onGoToForgotPassword, onSignIn }: Props
   };
 
   return (
-    <ModalContainer
-      onClose={onClose}
+    <AuthContainer
       title="Log in to your account"
       subtitle="Welcome back! Please enter your details."
     >
@@ -91,16 +97,13 @@ function SignIn({ onClose, onGoToSignup, onGoToForgotPassword, onSignIn }: Props
           type="password"
         />
         <Flex justify="flex-end" w="100%">
-          <LinkButton onClick={onGoToForgotPassword}>Forgot password?</LinkButton>
+          <LinkButton onClick={handleGoToForgotPassword}>Forgot password?</LinkButton>
         </Flex>
         <Button isLoading={waiting} onClick={handleSubmit} title="Sign in" />
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             googleLogin(credentialResponse.credential).then(({ access_token: accessToken }) => {
-              localStorage.setItem('access-token', accessToken);
-              localStorage.removeItem('client-token');
-
-              onSignIn();
+              handleSignIn(accessToken);
             });
           }}
           width="347px"
@@ -109,10 +112,10 @@ function SignIn({ onClose, onGoToSignup, onGoToForgotPassword, onSignIn }: Props
           <Text color="#6C757D" fontSize="md" mr="4px">
             Don't have an account?
           </Text>
-          <LinkButton onClick={onGoToSignup}>Sign up</LinkButton>
+          <LinkButton onClick={handleGoToSignup}>Sign up</LinkButton>
         </Flex>
       </VStack>
-    </ModalContainer>
+    </AuthContainer>
   );
 }
 

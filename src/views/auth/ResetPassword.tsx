@@ -11,7 +11,7 @@ import FormInput from '@/components/modals/FormInput';
 import { StorageKeys } from '@/constants';
 
 import Button from './components/ButtonCTA';
-import ModalContainer from './components/ModalContainer';
+import AuthContainer from './components/AuthContainer';
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -65,7 +65,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <ModalContainer title="Reset password" subtitle="Set a new password">
+    <AuthContainer title="Reset password" subtitle="Set a new password">
       <VStack mb="20px" spacing="12px" maxW="350px" w={{ base: '100%', md: '300px' }}>
         <FormControl isInvalid={!!error}>
           {error && <FormErrorMessage>{error}</FormErrorMessage>}
@@ -86,7 +86,7 @@ const ResetPassword = () => {
         />
         <Button isLoading={waiting} onClick={handleSubmit} title="Reset Password" />
       </VStack>
-    </ModalContainer>
+    </AuthContainer>
   );
 };
 

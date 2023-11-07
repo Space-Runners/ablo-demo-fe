@@ -10,10 +10,6 @@ import Button from '@/lib/components/Button';
 import Navbar from '@/lib/components/navbar';
 import { Design, Template, User } from '@/lib/types';
 
-import SignInModal from '@/views/auth/SignInModal';
-import SignUpModal from '@/views/auth/SignUpModal';
-import ForgotPasswordModal from '@/views/auth/ForgotPasswordModal';
-
 import FeedbackAlert from './components/FeedbackAlert';
 import { IconBack } from './components/Icons';
 import SaveDesignDrawer from './components/SaveDesignDrawer';
@@ -39,9 +35,6 @@ export default function ImageEditorPage({
   const [activeDesign, setActiveDesign] = useState<Design>(null);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const [isSignUpModalVisible, setSignUpModalVisible] = useState(false);
-  const [isSignInModalVisible, setSignInModalVisible] = useState(false);
-  const [isForgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false);
   const [isSaveDesignDrawerVisible, setSaveDesignDrawerVisible] = useState(false);
 
   const [isSavingDesign, setSavingDesign] = useState(false);
@@ -55,8 +48,6 @@ export default function ImageEditorPage({
   const history = useHistory();
 
   const { search } = useLocation();
-
-  const isGuest = !me || me.roles[0]?.name === 'guest';
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
@@ -76,16 +67,6 @@ export default function ImageEditorPage({
       })
       .catch(() => setIsLoading(false));
   }, [search]);
-
-  const handleNext = () => {
-    if (!isGuest) {
-      handleGoToSaveDesign();
-
-      return;
-    }
-
-    setSignInModalVisible(true);
-  };
 
   const handleGoToSaveDesign = () => {
     setSaveDesignDrawerVisible(true);
@@ -191,7 +172,7 @@ export default function ImageEditorPage({
     <Box bg="#FFFFFF" h="100vh" w="100%">
       <Navbar
         onBack={handleGoBack}
-        onNext={handleNext}
+        onNext={handleGoToSaveDesign}
         rightSideContent={
           <Show above="md">
             <HStack>
@@ -203,7 +184,12 @@ export default function ImageEditorPage({
                 textTransform="none"
                 title={`Back To ${activeDesign ? 'Designs' : 'Templates'}`}
               />
-              <Button h="40px" onClick={handleNext} textTransform="none" title="Finish & Share" />
+              <Button
+                h="40px"
+                onClick={handleGoToSaveDesign}
+                textTransform="none"
+                title="Finish & Share"
+              />
             </HStack>
           </Show>
         }
@@ -241,47 +227,7 @@ export default function ImageEditorPage({
           <FeedbackAlert error={errorSavingDesign} onClose={() => setErrorSavingDesign(null)} />
         </Box>
       )}
-      {isSignUpModalVisible ? (
-        <SignUpModal
-          onClose={() => setSignUpModalVisible(false)}
-          onGoToSignin={() => {
-            setSignInModalVisible(true);
-            setSignUpModalVisible(false);
-          }}
-          onSignUp={() => {
-            setSignUpModalVisible(false);
 
-            handleGoToSaveDesign();
-          }}
-        />
-      ) : null}
-      {isSignInModalVisible ? (
-        <SignInModal
-          onClose={() => setSignInModalVisible(false)}
-          onGoToSignup={() => {
-            setSignInModalVisible(false);
-            setSignUpModalVisible(true);
-          }}
-          onGoToForgotPassword={() => {
-            setSignInModalVisible(false);
-            setForgotPasswordModalVisible(true);
-          }}
-          onSignIn={() => {
-            setSignInModalVisible(false);
-
-            handleGoToSaveDesign();
-          }}
-        />
-      ) : null}
-      {isForgotPasswordModalVisible ? (
-        <ForgotPasswordModal
-          onClose={() => setForgotPasswordModalVisible(false)}
-          onGoToSignin={() => {
-            setSignInModalVisible(true);
-            setForgotPasswordModalVisible(false);
-          }}
-        />
-      ) : null}
       {isSaveDesignDrawerVisible ? (
         <SaveDesignDrawer
           isSaving={isSavingDesign}
