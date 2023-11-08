@@ -2,6 +2,8 @@ import { Box, Button as ChakraButton, Flex, HStack, Image, Text, VStack } from '
 
 import { useEffect, useState } from 'react';
 
+import Cropper from 'react-easy-crop';
+
 import Button from '../../../components/Button';
 import IconTrash from '../../../components/icons/IconTrash';
 import ImageUpload from '../../../components/upload/ImageUpload';
@@ -13,10 +15,14 @@ import StyleSelector from '../components/style-selector';
 import ImagesPreview from '../components/ImagesPreview';
 import Progress from '../components/Progress';
 
+import getCroppedImg from './cropImage';
+
 const defaultParams = {
   styleId: '',
   imageFile: null,
 };
+
+const IMAGE_WIDTH = 350;
 
 type ImageToImageGeneratorProps = {
   onGeneratedImageSelected: (image: AiImage) => void;
@@ -35,6 +41,11 @@ export default function ImageToImageGenerator({
 }: ImageToImageGeneratorProps) {
   const [styles, setStyles] = useState<Style[]>([]);
   const [waiting, setWaiting] = useState(false);
+
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
 
   const [uploadedImage, setUploadedImage] = useState(null);
   const [selectedInputImage, setSelectedInputImage] = useState(null);
@@ -58,6 +69,10 @@ export default function ImageToImageGenerator({
       }
     });
   }, [getStyles]);
+
+  const onCropComplete = (_croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
 
   const handlePlaceArtwork = () => {
     onGeneratedImageSelected({
@@ -90,10 +105,19 @@ export default function ImageToImageGenerator({
 
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
 
-  const handleSelectUploadedImage = () => {
-    setSelectedInputImage(uploadedImage);
+  const handleSelectUploadedImage = async () => {
+    try {
+      const croppedImage = await getCroppedImg(uploadedImage.preview, croppedAreaPixels);
 
-    setUploadedImage(null);
+      setSelectedInputImage({
+        preview: URL.createObjectURL(croppedImage),
+        file: new File([croppedImage], 'image', { type: 'image/png' }),
+      });
+
+      setUploadedImage(null);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleGenerate = () => {
@@ -190,7 +214,24 @@ export default function ImageToImageGenerator({
             >
               Upload image
             </Text>
-            {uploadedImage ? <Image height={200} src={uploadedImage.preview} /> : null}
+            {uploadedImage ? (
+              <Box position="relative" w={`${IMAGE_WIDTH}px`} h={`${IMAGE_WIDTH}px`}>
+                <Cropper
+                  image={uploadedImage.preview}
+                  crop={crop}
+                  cropSize={{
+                    width: IMAGE_WIDTH,
+                    height: IMAGE_WIDTH,
+                  }}
+                  zoom={zoom}
+                  aspect={4 / 3}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                />
+              </Box>
+            ) : null}
+            {selectedInputImage ? <Image src={selectedInputImage} /> : null}
             <ImageUpload onFileUploaded={handleImageUploaded} />
           </VStack>
         )}
