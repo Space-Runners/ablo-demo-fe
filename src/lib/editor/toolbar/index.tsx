@@ -78,6 +78,7 @@ type FooterToolbarProps = {
   hideStyles: boolean;
   maxHeight?: number;
   hideButtons?: boolean;
+  availableTools?: string[];
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
@@ -90,6 +91,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     selectedTool,
     maxHeight,
     hideButtons,
+    availableTools,
   } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
@@ -181,6 +183,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const isFullHeight = height >= maxOverlayHeight;
 
+  const views = availableTools ? VIEWS.filter(({ name }) => availableTools.includes(name)) : VIEWS;
+
   return (
     <Box
       borderRadius={{ base: '24px 24px 0 0', md: 0 }}
@@ -223,7 +227,7 @@ export default function EditorToolbar(props: FooterToolbarProps) {
         {!hideButtons ? (
           <Flex align="center" justify="space-between" padding="10px 14px">
             <HStack spacing="8px">
-              {VIEWS.map(({ name, icon, iconActive }) => (
+              {views.map(({ name, icon, iconActive }) => (
                 <ToolbarButton
                   isSelected={selectedTool === name}
                   key={name}
