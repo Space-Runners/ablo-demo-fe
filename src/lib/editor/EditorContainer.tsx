@@ -24,6 +24,7 @@ type EditorContainerProps = {
   hideAiImageBackgroundSelector?: boolean;
   hideStyles?: boolean;
   customToolbarContent?: ReactNode;
+  availableTools?: string[];
 };
 
 export default function EditorContainer({
@@ -38,6 +39,7 @@ export default function EditorContainer({
   hideAiImageBackgroundSelector,
   hideStyles,
   customToolbarContent,
+  availableTools,
 }: EditorContainerProps) {
   const [selectedTool, setSelectedTool] = useState('textToImage');
   const [maxHeight, setMaxHeight] = useState(null);
@@ -61,6 +63,7 @@ export default function EditorContainer({
         onSelectedTool={setSelectedTool}
         hideStyles={hideStyles}
         hideButtons={!!customToolbarContent}
+        availableTools={availableTools}
       >
         {customToolbarContent || (
           <Box>
