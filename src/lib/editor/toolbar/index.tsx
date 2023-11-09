@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { AiImage } from '../../types';
 
 import { IconFontToImage, IconImageToImage, IconTextToImage, IconUploadImage } from './Icons';
+import ToolType from './ToolTypes';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -42,22 +43,22 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: 'textToImage',
+    name: ToolType.TEXT_TO_IMAGE,
     icon: <IconTextToImage />,
     iconActive: <IconTextToImage isSelected />,
   },
   {
-    name: 'fontToImage',
+    name: ToolType.FONT_TO_IMAGE,
     icon: <IconFontToImage />,
     iconActive: <IconFontToImage isSelected />,
   },
   {
-    name: 'imageToImage',
+    name: ToolType.IMAGE_TO_IMAGE,
     icon: <IconImageToImage />,
     iconActive: <IconImageToImage isSelected />,
   },
   {
-    name: 'imageUpload',
+    name: ToolType.IMAGE_UPLOAD,
     icon: <IconUploadImage />,
     iconActive: <IconUploadImage isSelected />,
   },
@@ -71,13 +72,13 @@ type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  selectedTool: string;
-  onSelectedTool: (tool: string) => void;
+  selectedTool: ToolType;
+  onSelectedTool: (tool: ToolType) => void;
   children: ReactNode;
   hideStyles: boolean;
   maxHeight?: number;
   hideButtons?: boolean;
-  availableTools?: string[];
+  availableTools?: ToolType[];
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {

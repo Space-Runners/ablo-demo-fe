@@ -1,11 +1,9 @@
-import { Image, Text, VStack } from "@chakra-ui/react";
+import { Image, Text, VStack } from '@chakra-ui/react';
 
-import FontToImage from "./illustrations/FontToImage.png";
-import ImageToImage from "./illustrations/ImageToImage.png";
+import FontToImage from './illustrations/FontToImage.png';
 
 const FEATURES = {
-  fontToImage: { title: "Font to Image", illustration: FontToImage },
-  imageToImage: { title: "Image to Image", illustration: ImageToImage },
+  fontToImage: { title: 'Font to Image', illustration: FontToImage },
 };
 
 type ComingSoonProps = {
