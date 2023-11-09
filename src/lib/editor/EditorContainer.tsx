@@ -10,7 +10,7 @@ import ImageToImageGenerator from './toolbar/image-to-image';
 
 import ComingSoon from './toolbar/components/coming-soon';
 
-import ToolTypes from './toolbar/ToolTypes';
+import ToolType from './toolbar/ToolTypes';
 import ImageUpload from '../components/upload/ImageUpload';
 
 type EditorContainerProps = {
@@ -25,7 +25,7 @@ type EditorContainerProps = {
   hideAiImageBackgroundSelector?: boolean;
   hideStyles?: boolean;
   customToolbarContent?: ReactNode;
-  availableTools?: string[];
+  availableTools?: ToolType[];
 };
 
 export default function EditorContainer({
@@ -42,10 +42,10 @@ export default function EditorContainer({
   customToolbarContent,
   availableTools,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState(ToolTypes.TEXT_TO_IMAGE);
+  const [selectedTool, setSelectedTool] = useState(ToolType.TEXT_TO_IMAGE);
   const [maxHeight, setMaxHeight] = useState(null);
 
-  const isImageToImage = selectedTool === ToolTypes.IMAGE_TO_IMAGE;
+  const isImageToImage = selectedTool === ToolType.IMAGE_TO_IMAGE;
 
   return (
     <Flex
@@ -68,7 +68,7 @@ export default function EditorContainer({
       >
         {customToolbarContent || (
           <Box>
-            {selectedTool === ToolTypes.TEXT_TO_IMAGE ? (
+            {selectedTool === ToolType.TEXT_TO_IMAGE ? (
               <TextToImageGenerator
                 getStyles={getStyles}
                 generateImageFromText={generateImageFromText}
@@ -89,10 +89,8 @@ export default function EditorContainer({
                 }}
               />
             ) : null}
-            {selectedTool === ToolTypes.FONT_TO_IMAGE ? (
-              <ComingSoon feature={selectedTool} />
-            ) : null}
-            {selectedTool === ToolTypes.IMAGE_UPLOAD ? (
+            {selectedTool === ToolType.FONT_TO_IMAGE ? <ComingSoon feature={selectedTool} /> : null}
+            {selectedTool === ToolType.IMAGE_UPLOAD ? (
               <Box padding="20px">
                 <ImageUpload onImageUploaded={onImageUploaded} />
               </Box>
