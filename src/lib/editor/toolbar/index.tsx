@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { AiImage } from '../../types';
 
 import { IconFontToImage, IconImageToImage, IconTextToImage, IconUploadImage } from './Icons';
+import ToolTypes from './ToolTypes';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -42,22 +43,22 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: 'textToImage',
+    name: ToolTypes.TEXT_TO_IMAGE,
     icon: <IconTextToImage />,
     iconActive: <IconTextToImage isSelected />,
   },
   {
-    name: 'fontToImage',
+    name: ToolTypes.FONT_TO_IMAGE,
     icon: <IconFontToImage />,
     iconActive: <IconFontToImage isSelected />,
   },
   {
-    name: 'imageToImage',
+    name: ToolTypes.IMAGE_TO_IMAGE,
     icon: <IconImageToImage />,
     iconActive: <IconImageToImage isSelected />,
   },
   {
-    name: 'imageUpload',
+    name: ToolTypes.IMAGE_UPLOAD,
     icon: <IconUploadImage />,
     iconActive: <IconUploadImage isSelected />,
   },
@@ -71,7 +72,7 @@ type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  selectedTool: string;
+  selectedTool: ToolTypes;
   onSelectedTool: (tool: string) => void;
   children: ReactNode;
   hideStyles: boolean;

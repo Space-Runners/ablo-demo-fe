@@ -10,6 +10,7 @@ import ImageToImageGenerator from './toolbar/image-to-image';
 
 import ComingSoon from './toolbar/components/coming-soon';
 
+import ToolTypes from './toolbar/ToolTypes';
 import ImageUpload from '../components/upload/ImageUpload';
 
 type EditorContainerProps = {
@@ -39,10 +40,10 @@ export default function EditorContainer({
   hideStyles,
   customToolbarContent,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState('textToImage');
+  const [selectedTool, setSelectedTool] = useState(ToolTypes.TEXT_TO_IMAGE);
   const [maxHeight, setMaxHeight] = useState(null);
 
-  const isImageToImage = selectedTool === 'imageToImage';
+  const isImageToImage = selectedTool === ToolTypes.IMAGE_TO_IMAGE;
 
   return (
     <Flex
@@ -64,7 +65,7 @@ export default function EditorContainer({
       >
         {customToolbarContent || (
           <Box>
-            {selectedTool === 'textToImage' ? (
+            {selectedTool === ToolTypes.TEXT_TO_IMAGE ? (
               <TextToImageGenerator
                 getStyles={getStyles}
                 generateImageFromText={generateImageFromText}
@@ -85,8 +86,10 @@ export default function EditorContainer({
                 }}
               />
             ) : null}
-            {selectedTool === 'fontToImage' ? <ComingSoon feature={selectedTool} /> : null}
-            {selectedTool === 'imageUpload' ? (
+            {selectedTool === ToolTypes.FONT_TO_IMAGE ? (
+              <ComingSoon feature={selectedTool} />
+            ) : null}
+            {selectedTool === ToolTypes.IMAGE_UPLOAD ? (
               <Box padding="20px">
                 <ImageUpload onImageUploaded={onImageUploaded} />
               </Box>
