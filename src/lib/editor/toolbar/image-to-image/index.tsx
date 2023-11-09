@@ -1,4 +1,13 @@
-import { Box, Button as ChakraButton, Flex, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button as ChakraButton,
+  Flex,
+  HStack,
+  Image,
+  Text,
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
 
 import { useEffect, useState } from 'react';
 
@@ -43,6 +52,8 @@ export default function ImageToImageGenerator({
   const [waiting, setWaiting] = useState(false);
 
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  const toast = useToast();
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -117,6 +128,14 @@ export default function ImageToImageGenerator({
       setUploadedImage(null);
     } catch (e) {
       console.error(e);
+
+      toast({
+        title: 'Error cropping image',
+        description: e.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
