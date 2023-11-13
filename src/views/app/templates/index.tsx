@@ -121,25 +121,21 @@ export default function TemplatesPage({
     history.push(`/app/editor`);
   };
 
-  const isGuest = !user || user.roles[0]?.name === 'guest';
-
   return (
     <Box bg="#ffffff" w="100%" h="100%">
       <Navbar
         callToActionContent={<Text color="brand.500">Next</Text>}
-        onNext={() => history.push(`/app/editor?`)}
+        onNext={() => history.push(`/app/editor`)}
         rightSideContent={
           <F>
             <HStack>
-              {!isGuest && (
-                <ButtonCTA
-                  h="40px"
-                  onClick={handleGoToMyDesigns}
-                  outlined
-                  textTransform="none"
-                  title="My Designs"
-                />
-              )}
+              <ButtonCTA
+                h="40px"
+                onClick={handleGoToMyDesigns}
+                outlined
+                textTransform="none"
+                title="My Designs"
+              />
             </HStack>
           </F>
         }

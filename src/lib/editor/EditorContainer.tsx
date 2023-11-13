@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { AiImage, Style, TextToImageRequest } from '@/lib/types';
+import { AiImage, Style, StyleType, ImageToImageRequest, TextToImageRequest } from '@/lib/types';
 
 import EditorToolbar from './toolbar';
 
-import ImageGenerator from './toolbar/image-generator';
-import ImagePicker from './toolbar/components/ImagePicker';
+import TextToImageGenerator from './toolbar/text-to-image';
+import ImageToImageGenerator from './toolbar/image-to-image';
+
 import ComingSoon from './toolbar/components/coming-soon';
 
+import ToolType from './toolbar/ToolTypes';
+import ImageUpload from '../components/upload/ImageUpload';
+
 type EditorContainerProps = {
-  onImageUploaded: (image: File) => void;
+  onImageUploaded: (image: HTMLImageElement) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   isEditorToolbarExpanded: boolean;
   onChangeEditorToolbarExpanded: (isExpanded: boolean) => void;
   children: React.ReactNode;
-  getStyles: () => Promise<Style[]>;
-  generateImage: (options: TextToImageRequest) => Promise<string[]>;
+  getStyles: (type: StyleType) => Promise<Style[]>;
+  generateImageFromText: (options: TextToImageRequest) => Promise<string[]>;
+  generateImageFromImage?: (options: ImageToImageRequest) => Promise<string[]>;
   hideAiImageBackgroundSelector?: boolean;
   hideStyles?: boolean;
+  customToolbarContent?: ReactNode;
+  availableTools?: ToolType[];
 };
 
 export default function EditorContainer({
@@ -28,11 +35,17 @@ export default function EditorContainer({
   onChangeEditorToolbarExpanded,
   children,
   getStyles,
-  generateImage,
+  generateImageFromText,
+  generateImageFromImage,
   hideAiImageBackgroundSelector,
   hideStyles,
+  customToolbarContent,
+  availableTools,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState('textToImage');
+  const [selectedTool, setSelectedTool] = useState(ToolType.TEXT_TO_IMAGE);
+  const [maxHeight, setMaxHeight] = useState(null);
+
+  const isImageToImage = selectedTool === ToolType.IMAGE_TO_IMAGE;
 
   return (
     <Flex
@@ -44,30 +57,46 @@ export default function EditorContainer({
     >
       <EditorToolbar
         isExpanded={isEditorToolbarExpanded}
+        maxHeight={isImageToImage && maxHeight}
         onSetExpanded={onChangeEditorToolbarExpanded}
-        onImageUploaded={onImageUploaded}
         onGeneratedImageSelected={onGeneratedImageSelected}
         selectedTool={selectedTool}
         onSelectedTool={setSelectedTool}
         hideStyles={hideStyles}
+        hideButtons={!!customToolbarContent}
+        availableTools={availableTools}
       >
-        <Box>
-          {selectedTool === 'textToImage' ? (
-            <ImageGenerator
-              getStyles={getStyles}
-              generateImage={generateImage}
-              hideBackgroundSelector={hideAiImageBackgroundSelector}
-              hideStyles={hideStyles}
-              onGeneratedImageSelected={onGeneratedImageSelected}
-            />
-          ) : null}
-          {['fontToImage', 'imageToImage'].includes(selectedTool) ? (
-            <ComingSoon feature={selectedTool} />
-          ) : null}
-          {selectedTool === 'imageUpload' ? (
-            <ImagePicker onImageUploaded={onImageUploaded} />
-          ) : null}
-        </Box>
+        {customToolbarContent || (
+          <Box>
+            {selectedTool === ToolType.TEXT_TO_IMAGE ? (
+              <TextToImageGenerator
+                getStyles={getStyles}
+                generateImageFromText={generateImageFromText}
+                hideBackgroundSelector={hideAiImageBackgroundSelector}
+                hideStyles={hideStyles}
+                onGeneratedImageSelected={onGeneratedImageSelected}
+              />
+            ) : null}
+            {isImageToImage ? (
+              <ImageToImageGenerator
+                getStyles={getStyles}
+                generateImageFromImage={generateImageFromImage}
+                hideStyles={hideStyles}
+                onGeneratedImageSelected={onGeneratedImageSelected}
+                onMaxHeightChange={(height) => {
+                  onChangeEditorToolbarExpanded(true);
+                  setMaxHeight(height);
+                }}
+              />
+            ) : null}
+            {selectedTool === ToolType.FONT_TO_IMAGE ? <ComingSoon feature={selectedTool} /> : null}
+            {selectedTool === ToolType.IMAGE_UPLOAD ? (
+              <Box padding="20px">
+                <ImageUpload onImageUploaded={onImageUploaded} />
+              </Box>
+            ) : null}
+          </Box>
+        )}
       </EditorToolbar>
       <Box
         display={{

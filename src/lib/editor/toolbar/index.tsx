@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { AiImage } from '../../types';
 
 import { IconFontToImage, IconImageToImage, IconTextToImage, IconUploadImage } from './Icons';
+import ToolType from './ToolTypes';
 
 const ToolbarButton = ({ isSelected, ...rest }) => {
   return (
@@ -42,22 +43,22 @@ const IconDragHandle = ({ rotate }) => (
 
 const VIEWS = [
   {
-    name: 'textToImage',
+    name: ToolType.TEXT_TO_IMAGE,
     icon: <IconTextToImage />,
     iconActive: <IconTextToImage isSelected />,
   },
   {
-    name: 'fontToImage',
+    name: ToolType.FONT_TO_IMAGE,
     icon: <IconFontToImage />,
     iconActive: <IconFontToImage isSelected />,
   },
   {
-    name: 'imageToImage',
+    name: ToolType.IMAGE_TO_IMAGE,
     icon: <IconImageToImage />,
     iconActive: <IconImageToImage isSelected />,
   },
   {
-    name: 'imageUpload',
+    name: ToolType.IMAGE_UPLOAD,
     icon: <IconUploadImage />,
     iconActive: <IconUploadImage isSelected />,
   },
@@ -70,16 +71,28 @@ const MAX_OVERLAY_HEIGHT_ONE_STYLE = 282;
 type FooterToolbarProps = {
   isExpanded: boolean;
   onSetExpanded: (isExpaned: boolean) => void;
-  onImageUploaded: (image: File) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
-  selectedTool: string;
-  onSelectedTool: (tool: string) => void;
+  selectedTool: ToolType;
+  onSelectedTool: (tool: ToolType) => void;
   children: ReactNode;
   hideStyles: boolean;
+  maxHeight?: number;
+  hideButtons?: boolean;
+  availableTools?: ToolType[];
 };
 
 export default function EditorToolbar(props: FooterToolbarProps) {
-  const { children, hideStyles, isExpanded, onSetExpanded, onSelectedTool, selectedTool } = props;
+  const {
+    children,
+    hideStyles,
+    isExpanded,
+    onSetExpanded,
+    onSelectedTool,
+    selectedTool,
+    maxHeight,
+    hideButtons,
+    availableTools,
+  } = props;
 
   const [height, setHeight] = useState(MIN_OVERLAY_HEIGHT);
 
@@ -87,13 +100,16 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     active: false,
   });
 
+  const maxOverlayHeight =
+    maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+
   useEffect(() => {
     if (isExpanded) {
-      setHeight(hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+      setHeight(maxOverlayHeight);
     } else {
       setHeight(MIN_OVERLAY_HEIGHT);
     }
-  }, [isExpanded, selectedTool, hideStyles]);
+  }, [isExpanded, selectedTool, maxOverlayHeight]);
 
   const startResize = () => {
     setDrag({
@@ -104,10 +120,10 @@ export default function EditorToolbar(props: FooterToolbarProps) {
   const endResize = () => {
     let newHeight = document.getElementById('toolbarOverlay')?.clientHeight || 0;
 
-    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
+    if (newHeight > MIN_OVERLAY_HEIGHT + (maxOverlayHeight - MIN_OVERLAY_HEIGHT) / 2) {
+      newHeight = maxOverlayHeight;
 
-    if (newHeight > MIN_OVERLAY_HEIGHT + (maxHeight - MIN_OVERLAY_HEIGHT) / 2) {
-      newHeight = maxHeight;
+      onSetExpanded(true);
     } else {
       newHeight = MIN_OVERLAY_HEIGHT;
 
@@ -148,10 +164,8 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
     let newHeight = containerHeight - clientY;
 
-    const maxHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
-
-    if (newHeight > maxHeight) {
-      newHeight = maxHeight;
+    if (newHeight > maxOverlayHeight) {
+      newHeight = maxOverlayHeight;
     } else if (newHeight < MIN_OVERLAY_HEIGHT) {
       newHeight = MIN_OVERLAY_HEIGHT;
     }
@@ -167,7 +181,9 @@ export default function EditorToolbar(props: FooterToolbarProps) {
 
   const { active } = drag;
 
-  const isFullHeight = height >= (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+  const isFullHeight = height >= maxOverlayHeight;
+
+  const views = availableTools ? VIEWS.filter(({ name }) => availableTools.includes(name)) : VIEWS;
 
   return (
     <Box
@@ -208,19 +224,21 @@ export default function EditorToolbar(props: FooterToolbarProps) {
             <IconDragHandle rotate={!isFullHeight} />
           </Flex>
         </Hide>
-        <Flex align="center" justify="space-between" padding="10px 14px">
-          <HStack spacing="8px">
-            {VIEWS.map(({ name, icon, iconActive }) => (
-              <ToolbarButton
-                isSelected={selectedTool === name}
-                key={name}
-                onClick={() => handleToolChange(name)}
-              >
-                {selectedTool === name ? iconActive : icon}
-              </ToolbarButton>
-            ))}
-          </HStack>
-        </Flex>
+        {!hideButtons ? (
+          <Flex align="center" justify="space-between" padding="10px 14px">
+            <HStack spacing="8px">
+              {views.map(({ name, icon, iconActive }) => (
+                <ToolbarButton
+                  isSelected={selectedTool === name}
+                  key={name}
+                  onClick={() => handleToolChange(name)}
+                >
+                  {selectedTool === name ? iconActive : icon}
+                </ToolbarButton>
+              ))}
+            </HStack>
+          </Flex>
+        ) : null}
       </Box>
       {children}
     </Box>

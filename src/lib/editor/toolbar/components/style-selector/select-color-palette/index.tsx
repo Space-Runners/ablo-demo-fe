@@ -1,9 +1,9 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { chunk, isEmpty } from 'lodash';
 
-import { Style } from '../../../../types';
+import { Style } from '../../../../../types';
 
-import Colors from '../../../../theme/colors';
+import Colors from '../../../../../theme/colors';
 
 import NoToneImage from './images/NoFilters.png';
 
