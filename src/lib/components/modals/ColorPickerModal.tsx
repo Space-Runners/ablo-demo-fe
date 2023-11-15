@@ -14,7 +14,16 @@ const ColorPickerModal = ({ onClose, onSelectedColor, selectedColor }: Props) =>
   return (
     <Modal isOpen={true} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
-      <ModalContent alignSelf="center" borderRadius="10px" h="450px" w="328px">
+      <ModalContent
+        alignSelf="center"
+        borderRadius="10px"
+        h="450px"
+        w="328px"
+        containerProps={{
+          justifyContent: { md: 'flex-start', base: 'center' },
+          paddingLeft: { md: '20rem', base: 0 },
+        }}
+      >
         <ModalBody padding="15px 12px">
           <Flex alignItems="center" justifyContent="space-between" mb="20px">
             <Text as="b" fontSize="sm">
