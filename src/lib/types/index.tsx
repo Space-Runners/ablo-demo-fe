@@ -6,7 +6,7 @@ interface UserRole {
 }
 
 export interface User {
-  email: string;
+  email?: string;
   roles: UserRole[];
 }
 
