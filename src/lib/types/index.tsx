@@ -50,11 +50,9 @@ export interface ImageToImageRequest {
   imageFile: BinaryData;
 }
 
-export interface ImageToImageRequest {
-  style?: string;
+export interface FontToImageRequest {
   styleId: string;
-  toneId?: string;
-  image?: string;
+  text: string;
 }
 
 export interface Filters {
@@ -121,7 +119,7 @@ export interface Template {
 }
 
 export interface AiImage {
-  options: TextToImageRequest | ImageToImageRequest;
+  options: TextToImageRequest | ImageToImageRequest | FontToImageRequest;
   url: string;
   noBackgroundUrl?: string;
   withBackgroundUrl?: string;
