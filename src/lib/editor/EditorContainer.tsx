@@ -1,14 +1,20 @@
 import { ReactNode, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { AiImage, Style, StyleType, ImageToImageRequest, TextToImageRequest } from '@/lib/types';
+import {
+  AiImage,
+  Style,
+  StyleType,
+  ImageToImageRequest,
+  TextToImageRequest,
+  FontToImageRequest,
+} from '@/lib/types';
 
 import EditorToolbar from './toolbar';
 
 import TextToImageGenerator from './toolbar/text-to-image';
 import ImageToImageGenerator from './toolbar/image-to-image';
-
-import ComingSoon from './toolbar/components/coming-soon';
+import FontToImageGenerator from './toolbar/font-to-image';
 
 import ToolType from './toolbar/ToolTypes';
 import ImageUpload from '../components/upload/ImageUpload';
@@ -22,6 +28,7 @@ type EditorContainerProps = {
   getStyles: (type: StyleType) => Promise<Style[]>;
   generateImageFromText: (options: TextToImageRequest) => Promise<string[]>;
   generateImageFromImage?: (options: ImageToImageRequest) => Promise<string[]>;
+  generateImageFromFont?: (options: FontToImageRequest) => Promise<string[]>;
   hideAiImageBackgroundSelector?: boolean;
   hideStyles?: boolean;
   customToolbarContent?: ReactNode;
@@ -37,12 +44,13 @@ export default function EditorContainer({
   getStyles,
   generateImageFromText,
   generateImageFromImage,
+  generateImageFromFont,
   hideAiImageBackgroundSelector,
   hideStyles,
   customToolbarContent,
   availableTools,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState(ToolType.TEXT_TO_IMAGE);
+  const [selectedTool, setSelectedTool] = useState(ToolType.FONT_TO_IMAGE);
   const [maxHeight, setMaxHeight] = useState(null);
 
   const isImageToImage = selectedTool === ToolType.IMAGE_TO_IMAGE;
@@ -89,7 +97,17 @@ export default function EditorContainer({
                 }}
               />
             ) : null}
-            {selectedTool === ToolType.FONT_TO_IMAGE ? <ComingSoon feature={selectedTool} /> : null}
+            {selectedTool === ToolType.FONT_TO_IMAGE ? (
+              <FontToImageGenerator
+                getStyles={getStyles}
+                generateImageFromFont={generateImageFromFont}
+                onGeneratedImageSelected={onGeneratedImageSelected}
+                onMaxHeightChange={(height) => {
+                  onChangeEditorToolbarExpanded(true);
+                  setMaxHeight(height);
+                }}
+              />
+            ) : null}
             {selectedTool === ToolType.IMAGE_UPLOAD ? (
               <Box padding="20px">
                 <ImageUpload onImageUploaded={onImageUploaded} />
