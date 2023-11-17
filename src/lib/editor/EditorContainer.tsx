@@ -50,7 +50,7 @@ export default function EditorContainer({
   customToolbarContent,
   availableTools,
 }: EditorContainerProps) {
-  const [selectedTool, setSelectedTool] = useState(ToolType.FONT_TO_IMAGE);
+  const [selectedTool, setSelectedTool] = useState(ToolType.TEXT_TO_IMAGE);
   const [maxHeight, setMaxHeight] = useState(null);
 
   const isImageToImage = selectedTool === ToolType.IMAGE_TO_IMAGE;
@@ -74,47 +74,46 @@ export default function EditorContainer({
         hideButtons={!!customToolbarContent}
         availableTools={availableTools}
       >
-        {customToolbarContent || (
-          <Box>
-            {selectedTool === ToolType.TEXT_TO_IMAGE ? (
-              <TextToImageGenerator
-                getStyles={getStyles}
-                generateImageFromText={generateImageFromText}
-                hideBackgroundSelector={hideAiImageBackgroundSelector}
-                hideStyles={hideStyles}
-                onGeneratedImageSelected={onGeneratedImageSelected}
-              />
-            ) : null}
-            {isImageToImage ? (
-              <ImageToImageGenerator
-                getStyles={getStyles}
-                generateImageFromImage={generateImageFromImage}
-                hideStyles={hideStyles}
-                onGeneratedImageSelected={onGeneratedImageSelected}
-                onMaxHeightChange={(height) => {
-                  onChangeEditorToolbarExpanded(true);
-                  setMaxHeight(height);
-                }}
-              />
-            ) : null}
-            {selectedTool === ToolType.FONT_TO_IMAGE ? (
-              <FontToImageGenerator
-                getStyles={getStyles}
-                generateImageFromFont={generateImageFromFont}
-                onGeneratedImageSelected={onGeneratedImageSelected}
-                onMaxHeightChange={(height) => {
-                  onChangeEditorToolbarExpanded(true);
-                  setMaxHeight(height);
-                }}
-              />
-            ) : null}
-            {selectedTool === ToolType.IMAGE_UPLOAD ? (
-              <Box padding="20px">
-                <ImageUpload onImageUploaded={onImageUploaded} />
-              </Box>
-            ) : null}
-          </Box>
-        )}
+        {customToolbarContent}
+        <Box display={customToolbarContent ? 'none' : 'block'}>
+          {selectedTool === ToolType.TEXT_TO_IMAGE ? (
+            <TextToImageGenerator
+              getStyles={getStyles}
+              generateImageFromText={generateImageFromText}
+              hideBackgroundSelector={hideAiImageBackgroundSelector}
+              hideStyles={hideStyles}
+              onGeneratedImageSelected={onGeneratedImageSelected}
+            />
+          ) : null}
+          {isImageToImage ? (
+            <ImageToImageGenerator
+              getStyles={getStyles}
+              generateImageFromImage={generateImageFromImage}
+              hideStyles={hideStyles}
+              onGeneratedImageSelected={onGeneratedImageSelected}
+              onMaxHeightChange={(height) => {
+                onChangeEditorToolbarExpanded(true);
+                setMaxHeight(height);
+              }}
+            />
+          ) : null}
+          {selectedTool === ToolType.FONT_TO_IMAGE ? (
+            <FontToImageGenerator
+              getStyles={getStyles}
+              generateImageFromFont={generateImageFromFont}
+              onGeneratedImageSelected={onGeneratedImageSelected}
+              onMaxHeightChange={(height) => {
+                onChangeEditorToolbarExpanded(true);
+                setMaxHeight(height);
+              }}
+            />
+          ) : null}
+          {selectedTool === ToolType.IMAGE_UPLOAD ? (
+            <Box padding="20px">
+              <ImageUpload onImageUploaded={onImageUploaded} />
+            </Box>
+          ) : null}
+        </Box>
       </EditorToolbar>
       <Box
         display={{
