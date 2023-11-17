@@ -47,11 +47,14 @@ export interface TextToImageRequest {
 
 export interface ImageToImageRequest {
   styleId: string;
+  style?: string;
+  toneId?: string;
   imageFile: BinaryData;
 }
 
 export interface FontToImageRequest {
   styleId: string;
+  style?: string;
   text: string;
 }
 
