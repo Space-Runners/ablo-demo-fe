@@ -89,7 +89,7 @@ const DesignsList = ({ designs, onSelectedDesign, templates }: DesignsListProps)
           const images =
             (template && template.colors.find(({ id }) => id === templateColorId).images) || [];
 
-          const side = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText) || {};
+          const side = sides.find(({ hasGraphics, hasText }) => hasGraphics || hasText) || sides[0];
 
           const { imageUrl, templateSideId } = side;
 
