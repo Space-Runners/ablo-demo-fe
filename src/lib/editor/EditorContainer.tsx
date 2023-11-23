@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, ButtonProps, Flex } from '@chakra-ui/react';
 
 import {
   AiImage,
@@ -32,7 +32,13 @@ type EditorContainerProps = {
   hideAiImageBackgroundSelector?: boolean;
   hideStyles?: boolean;
   customToolbarContent?: ReactNode;
+  buttonProps?: {
+    basic: ButtonProps;
+    outlined: ButtonProps;
+  };
   availableTools?: ToolType[];
+  subjectText?: string;
+  maxToolbarHeight?: number;
 };
 
 export default function EditorContainer({
@@ -49,6 +55,9 @@ export default function EditorContainer({
   hideStyles,
   customToolbarContent,
   availableTools,
+  buttonProps,
+  subjectText,
+  maxToolbarHeight,
 }: EditorContainerProps) {
   const [selectedTool, setSelectedTool] = useState(ToolType.TEXT_TO_IMAGE);
   const [maxHeight, setMaxHeight] = useState(null);
@@ -60,18 +69,20 @@ export default function EditorContainer({
       align="center"
       bg="#F9F9F7"
       flexDirection={{ base: 'column', md: 'row' }}
-      h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}
+      h="100%"
       w="100%"
     >
       <EditorToolbar
         isExpanded={isEditorToolbarExpanded}
-        maxHeight={isImageToImage && maxHeight}
+        maxHeight={maxToolbarHeight || (isImageToImage && maxHeight)}
         onSetExpanded={onChangeEditorToolbarExpanded}
         onGeneratedImageSelected={onGeneratedImageSelected}
         selectedTool={selectedTool}
         onSelectedTool={setSelectedTool}
         hideStyles={hideStyles}
-        hideButtons={!!customToolbarContent}
+        hideButtons={
+          !!customToolbarContent || (isEditorToolbarExpanded && availableTools?.length === 1)
+        }
         availableTools={availableTools}
       >
         {customToolbarContent}
@@ -83,6 +94,8 @@ export default function EditorContainer({
               hideBackgroundSelector={hideAiImageBackgroundSelector}
               hideStyles={hideStyles}
               onGeneratedImageSelected={onGeneratedImageSelected}
+              buttonProps={buttonProps}
+              subjectText={subjectText}
             />
           ) : null}
           {isImageToImage ? (

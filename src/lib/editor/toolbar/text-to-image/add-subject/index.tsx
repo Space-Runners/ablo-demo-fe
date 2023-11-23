@@ -17,6 +17,7 @@ type Props = {
   onChangeBackground: (value: boolean) => void;
   style: Style;
   onUpdateKeywords: (keywords: string[]) => void;
+  subjectText: string;
 };
 
 export default function AddSubject({
@@ -26,6 +27,7 @@ export default function AddSubject({
   onChangeBackground,
   onUpdateKeywords,
   style,
+  subjectText,
 }: Props) {
   if (!style) {
     return null;
@@ -37,7 +39,7 @@ export default function AddSubject({
     <Box padding="8px 14px">
       <Flex align="center" justify="space-between" mb="8px">
         <Text as="b" color="#1A1A1A" fontSize="sm">
-          Subject
+          {subjectText || 'Subject'}
         </Text>
         {onChangeBackground ? (
           <HStack>

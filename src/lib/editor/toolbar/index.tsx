@@ -66,6 +66,7 @@ const VIEWS = [
 
 const MIN_OVERLAY_HEIGHT = 80;
 const MAX_OVERLAY_HEIGHT = 400;
+const MAX_OVERLAY_HEIGHT_ONE_TOOL = 336;
 const MAX_OVERLAY_HEIGHT_ONE_STYLE = 282;
 
 type FooterToolbarProps = {
@@ -100,8 +101,12 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     active: false,
   });
 
-  const maxOverlayHeight =
+  let maxOverlayHeight =
     maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+
+  if (availableTools?.length === 1) {
+    maxOverlayHeight = MAX_OVERLAY_HEIGHT_ONE_TOOL;
+  }
 
   useEffect(() => {
     if (isExpanded) {
