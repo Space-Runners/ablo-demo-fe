@@ -101,10 +101,11 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     active: false,
   });
 
-  let maxOverlayHeight =
-    maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+  let maxOverlayHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
 
-  if (availableTools?.length === 1) {
+  if (maxHeight) {
+    maxOverlayHeight = maxHeight;
+  } else if (availableTools?.length === 1) {
     maxOverlayHeight = MAX_OVERLAY_HEIGHT_ONE_TOOL;
   }
 

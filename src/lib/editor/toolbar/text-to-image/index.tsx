@@ -23,6 +23,7 @@ const defaultParams = {
 };
 
 type TextToImageGeneratorProps = {
+  onImagesPreview: (images: string[]) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   getStyles: (type: StyleType) => Promise<Style[]>;
   generateImageFromText: (options: TextToImageRequest) => Promise<string[]>;
@@ -37,6 +38,7 @@ type TextToImageGeneratorProps = {
 
 export default function TextToImageGenerator({
   onGeneratedImageSelected,
+  onImagesPreview,
   getStyles,
   generateImageFromText,
   hideBackgroundSelector,
@@ -79,6 +81,8 @@ export default function TextToImageGenerator({
   const handleReset = () => {
     setImages([]);
     setSelectedImage(null);
+
+    onImagesPreview(null);
 
     const options = { ...defaultParams };
 
@@ -134,6 +138,8 @@ export default function TextToImageGenerator({
 
         setImages(images);
         setSelectedImage(images[0]);
+
+        onImagesPreview(images);
       })
       .catch(() => {
         setWaiting(false);

@@ -21,6 +21,7 @@ import ImageUpload from '../components/upload/ImageUpload';
 
 type EditorContainerProps = {
   onImageUploaded: (image: HTMLImageElement) => void;
+  onImagesPreview?: (images: string[]) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   isEditorToolbarExpanded: boolean;
   onChangeEditorToolbarExpanded: (isExpanded: boolean) => void;
@@ -43,6 +44,7 @@ type EditorContainerProps = {
 
 export default function EditorContainer({
   onImageUploaded,
+  onImagesPreview,
   onGeneratedImageSelected,
   isEditorToolbarExpanded,
   onChangeEditorToolbarExpanded,
@@ -94,6 +96,7 @@ export default function EditorContainer({
               hideBackgroundSelector={hideAiImageBackgroundSelector}
               hideStyles={hideStyles}
               onGeneratedImageSelected={onGeneratedImageSelected}
+              onImagesPreview={onImagesPreview}
               buttonProps={buttonProps}
               subjectText={subjectText}
             />
