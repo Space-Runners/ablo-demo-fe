@@ -29,11 +29,11 @@ const textProps = {
 type Props = {
   design: Design;
   onAddText: (props: object) => void;
-  onSelectedSide: (side: string) => void;
+  onSelectedSide?: (side: string) => void;
   onUndo?: () => void;
   onRedo?: () => void;
   onSave: () => void;
-  selectedSide: string;
+  selectedSide?: string;
 };
 
 export default function Toolbar({
@@ -57,15 +57,17 @@ export default function Toolbar({
             icon={<IconAddText />}
             text="Add Text"
           />
-          <ToolbarButton
-            icon={<IconFlipTemplate />}
-            onClick={() => {
-              const currentIndex = SIDES.indexOf(selectedSide);
+          {onSelectedSide ? (
+            <ToolbarButton
+              icon={<IconFlipTemplate />}
+              onClick={() => {
+                const currentIndex = SIDES.indexOf(selectedSide);
 
-              onSelectedSide(SIDES[(currentIndex + 1) % SIDES.length]);
-            }}
-            text="Flip"
-          />
+                onSelectedSide(SIDES[(currentIndex + 1) % SIDES.length]);
+              }}
+              text="Flip"
+            />
+          ) : null}
         </HStack>
         <HStack>
           <ToolbarButton

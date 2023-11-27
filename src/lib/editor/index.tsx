@@ -14,7 +14,12 @@ import Toolbar from './controls';
 
 import ObjectEditTools from './object-edit-tools';
 
-import { generateImageFromImage, generateImageFromText, getStyles } from '../api/image-generator';
+import {
+  generateImageFromImage,
+  generateImageFromText,
+  generateImageFromFont,
+  getStyles,
+} from '../api/image-generator';
 
 import { getDrawingArea } from './drawingAreas';
 
@@ -362,99 +367,102 @@ export default function EditorTool({ design, onDesignChange, onSave, templates }
   const redoHandler = isEmpty(redoStack) ? null : handleRedo;
 
   return (
-    <EditorContainer
-      onImageUploaded={handleImageUpload}
-      onGeneratedImageSelected={handlePreviewImageSelected}
-      isEditorToolbarExpanded={isEditorToolbarExpanded}
-      onChangeEditorToolbarExpanded={setEditorToolbarExpanded}
-      generateImageFromText={generateImageFromText}
-      generateImageFromImage={generateImageFromImage}
-      getStyles={getStyles}
-      hideAiImageBackgroundSelector
-    >
-      <F>
-        {activeObject ? (
-          <ObjectEditTools
-            activeObject={activeObject}
-            canvas={canvas.current}
-            onStateChange={saveState}
-            onCrop={handleCrop}
-            onSetActiveObject={setActiveObject}
-            onImageUpdate={handleImageUpdate}
-            onUndo={undoHandler}
-            onRedo={redoHandler}
-          />
-        ) : (
-          <Toolbar
-            design={design}
-            onAddText={handleAddText}
-            onSelectedSide={handleSelectedSide}
-            onUndo={undoHandler}
-            onRedo={redoHandler}
-            onSave={handleSave}
-            selectedSide={selectedSide}
-          />
-        )}
-        <Box
-          alignItems="center"
-          display="flex"
-          flex={1}
-          flexDirection="column"
-          onClick={handleClick}
-          justifyContent="center"
-          overflowY="auto"
-          paddingTop={{ base: '40px', md: 0 }}
-          position="relative"
-        >
-          <Box position="absolute" right="13px" top="12px">
-            <ColorPicker
-              selectedVariantId={templateColorId}
-              onSelectedVariant={(variantId) =>
-                onDesignChange({
-                  ...design,
-                  templateColorId: variantId,
-                })
-              }
-              options={template.colors}
+    <Box h={{ base: 'calc(100% - 121px)', md: 'calc(100% - 65px)' }}>
+      <EditorContainer
+        onImageUploaded={handleImageUpload}
+        onGeneratedImageSelected={handlePreviewImageSelected}
+        isEditorToolbarExpanded={isEditorToolbarExpanded}
+        onChangeEditorToolbarExpanded={setEditorToolbarExpanded}
+        generateImageFromText={generateImageFromText}
+        generateImageFromImage={generateImageFromImage}
+        generateImageFromFont={generateImageFromFont}
+        getStyles={getStyles}
+        hideAiImageBackgroundSelector
+      >
+        <F>
+          {activeObject ? (
+            <ObjectEditTools
+              activeObject={activeObject}
+              canvas={canvas.current}
+              onStateChange={saveState}
+              onCrop={handleCrop}
+              onSetActiveObject={setActiveObject}
+              onImageUpdate={handleImageUpdate}
+              onUndo={undoHandler}
+              onRedo={redoHandler}
             />
-          </Box>
-          <Box
-            id="#canvas-container-front"
-            display={selectedSide === 'front' ? 'block' : 'none'}
-            maxHeight="100%"
-            position="relative"
-            userSelect="none"
-          >
-            <CanvasContainer
-              canvas={canvasFront.current}
-              template={template}
-              selectedVariant={selectedGarment.variantId}
-              showHint={showHint}
-              side="front"
-              onHintClick={() => {
-                setEditorToolbarExpanded(true);
-              }}
+          ) : (
+            <Toolbar
+              design={design}
+              onAddText={handleAddText}
+              onSelectedSide={handleSelectedSide}
+              onUndo={undoHandler}
+              onRedo={redoHandler}
+              onSave={handleSave}
+              selectedSide={selectedSide}
             />
-          </Box>
+          )}
           <Box
-            id="#canvas-container-back"
-            display={selectedSide === 'back' ? 'block' : 'none'}
-            maxHeight="100%"
+            alignItems="center"
+            display="flex"
+            flex={1}
+            flexDirection="column"
+            onClick={handleClick}
+            justifyContent="center"
+            overflowY="auto"
+            paddingTop={{ base: '40px', md: 0 }}
             position="relative"
           >
-            <CanvasContainer
-              canvas={canvasBack.current}
-              template={template}
-              selectedVariant={selectedGarment.variantId}
-              showHint={showHint}
-              side="back"
-              onHintClick={() => {
-                setEditorToolbarExpanded(true);
-              }}
-            />
+            <Box position="absolute" right="13px" top="12px">
+              <ColorPicker
+                selectedVariantId={templateColorId}
+                onSelectedVariant={(variantId) =>
+                  onDesignChange({
+                    ...design,
+                    templateColorId: variantId,
+                  })
+                }
+                options={template.colors}
+              />
+            </Box>
+            <Box
+              id="#canvas-container-front"
+              display={selectedSide === 'front' ? 'block' : 'none'}
+              maxHeight="100%"
+              position="relative"
+              userSelect="none"
+            >
+              <CanvasContainer
+                canvas={canvasFront.current}
+                template={template}
+                selectedVariant={selectedGarment.variantId}
+                showHint={showHint}
+                side="front"
+                onHintClick={() => {
+                  setEditorToolbarExpanded(true);
+                }}
+              />
+            </Box>
+            <Box
+              id="#canvas-container-back"
+              display={selectedSide === 'back' ? 'block' : 'none'}
+              maxHeight="100%"
+              position="relative"
+            >
+              <CanvasContainer
+                canvas={canvasBack.current}
+                template={template}
+                selectedVariant={selectedGarment.variantId}
+                showHint={showHint}
+                side="back"
+                onHintClick={() => {
+                  setEditorToolbarExpanded(true);
+                }}
+              />
+            </Box>
           </Box>
-        </Box>
-      </F>
-    </EditorContainer>
+        </F>
+      </EditorContainer>
+    </Box>
   );
 }

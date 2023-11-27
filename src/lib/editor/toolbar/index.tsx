@@ -66,6 +66,7 @@ const VIEWS = [
 
 const MIN_OVERLAY_HEIGHT = 80;
 const MAX_OVERLAY_HEIGHT = 400;
+const MAX_OVERLAY_HEIGHT_ONE_TOOL = 336;
 const MAX_OVERLAY_HEIGHT_ONE_STYLE = 282;
 
 type FooterToolbarProps = {
@@ -100,8 +101,13 @@ export default function EditorToolbar(props: FooterToolbarProps) {
     active: false,
   });
 
-  const maxOverlayHeight =
-    maxHeight || (hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT);
+  let maxOverlayHeight = hideStyles ? MAX_OVERLAY_HEIGHT_ONE_STYLE : MAX_OVERLAY_HEIGHT;
+
+  if (maxHeight) {
+    maxOverlayHeight = maxHeight;
+  } else if (availableTools?.length === 1) {
+    maxOverlayHeight = MAX_OVERLAY_HEIGHT_ONE_TOOL;
+  }
 
   useEffect(() => {
     if (isExpanded) {

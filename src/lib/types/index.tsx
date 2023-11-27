@@ -6,7 +6,7 @@ interface UserRole {
 }
 
 export interface User {
-  email: string;
+  email?: string;
   roles: UserRole[];
 }
 
@@ -47,14 +47,15 @@ export interface TextToImageRequest {
 
 export interface ImageToImageRequest {
   styleId: string;
+  style?: string;
+  toneId?: string;
   imageFile: BinaryData;
 }
 
-export interface ImageToImageRequest {
-  style?: string;
+export interface FontToImageRequest {
   styleId: string;
-  toneId?: string;
-  image?: string;
+  style?: string;
+  text: string;
 }
 
 export interface Filters {
@@ -121,7 +122,7 @@ export interface Template {
 }
 
 export interface AiImage {
-  options: TextToImageRequest | ImageToImageRequest;
+  options: TextToImageRequest | ImageToImageRequest | FontToImageRequest;
   url: string;
   noBackgroundUrl?: string;
   withBackgroundUrl?: string;

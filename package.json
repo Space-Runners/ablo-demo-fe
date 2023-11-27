@@ -1,7 +1,7 @@
 {
   "name": "ablo-demo-fe",
   "description": "A tool that lets you put AI generated designs on templates like clothes, with a full fledged text and image editor",
-  "version": "0.0.14",
+  "version": "0.0.21",
   "type": "module",
   "license": "MIT",
   "homepage": "web.ablo.ai",
@@ -28,11 +28,11 @@
   },
   "main": "./dist/ablo-demo-fe.js",
   "module": "./dist/ablo-demo-fe.js",
+  "types": "./dist/lib/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/ablo-demo-fe.js",
-      "require": "./dist/ablo-demo-fe.js",
-      "types": "./dist/lib/index.d.ts"
+      "require": "./dist/ablo-demo-fe.js"
     }
   },
   "files": [
@@ -61,7 +61,8 @@
     "react-is": "^18.0.0",
     "react-router-dom": "^5.3.0",
     "react-transition-group": "^4.4.5",
-    "swiper": "^9.4.1"
+    "swiper": "^9.4.1",
+    "use-double-tap": "^1.3.6"
   },
   "devDependencies": {
     "@types/node": "^20.7.0",

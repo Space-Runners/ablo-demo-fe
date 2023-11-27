@@ -27,8 +27,8 @@ type StyleSelectorProps = {
   styles: Style[];
   selectedStyle: string;
   onSelectedStyle: (styleId: string) => void;
-  onSelectedColorPalette: (toneId: string) => void;
-  selectedColorPalette: string;
+  onSelectedColorPalette?: (toneId: string) => void;
+  selectedColorPalette?: string;
   hideColorPalettes?: boolean;
 };
 
