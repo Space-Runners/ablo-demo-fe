@@ -1,4 +1,4 @@
-import { Box, HStack, Input, Text } from '@chakra-ui/react';
+import { Box, ButtonProps, HStack, Input, Text } from '@chakra-ui/react';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -24,19 +24,28 @@ const defaultParams = {
 };
 
 type TextToImageGeneratorProps = {
+  onImagesPreview: (images: string[]) => void;
   onGeneratedImageSelected: (image: AiImage) => void;
   getStyles: (type: StyleType) => Promise<Style[]>;
   generateImageFromText: (options: TextToImageRequest) => Promise<string[]>;
   hideBackgroundSelector: boolean;
   hideStyles: boolean;
+  buttonProps?: {
+    basic: ButtonProps;
+    outlined: ButtonProps;
+  };
+  subjectText: string;
 };
 
 export default function TextToImageGenerator({
   onGeneratedImageSelected,
+  onImagesPreview,
   getStyles,
   generateImageFromText,
   hideBackgroundSelector,
   hideStyles,
+  buttonProps,
+  subjectText,
 }: TextToImageGeneratorProps) {
   const subjectInputRef = useRef(null);
 
@@ -75,6 +84,8 @@ export default function TextToImageGenerator({
     setImages([]);
     setSelectedImage(null);
     setError(null);
+
+    onImagesPreview(null);
 
     const options = { ...defaultParams };
 
@@ -131,6 +142,8 @@ export default function TextToImageGenerator({
 
         setImages(images);
         setSelectedImage(images[0]);
+
+        onImagesPreview(images);
       })
       .catch((err) => {
         const message = err?.response?.data?.message;
@@ -159,6 +172,7 @@ export default function TextToImageGenerator({
         onPlaceArtwork={handlePlaceArtwork}
         onGenerateSimilar={handleGenerate}
         onNewArtwork={handleReset}
+        buttonProps={buttonProps}
       />
     );
   }
@@ -201,6 +215,7 @@ export default function TextToImageGenerator({
         keywords={keywords}
         style={style}
         onUpdateKeywords={handleUpdateKeywords}
+        subjectText={subjectText}
       >
         <Input
           bg="#F5F5F5"
@@ -236,6 +251,7 @@ export default function TextToImageGenerator({
           onClick={handleGenerate}
           title="Generate"
           w="100%"
+          {...(buttonProps?.basic || {})}
         />
       </Box>
     </Box>
