@@ -1,4 +1,4 @@
-import { Box, ButtonProps, Input, Text } from '@chakra-ui/react';
+import { Box, ButtonProps, HStack, Input, Text } from '@chakra-ui/react';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -11,6 +11,7 @@ import { AiImage, Style, StyleType, TextToImageRequest } from '../../../types';
 import AddSubject from './add-subject';
 
 import StyleSelector from '../components/style-selector';
+import IconError from '../components/IconError';
 import ImagesPreview from '../components/ImagesPreview';
 import Progress from '../components/Progress';
 
@@ -50,6 +51,7 @@ export default function TextToImageGenerator({
 
   const [styles, setStyles] = useState<Style[]>([]);
   const [waiting, setWaiting] = useState(false);
+  const [error, setError] = useState<string>(null);
 
   const [options, setOptions] = useState<TextToImageRequest>(defaultParams);
 
@@ -81,6 +83,7 @@ export default function TextToImageGenerator({
   const handleReset = () => {
     setImages([]);
     setSelectedImage(null);
+    setError(null);
 
     onImagesPreview(null);
 
@@ -118,6 +121,7 @@ export default function TextToImageGenerator({
   const handleUpdate = (updates) => setOptions({ ...options, ...updates });
 
   const handleGenerate = () => {
+    setError(null);
     setWaiting(true);
     setImages([]);
 
@@ -141,7 +145,12 @@ export default function TextToImageGenerator({
 
         onImagesPreview(images);
       })
-      .catch(() => {
+      .catch((err) => {
+        const message = err?.response?.data?.message;
+
+        if (message && (message.includes('Bad words') || message.includes('Invalid prompts'))) {
+          setError('Inappropriate prompt. Please type again');
+        }
         setWaiting(false);
       });
   };
@@ -219,6 +228,23 @@ export default function TextToImageGenerator({
           placeholder="Write subject..."
         />
       </AddSubject>
+      {error ? (
+        <Box padding="8px 14px">
+          <HStack
+            w="100%"
+            h="33px"
+            borderRadius="9px"
+            p="10px 16px 10px 16px"
+            bg="#FBEDEC"
+            spacing="5px"
+          >
+            <IconError />
+            <Text color="black.600" fontSize="sm">
+              Inappropriate prompt. Please type again
+            </Text>
+          </HStack>
+        </Box>
+      ) : null}
       <Box padding="0 14px" mt="22px">
         <Button
           disabled={!freeText && isEmpty(keywords)}
