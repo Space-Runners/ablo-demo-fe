@@ -85,7 +85,9 @@ export default function TextToImageGenerator({
     setSelectedImage(null);
     setError(null);
 
-    onImagesPreview(null);
+    if (onImagesPreview) {
+      onImagesPreview(null);
+    }
 
     const options = { ...defaultParams };
 
@@ -143,7 +145,9 @@ export default function TextToImageGenerator({
         setImages(images);
         setSelectedImage(images[0]);
 
-        onImagesPreview(images);
+        if (onImagesPreview) {
+          onImagesPreview(images);
+        }
       })
       .catch((err) => {
         const message = err?.response?.data?.message;
