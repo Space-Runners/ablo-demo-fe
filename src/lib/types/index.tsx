@@ -49,7 +49,7 @@ export interface ImageToImageRequest {
   styleId: string;
   style?: string;
   toneId?: string;
-  imageFile: BinaryData;
+  imageFile: Blob;
 }
 
 export interface FontToImageRequest {

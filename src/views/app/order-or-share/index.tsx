@@ -200,7 +200,7 @@ export default function OrderOrShare() {
 
                     const image = images.find(({ templateSideId }) => id === templateSideId);
 
-                    const aiImage = null && getAiImageForSide(canvasState);
+                    const aiImage = getAiImageForSide(canvasState);
 
                     const style = aiImage ? aiImage.options.style : 'kidult';
 
